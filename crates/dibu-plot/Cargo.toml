@@ -1,0 +1,8 @@
+[package]
+name = "dibu-plot"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+dibu-core.workspace = true

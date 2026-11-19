@@ -1,0 +1,25 @@
+[package]
+name = "dibu-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "dibu"
+path = "src/main.rs"
+
+[features]
+default = ["cs", "control", "chem"]
+cs = ["dep:dibu-cs"]
+control = ["dep:dibu-control"]
+chem = ["dep:dibu-chem"]
+
+[dependencies]
+dibu-core.workspace = true
+dibu-cs = { workspace = true, optional = true }
+dibu-control = { workspace = true, optional = true }
+dibu-chem = { workspace = true, optional = true }
+clap.workspace = true
+regex.workspace = true
+serde.workspace = true
+serde_json.workspace = true
