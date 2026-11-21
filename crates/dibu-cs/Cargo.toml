@@ -7,3 +7,7 @@ license.workspace = true
 [dependencies]
 dibu-core.workspace = true
 serde_json.workspace = true
+
+[dev-dependencies]
+regex.workspace = true
+serde_yaml.workspace = true

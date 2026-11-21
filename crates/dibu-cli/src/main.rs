@@ -73,16 +73,11 @@ fn construir_registro() -> Registro {
 }
 
 fn extraer_cuerpos_markdown(texto: &str) -> Vec<String> {
-    let re = Regex::new(
-        r"(?ms)^(?P<valla>`{3,}|~{3,})[ \t]*(?:estructura|statics)[ \t]*\r?\n(?P<cuerpo>.*?)^[ \t]*(`{3,}|~{3,})[ \t]*$",
-    )
-    .unwrap();
     // Verificamos que la valla de cierre coincida con la de apertura.
     let mut cuerpos = Vec::new();
     let lineas: Vec<&str> = texto.lines().collect();
     let mut i = 0;
     let re_abre = Regex::new(r"^(?P<valla>`{3,}|~{3,})[ \t]*(?:estructura|statics)[ \t]*$").unwrap();
-    let _ = re;
     while i < lineas.len() {
         if let Some(cap) = re_abre.captures(lineas[i]) {
             let valla = &cap["valla"];
@@ -297,19 +292,44 @@ fn main() -> ExitCode {
             color,
         } => {
             let mut dirs: BTreeSet<PathBuf> = BTreeSet::new();
+            let mut errores = 0usize;
             for r in rutas {
+                if !r.exists() {
+                    eprintln!("Error: ruta no encontrada: {}", r.display());
+                    errores += 1;
+                    continue;
+                }
                 if r.is_dir() {
-                    if let Ok(c) = r.canonicalize() {
-                        dirs.insert(c);
+                    match r.canonicalize() {
+                        Ok(c) => {
+                            dirs.insert(c);
+                        }
+                        Err(e) => {
+                            eprintln!("Error: no se pudo resolver {}: {e}", r.display());
+                            errores += 1;
+                        }
                     }
-                } else if r.extension().and_then(|e| e.to_str()).is_some_and(|e| e.eq_ignore_ascii_case("md")) {
-                    if let Some(p) = r.parent().and_then(|p| p.canonicalize().ok()) {
-                        dirs.insert(p);
+                } else if r
+                    .extension()
+                    .and_then(|e| e.to_str())
+                    .is_some_and(|e| e.eq_ignore_ascii_case("md"))
+                {
+                    let parent = match r.parent() {
+                        Some(p) if !p.as_os_str().is_empty() => p,
+                        _ => Path::new("."),
+                    };
+                    match parent.canonicalize() {
+                        Ok(p) => {
+                            dirs.insert(p);
+                        }
+                        Err(e) => {
+                            eprintln!("Error: no se pudo resolver {}: {e}", r.display());
+                            errores += 1;
+                        }
                     }
                 }
             }
             let mut cambios = 0usize;
-            let mut errores = 0usize;
             for d in dirs {
                 let (c, e) = sincronizar_dir(&reg, &d, !color, !verificar);
                 cambios += c;

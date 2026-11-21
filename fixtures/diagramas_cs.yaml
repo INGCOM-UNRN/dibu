@@ -1,0 +1,645 @@
+- id: array-valores
+  type: array
+  values: [3, 1, 4]
+  pointers: "p:0, q:2"
+  showAddresses: true
+  showOffsets: true
+- id: array-en-blanco
+  type: array
+  values: [41, 42]
+  blankValues: true
+- id: array-titulo-largo
+  type: array
+  title: Completar con la transpuesta de la matriz original
+  values: [1]
+- id: linked-list-singly
+  type: linked_list
+  variant: singly
+  values: [10, 20, 30]
+- id: linked-list-doubly
+  type: linked_list
+  variant: doubly
+  values: ["a", "b"]
+- id: linked-list-circular
+  type: linked_list
+  variant: circular
+  values: [1, 2, 3]
+- id: linked-list-circular-doubly
+  type: linked_list
+  variant: circular_doubly
+  values: [1, 2, 3]
+- id: linked-list-hex
+  type: linked_list
+  addresses: [0x3B20, 0x7E10]
+  values: [1, 2]
+- id: linked-list-cursores
+  type: linked_list
+  values: [1, 2, 3]
+  pointers: "ant:0, actual:1, final:2"
+- id: linked-list-vacia
+  type: linked_list
+  headLabel: cabeza
+  values: []
+- id: linked-list-cabecera-zonas
+  type: linked_list
+  values: [12, 25, 8]
+  addresses: ["@N1", "@N2", "@N3"]
+  nodeType: nodo_t
+  zones:
+    stack: "Stack: main"
+    heap: Heap
+  header:
+    name: mi_lista
+    type: lista_t
+    fields:
+      - "primero -> 0"
+      - "ultimo -> 2"
+      - "cant = 3"
+- id: linked-list-cabecera-zones-true
+  type: linked_list
+  values: [12, 25, 8]
+  addresses: ["@N1", "@N2", "@N3"]
+  nodeType: nodo_t
+  zones: true
+  header:
+    name: mi_lista
+    type: lista_t
+    fields:
+      - "primero -> 0"
+      - "ultimo -> 2"
+      - "cant = 3"
+- id: linked-list-cursor-actual
+  type: linked_list
+  values: [1, 2]
+  pointers: "actual:1"
+- id: linked-list-vacia-default
+  type: linked_list
+  values: []
+- id: stack-simple
+  type: stack
+  values: [5, 9]
+  capacity: 4
+- id: stack-vertical-multi
+  type: stack
+  layout: vertical_multi
+  values: [1]
+  traceLabels: ["Inicio", "push(2)", "pop()"]
+- id: stack-titulo-largo
+  type: stack
+  title: Completar con la transpuesta de la matriz original
+  values: [1]
+- id: queue-linear
+  type: queue
+  variant: linear
+  capacity: 6
+  frontIndex: 1
+  rearIndex: 3
+  values: ["", "a", "b", "c"]
+- id: queue-circular
+  type: queue
+  variant: circular
+  capacity: 8
+  frontIndex: 5
+  rearIndex: 1
+- id: tree-bst
+  type: tree
+  variant: bst
+  insert: [8, 3, 10, 1, 6]
+- id: tree-avl
+  type: tree
+  variant: avl
+  insert: [1, 2, 3, 4, 5]
+- id: tree-heap
+  type: tree
+  variant: heap
+  values: [90, 70, 80, 30]
+- id: tree-heap-array
+  type: tree
+  variant: heap
+  values: [90, 70, 80, 30]
+  showArray: true
+- id: tree-struct-node
+  type: tree
+  nodeStyle: struct
+  values: ["A", "B", "C"]
+- id: tree-expresion
+  type: tree
+  root:
+    value: "+"
+    left: x
+    right:
+      value: "*"
+      left: 2
+      right: y
+- id: tree-bst-duplicado
+  type: tree
+  variant: bst
+  insert: [50, 30, 70, 20, 40, 30]
+- id: tree-avl-rebalance
+  type: tree
+  variant: avl
+  insert: [10, 20, 30, 40, 50, 25]
+- id: tree-huecos
+  type: tree
+  values: ["A", "B", "C", "", "D"]
+- id: tree-bst-preorden
+  type: tree
+  variant: bst
+  insert: [2, 1, 3]
+- id: matrix-estatica
+  type: matrix
+  values: [[1, 2, 3], [4, 5, 6]]
+- id: matrix-estatica-cols-lineal
+  type: matrix
+  values: [1, 2, 3, 4, 5, 6]
+  cols: 3
+  showAddresses: true
+  showLinear: true
+- id: matrix-estatica-row-major
+  type: matrix
+  values: [[1, 2, 3], [4, 5, 6]]
+  baseAddr: "0x1000"
+  typeSize: 4
+  showAddresses: true
+  showLinear: true
+- id: matrix-highlight-str
+  type: matrix
+  values: [[1, 2], [3, 4]]
+  highlight: "1,0"
+- id: matrix-highlight-lista
+  type: matrix
+  values: [[1, 2], [3, 4]]
+  highlight: [[0, 0], [1, 1]]
+- id: matrix-highlight-filas
+  type: matrix
+  values: [[1, 2], [3, 4]]
+  highlightRows: [0]
+- id: matrix-highlight-cols
+  type: matrix
+  values: [[1, 2], [3, 4]]
+  highlightCols: [1]
+  showLinear: true
+- id: matrix-en-blanco
+  type: matrix
+  values: [[1, 2], [3, 4]]
+  blankValues: true
+- id: matrix-10x10
+  type: matrix
+  values:
+    - [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    - [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    - [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    - [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    - [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    - [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    - [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    - [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    - [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    - [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+- id: matrix-titulo-largo
+  type: matrix
+  title: Completar con la transpuesta de la matriz original
+  rows: 1
+  cols: 1
+- id: matrix-dynamic-nulls
+  type: matrix
+  variant: dynamic
+  values: [[1, 2, 3], [4], null, [7, 8]]
+- id: matrix-dynamic-addrs
+  type: matrix
+  variant: dynamic
+  values: [[1, 2], [3, 4]]
+  showAddresses: true
+- id: matrix-dynamic-row-addrs
+  type: matrix
+  variant: dynamic
+  name: t
+  values: [[1, 2, 3], null, [4]]
+  showAddresses: true
+  baseAddr: "0x2000"
+  rowAddresses: ["0x3000", "", "0x5000"]
+- id: matrix-jagged-nulls
+  type: matrix
+  variant: jagged
+  values: [[1, 2, 3], [4], null, [7, 8]]
+- id: matrix-jagged-palabras
+  type: matrix
+  variant: jagged
+  name: palabras
+  values: [["h", "o", "l", "a"], ["s", "i"]]
+  sentinel: "'\\0'"
+  showAddresses: true
+- id: matrix-jagged-largos
+  type: matrix
+  variant: jagged
+  values: [[1]]
+  lengths: [5]
+  lengthsName: tam
+  blankLengths: false
+- id: matrix-jagged-largos-blanco
+  type: matrix
+  variant: jagged
+  values: [[1, 2, 3]]
+  blankLengths: true
+- id: matrix-jagged-centinela
+  type: matrix
+  variant: jagged
+  values: [[3, 1], [2]]
+  sentinel: -1
+- id: matrix-jagged-centinela-largos
+  type: matrix
+  variant: jagged
+  values: [[3]]
+  sentinel: -1
+  showLengths: true
+- id: matrix-jagged-simbolicas
+  type: matrix
+  variant: jagged
+  name: mat
+  values: [[1], [2, 3]]
+  showAddresses: true
+  baseAddr: "@M"
+  rowAddresses: ["@F0", "@F1"]
+  lengthsType: int
+- id: matrix-jagged-duena-zonas
+  type: matrix
+  variant: jagged
+  name: filas
+  values: [[4, 8], [9]]
+  showAddresses: true
+  baseAddr: "@F"
+  rowAddresses: ["@R0", "@R1"]
+  lengthsType: int
+  lengthsAddr: "@L"
+  zones: true
+  owner:
+    name: d
+    type: dentada_t
+    fields:
+      - "n = 2"
+      - "largos -> lengths"
+      - "filas -> rows"
+- id: matrix-jagged-duena-blank-addrs
+  type: matrix
+  variant: jagged
+  name: filas
+  values: [[4, 8], [9]]
+  showAddresses: true
+  baseAddr: "@F"
+  rowAddresses: ["@R0", "@R1"]
+  lengthsType: int
+  lengthsAddr: "@L"
+  zones: true
+  blankAddrs: true
+  owner:
+    name: d
+    type: dentada_t
+    fields:
+      - "n = 2"
+      - "largos -> lengths"
+      - "filas -> rows"
+- id: matrix-flat-formula
+  type: matrix
+  variant: flat
+  values: [[1, 2, 3], [4, 5, 6]]
+  baseAddr: "0x1000"
+  showAddresses: true
+- id: matrix-flat-sin-indices
+  type: matrix
+  variant: flat
+  values: [[1, 2], [3, 4]]
+  showIndices: false
+  showFormula: false
+- id: matrix-flat-sin-coords
+  type: matrix
+  variant: flat
+  values: [[1, 2], [3, 4]]
+  showIndices: false
+  showFormula: false
+  showCoords: false
+- id: matrix-flat-logica
+  type: matrix
+  variant: flat
+  values: [[1, 2]]
+  showLogical: true
+- id: matrix-flat-logica-addrs
+  type: matrix
+  variant: flat
+  values: [[1, 2], [3, 4]]
+  showLogical: true
+  showAddresses: true
+- id: call-stack-marcos
+  type: call_stack
+  showAddresses: true
+  showTypes: true
+  frames:
+    - function: main
+      vars:
+        - {name: a, value: 3, type: int}
+        - {name: b, value: 7, type: int}
+    - function: intercambiar
+      returnTo: main
+      params:
+        - {name: x, value: "&a", type: "int *"}
+        - {name: y, value: "&b", type: "int *"}
+      vars: ["aux = 3"]
+  pointers: "1.x -> 0.a; intercambiar.y -> main.b"
+- id: call-stack-steps
+  type: call_stack
+  steps:
+    - label: "llama a fact(2)"
+      frames:
+        - {function: main, vars: {r: "?"}}
+        - {function: fact, params: {n: 2}}
+    - label: "fact(1) devuelve 1"
+      frames:
+        - {function: main, vars: {r: "?"}}
+        - {function: fact, params: {n: 2}}
+        - {function: fact, params: {n: 1}, returns: 1, popped: true}
+- id: call-stack-rotulos-largos
+  type: call_stack
+  steps:
+    - label: "segunda llamada, antes de c++"
+      frames: [{function: f}]
+    - label: "segunda llamada, antes de c++"
+      frames: [{function: f}]
+- id: call-stack-en-blanco
+  type: call_stack
+  showAddresses: true
+  showTypes: true
+  blankValues: true
+  blankAddrs: true
+  frames:
+    - function: main
+      vars:
+        - {name: a, value: 3, type: int}
+        - {name: b, value: 7, type: int}
+    - function: intercambiar
+      returnTo: main
+      params:
+        - {name: x, value: "&a", type: "int *"}
+        - {name: y, value: "&b", type: "int *"}
+      vars: ["aux = 3"]
+  pointers: "1.x -> 0.a; intercambiar.y -> main.b"
+- id: call-tree-fib3-costos
+  type: call_tree
+  showOrder: true
+  levelCosts: ["1", "2", "2"]
+  total: "2^n"
+  root:
+    call: "fib(3)"
+    returns: 2
+    children:
+      - call: "fib(2)"
+        returns: 1
+        children:
+          - {call: "fib(1)", returns: 1}
+          - {call: "fib(0)", returns: 0}
+      - {call: "fib(1)", returns: 1}
+- id: call-tree-fib3-orden
+  type: call_tree
+  showOrder: true
+  root:
+    call: "fib(3)"
+    returns: 2
+    children:
+      - call: "fib(2)"
+        returns: 1
+        children:
+          - {call: "fib(1)", returns: 1}
+          - {call: "fib(0)", returns: 0}
+      - {call: "fib(1)", returns: 1}
+- id: call-tree-padre-centrado
+  type: call_tree
+  root:
+    call: a
+    children: ["b", "c"]
+- id: call-tree-blank-returns
+  type: call_tree
+  blankReturns: true
+  levelCosts: ["n", "2n"]
+  total: "n^2"
+  root:
+    call: "fib(3)"
+    returns: 2
+    children:
+      - call: "fib(2)"
+        returns: 1
+        children:
+          - {call: "fib(1)", returns: 1}
+          - {call: "fib(0)", returns: 0}
+      - {call: "fib(1)", returns: 1}
+- id: call-tree-blank-calls
+  type: call_tree
+  blankCalls: true
+  root:
+    call: "fib(3)"
+    returns: 2
+    children:
+      - call: "fib(2)"
+        returns: 1
+        children:
+          - {call: "fib(1)", returns: 1}
+          - {call: "fib(0)", returns: 0}
+      - {call: "fib(1)", returns: 1}
+- id: call-tree-blank-level-costs
+  type: call_tree
+  blankReturns: true
+  blankLevelCosts: true
+  levelCosts: ["n", "2n"]
+  total: "n^2"
+  root:
+    call: "fib(3)"
+    returns: 2
+    children:
+      - call: "fib(2)"
+        returns: 1
+        children:
+          - {call: "fib(1)", returns: 1}
+          - {call: "fib(0)", returns: 0}
+      - {call: "fib(1)", returns: 1}
+- id: struct-persona
+  type: struct
+  name: struct persona
+  typedef: persona_t
+  fields: ["char c = 'A'", "int edad = 30"]
+- id: struct-opaque
+  type: struct
+  variant: opaque
+  name: struct pila
+  operations: ["void f(pila_t p)"]
+  fields: ["int *datos", "size_t tope"]
+- id: struct-offsets-relleno
+  type: struct
+  name: struct s
+  fields: ["char a", "int b"]
+- id: struct-en-blanco
+  type: struct
+  name: struct s
+  fields: ["char a", "int b"]
+  blankOffsets: true
+  blankSizes: true
+  blankPadding: true
+  blankSizeof: true
+- id: struct-opaque-oculto
+  type: struct
+  variant: opaque
+  name: struct pila
+  typedef: pila_t
+  hidden: true
+- id: struct-packed
+  type: struct
+  name: struct emp
+  fields: ["char a", "int b", "char c"]
+  packed: true
+- id: struct-anidado
+  type: struct
+  name: struct outer
+  fields:
+    - {name: c, type: char}
+    - {name: pos, type: struct punto, size: 8, align: 4}
+- id: adt-pila
+  type: adt
+  name: Pila
+  operations: ["pila_t crear(void)"]
+  client: ["crear();"]
+  invariant: "tope >= 0"
+  representations:
+    - Arreglo
+    - {name: Lista, fields: ["nodo_t *cabeza"]}
+- id: adt-operaciones
+  type: adt
+  name: Pila
+  operations:
+    - {signature: "f()", kind: observador, pre: p}
+    - {signature: "g()", post: q, blank: true}
+- id: adt-blank-kinds
+  type: adt
+  name: Pila
+  blankKinds: true
+  operations:
+    - {signature: "f()", kind: observador, pre: p}
+    - {signature: "g()", post: q, blank: true}
+- id: complexity-default
+  type: complexity
+- id: complexity-classes
+  type: complexity
+  variant: classes
+  items:
+    "O(n)": ["búsqueda lineal"]
+- id: complexity-alias
+  type: complexity
+  curves: ["Θ(n²)"]
+- id: complexity-blank-labels
+  type: complexity
+  curves: ["n", "n^2"]
+  blankLabels: true
+- id: complexity-n-grande
+  type: complexity
+  curves: ["2^n", "n!", "n^3"]
+  maxN: 10000
+  maxY: 1000
+- id: complexity-clipping
+  type: complexity
+  curves: ["2^n"]
+  maxN: 20
+  maxY: 100
+- id: complexity-mediciones
+  type: complexity
+  curves:
+    - label: medido
+      points: [[2, 5], [10, 90]]
+- id: complexity-classes-anidadas
+  type: complexity
+  variant: classes
+  classes: ["P", "NP"]
+  items:
+    P: ["ordenar"]
+- id: complexity-classes-blank
+  type: complexity
+  variant: classes
+  blankClasses: true
+- id: flowchart-completo
+  type: flowchart
+  steps:
+    - {io: "leer n"}
+    - "i = 0"
+    - while: "i < n"
+      do:
+        - if: "par(i)"
+          then: ["s = s + i"]
+          else: ["s = s - i"]
+        - "i = i + 1"
+    - if: "s > 0"
+      else: ["s = 0"]
+    - if: "s == 0"
+      then: ["t = 1"]
+- id: flowchart-sin-terminales
+  type: flowchart
+  steps:
+    - "a = 1"
+    - {step: "b = 2", blank: true}
+  start: false
+  end: false
+- id: flowchart-ramas-anchas
+  type: flowchart
+  steps:
+    - if: c
+      then: ["una instruccion bastante larga"]
+      else: ["una instruccion bastante larga"]
+- id: flowchart-while-simple
+  type: flowchart
+  steps:
+    - "max = v[0]"
+    - while: "i < n"
+      do: ["i = i + 1"]
+- id: cost-table-simple
+  type: cost_table
+  lines:
+    - ["int s = 0;", "c1", 1]
+  total: c1
+- id: cost-table-sangria
+  type: cost_table
+  lines:
+    - ["for (;;)", "c1", "n"]
+    - ["    x++;", "c2", "n - 1"]
+  total: 2n
+- id: cost-table-blank
+  type: cost_table
+  lines:
+    - ["for (;;)", "c1", "n"]
+    - ["    x++;", "c2", "n - 1"]
+  total: 2n
+  blankCosts: true
+  blankTimes: true
+  blankTotal: true
+- id: trace-table-variables
+  type: trace_table
+  columns: ["i", "s"]
+  rows: [[0, 1]]
+- id: trace-table-statics
+  type: trace_table
+  capacity: 4
+  operations: ["push(1)"]
+- id: trace-table-stack-ops
+  type: trace_table
+  variant: stack
+  capacity: 5
+  pointerLabel: "TOPE: ___"
+  operations: ["1. push(10)", "2. pop()"]
+- id: trace-table-completar
+  type: trace_table
+  columns: ["i", "suma"]
+  rows: [[0, 7], [1, null]]
+  rowCount: 4
+- id: trace-table-blank-values
+  type: trace_table
+  columns: ["i", "suma"]
+  rows: [[0, 7], [1, null]]
+  rowCount: 4
+  blankValues: true
+- id: trace-table-instrucciones
+  type: trace_table
+  columns: ["a"]
+  operations: ["a = 1", "a++"]
+  operationHeader: Línea
