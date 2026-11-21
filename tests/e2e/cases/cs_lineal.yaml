@@ -1,0 +1,1010 @@
+# Suite E2E CS Lineales: 5 tipos (array, matrix, linked_list, stack, queue).
+# >= 5 Tier 1 + >= 5 Tier 2 por tipo (58 casos totales).
+# Derivado de `alucarD/generador_examenes/diagramas.py` y `alucarD/tests/test_diagramas.py`.
+
+# ===========================================================================
+# 1. array (5 Tier 1 + 6 Tier 2 = 11 casos)
+# ===========================================================================
+- id: cs_array_t1_basico_tinta
+  feature: array
+  tier: 1
+  description: 'Arreglo básico en modo tinta con índices y valores'
+  tinta: true
+  block:
+    type: array
+    values: [3, 1, 4]
+  expect:
+    ok: true
+    min_width: 240
+    min_height: 70
+    text_contains: ["Índice [i]:", "Valor:", "[0]", "[1]", "[2]", "3", "1", "4"]
+    text_absent: ["Dirección:", "Offset:"]
+
+- id: cs_array_t1_dirs_offsets_color
+  feature: array
+  tier: 1
+  description: 'Arreglo en modo color con direcciones hexadecimales, baseAddr, typeSize y offsets'
+  tinta: false
+  block:
+    type: array
+    values: [10, 20, 30]
+    baseAddr: "0x2000"
+    typeSize: 8
+    showAddresses: true
+    showOffsets: true
+  expect:
+    ok: true
+    min_width: 240
+    min_height: 110
+    text_contains: ["Base: 0x2000 | sizeof: 8B", "Dirección:", "Offset:", "0x2000", "0x2008", "0x2010", "+0B", "+8B", "+16B"]
+    svg_contains: ["#1d4ed8"]
+
+- id: cs_array_t1_punteros_sin_indices
+  feature: array
+  tier: 1
+  description: 'Arreglo con punteros agrupados en la misma celda y sin fila de índices'
+  tinta: true
+  block:
+    type: array
+    values: [5, 6, 7, 8]
+    pointers: "p:0, q:2, r:2"
+    showIndices: false
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 80
+    text_contains: ["p", "q, r", "5", "6", "7", "8"]
+    text_absent: ["Índice [i]:", "[0]"]
+    svg_contains: ["marker-end"]
+
+- id: cs_array_t1_capacidad_mayor_y_vacios
+  feature: array
+  tier: 1
+  description: 'Arreglo con capacidad mayor a los valores cargados y hueco intermedio'
+  tinta: true
+  block:
+    type: array
+    values: [9, "", 4]
+    capacity: 5
+  expect:
+    ok: true
+    min_width: 360
+    min_height: 70
+    text_contains: ["[0]", "[4]", "9", "4"]
+    svg_contains: ['stroke-dasharray="3 2"']
+
+- id: cs_array_t1_blank_values_y_addrs
+  feature: array
+  tier: 1
+  description: 'Arreglo en blanco para completar valores y direcciones en examen'
+  tinta: true
+  block:
+    type: array
+    values: [41, 42]
+    showAddresses: true
+    blankValues: true
+    blankAddrs: true
+  expect:
+    ok: true
+    min_width: 180
+    min_height: 90
+    text_contains: ["0x____", "Dirección:"]
+    text_absent: ["41", "42", "0x1004"]
+    svg_contains: ['stroke-dasharray="3 2"']
+
+- id: cs_array_t2_sin_valores_default_cap8
+  feature: array
+  tier: 2
+  description: 'Arreglo sin valores ni capacidad usa capacidad por defecto 8'
+  tinta: true
+  block:
+    type: array
+  expect:
+    ok: true
+    min_width: 550
+    min_height: 70
+    text_contains: ["[0]", "[7]"]
+    text_absent: ["[8]"]
+    svg_contains: ['stroke-dasharray="3 2"']
+
+- id: cs_array_t2_clamp_capacity_max_y_min
+  feature: array
+  tier: 2
+  description: 'Arreglo con capacity=100 acotado a máximo 16 celdas y título largo'
+  tinta: true
+  block:
+    type: array
+    title: "Completar con los elementos ordenados del arreglo máximo"
+    capacity: 100
+    values: [1, 2]
+  expect:
+    ok: true
+    min_width: 1000
+    min_height: 110
+    text_contains: ["Completar con los elementos ordenados del arreglo máximo", "[0]", "[15]", "1", "2"]
+    text_absent: ["[16]"]
+
+- id: cs_array_t2_clamp_capacity_min
+  feature: array
+  tier: 2
+  description: 'Arreglo con capacity <= 0 acotado al mínimo de 1 celda'
+  tinta: true
+  block:
+    type: array
+    capacity: -2
+    values: [7, 8]
+  expect:
+    ok: true
+    min_width: 150
+    min_height: 70
+    text_contains: ["Índice [i]:", "Valor:", "[0]", "7"]
+    text_absent: ["[1]", "8"]
+
+- id: cs_array_t2_puntero_oob_ignorado
+  feature: array
+  tier: 2
+  description: 'Punteros fuera de rango o no numéricos se ignoran sin fallar'
+  tinta: true
+  block:
+    type: array
+    values: [11, 22]
+    pointers: "p:0, oob:5, bad:abc"
+  expect:
+    ok: true
+    min_width: 180
+    min_height: 90
+    text_contains: ["p", "11", "22"]
+    text_absent: ["oob", "bad"]
+
+- id: cs_array_t2_utf8_xml_y_ink_saver_override
+  feature: array
+  tier: 2
+  description: 'Escape XML, texto UTF-8 y override inkSaver=true sobre tinta=false'
+  tinta: false
+  block:
+    type: array
+    inkSaver: true
+    title: "Arreglo ñ & <T>"
+    subtitle: "Subtítulo α ≤ β"
+    values: ["α", "ñ", "<&>"]
+  expect:
+    ok: true
+    min_width: 240
+    min_height: 100
+    text_contains: ["Arreglo ñ & <T>", "Subtítulo α ≤ β", "α", "ñ", "<&>"]
+    svg_contains: ["&lt;&amp;&gt;"]
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: cs_array_t2_err_values_no_lista
+  feature: array
+  tier: 2
+  description: 'Error controlado cuando values es un escalar entero en vez de lista'
+  block:
+    type: array
+    values: 5
+  expect:
+    ok: false
+    error_contains: "array"
+
+# ===========================================================================
+# 2. matrix (6 Tier 1 + 9 Tier 2 = 15 casos)
+# ===========================================================================
+- id: cs_matrix_t1_static_dirs_y_show_linear_color
+  feature: matrix
+  tier: 1
+  description: 'Matriz estática en modo color con direcciones row-major y vista lineal en memoria'
+  tinta: false
+  block:
+    type: matrix
+    values: [[1, 2, 3], [4, 5, 6]]
+    baseAddr: "0x1000"
+    typeSize: 4
+    showAddresses: true
+    showLinear: true
+  expect:
+    ok: true
+    min_width: 320
+    min_height: 220
+    text_contains: ["int m[2][3] | Base: 0x1000 | sizeof: 4B", "0x1010", "[1][2]", "En memoria (fila por fila): m[i][j] = *(&m[0][0] + i*3 + j)"]
+    svg_contains: ["#1d4ed8", 'stroke-width="2.5"']
+
+- id: cs_matrix_t1_static_highlight_y_blank
+  feature: matrix
+  tier: 1
+  description: 'Matriz estática con resaltado de celdas/filas y valores en blanco'
+  tinta: true
+  block:
+    type: matrix
+    values: [[11, 22], [33, 44]]
+    highlight: [[0, 1]]
+    highlightRows: [1]
+    highlightCols: [0]
+    blankValues: true
+  expect:
+    ok: true
+    min_width: 150
+    min_height: 120
+    text_contains: ["int m[2][2]", "[0]", "[1]"]
+    text_absent: ["11", "22", "33", "44"]
+    svg_contains: ["#e2e8f0", 'stroke-dasharray="3 2"']
+
+- id: cs_matrix_t1_dynamic_con_null_y_row_addrs
+  feature: matrix
+  tier: 1
+  description: 'Matriz dinámica con fila NULL, largos variables y direcciones por fila'
+  tinta: false
+  block:
+    type: matrix
+    variant: dynamic
+    name: t
+    values: [[1, 2, 3], null, [4]]
+    showAddresses: true
+    baseAddr: "0x2000"
+    rowAddresses: ["0x3000", "", "0x5000"]
+  expect:
+    ok: true
+    min_width: 350
+    min_height: 150
+    text_contains: ["int **t", "t[1]", "NULL", "0x3000", "0x5000", "← 0x5000"]
+    svg_contains: ["#1d4ed8"]
+
+- id: cs_matrix_t1_jagged_largos_y_blank_lengths
+  feature: matrix
+  tier: 1
+  description: 'Matriz dentada con arreglo de largos personalizado y largos en blanco'
+  tinta: true
+  block:
+    type: matrix
+    variant: jagged
+    values: [[10, 20, 30], [40]]
+    lengthsName: tam
+    blankLengths: true
+  expect:
+    ok: true
+    min_width: 320
+    min_height: 120
+    text_contains: ["int **m | size_t tam[2]", "tam", "10", "20", "30", "40"]
+    svg_contains: ['stroke-dasharray="3 2"']
+
+- id: cs_matrix_t1_jagged_owner_zones_simbolicas
+  feature: matrix
+  tier: 1
+  description: 'Matriz dentada con estructura dueña en Stack, zonas y direcciones simbólicas'
+  tinta: true
+  block:
+    type: matrix
+    variant: jagged
+    name: filas
+    values: [[4, 8], [9]]
+    showAddresses: true
+    baseAddr: "@F"
+    rowAddresses: ["@R0", "@R1"]
+    lengthsType: int
+    lengthsAddr: "@L"
+    zones: true
+    owner:
+      name: d
+      type: dentada_t
+      fields: ["n = 2", "largos -> lengths", "filas -> rows"]
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 180
+    text_contains: ["d (dentada_t)", "@L (largos: int[2])", "@F", "@L", "Stack", "Heap", "← @R0", "← @R1"]
+    svg_contains: ['stroke-dasharray="5 3"']
+
+- id: cs_matrix_t1_flat_con_show_logical
+  feature: matrix
+  tier: 1
+  description: 'Matriz plana con malloc, direcciones, fórmula y vista lógica 2D'
+  tinta: true
+  block:
+    type: matrix
+    variant: flat
+    values: [[1, 2, 3], [4, 5, 6]]
+    baseAddr: "0x1000"
+    showAddresses: true
+    showLogical: true
+  expect:
+    ok: true
+    min_width: 400
+    min_height: 220
+    text_contains: ["int *m = malloc(2 * 3 * sizeof(int))", "m[i * 3 + j] es la celda (i, j)", "(1,2)", "0x1014", "Vista lógica", "int m[2][3]"]
+
+- id: cs_matrix_t2_jagged_sentinel_y_show_lengths
+  feature: matrix
+  tier: 2
+  description: 'Matriz dentada con valor centinela y showLengths habilitado explícitamente'
+  tinta: true
+  block:
+    type: matrix
+    variant: jagged
+    values: [[3, 1], [2]]
+    sentinel: -1
+    showLengths: true
+    blankLengths: true
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 120
+    text_contains: ["centinela: -1", "largos", "-1", "3", "1", "2"]
+    svg_contains: ['stroke-dasharray="3 2"']
+
+- id: cs_matrix_t2_limite_10x10
+  feature: matrix
+  tier: 2
+  description: 'Matriz estática en el límite máximo permitido de 10x10'
+  tinta: true
+  block:
+    type: matrix
+    values:
+      - [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      - [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      - [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      - [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      - [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      - [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      - [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      - [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      - [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+      - [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  expect:
+    ok: true
+    min_width: 580
+    min_height: 400
+    text_contains: ["int m[10][10]", "[9]", "9"]
+
+- id: cs_matrix_t2_static_1d_cols_y_highlight_str
+  feature: matrix
+  tier: 2
+  description: 'Matriz estática construida desde values 1D + cols con highlight en formato string "1,0"'
+  tinta: true
+  block:
+    type: matrix
+    values: [1, 2, 3, 4, 5, 6]
+    cols: 3
+    highlight: "1,0"
+    showAddresses: true
+    showLinear: true
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 220
+    text_contains: ["int m[2][3] | Base: 0x1000 | sizeof: 4B", "[0][0]", "[1][2]", "4", "6", "0x1014"]
+    svg_contains: ["#e2e8f0"]
+
+- id: cs_matrix_t2_flat_sin_indices_coords_ni_formula
+  feature: matrix
+  tier: 2
+  description: 'Matriz plana ocultando índices, coordenadas y fórmula para evaluación'
+  tinta: false
+  block:
+    type: matrix
+    variant: flat
+    inkSaver: true
+    values: [[1, 2], [3, 4]]
+    showIndices: false
+    showCoords: false
+    showFormula: false
+  expect:
+    ok: true
+    min_width: 240
+    min_height: 110
+    text_contains: ["int *m = malloc(2 * 2 * sizeof(int))", "1", "4"]
+    text_absent: ["[3]", "(1,1)", "i * 2"]
+    svg_absent: ["#1d4ed8"]
+
+- id: cs_matrix_t2_err_variante_desconocida
+  feature: matrix
+  tier: 2
+  description: 'Error al especificar una variante de matriz no soportada'
+  block:
+    type: matrix
+    variant: triangular
+    values: [[1]]
+  expect:
+    ok: false
+    error_contains: "variante de matriz no soportada"
+
+- id: cs_matrix_t2_err_flat_excede_24_celdas
+  feature: matrix
+  tier: 2
+  description: 'Error cuando matriz plana supera el máximo de 24 celdas (5x5)'
+  block:
+    type: matrix
+    variant: flat
+    rows: 5
+    cols: 5
+  expect:
+    ok: false
+    error_contains: "el máximo es 24"
+
+- id: cs_matrix_t2_err_owner_lengths_sin_largos
+  feature: matrix
+  tier: 2
+  description: 'Error cuando owner apunta a lengths pero sentinel desactiva arreglo de largos'
+  block:
+    type: matrix
+    variant: jagged
+    sentinel: -1
+    values: [[1]]
+    owner:
+      name: d
+      fields: ["l -> lengths"]
+  expect:
+    ok: false
+    error_contains: "se espera rows, o lengths con largos"
+
+- id: cs_matrix_t2_err_rows_mayor_10
+  feature: matrix
+  tier: 2
+  description: 'Error cuando la matriz supera 10 filas'
+  block:
+    type: matrix
+    values: [[1]]
+    rows: 11
+  expect:
+    ok: false
+    error_contains: "entre 1 y 10"
+
+- id: cs_matrix_t2_err_highlight_invalido
+  feature: matrix
+  tier: 2
+  description: 'Error cuando highlight tiene coordenadas no numéricas'
+  block:
+    type: matrix
+    values: [[1]]
+    highlight: "a,b"
+  expect:
+    ok: false
+    error_contains: "highlight"
+
+# ===========================================================================
+# 3. linked_list (6 Tier 1 + 6 Tier 2 = 12 casos)
+# ===========================================================================
+- id: cs_linked_list_t1_singly_tinta
+  feature: linked_list
+  tier: 1
+  description: 'Lista simplemente enlazada en modo tinta con punteros sig y NULL final'
+  tinta: true
+  block:
+    type: linked_list
+    variant: singly
+    values: [10, 20, 30]
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 100
+    text_contains: ["HEAD", "Dir: 0x4000", "dato", "*sig", "10", "20", "30", "sig:0x4180", "sig:NULL", "NULL"]
+
+- id: cs_linked_list_t1_doubly_color
+  feature: linked_list
+  tier: 1
+  description: 'Lista doblemente enlazada en modo color con flechas ant y sig'
+  tinta: false
+  block:
+    type: linked_list
+    variant: doubly
+    values: ["a", "b"]
+  expect:
+    ok: true
+    min_width: 350
+    min_height: 110
+    text_contains: ["*ant", "dato", "*sig", "ant:NULL | sig:0x4180", "ant:0x4000 | sig:NULL", "a", "b"]
+    svg_contains: ["#1d4ed8", "flecha-sub-", "3 1.5"]
+
+- id: cs_linked_list_t1_circular_simple
+  feature: linked_list
+  tier: 1
+  description: 'Lista circular simplemente enlazada sin puntero *ant y retorno a HEAD'
+  tinta: true
+  block:
+    type: linked_list
+    variant: circular
+    values: [1, 2, 3]
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 130
+    text_contains: ["HEAD", "Dir: 0x4000", "dato", "*sig", "sig:0x4180", "sig:0x4000", "Enlace circular: el último apunta a HEAD (0x4000)"]
+    text_absent: ["*ant", "sig:NULL"]
+    svg_contains: ["marker-end"]
+
+- id: cs_linked_list_t1_circular_doubly
+  feature: linked_list
+  tier: 1
+  description: 'Lista circular doblemente enlazada con leyenda de enlace al HEAD'
+  tinta: true
+  block:
+    type: linked_list
+    variant: circular_doubly
+    values: [1, 2, 3]
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 130
+    text_contains: ["Enlace circular: el último apunta a HEAD (0x4000)", "ant:0x4300 | sig:0x4180", "ant:0x4180 | sig:0x4000"]
+
+- id: cs_linked_list_t1_header_zones_simbolicas
+  feature: linked_list
+  tier: 1
+  description: 'Lista con estructura cabecera reemplazando HEAD, zonas Stack/Heap y direcciones simbólicas'
+  tinta: false
+  block:
+    type: linked_list
+    values: [12, 25, 8]
+    addresses: ["@N1", "@N2", "@N3"]
+    nodeType: nodo_t
+    zones:
+      stack: "Stack: main"
+      heap: "Heap"
+    header:
+      name: mi_lista
+      type: lista_t
+      fields: ["primero -> 0", "ultimo -> 2", "cant = 3"]
+  expect:
+    ok: true
+    min_width: 550
+    min_height: 150
+    text_contains: ["mi_lista (lista_t)", "primero", "ultimo", "cant", "3", "@N1 (nodo_t)", "@N3 (nodo_t)", "Stack: main", "Heap"]
+    text_absent: ["HEAD"]
+    svg_contains: ["#1d4ed8", 'stroke-dasharray="5 3"']
+
+- id: cs_linked_list_t1_cursores_y_hex_yaml
+  feature: linked_list
+  tier: 1
+  description: 'Lista con cursores múltiples y direcciones hexadecimales sin comillas en YAML'
+  tinta: true
+  block:
+    type: linked_list
+    values: [1, 2, 3]
+    addresses: [0x3B20, 0x7E10, 0x9000]
+    pointers: "ant:0, actual:1, final:2"
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 120
+    text_contains: ["ant", "actual", "final", "Dir: 0x3B20", "Dir: 0x7E10", "Dir: 0x9000"]
+    text_absent: ["15136"]
+
+- id: cs_linked_list_t2_vacia_a_null
+  feature: linked_list
+  tier: 2
+  description: 'Lista vacía con etiqueta de cabeza personalizada apuntando a tierra NULL'
+  tinta: true
+  block:
+    type: linked_list
+    headLabel: cabeza
+    values: []
+  expect:
+    ok: true
+    min_width: 140
+    min_height: 80
+    text_contains: ["cabeza", "NULL"]
+    text_absent: ["dato", "*sig"]
+
+- id: cs_linked_list_t2_trunca_mas_de_7_nodos
+  feature: linked_list
+  tier: 2
+  description: 'Lista con más de 7 elementos trunca la visualización a 7 nodos'
+  tinta: true
+  block:
+    type: linked_list
+    values: [11, 22, 33, 44, 55, 66, 77, 88, 99]
+  expect:
+    ok: true
+    min_width: 1000
+    min_height: 100
+    text_contains: ["11", "77", "Dir: 0x4900"]
+    text_absent: ["88", "99"]
+
+- id: cs_linked_list_t2_blank_sin_flechas_utf8_ink_saver
+  feature: linked_list
+  tier: 2
+  description: 'Lista circular doble sin flechas ni valores, UTF-8 en título y override inkSaver'
+  tinta: false
+  block:
+    type: linked_list
+    inkSaver: true
+    title: "Lista enlazada — ñ & <T>"
+    variant: circular_doubly
+    values: ["α", "β"]
+    drawArrows: false
+    blankNextAddrs: true
+    blankValues: true
+  expect:
+    ok: true
+    min_width: 400
+    min_height: 130
+    text_contains: ["Lista enlazada — ñ & <T>", "*ant", "*sig"]
+    text_absent: ["α", "β", "sig:", "Enlace circular"]
+    svg_contains: ['stroke-dasharray="3 2"']
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: cs_linked_list_t2_sin_valores_1_nodo
+  feature: linked_list
+  tier: 2
+  description: 'Lista sin clave values dibuja 1 nodo vacío con Dir: 0x4000 y sig:NULL'
+  tinta: true
+  block:
+    type: linked_list
+  expect:
+    ok: true
+    min_width: 250
+    min_height: 100
+    text_contains: ["HEAD", "Dir: 0x4000", "sig:NULL"]
+    svg_contains: ['stroke-dasharray="3 2"']
+
+- id: cs_linked_list_t2_err_header_destino_oob
+  feature: linked_list
+  tier: 2
+  description: 'Error cuando un puntero de cabecera apunta a un índice de nodo inexistente'
+  block:
+    type: linked_list
+    values: [1, 2]
+    header:
+      name: l
+      fields: ["ultimo -> 3"]
+  expect:
+    ok: false
+    error_contains: "apunta al nodo"
+
+- id: cs_linked_list_t2_err_header_campo_malformado
+  feature: linked_list
+  tier: 2
+  description: 'Error cuando un campo de cabecera no tiene separador -> ni ='
+  block:
+    type: linked_list
+    values: [1]
+    header:
+      name: l
+      fields: ["sin separador"]
+  expect:
+    ok: false
+    error_contains: "campo inválido"
+
+# ===========================================================================
+# 4. stack (5 Tier 1 + 5 Tier 2 = 10 casos)
+# ===========================================================================
+- id: cs_stack_t1_basica_tinta
+  feature: stack
+  tier: 1
+  description: 'Pila básica en modo tinta con capacidad 4, direcciones y TOPE'
+  tinta: true
+  block:
+    type: stack
+    values: [5, 9]
+    capacity: 4
+  expect:
+    ok: true
+    min_width: 250
+    min_height: 180
+    text_contains: ["[3]", "[0]", "0x100C", "0x1000", "5", "9", "TOPE", "BASE | tope = 1"]
+
+- id: cs_stack_t1_color_top_label_y_label
+  feature: stack
+  tier: 1
+  description: 'Pila en modo color con etiqueta personalizada, topLabel, baseAddr y typeSize=8'
+  tinta: false
+  block:
+    type: stack
+    values: [10, 20, 30]
+    label: "Mi Pila"
+    topLabel: TOP
+    baseAddr: "0x2000"
+    typeSize: 8
+  expect:
+    ok: true
+    min_width: 250
+    min_height: 160
+    text_contains: ["Mi Pila", "TOP", "0x2010", "0x2000", "BASE | tope = 2"]
+    svg_contains: ["#1d4ed8"]
+
+- id: cs_stack_t1_vertical_multi
+  feature: stack
+  tier: 1
+  description: 'Pila con evolución vertical_multi y traceLabels'
+  tinta: true
+  block:
+    type: stack
+    layout: vertical_multi
+    values: [1]
+    traceLabels: ["Inicio", "push(2)", "pop()"]
+  expect:
+    ok: true
+    min_width: 800
+    min_height: 130
+    text_contains: ["Inicio", "push(2)", "pop()", "TOPE", "BASE | tope = 0", "BASE | tope = ___"]
+    svg_contains: ['stroke-dasharray="3 2"']
+
+- id: cs_stack_t1_sin_direcciones
+  feature: stack
+  tier: 1
+  description: 'Pila con showAddresses=false oculta columna de direcciones hexadecimales'
+  tinta: true
+  block:
+    type: stack
+    values: [7, 8]
+    showAddresses: false
+  expect:
+    ok: true
+    min_width: 200
+    min_height: 130
+    text_contains: ["[0]", "7", "8", "TOPE"]
+    text_absent: ["0x1000"]
+
+- id: cs_stack_t1_blank_values_y_pointers
+  feature: stack
+  tier: 1
+  description: 'Pila en blanco ocultando valores y puntero TOPE'
+  tinta: true
+  block:
+    type: stack
+    values: [15, 25]
+    blankValues: true
+    blankPointers: true
+  expect:
+    ok: true
+    min_width: 250
+    min_height: 130
+    text_contains: ["BASE | tope = ___"]
+    text_absent: ["15", "25", "TOPE"]
+    svg_contains: ['stroke-dasharray="3 2"']
+
+- id: cs_stack_t2_vacia_default
+  feature: stack
+  tier: 2
+  description: 'Pila vacía por defecto muestra 5 celdas y tope = -1 sin badge TOPE'
+  tinta: true
+  block:
+    type: stack
+  expect:
+    ok: true
+    min_width: 250
+    min_height: 200
+    text_contains: ["[4]", "[0]", "BASE | tope = -1"]
+    text_absent: ["TOPE"]
+
+- id: cs_stack_t2_clamp_capacity_min
+  feature: stack
+  tier: 2
+  description: 'Pila con capacity=1 acotada al mínimo de 2 celdas'
+  tinta: true
+  block:
+    type: stack
+    capacity: 1
+    values: [42]
+  expect:
+    ok: true
+    min_width: 250
+    min_height: 110
+    text_contains: ["[1]", "[0]", "42", "BASE | tope = 0"]
+    text_absent: ["[2]"]
+
+- id: cs_stack_t2_clamp_capacity_max_y_multi_4
+  feature: stack
+  tier: 2
+  description: 'Pila multi-paso con capacity=20 acotada a 10 y 5 traceLabels acotados a 4'
+  tinta: true
+  block:
+    type: stack
+    layout: vertical_multi
+    capacity: 20
+    values: [1]
+    traceLabels: ["Paso A", "Paso B", "Paso C", "Paso D", "Paso E"]
+  expect:
+    ok: true
+    min_width: 1000
+    min_height: 350
+    text_contains: ["[9]", "Paso A", "Paso D"]
+    text_absent: ["[10]", "Paso E"]
+
+- id: cs_stack_t2_utf8_y_ink_saver_override
+  feature: stack
+  tier: 2
+  description: 'Pila con título UTF-8 largo y override inkSaver=true sobre tinta=false'
+  tinta: false
+  block:
+    type: stack
+    inkSaver: true
+    title: "Pila ñ — <LIFO> de tamaño acotado para examen"
+    values: ["α", "β"]
+  expect:
+    ok: true
+    min_width: 400
+    min_height: 170
+    text_contains: ["Pila ñ — <LIFO> de tamaño acotado para examen", "α", "β"]
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: cs_stack_t2_err_values_no_lista
+  feature: stack
+  tier: 2
+  description: 'Error controlado cuando values de stack es escalar entero'
+  block:
+    type: stack
+    values: 5
+  expect:
+    ok: false
+    error_contains: "stack"
+
+# ===========================================================================
+# 5. queue (5 Tier 1 + 5 Tier 2 = 10 casos)
+# ===========================================================================
+- id: cs_queue_t1_linear_tinta
+  feature: queue
+  tier: 1
+  description: 'Cola lineal en modo tinta con frente y final distintos'
+  tinta: true
+  block:
+    type: queue
+    variant: linear
+    capacity: 6
+    frontIndex: 1
+    rearIndex: 3
+    values: ["", "a", "b", "c"]
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 140
+    text_contains: ["DESENCOLAR", "ENCOLAR(x)", "[0]", "[5]", "a", "b", "c", "FRENTE", "FINAL"]
+
+- id: cs_queue_t1_circular_con_panel_color
+  feature: queue
+  tier: 1
+  description: 'Cola circular en modo color con anillo modular y panel lateral explicativo'
+  tinta: false
+  block:
+    type: queue
+    variant: circular
+    capacity: 8
+    frontIndex: 5
+    rearIndex: 1
+    values: ["d", "e", "", "", "", "a", "b", "c"]
+  expect:
+    ok: true
+    min_width: 650
+    min_height: 240
+    text_contains: ["N = 8", "FRENTE", "FINAL", "Índices de la cola circular (módulo N = 8)", "• FRENTE = 5   (próximo a salir)", "• FINAL  = 1   (último insertado)"]
+    svg_contains: ["#1d4ed8"]
+
+- id: cs_queue_t1_circular_sin_panel
+  feature: queue
+  tier: 1
+  description: 'Cola circular con showPanel=false omite caja lateral'
+  tinta: true
+  block:
+    type: queue
+    variant: circular
+    capacity: 6
+    frontIndex: 0
+    rearIndex: 2
+    showPanel: false
+    values: ["x", "y", "z"]
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 240
+    text_contains: ["N = 6", "FRENTE", "FINAL", "x", "y", "z"]
+    text_absent: ["Aritmética modular:"]
+
+- id: cs_queue_t1_linear_blank_values_y_pointers
+  feature: queue
+  tier: 1
+  description: 'Cola lineal en blanco ocultando valores y badges de punteros'
+  tinta: true
+  block:
+    type: queue
+    variant: linear
+    capacity: 4
+    frontIndex: 0
+    rearIndex: 1
+    values: ["alfa", "beta"]
+    blankValues: true
+    blankPointers: true
+  expect:
+    ok: true
+    min_width: 400
+    min_height: 140
+    text_contains: ["[0]", "[3]"]
+    text_absent: ["alfa", "beta", "FRENTE", "FINAL"]
+    svg_contains: ['stroke-dasharray="3 2"']
+
+- id: cs_queue_t1_circular_blank_values_y_pointers
+  feature: queue
+  tier: 1
+  description: 'Cola circular en blanco dejando panel lateral para completar'
+  tinta: true
+  block:
+    type: queue
+    variant: circular
+    capacity: 4
+    frontIndex: 0
+    rearIndex: 1
+    values: ["alfa", "beta"]
+    blankValues: true
+    blankPointers: true
+  expect:
+    ok: true
+    min_width: 650
+    min_height: 240
+    text_contains: ["• FRENTE = ______", "• FINAL  = ______", "cant = _________", "N = 4"]
+    text_absent: ["alfa", "beta", "FRENTE = 0"]
+
+- id: cs_queue_t2_default_sin_indices
+  feature: queue
+  tier: 2
+  description: 'Cola lineal por defecto sin índices frontIndex ni rearIndex'
+  tinta: true
+  block:
+    type: queue
+  expect:
+    ok: true
+    min_width: 600
+    min_height: 140
+    text_contains: ["[0]", "[7]", "DESENCOLAR"]
+    text_absent: ["FRENTE", "FINAL"]
+
+- id: cs_queue_t2_circular_frente_igual_final
+  feature: queue
+  tier: 2
+  description: 'Cola circular con único elemento donde FRENTE coincide con FINAL'
+  tinta: true
+  block:
+    type: queue
+    variant: circular
+    capacity: 4
+    frontIndex: 3
+    rearIndex: 3
+    values: ["", "", "", "X"]
+  expect:
+    ok: true
+    min_width: 650
+    min_height: 240
+    text_contains: ["FRENTE=FINAL", "X", "N = 4"]
+
+- id: cs_queue_t2_linear_frente_igual_final
+  feature: queue
+  tier: 2
+  description: 'Cola lineal donde frontIndex == rearIndex dibuja ambos badges sin colisión'
+  tinta: true
+  block:
+    type: queue
+    variant: linear
+    capacity: 4
+    frontIndex: 2
+    rearIndex: 2
+    values: ["", "", "K"]
+  expect:
+    ok: true
+    min_width: 400
+    min_height: 140
+    text_contains: ["FRENTE", "FINAL", "K"]
+
+- id: cs_queue_t2_clamp_capacity_min_utf8_ink_saver
+  feature: queue
+  tier: 2
+  description: 'Cola circular con capacity=2 acotada a 4, caracteres UTF-8 y override inkSaver=true'
+  tinta: false
+  block:
+    type: queue
+    variant: circular
+    inkSaver: true
+    capacity: 2
+    values: ["α", "ñ"]
+  expect:
+    ok: true
+    min_width: 650
+    min_height: 240
+    text_contains: ["N = 4", "[0]", "[3]", "α", "ñ"]
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: cs_queue_t2_err_values_no_lista
+  feature: queue
+  tier: 2
+  description: 'Error controlado cuando values de queue es escalar entero'
+  block:
+    type: queue
+    values: 5
+  expect:
+    ok: false
+    error_contains: "queue"

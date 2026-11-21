@@ -1,0 +1,628 @@
+# Suite E2E Química Orgánica: 3 tipos × (>=5 Tier 1 + >=5 Tier 2) = 36 casos.
+# Tipos: newman, chair, fischer.
+# Derivado de `fixtures/diagramas_quimica.yaml`, `alucarD/tests/test_diagramas_quimica.py` y `spec_organica.md`.
+
+# ===========================================================================
+# 14. newman (5 Tier 1 + 6 Tier 2 = 11 casos)
+# ===========================================================================
+- id: chem_newman_t1_anti_axis
+  feature: newman
+  tier: 1
+  description: 'Fixture `newman-butano-anti`: conformación alternada anti con eje C2–C3'
+  tinta: true
+  block:
+    type: newman
+    title: "Butano, mirando a lo largo de C2–C3"
+    axis: "C2–C3"
+    front: ["CH3", "H", "H"]
+    back: ["CH3", "H", "H"]
+    dihedral: 180
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 250
+    text_contains: ["Butano, mirando a lo largo de C2–C3", "Mirando a lo largo de C2–C3", "Diedro:", "180°", "Conformación:", "alternada anti", "CH3"]
+
+- id: chem_newman_t1_gauche_neg_color
+  feature: newman
+  tier: 1
+  description: 'Conformación alternada gauche con diedro negativo (-60°) en paleta color'
+  tinta: false
+  block:
+    type: newman
+    front: ["CH3", "H", "H"]
+    back: ["OH", "H", "H"]
+    dihedral: -60
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 210
+    text_contains: ["Diedro:", "60°", "Conformación:", "alternada gauche", "OH"]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: chem_newman_t1_eclipsada_0
+  feature: newman
+  tier: 1
+  description: 'Fixture `newman-eclipsada`: diedro 0° (eclipsada sinperiplanar)'
+  tinta: true
+  block:
+    type: newman
+    front: ["Br", "H", "H"]
+    back: ["Br", "H", "H"]
+    dihedral: 0
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 210
+    text_contains: ["Diedro:", "0°", "Conformación:", "eclipsada (sinperiplanar)", "Br"]
+
+- id: chem_newman_t1_anticlinal_120
+  feature: newman
+  tier: 1
+  description: 'Conformación eclipsada anticlinal (120°) con ángulo inicial start=30'
+  tinta: true
+  block:
+    type: newman
+    front: ["Cl", "CH3", "H"]
+    back: ["F", "H", "CH3"]
+    dihedral: 120
+    start: 30
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 210
+    text_contains: ["Diedro:", "120°", "Conformación:", "eclipsada (anticlinal)", "Cl", "F"]
+
+- id: chem_newman_t1_diedro_arbitrario
+  feature: newman
+  tier: 1
+  description: 'Diedro intermedio (45°) sin clasificación especial'
+  tinta: true
+  block:
+    type: newman
+    front: ["Et", "H", "H"]
+    back: ["C2H5", "H", "H"]
+    dihedral: 45
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 210
+    text_contains: ["Diedro:", "45°", "Conformación:", "diedro de 45°", "Et", "C2H5"]
+
+- id: chem_newman_t2_blank_name_y_dihedral
+  feature: newman
+  tier: 2
+  description: 'Fixture `newman-gauche-blanco` ampliado con blankName y blankDihedral'
+  tinta: true
+  block:
+    type: newman
+    front: ["CH3", "H", "H"]
+    back: ["CH3", "H", "H"]
+    dihedral: 60
+    blankName: true
+    blankDihedral: true
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 210
+    text_contains: ["Diedro:", "Conformación:"]
+    text_absent: ["60°", "alternada", "gauche"]
+    svg_contains: ["stroke-dasharray=\"3 2\""]
+
+- id: chem_newman_t2_blank_total_inksaver
+  feature: newman
+  tier: 2
+  description: 'Override `inkSaver: true` sobre `tinta: false`, `blank: true` e iones con carga'
+  tinta: false
+  block:
+    type: newman
+    front: ["NH3^+", "H", "H"]
+    back: ["COO^-", "H", "H"]
+    dihedral: 180
+    blank: true
+    inkSaver: true
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 210
+    text_contains: ["NH3+", "COO−", "Diedro:", "Conformación:"]
+    text_absent: ["180°", "alternada anti"]
+    svg_contains: ["stroke-dasharray=\"3 2\""]
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: chem_newman_t2_wrap_360_borde_15
+  feature: newman
+  tier: 2
+  description: 'Normalización modular de diedro 374° -> 14° (< 15° sinperiplanar)'
+  tinta: true
+  block:
+    type: newman
+    front: ["CH3", "H", "H"]
+    back: ["CH3", "H", "H"]
+    dihedral: 374
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 210
+    text_contains: ["Diedro:", "14°", "eclipsada (sinperiplanar)"]
+
+- id: chem_newman_t2_diedro_default
+  feature: newman
+  tier: 2
+  description: 'Sin `dihedral` ni `start` explícitos usa defaults 180° y 90°'
+  tinta: true
+  block:
+    type: newman
+    front: ["A", "B", "C"]
+    back: ["D", "E", "F"]
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 210
+    text_contains: ["Diedro:", "180°", "alternada anti"]
+
+- id: chem_newman_t2_err_front_longitud_invalida
+  feature: newman
+  tier: 2
+  description: 'Error controlado cuando `front` no tiene exactamente 3 sustituyentes'
+  block:
+    type: newman
+    front: ["H"]
+    back: ["H", "H", "H"]
+  expect:
+    ok: false
+    error_contains: "tres sustituyentes"
+
+- id: chem_newman_t2_err_dihedral_no_numerico
+  feature: newman
+  tier: 2
+  description: 'Error controlado cuando `dihedral` no es numérico'
+  block:
+    type: newman
+    front: ["H", "H", "H"]
+    back: ["H", "H", "H"]
+    dihedral: "abc"
+  expect:
+    ok: false
+    error_contains: "newman"
+
+# ===========================================================================
+# 15. chair (5 Tier 1 + 7 Tier 2 = 12 casos)
+# ===========================================================================
+- id: chem_chair_t1_metil_flip
+  feature: chair
+  tier: 1
+  description: 'Fixture `silla-metil`: metilciclohexano con flip y diferencia de estabilidad'
+  tinta: true
+  block:
+    type: chair
+    title: "Metilciclohexano"
+    substituents:
+      - {position: 1, group: "CH3", axial: true}
+    flip: true
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 200
+    text_contains: ["Metilciclohexano", "Más estable:", "la derecha, por 7,3 kJ/mol", "CH3"]
+    text_absent: ["Relación:"]
+
+- id: chem_chair_t1_dimetil_cis_igual_energia
+  feature: chair
+  tier: 1
+  description: 'Fixture `silla-dimetil-cis`: cis-1,2-dimetilciclohexano con igual energía'
+  tinta: true
+  block:
+    type: chair
+    title: "cis-1,2-dimetilciclohexano"
+    substituents:
+      - {position: 1, group: "CH3", axial: true}
+      - {position: 2, group: "CH3", axial: false}
+    flip: true
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 220
+    text_contains: ["cis-1,2-dimetilciclohexano", "Relación:", "cis (1,2)", "Más estable:", "las dos sillas tienen la misma energía"]
+
+- id: chem_chair_t1_trans_14_sin_flip_color
+  feature: chair
+  tier: 1
+  description: 'Silla única sin flip mostrando relación trans (1,4) en modo color'
+  tinta: false
+  block:
+    type: chair
+    substituents:
+      - {position: 1, group: "tBu", axial: false}
+      - {position: 4, group: "OH", axial: false}
+    flip: false
+  expect:
+    ok: true
+    min_width: 230
+    min_height: 170
+    text_contains: ["tBu", "OH", "Relación:", "trans (1,4)"]
+    text_absent: ["Más estable:"]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: chem_chair_t1_sin_sustituyentes_flip
+  feature: chair
+  tier: 1
+  description: 'Ciclohexano sin sustituyentes con inversión de anillo'
+  tinta: true
+  block:
+    type: chair
+    title: "Ciclohexano"
+    flip: true
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 200
+    text_contains: ["Ciclohexano", "Más estable:", "las dos sillas tienen la misma energía"]
+    text_absent: ["Relación:"]
+
+- id: chem_chair_t1_tres_sustituyentes
+  feature: chair
+  tier: 1
+  description: 'Tres sustituyentes con cálculo de estabilidad y sin relación cis/trans'
+  tinta: true
+  block:
+    type: chair
+    substituents:
+      - {position: 1, group: "CH3", axial: true}
+      - {position: 3, group: "Cl", axial: true}
+      - {position: 5, group: "Br", axial: false}
+    flip: true
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 170
+    text_contains: ["CH3", "Cl", "Br", "Más estable:", "la derecha, por 7,5 kJ/mol"]
+    text_absent: ["Relación:"]
+
+- id: chem_chair_t2_blank_total_y_sust_blank
+  feature: chair
+  tier: 2
+  description: 'Fixture `silla-terbutil-blanco` con `blank: true` en sustituyente y panel'
+  tinta: true
+  block:
+    type: chair
+    substituents:
+      - {position: 1, group: "tBu", axial: false, blank: true}
+      - {position: 4, group: "CH3", axial: false}
+    flip: true
+    blank: true
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 180
+    text_contains: ["CH3", "Relación:", "Más estable:"]
+    text_absent: ["tBu", "cis", "trans", "kJ/mol"]
+    svg_contains: ["stroke-dasharray=\"3 2\""]
+
+- id: chem_chair_t2_blank_selectivo_inksaver
+  feature: chair
+  tier: 2
+  description: 'Oculta relación (`showRelation: false`), `blankStability: true` y override `inkSaver: true`'
+  tinta: false
+  block:
+    type: chair
+    substituents:
+      - {position: 1, group: "Et", axial: true}
+      - {position: 3, group: "F", axial: true}
+    flip: true
+    showRelation: false
+    blankStability: true
+    inkSaver: true
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 170
+    text_contains: ["Et", "F", "Más estable:"]
+    text_absent: ["Relación:", "kJ/mol"]
+    svg_contains: ["stroke-dasharray=\"3 2\""]
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: chem_chair_t2_grupo_sin_valor_a_con_flip
+  feature: chair
+  tier: 2
+  description: 'Grupo fuera de `VALORES_A` (`NO2`) omite silenciosamente la fila `Más estable`'
+  tinta: true
+  block:
+    type: chair
+    substituents:
+      - {position: 1, group: "NO2", axial: true}
+      - {position: 2, group: "H", axial: false}
+    flip: true
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 150
+    text_contains: ["NO2", "H"]
+    text_absent: ["Más estable:", "Relación:"]
+
+- id: chem_chair_t2_hidrogeno_explicito
+  feature: chair
+  tier: 2
+  description: 'Sustituyente `H` explícito ignorado en `cis/trans` pero considerado en `VALORES_A`'
+  tinta: true
+  block:
+    type: chair
+    substituents:
+      - {position: 1, group: "CH3", axial: true}
+      - {position: 1, group: "H", axial: false}
+      - {position: 4, group: "Cl", axial: false}
+    flip: true
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 180
+    text_contains: ["Relación:", "cis (1,4)", "Más estable:", "la derecha, por 5,1 kJ/mol"]
+
+- id: chem_chair_t2_err_posicion_fuera_rango
+  feature: chair
+  tier: 2
+  description: 'Error controlado cuando `position` excede 1..6'
+  block:
+    type: chair
+    substituents:
+      - {position: 7, group: "CH3"}
+  expect:
+    ok: false
+    error_contains: "de 1 a 6"
+
+- id: chem_chair_t2_err_sustituyente_mal_formado
+  feature: chair
+  tier: 2
+  description: 'Error controlado cuando falta `group` en un sustituyente'
+  block:
+    type: chair
+    substituents:
+      - {position: 1}
+  expect:
+    ok: false
+    error_contains: "substituents[0]"
+
+- id: chem_chair_t2_err_posicion_no_entera
+  feature: chair
+  tier: 2
+  description: 'Error controlado cuando `position` no es entero'
+  block:
+    type: chair
+    substituents:
+      - {position: "uno", group: "CH3"}
+  expect:
+    ok: false
+    error_contains: "chair"
+
+# ===========================================================================
+# 16. fischer (5 Tier 1 + 8 Tier 2 = 13 casos)
+# ===========================================================================
+- id: chem_fischer_t1_gliceraldehido_d
+  feature: fischer
+  tier: 1
+  description: 'Fixture `fischer-gliceraldehido`: cálculo automático CIP (R) y Serie = D'
+  tinta: true
+  block:
+    type: fischer
+    title: "D-gliceraldehído"
+    top: "CHO"
+    bottom: "CH2OH"
+    centers:
+      - {left: "H", right: "OH"}
+  expect:
+    ok: true
+    min_width: 320
+    min_height: 200
+    text_contains: ["D-gliceraldehído", "CHO", "H", "OH", "(R)", "CH2OH", "Serie = D"]
+
+- id: chem_fischer_t1_alanina_l_nh3_color
+  feature: fischer
+  tier: 1
+  description: 'L-alanina protonada (`NH3^+`), configuración (S) y Serie = L en paleta color'
+  tinta: false
+  block:
+    type: fischer
+    top: "COOH"
+    bottom: "CH3"
+    centers:
+      - {left: "NH3^+", right: "H"}
+  expect:
+    ok: true
+    min_width: 320
+    min_height: 160
+    text_contains: ["COOH", "NH3+", "H", "(S)", "CH3", "Serie = L"]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: chem_fischer_t1_glucosa_4_centros
+  feature: fischer
+  tier: 1
+  description: 'Fixture `fischer-glucosa`: 4 centros quirales con `priorities` explícitas'
+  tinta: true
+  block:
+    type: fischer
+    title: "D-glucosa"
+    top: "CHO"
+    bottom: "CH2OH"
+    centers:
+      - {left: "H", right: "OH", priorities: ["right", "top", "bottom", "left"]}
+      - {left: "HO", right: "H", priorities: ["left", "top", "bottom", "right"]}
+      - {left: "H", right: "OH", priorities: ["right", "top", "bottom", "left"]}
+      - {left: "H", right: "OH", priorities: ["right", "top", "bottom", "left"]}
+  expect:
+    ok: true
+    min_width: 320
+    min_height: 350
+    text_contains: ["D-glucosa", "CHO", "HO", "(R)", "(S)", "CH2OH", "Serie = D"]
+
+- id: chem_fischer_t1_menor_arriba_directo
+  feature: fischer
+  tier: 1
+  description: 'Grupo de menor prioridad en vertical (`top: H`) sin inversión R/S ni serie'
+  tinta: true
+  block:
+    type: fischer
+    top: "H"
+    bottom: "CH3"
+    centers:
+      - {left: "Br", right: "Cl"}
+  expect:
+    ok: true
+    min_width: 320
+    min_height: 140
+    text_contains: ["H", "Br", "Cl", "CH3", "(R)"]
+    text_absent: ["Serie"]
+
+- id: chem_fischer_t1_sin_config_ni_serie
+  feature: fischer
+  tier: 1
+  description: 'Flags `showConfig: false` y `showSeries: false` ocultan etiquetas R/S y D/L'
+  tinta: true
+  block:
+    type: fischer
+    top: "CHO"
+    bottom: "CH2OH"
+    centers:
+      - {left: "H", right: "OH"}
+    showConfig: false
+    showSeries: false
+  expect:
+    ok: true
+    min_width: 320
+    min_height: 140
+    text_contains: ["CHO", "H", "OH", "CH2OH"]
+    text_absent: ["(R)", "(S)", "Serie"]
+
+- id: chem_fischer_t2_blank_lado_y_centro
+  feature: fischer
+  tier: 2
+  description: 'Centro con `blank: "left"` oculta grupo izquierdo, suprime R/S y deja `Serie =`'
+  tinta: true
+  block:
+    type: fischer
+    top: "COOH"
+    bottom: "CH3"
+    centers:
+      - {left: "NH2", right: "H", blank: "left"}
+    blankSeries: true
+  expect:
+    ok: true
+    min_width: 320
+    min_height: 160
+    text_contains: ["COOH", "H", "CH3", "Serie ="]
+    text_absent: ["NH2", "(R)", "(S)", "Serie = L"]
+    svg_contains: ["stroke-dasharray=\"3 2\""]
+
+- id: chem_fischer_t2_blank_config_y_inksaver
+  feature: fischer
+  tier: 2
+  description: 'Fixture `fischer-alanina-blanco` con override `inkSaver: true` sobre `tinta: false`'
+  tinta: false
+  block:
+    type: fischer
+    title: "Alanina"
+    top: "COOH"
+    bottom: "CH3"
+    centers:
+      - {left: "NH2", right: "H"}
+    blankConfig: true
+    blankSeries: true
+    inkSaver: true
+  expect:
+    ok: true
+    min_width: 320
+    min_height: 200
+    text_contains: ["Alanina", "COOH", "NH2", "H", "CH3", "Serie ="]
+    text_absent: ["(S)", "(R)", "Serie = L"]
+    svg_contains: ["stroke-dasharray=\"3 2\""]
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: chem_fischer_t2_multicentro_sin_priorities
+  feature: fischer
+  tier: 2
+  description: 'Múltiples centros sin `priorities` y `HO` a izquierda omiten R/S y D/L sin fallar'
+  tinta: true
+  block:
+    type: fischer
+    top: "CHO"
+    bottom: "CH2OH"
+    centers:
+      - {left: "H", right: "OH"}
+      - {left: "HO", right: "H"}
+  expect:
+    ok: true
+    min_width: 320
+    min_height: 190
+    text_contains: ["CHO", "OH", "HO", "CH2OH"]
+    text_absent: ["(R)", "(S)", "Serie"]
+
+- id: chem_fischer_t2_centro_blank_true
+  feature: fischer
+  tier: 2
+  description: 'Centro con `blank: true` oculta ambos lados y R/S pero mantiene `Serie = D`'
+  tinta: true
+  block:
+    type: fischer
+    top: "CHO"
+    bottom: "CH2CH3"
+    centers:
+      - {left: "H", right: "OH", blank: true}
+  expect:
+    ok: true
+    min_width: 320
+    min_height: 160
+    text_contains: ["CHO", "CH2CH3", "Serie = D"]
+    text_absent: ["OH", "(R)", "(S)"]
+    svg_contains: ["stroke-dasharray=\"3 2\""]
+
+- id: chem_fischer_t2_err_centers_vacio
+  feature: fischer
+  tier: 2
+  description: 'Error controlado cuando `centers` está vacío'
+  block:
+    type: fischer
+    centers: []
+  expect:
+    ok: false
+    error_contains: "centers"
+
+- id: chem_fischer_t2_err_priorities_invalido
+  feature: fischer
+  tier: 2
+  description: 'Error controlado cuando `priorities` repite un lugar'
+  block:
+    type: fischer
+    top: "CHO"
+    bottom: "CH2OH"
+    centers:
+      - {left: "H", right: "OH", priorities: ["top", "top", "bottom", "left"]}
+  expect:
+    ok: false
+    error_contains: "priorities son top, right, bottom y left"
+
+- id: chem_fischer_t2_err_cip_empate
+  feature: fischer
+  tier: 2
+  description: 'Error controlado por empate CIP en primera esfera (`tBu` vs `Ph`)'
+  block:
+    type: fischer
+    top: "tBu"
+    bottom: "Ph"
+    centers:
+      - {left: "H", right: "OH"}
+  expect:
+    ok: false
+    error_contains: "empatan"
+
+- id: chem_fischer_t2_err_cip_desconocido
+  feature: fischer
+  tier: 2
+  description: 'Error controlado por grupo fuera de tabla `GRUPOS_CIP` sin `priorities`'
+  block:
+    type: fischer
+    top: "CH2CH2CH2OH"
+    bottom: "CH2OH"
+    centers:
+      - {left: "H", right: "OH"}
+  expect:
+    ok: false
+    error_contains: "priorities"

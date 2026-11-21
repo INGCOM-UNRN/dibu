@@ -1,0 +1,2710 @@
+# Suite E2E Química General: 13 tipos × (>=5 Tier 1 + >=5 Tier 2) = 162 casos.
+# Tipos: molecule, reaction, vsepr, orbitals, energy_profile, titration, speciation,
+#        kinetics, phase_diagram, heating_curve, spectrum, galvanic_cell, unit_cell.
+# Derivado de `fixtures/diagramas_quimica.yaml`, `alucarD/tests/test_diagramas_quimica.py`,
+# `spec_part1.md` y `spec_part2.md`.
+
+# ===========================================================================
+# 1. molecule (6 Tier 1 + 7 Tier 2 = 13 casos)
+# ===========================================================================
+- id: chem_molecule_t1_lewis_agua
+  feature: molecule
+  tier: 1
+  description: 'Fixture `lewis-agua`: estructura de Lewis del agua con pares libres'
+  tinta: true
+  block:
+    type: molecule
+    title: Estructura de Lewis del agua
+    atoms:
+      - {id: o, el: O, at: [0, 0], lonePairs: 2}
+      - {id: h1, el: H, from: o, angle: 218}
+      - {id: h2, el: H, from: o, angle: 322}
+  expect:
+    ok: true
+    min_width: 100
+    min_height: 80
+    text_contains: ["Estructura de Lewis del agua", "O", "H"]
+    svg_contains: ["<circle"]
+
+- id: chem_molecule_t1_resonancia_nitrato_cargas
+  feature: molecule
+  tier: 1
+  description: 'Fixture `lewis-nitrato`: cargas formales positivas y negativas con enlace doble'
+  tinta: true
+  block:
+    type: molecule
+    title: Una estructura resonante del nitrato
+    atoms:
+      - {id: n, el: N, at: [0, 0], charge: 1}
+      - {id: o1, el: O, from: n, angle: 90, bond: 2, lonePairs: 2}
+      - {id: o2, el: O, from: n, angle: 210, lonePairs: 3, charge: -1}
+      - {id: o3, el: O, from: n, angle: 330, lonePairs: 3, charge: -1}
+  expect:
+    ok: true
+    min_width: 120
+    min_height: 100
+    text_contains: ["Una estructura resonante del nitrato", "N", "+", "O", "−"]
+
+- id: chem_molecule_t1_esqueletal_anillos_fusionados
+  feature: molecule
+  tier: 1
+  description: 'Fixture `naftaleno-kekule`: anillos hexagonales fusionados esqueletales con enlaces dobles'
+  tinta: true
+  block:
+    type: molecule
+    title: Naftaleno (Kekulé, anillos fusionados)
+    skeletal: true
+    rings:
+      - {size: 6, center: [0, 0], start: 30, kekule: true}
+      - {size: 6, center: [1.732, 0], start: 30}
+    bonds:
+      - [r1_1, r1_2, 2]
+      - [r1_5, r1_0, 2]
+  expect:
+    ok: true
+    min_width: 150
+    min_height: 100
+    text_contains: ["Naftaleno (Kekulé, anillos fusionados)"]
+    text_absent: ["C"]
+
+- id: chem_molecule_t1_benceno_esqueletal_aromatico
+  feature: molecule
+  tier: 1
+  description: 'Fixture `benceno-esqueletal`: anillo aromático (`aromatic: true`) con aro inscripto y sustituyente exocíclico'
+  tinta: true
+  block:
+    type: molecule
+    title: Ácido benzoico (esqueletal)
+    skeletal: true
+    rings:
+      - {size: 6, center: [0, 0], ids: [c1, c2, c3, c4, c5, c6], aromatic: true}
+    atoms:
+      - {id: c7, from: c1, angle: 90}
+      - {id: o1, el: O, from: c7, angle: 30, bond: 2}
+      - {id: o2, el: OH, from: c7, angle: 150}
+  expect:
+    ok: true
+    min_width: 120
+    min_height: 120
+    text_contains: ["Ácido benzoico (esqueletal)", "O", "OH"]
+    text_absent: ["C"]
+    svg_contains: ["<circle"]
+
+- id: chem_molecule_t1_estereo_wedge_hash_caption
+  feature: molecule
+  tier: 1
+  description: 'Fixture `estereo` ampliado con caption y estereoquímica cuña/rayas'
+  tinta: true
+  block:
+    type: molecule
+    title: Un carbono quiral con cuña y rayas
+    caption: "Quiral (C*)"
+    atoms:
+      - {id: c, el: C, at: [0, 0]}
+      - {id: br, el: Br, from: c, angle: 90}
+      - {id: h, el: H, from: c, angle: 210, bond: {stereo: hash}}
+      - {id: cl, el: Cl, from: c, angle: 330, bond: {stereo: wedge}}
+      - {id: f, el: F, from: c, angle: 270, length: 0.9, bond: {order: 1}}
+  expect:
+    ok: true
+    min_width: 120
+    min_height: 120
+    text_contains: ["Un carbono quiral con cuña y rayas", "C", "Br", "H", "Cl", "F", "Quiral (C*)"]
+    svg_contains: ["<polygon"]
+
+- id: chem_molecule_t1_mecanismo_flechas_curvas_color
+  feature: molecule
+  tier: 1
+  description: 'Fixture `mecanismo-sn2` con flecha curva y media punta en modo color'
+  tinta: false
+  block:
+    type: molecule
+    title: "S_N\\2 (flechas curvas)"
+    atoms:
+      - {id: oh, el: HO, at: [-2.2, 0], charge: -1, lonePairs: 2}
+      - {id: c, el: C, at: [0, 0]}
+      - {id: br, el: Br, from: c, angle: 0, lonePairs: 3}
+      - {id: h1, el: H, from: c, angle: 90}
+      - {id: h2, el: H, from: c, angle: 225}
+      - {id: h3, el: H, from: c, angle: 135, length: 0.8}
+    arrows:
+      - {from: oh, to: c, bend: 1}
+      - {from: [c, br], to: br, bend: -1, half: true}
+  expect:
+    ok: true
+    min_width: 150
+    min_height: 100
+    text_contains: ["SN2", "HO", "C", "Br", "H"]
+    svg_contains: ["Q ", "#1d4ed8", "#0f172a"]
+
+- id: chem_molecule_t2_blank_atomo_enlace_parcial_inksaver
+  feature: molecule
+  tier: 2
+  description: 'Átomo `blank`, radical, `note` UTF-8, órdenes 0.5/1.5, enlace `blank` y override `inkSaver`'
+  tinta: false
+  block:
+    type: molecule
+    inkSaver: true
+    atoms:
+      - {id: a, el: C, at: [0, 0], blank: true, radical: 1, note: "α-C"}
+      - {id: b, el: O, from: a, angle: 0, bond: {order: 0.5}}
+      - {id: c, el: N, from: b, angle: 0, bond: {order: 1.5}}
+      - {id: d, el: H, from: c, angle: 0, bond: {blank: true}}
+  expect:
+    ok: true
+    min_width: 120
+    min_height: 50
+    text_contains: ["α-C", "O", "N", "H"]
+    svg_contains: ["stroke-dasharray=\"3 2\"", "stroke-dasharray=\"2 3\"", "stroke-dasharray=\"4 3\""]
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: chem_molecule_t2_skeletal_c_aislado_y_bond_false
+  feature: molecule
+  tier: 2
+  description: 'En `skeletal: true`, carbono aislado es visible y `bond: false` omite enlace'
+  tinta: true
+  block:
+    type: molecule
+    skeletal: true
+    atoms:
+      - {id: c1, el: C, at: [0, 0]}
+      - {id: o1, el: O, at: [2, 0]}
+      - {id: c2, el: C, from: o1, angle: 0, bond: false, show: true}
+      - {id: c3, el: C, from: o1, angle: 180, note: "oculto"}
+  expect:
+    ok: true
+    min_width: 100
+    min_height: 40
+    text_contains: ["C", "O"]
+    text_absent: ["oculto"]
+
+- id: chem_molecule_t2_anillo_actualiza_atomo_utf8
+  feature: molecule
+  tier: 2
+  description: 'Anillo de 5 miembros con actualización de vértice existente y fórmula UTF-8 en caption'
+  tinta: true
+  block:
+    type: molecule
+    rings:
+      - {size: 5, ids: [c1, c2, c3, c4, c5], el: [N, C, C, C, C]}
+    atoms:
+      - {id: c1, el: NH, charge: "+1"}
+    caption: "H2O + NH4^+"
+  expect:
+    ok: true
+    min_width: 90
+    min_height: 90
+    text_contains: ["NH", "+1", "H2O + NH4+"]
+
+- id: chem_molecule_t2_err_sin_atomos
+  feature: molecule
+  tier: 2
+  description: 'Error controlado cuando faltan `atoms` y `rings`'
+  block:
+    type: molecule
+  expect:
+    ok: false
+    error_contains: "faltan atoms"
+
+- id: chem_molecule_t2_err_anillo_size_invalido
+  feature: molecule
+  tier: 2
+  description: 'Error controlado cuando `rings[0].size` está fuera de 3..8'
+  block:
+    type: molecule
+    rings:
+      - {size: 9}
+  expect:
+    ok: false
+    error_contains: "de 3 a 8 átomos"
+
+- id: chem_molecule_t2_err_atomo_inexistente
+  feature: molecule
+  tier: 2
+  description: 'Error controlado cuando `from` referencia un átomo inexistente'
+  block:
+    type: molecule
+    atoms:
+      - {id: a, el: C}
+      - {id: b, from: z}
+  expect:
+    ok: false
+    error_contains: "no hay un átomo"
+
+- id: chem_molecule_t2_err_orden_invalido
+  feature: molecule
+  tier: 2
+  description: 'Error controlado cuando un enlace tiene orden inválido (4)'
+  block:
+    type: molecule
+    atoms:
+      - {el: C}
+      - {from: a0, angle: 0}
+    bonds:
+      - [a0, a1, 4]
+  expect:
+    ok: false
+    error_contains: "bonds[0].order"
+
+# ===========================================================================
+# 2. reaction (5 Tier 1 + 6 Tier 2 = 11 casos)
+# ===========================================================================
+- id: chem_reaction_t1_esterificacion_equilibrio
+  feature: reaction
+  tier: 1
+  description: 'Fixture `reaccion-esterificacion`: equilibrio `<=>` con condiciones above/below'
+  tinta: true
+  block:
+    type: reaction
+    title: Esterificación de Fischer
+    steps:
+      - "CH3COOH"
+      - "+"
+      - "CH3CH2OH"
+      - {arrow: "<=>", above: "H2SO4", below: "Δ"}
+      - "CH3COOCH2CH3"
+      - "+"
+      - "H2O"
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 70
+    text_contains: ["Esterificación de Fischer", "CH3COOH", "+", "CH3CH2OH", "H2SO4", "Δ", "CH3COOCH2CH3", "H2O"]
+
+- id: chem_reaction_t1_resonancia_moleculas
+  feature: reaction
+  tier: 1
+  description: 'Fixture `reaccion-resonancia`: moléculas embebidas con flecha de resonancia `<->`'
+  tinta: true
+  block:
+    type: reaction
+    title: Resonancia del ion carboxilato
+    steps:
+      - atoms:
+          - {id: c, el: C, at: [0, 0]}
+          - {id: r, el: R, from: c, angle: 180}
+          - {id: o1, el: O, from: c, angle: 60, bond: 2, lonePairs: 2}
+          - {id: o2, el: O, from: c, angle: 300, lonePairs: 3, charge: -1}
+      - {arrow: "<->"}
+      - atoms:
+          - {id: c, el: C, at: [0, 0]}
+          - {id: r, el: R, from: c, angle: 180}
+          - {id: o1, el: O, from: c, angle: 60, lonePairs: 3, charge: -1}
+          - {id: o2, el: O, from: c, angle: 300, bond: 2, lonePairs: 2}
+  expect:
+    ok: true
+    min_width: 220
+    min_height: 100
+    text_contains: ["Resonancia del ion carboxilato", "C", "R", "O", "−"]
+    svg_contains: ["marker-start=\"url(#flecha-main-"]
+
+- id: chem_reaction_t1_retrosintesis_formula_dict
+  feature: reaction
+  tier: 1
+  description: 'Flecha de retrosíntesis `=>` y paso `{formula: ...}`'
+  tinta: true
+  block:
+    type: reaction
+    steps:
+      - {formula: "C6H5CHO"}
+      - {arrow: "=>", above: "FGI"}
+      - "C6H5CH2OH"
+  expect:
+    ok: true
+    min_width: 180
+    min_height: 45
+    text_contains: ["C6H5CHO", "FGI", "C6H5CH2OH"]
+
+- id: chem_reaction_t1_coeficientes_numericos_color
+  feature: reaction
+  tier: 1
+  description: 'Coeficientes estequiométricos numéricos y flecha Unicode `→` en modo color'
+  tinta: false
+  block:
+    type: reaction
+    steps:
+      - 2
+      - "H2"
+      - "+"
+      - "O2"
+      - {arrow: "→", above: "Pt"}
+      - 2
+      - "H2O"
+  expect:
+    ok: true
+    min_width: 200
+    min_height: 45
+    text_contains: ["2", "H2", "O2", "Pt", "H2O"]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: chem_reaction_t1_wrap_multilinea
+  feature: reaction
+  tier: 1
+  description: 'Salto de línea automático al superar `maxWidth: 160`'
+  tinta: true
+  block:
+    type: reaction
+    maxWidth: 160
+    steps: ["CH4", "+", "2 O2", {arrow: "->"}, "CO2", "+", "2 H2O"]
+  expect:
+    ok: true
+    min_width: 120
+    min_height: 95
+    text_contains: ["CH4", "2 O2", "CO2", "2 H2O"]
+
+- id: chem_reaction_t2_blank_producto_y_flecha
+  feature: reaction
+  tier: 2
+  description: 'Fixture `reaccion-completar` ampliado: caja `blank` con `width: 60` y flecha `blank: true` con `below`'
+  tinta: true
+  block:
+    type: reaction
+    steps:
+      - "Zn"
+      - "+"
+      - "2 HCl"
+      - {arrow: "->", blank: true, above: "oculto", below: "25 °C"}
+      - {blank: true, width: 60}
+      - "+"
+      - "H2"
+  expect:
+    ok: true
+    min_width: 240
+    min_height: 45
+    text_contains: ["Zn", "2 HCl", "25 °C", "H2"]
+    text_absent: ["oculto"]
+    svg_contains: ["stroke-dasharray=\"3 2\"", "<rect"]
+
+- id: chem_reaction_t2_flecha_eq_above_largo_inksaver
+  feature: reaction
+  tier: 2
+  description: 'Alias `eq`, texto `above` largo UTF-8 y override `inkSaver: true` sobre `tinta: false`'
+  tinta: false
+  block:
+    type: reaction
+    inkSaver: true
+    steps:
+      - "N2O4"
+      - {arrow: "eq", above: "ΔH° = +57,2 kJ/mol", below: "T = 298 K"}
+      - "2 NO2"
+  expect:
+    ok: true
+    min_width: 200
+    min_height: 45
+    text_contains: ["N2O4", "ΔH° = +57,2 kJ/mol", "T = 298 K", "2 NO2"]
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: chem_reaction_t2_err_steps_vacio
+  feature: reaction
+  tier: 2
+  description: 'Error controlado cuando `steps` está vacío'
+  block:
+    type: reaction
+    steps: []
+  expect:
+    ok: false
+    error_contains: "'steps' es una lista"
+
+- id: chem_reaction_t2_err_step_booleano
+  feature: reaction
+  tier: 2
+  description: 'Error controlado cuando un paso de `reaction` es booleano'
+  block:
+    type: reaction
+    steps: [true]
+  expect:
+    ok: false
+    error_contains: "una fórmula, '+'"
+
+- id: chem_reaction_t2_err_flecha_invalida
+  feature: reaction
+  tier: 2
+  description: 'Error controlado para símbolo de flecha inválido (`~>`)'
+  block:
+    type: reaction
+    steps:
+      - {arrow: "~>"}
+  expect:
+    ok: false
+    error_contains: "steps[0].arrow"
+
+- id: chem_reaction_t2_err_molecula_interna_invalida
+  feature: reaction
+  tier: 2
+  description: 'Error controlado propagado desde molécula embebida inválida'
+  block:
+    type: reaction
+    steps:
+      - atoms:
+          - {id: a, el: C}
+          - {id: b, from: x}
+  expect:
+    ok: false
+    error_contains: "no hay un átomo"
+
+# ===========================================================================
+# 3. vsepr (5 Tier 1 + 7 Tier 2 = 12 casos)
+# ===========================================================================
+- id: chem_vsepr_t1_piramidal_amoniaco
+  feature: vsepr
+  tier: 1
+  description: 'Fixture `trepev-amoniaco`: inferencia AX3E por pares libres'
+  tinta: true
+  block:
+    type: vsepr
+    title: Amoníaco
+    central: N
+    ligands: [H, H, H]
+    lonePairs: 1
+  expect:
+    ok: true
+    min_width: 480
+    min_height: 200
+    text_contains: ["Amoníaco", "N", "H", "AX3E", "piramidal trigonal", "≈ 107°", "sp³"]
+
+- id: chem_vsepr_t1_balancin_sf4
+  feature: vsepr
+  tier: 1
+  description: 'Fixture `trepev-sf4`: geometría balancín AX4E sp³d'
+  tinta: true
+  block:
+    type: vsepr
+    title: SF4
+    central: S
+    ligands: [F, F, F, F]
+    lonePairs: 1
+  expect:
+    ok: true
+    min_width: 480
+    min_height: 200
+    text_contains: ["SF4", "AX4E", "balancín", "< 90° y < 120°", "sp³d"]
+
+- id: chem_vsepr_t1_octaedrica_sf6
+  feature: vsepr
+  tier: 1
+  description: 'Fixture `trepev-sf6`: geometría octaédrica AX6 sin pares libres'
+  tinta: true
+  block:
+    type: vsepr
+    central: S
+    ligands: [F, F, F, F, F, F]
+  expect:
+    ok: true
+    min_width: 480
+    min_height: 170
+    text_contains: ["AX6", "octaédrica", "90°", "sp³d²"]
+
+- id: chem_vsepr_t1_bent_geometry_explicita_color
+  feature: vsepr
+  tier: 1
+  description: 'Geometría explícita `bent` sin `ligands` (rellena X, X) en paleta color'
+  tinta: false
+  block:
+    type: vsepr
+    geometry: bent
+    central: O
+  expect:
+    ok: true
+    min_width: 480
+    min_height: 170
+    text_contains: ["O", "X", "AX2E2", "angular", "≈ 104,5°", "sp³"]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: chem_vsepr_t1_trigonal_sin_hibridacion_ni_angulo
+  feature: vsepr
+  tier: 1
+  description: 'Trigonal plana con `showAngle: false` y `showHybridization: false`'
+  tinta: true
+  block:
+    type: vsepr
+    geometry: trigonal_planar
+    central: B
+    ligands: [F, F, F]
+    showAngle: false
+    showHybridization: false
+  expect:
+    ok: true
+    min_width: 480
+    min_height: 170
+    text_contains: ["B", "F", "AX3", "trigonal plana", "Ángulo:", "120°"]
+    text_absent: ["Hibridación:", "sp²"]
+
+- id: chem_vsepr_t2_blank_selectivo_xef4
+  feature: vsepr
+  tier: 2
+  description: 'Fixture `trepev-xef4-blanco`: `blank` selectivo oculta nombre, ángulo e hibridación'
+  tinta: true
+  block:
+    type: vsepr
+    title: XeF4 (para completar)
+    central: Xe
+    ligands: [F, F, F, F]
+    lonePairs: 2
+    blank: [name, angle, hybridization]
+  expect:
+    ok: true
+    min_width: 480
+    min_height: 200
+    text_contains: ["AX4E2", "Notación:", "Geometría:", "Ángulo:", "Hibridación:"]
+    text_absent: ["cuadrada plana", "90°", "sp³d²"]
+    svg_contains: ["stroke-dasharray=\"3 2\""]
+
+- id: chem_vsepr_t2_blank_total
+  feature: vsepr
+  tier: 2
+  description: 'Modo `blank: true` oculta todas las respuestas del panel en `bent_trigonal`'
+  tinta: true
+  block:
+    type: vsepr
+    geometry: bent_trigonal
+    blank: true
+  expect:
+    ok: true
+    min_width: 480
+    min_height: 170
+    text_contains: ["Notación:", "Geometría:", "Ángulo:", "Hibridación:"]
+    text_absent: ["AX2E", "angular", "117°", "sp²"]
+    svg_contains: ["stroke-dasharray=\"3 2\""]
+
+- id: chem_vsepr_t2_linear_tbp_180_sin_arco
+  feature: vsepr
+  tier: 2
+  description: 'Geometría `linear_tbp` de 180° omite arco sobre el dibujo pero muestra 180° en tabla'
+  tinta: true
+  block:
+    type: vsepr
+    geometry: linear_tbp
+    central: I
+    ligands: [Cl, Cl]
+    showAngle: true
+  expect:
+    ok: true
+    min_width: 480
+    min_height: 170
+    text_contains: ["AX2E3", "lineal", "180°", "sp³d"]
+
+- id: chem_vsepr_t2_ligandos_subindice_inksaver
+  feature: vsepr
+  tier: 2
+  description: 'Ligandos con subíndices (`CH3`) y override `inkSaver: true` sobre `tinta: false`'
+  tinta: false
+  block:
+    type: vsepr
+    geometry: tetrahedral
+    central: Si
+    ligands: ["CH3", "CH3", "H", "Cl"]
+    inkSaver: true
+  expect:
+    ok: true
+    min_width: 480
+    min_height: 170
+    text_contains: ["Si", "CH3", "AX4", "tetraédrica", "109,5°"]
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: chem_vsepr_t2_err_pares_desconocidos
+  feature: vsepr
+  tier: 2
+  description: 'Error controlado para combinación de ligandos y pares libres sin geometría conocida'
+  block:
+    type: vsepr
+    ligands: [F, F, F, F, F, F, F]
+  expect:
+    ok: false
+    error_contains: "geometría conocida"
+
+- id: chem_vsepr_t2_err_geometry_invalida
+  feature: vsepr
+  tier: 2
+  description: 'Error controlado para `geometry` desconocida'
+  block:
+    type: vsepr
+    geometry: pentagonal
+  expect:
+    ok: false
+    error_contains: "geometry 'pentagonal'"
+
+- id: chem_vsepr_t2_err_cantidad_ligandos
+  feature: vsepr
+  tier: 2
+  description: 'Error controlado cuando la cantidad de ligandos no coincide con la geometría'
+  block:
+    type: vsepr
+    geometry: tetrahedral
+    ligands: [H, H, H]
+  expect:
+    ok: false
+    error_contains: "lleva 4 ligandos"
+
+# ===========================================================================
+# 4. orbitals (9 Tier 1 + 7 Tier 2 = 16 casos)
+# ===========================================================================
+- id: chem_orbitals_t1_atomico_hierro
+  feature: orbitals
+  tier: 1
+  description: 'Fixture `casilleros-hierro`: Fe neutro con núcleo [Ar] y 4 desapareados'
+  tinta: true
+  block:
+    type: orbitals
+    title: Hierro
+    element: Fe
+    core: true
+    showUnpaired: true
+  expect:
+    ok: true
+    min_width: 250
+    min_height: 100
+    text_contains: ["Hierro", "[Ar]", "4s", "3d", "Configuración:", "Fe", "[Ar] 4s² 3d⁶", "Electrones desapareados = 4"]
+
+- id: chem_orbitals_t1_atomico_oxigeno_completo
+  feature: orbitals
+  tier: 1
+  description: 'Fixture `casilleros-oxigeno`: O neutro con configuración completa (`core: false`, 1s 2s 2p)'
+  tinta: true
+  block:
+    type: orbitals
+    element: O
+    core: false
+    showUnpaired: true
+  expect:
+    ok: true
+    min_width: 250
+    min_height: 100
+    text_contains: ["1s", "2s", "2p", "Configuración:", "O", "1s² 2s² 2p⁴", "Electrones desapareados = 2"]
+    text_absent: ["[He]"]
+
+- id: chem_orbitals_t1_atomico_excepcion_cr
+  feature: orbitals
+  tier: 1
+  description: 'Configuración atómica con excepción de Madelung (`Cr`: 4s¹ 3d⁵) y núcleo `[Ar]`'
+  tinta: true
+  block:
+    type: orbitals
+    element: Cr
+    core: true
+    showUnpaired: true
+  expect:
+    ok: true
+    min_width: 250
+    min_height: 100
+    text_contains: ["[Ar]", "4s", "3d", "Configuración:", "Cr", "[Ar] 4s¹ 3d⁵", "Electrones desapareados = 6"]
+
+- id: chem_orbitals_t1_atomico_cation_fe2
+  feature: orbitals
+  tier: 1
+  description: 'Catión `Fe^2+` pierde 4s antes que 3d (`[Ar] 3d⁶`)'
+  tinta: true
+  block:
+    type: orbitals
+    element: Fe
+    charge: 2
+    core: true
+    showUnpaired: true
+  expect:
+    ok: true
+    min_width: 250
+    min_height: 100
+    text_contains: ["[Ar]", "3d", "Fe2+", "[Ar] 3d⁶", "Electrones desapareados = 4"]
+
+- id: chem_orbitals_t1_atomico_anion_cl_numero
+  feature: orbitals
+  tier: 1
+  description: 'Elemento especificado por número atómico `17` con carga `-1` (`Cl−`)'
+  tinta: true
+  block:
+    type: orbitals
+    element: 17
+    charge: -1
+    core: true
+    showConfig: true
+    showUnpaired: true
+  expect:
+    ok: true
+    min_width: 250
+    min_height: 100
+    text_contains: ["[Ne]", "3s", "3p", "Cl−", "[Ne] 3s² 3p⁶", "Electrones desapareados = 0"]
+
+- id: chem_orbitals_t1_om_homonuclear_n2_mezcla_sp
+  feature: orbitals
+  tier: 1
+  description: 'Fixture `om-nitrogeno` ampliado: mezcla s-p en N2 (diamagnética, orden 3)'
+  tinta: true
+  block:
+    type: orbitals
+    kind: molecular
+    atoms: [N, N]
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 250
+    text_contains: ["N2", "π2p", "σ2p", "Orden de enlace = 3", "Magnetismo: diamagnética (0 e⁻ desapareados)"]
+
+- id: chem_orbitals_t1_om_oxigeno
+  feature: orbitals
+  tier: 1
+  description: 'Fixture `om-oxigeno`: O2 neutro sin mezcla s-p (`σ2p` bajo `π2p`), orden 2 y paramagnética'
+  tinta: true
+  block:
+    type: orbitals
+    kind: molecular
+    title: O2
+    atoms: [O, O]
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 250
+    text_contains: ["O2", "σ2s", "σ*2s", "σ2p", "π2p", "π*2p", "σ*2p", "Orden de enlace = 2", "Magnetismo: paramagnética (2 e⁻ desapareados)"]
+
+- id: chem_orbitals_t1_om_heteronuclear_co_color
+  feature: orbitals
+  tier: 1
+  description: 'Fixture `om-co`: orbitales moleculares heteronucleares desplazados por electronegatividad en color'
+  tinta: false
+  block:
+    type: orbitals
+    kind: molecular
+    title: Monóxido de carbono
+    atoms: [C, O]
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 280
+    text_contains: ["Monóxido de carbono", "CO", "Orden de enlace = 3", "diamagnética"]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: chem_orbitals_t1_om_capa1_h2
+  feature: orbitals
+  tier: 1
+  description: 'Fixture `om-hidrogeno`: capa 1 (`σ1s`, `σ*1s`)'
+  tinta: true
+  block:
+    type: orbitals
+    kind: molecular
+    atoms: [H, H]
+  expect:
+    ok: true
+    min_width: 250
+    min_height: 150
+    text_contains: ["H2", "σ1s", "σ*1s", "Orden de enlace = 1", "diamagnética"]
+
+- id: chem_orbitals_t2_atomico_cero_electrones_h_mas
+  feature: orbitals
+  tier: 2
+  description: 'Protón `H+` con 0 electrones no dibuja casilleros ni núcleo [He]'
+  tinta: true
+  block:
+    type: orbitals
+    element: H
+    charge: 1
+    core: true
+    showUnpaired: true
+  expect:
+    ok: true
+    min_width: 150
+    min_height: 50
+    text_contains: ["Configuración:", "H+", "Electrones desapareados = 0"]
+    text_absent: ["[He]"]
+
+- id: chem_orbitals_t2_atomico_blank_cobre_ion
+  feature: orbitals
+  tier: 2
+  description: 'Fixture `casilleros-cobre-ion`: modo `blank: true` oculta configuración y desapareados'
+  tinta: true
+  block:
+    type: orbitals
+    title: "Cu²⁺ (para completar)"
+    element: Cu
+    charge: 2
+    core: true
+    blank: true
+    showUnpaired: true
+  expect:
+    ok: true
+    min_width: 250
+    min_height: 100
+    text_contains: ["Cu²⁺ (para completar)", "[Ar]", "3d"]
+    text_absent: ["3d⁹", "Electrones desapareados = 1"]
+
+- id: chem_orbitals_t2_om_ion_fraccionario_blancos_inksaver
+  feature: orbitals
+  tier: 2
+  description: 'OM de `O2−` con `molecule: O`, orden fraccionario oculto por blancos e `inkSaver: true`'
+  tinta: false
+  block:
+    type: orbitals
+    kind: molecular
+    molecule: O
+    charge: -1
+    blankElectrons: true
+    blankBondOrder: true
+    blankMagnetism: true
+    inkSaver: true
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 250
+    text_contains: ["O2−", "Orden de enlace =", "Magnetismo:"]
+    text_absent: ["1,5", "paramagnética"]
+    svg_contains: ["stroke-dasharray=\"3 2\""]
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: chem_orbitals_t2_err_falta_element
+  feature: orbitals
+  tier: 2
+  description: 'Error controlado cuando falta `element` en modo atómico'
+  block:
+    type: orbitals
+  expect:
+    ok: false
+    error_contains: "falta element"
+
+- id: chem_orbitals_t2_err_elemento_desconocido
+  feature: orbitals
+  tier: 2
+  description: 'Error controlado para símbolo de elemento inexistente (`Xx`)'
+  block:
+    type: orbitals
+    element: Xx
+  expect:
+    ok: false
+    error_contains: "desconocido"
+
+- id: chem_orbitals_t2_err_sin_electrones
+  feature: orbitals
+  tier: 2
+  description: 'Error controlado cuando la carga deja electrones negativos (`H^2+`)'
+  block:
+    type: orbitals
+    element: H
+    charge: 2
+  expect:
+    ok: false
+    error_contains: "no tiene electrones"
+
+- id: chem_orbitals_t2_err_om_periodo_invalido
+  feature: orbitals
+  tier: 2
+  description: 'Error controlado en OM para elementos fuera de los dos primeros períodos (`Na2`)'
+  block:
+    type: orbitals
+    kind: molecular
+    atoms: [Na, Na]
+  expect:
+    ok: false
+    error_contains: "dos primeros períodos"
+
+# ===========================================================================
+# 5. energy_profile (5 Tier 1 + 6 Tier 2 = 11 casos)
+# ===========================================================================
+- id: chem_energy_profile_t1_una_etapa_catalizada
+  feature: energy_profile
+  tier: 1
+  description: 'Fixture `perfil-una-etapa`: perfil exotérmico con vía catalizada'
+  tinta: true
+  block:
+    type: energy_profile
+    title: Reacción exotérmica en una etapa
+    states:
+      - {label: "A + B", energy: 0}
+      - {label: "ET‡", energy: 85, ts: true}
+      - {label: "C + D", energy: -40}
+    catalyzed:
+      - {energy: 0}
+      - {energy: 45, ts: true}
+      - {energy: -40}
+  expect:
+    ok: true
+    min_width: 650
+    min_height: 300
+    text_contains: ["Reacción exotérmica en una etapa", "Energía (kJ/mol)", "Coordenada de reacción", "A + B", "ET‡", "C + D", "sin catalizador", "con catalizador", "Ea = 85 kJ/mol", "ΔH = -40 kJ/mol", "(exotérmica)"]
+
+- id: chem_energy_profile_t1_dos_etapas_determinante
+  feature: energy_profile
+  tier: 1
+  description: 'Perfil de 2 etapas con `showRateDetermining` y `showEnergies`'
+  tinta: true
+  block:
+    type: energy_profile
+    states:
+      - {label: Reactivos, energy: 0}
+      - {label: "ET1", energy: 60, ts: true}
+      - {label: Intermediario, energy: 25}
+      - {label: "ET2", energy: 90, ts: true}
+      - {label: Productos, energy: 15}
+    showRateDetermining: true
+    showEnergies: true
+  expect:
+    ok: true
+    min_width: 650
+    min_height: 280
+    text_contains: ["Ea1 = 60 kJ/mol", "Ea2 = 65 kJ/mol", "etapa 2: determinante", "ΔH = 15 kJ/mol", "(endotérmica)"]
+
+- id: chem_energy_profile_t1_endotermica_unidad_custom
+  feature: energy_profile
+  tier: 1
+  description: 'Unidad `kcal/mol` y rótulos de ejes personalizados'
+  tinta: true
+  block:
+    type: energy_profile
+    unit: kcal/mol
+    xLabel: Avance
+    yLabel: H
+    states:
+      - {label: R, energy: 10}
+      - {label: ET, energy: 70, ts: true}
+      - {label: P, energy: 50}
+  expect:
+    ok: true
+    min_width: 650
+    min_height: 280
+    text_contains: ["Avance", "H", "Ea = 60 kcal/mol", "ΔH = 40 kcal/mol", "(endotérmica)"]
+
+- id: chem_energy_profile_t1_solo_dh_sin_ea_color
+  feature: energy_profile
+  tier: 1
+  description: 'Solo anotación `dH` (omite `Ea`) en modo color'
+  tinta: false
+  block:
+    type: energy_profile
+    annotations: [dH]
+    states:
+      - {label: R, energy: 50}
+      - {label: ET, energy: 90, ts: true}
+      - {label: P, energy: 10}
+  expect:
+    ok: true
+    min_width: 650
+    min_height: 280
+    text_contains: ["ΔH = -40 kJ/mol", "(exotérmica)"]
+    text_absent: ["Ea ="]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: chem_energy_profile_t1_tres_etapas_subindices
+  feature: energy_profile
+  tier: 1
+  description: 'Mecanismo de 3 etapas con fórmulas con subíndices'
+  tinta: true
+  block:
+    type: energy_profile
+    states:
+      - {label: "H2O + CH3Cl", energy: 0}
+      - {label: "ET1", energy: 50, ts: true}
+      - {label: "Int1", energy: 20}
+      - {label: "ET2", energy: 80, ts: true}
+      - {label: "Int2", energy: 10}
+      - {label: "ET3", energy: 35, ts: true}
+      - {label: "CH3OH + HCl", energy: -15}
+  expect:
+    ok: true
+    min_width: 650
+    min_height: 280
+    text_contains: ["H2O + CH3Cl", "Ea1 = 50 kJ/mol", "Ea2 = 60 kJ/mol", "Ea3 = 25 kJ/mol", "CH3OH + HCl"]
+
+- id: chem_energy_profile_t2_blank_annotations_dos_etapas
+  feature: energy_profile
+  tier: 2
+  description: 'Fixture `perfil-dos-etapas`: `blankAnnotations: true` con `showRateDetermining: true`'
+  tinta: true
+  block:
+    type: energy_profile
+    title: Dos etapas con un intermediario
+    states:
+      - {label: Reactivos, energy: 0}
+      - {label: "ET1", energy: 60, ts: true}
+      - {label: Intermediario, energy: 25}
+      - {label: "ET2", energy: 90, ts: true}
+      - {label: Productos, energy: 15}
+    showRateDetermining: true
+    blankAnnotations: true
+  expect:
+    ok: true
+    min_width: 650
+    min_height: 300
+    text_contains: ["Dos etapas con un intermediario", "Ea1 =", "Ea2 =", "ΔH =", "etapa 2: determinante"]
+    text_absent: ["60 kJ/mol", "65 kJ/mol", "15 kJ/mol", "(endotérmica)"]
+    svg_contains: ["stroke-dasharray=\"3 2\""]
+
+- id: chem_energy_profile_t2_energias_iguales
+  feature: energy_profile
+  tier: 2
+  description: 'Borde con energías idénticas (`ΔH = 0`) sin división por cero'
+  tinta: true
+  block:
+    type: energy_profile
+    states:
+      - {label: A, energy: 10}
+      - {label: B, energy: 10}
+    showEnergies: true
+  expect:
+    ok: true
+    min_width: 650
+    min_height: 280
+    text_contains: ["A", "B", "ΔH = 0 kJ/mol", "(endotérmica)"]
+
+- id: chem_energy_profile_t2_sin_etiquetas_inksaver
+  feature: energy_profile
+  tier: 2
+  description: 'Estados sin `label` y override `inkSaver: true` sobre `tinta: false`'
+  tinta: false
+  block:
+    type: energy_profile
+    inkSaver: true
+    states:
+      - {energy: 10}
+      - {energy: 50, ts: true}
+      - {energy: 20}
+  expect:
+    ok: true
+    min_width: 650
+    min_height: 280
+    text_contains: ["Ea = 40 kJ/mol", "ΔH = 10 kJ/mol"]
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: chem_energy_profile_t2_err_pocos_estados
+  feature: energy_profile
+  tier: 2
+  description: 'Error controlado cuando `states` tiene menos de 2 estados'
+  block:
+    type: energy_profile
+    states:
+      - {energy: 0}
+  expect:
+    ok: false
+    error_contains: "al menos dos estados"
+
+- id: chem_energy_profile_t2_err_sin_energy
+  feature: energy_profile
+  tier: 2
+  description: 'Error controlado cuando un estado omite `energy`'
+  block:
+    type: energy_profile
+    states:
+      - {label: A}
+      - {energy: 10}
+  expect:
+    ok: false
+    error_contains: "states[0] es {label, energy, ts}"
+
+- id: chem_energy_profile_t2_err_catalyzed_invalido
+  feature: energy_profile
+  tier: 2
+  description: 'Error controlado cuando `catalyzed` tiene menos de 2 estados'
+  block:
+    type: energy_profile
+    states:
+      - {energy: 0}
+      - {energy: 10}
+    catalyzed:
+      - {energy: 0}
+  expect:
+    ok: false
+    error_contains: "catalyzed es una lista de al menos dos estados"
+
+# ===========================================================================
+# 6. titration (6 Tier 1 + 7 Tier 2 = 13 casos)
+# ===========================================================================
+- id: chem_titration_t1_acido_debil_indicador
+  feature: titration
+  tier: 1
+  description: 'Fixture `titulacion-acetico`: ácido débil con indicador fenolftaleína y pH inicial'
+  tinta: true
+  block:
+    type: titration
+    title: CH3COOH 0,1 M con NaOH 0,1 M
+    analyte: {kind: weak_acid, pKa: 4.76, conc: 0.1, volume: 25}
+    titrant: {conc: 0.1, name: NaOH}
+    indicator: {name: fenolftaleína, range: [8.2, 10]}
+    annotations: [equivalence, half, initial]
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 300
+    text_contains: ["CH3COOH 0,1 M con NaOH 0,1 M", "V NaOH (mL)", "fenolftaleína (8,2–10,0)", "Veq = 25 mL", "pH = 8,73", "pH = pKa = 4,76", "pH inicial = 2,88"]
+
+- id: chem_titration_t1_triprotico_h3po4
+  feature: titration
+  tier: 1
+  description: 'Fixture `titulacion-fosforico`: H3PO4 triprótico con 2 saltos visibles y 3 semiequivalencias'
+  tinta: true
+  block:
+    type: titration
+    title: H3PO4 con NaOH
+    analyte: {kind: weak_acid, pKa: [2.15, 7.2, 12.35], conc: 0.1, volume: 20}
+    titrant: {conc: 0.1}
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 300
+    text_contains: ["H3PO4 con NaOH", "Veq1 = 20 mL", "pH = 4,70", "Veq2 = 40 mL", "pH = 9,66", "pH = pKa1 = 2,15", "pH = pKa2 = 7,20", "pH = pKa3 = 12,35"]
+    text_absent: ["Veq3"]
+
+- id: chem_titration_t1_base_debil_pkb
+  feature: titration
+  tier: 1
+  description: 'Base débil especificada por `pKb` titulada con HCl'
+  tinta: true
+  block:
+    type: titration
+    title: NH3 con HCl
+    analyte: {kind: weak_base, pKb: 4.75, conc: 0.1, volume: 25}
+    titrant: {conc: 0.1, name: HCl}
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 300
+    text_contains: ["NH3 con HCl", "V HCl (mL)", "Veq = 25 mL", "pH = 5,28", "pH = pKa = 9,25"]
+
+- id: chem_titration_t1_acido_fuerte_color
+  feature: titration
+  tier: 1
+  description: 'Fixture `titulacion-fuerte`: ácido fuerte con equivalencia en pH 7,00 en paleta color'
+  tinta: false
+  block:
+    type: titration
+    analyte: {kind: strong_acid, conc: 0.1, volume: 25}
+    titrant: {conc: 0.1}
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 280
+    text_contains: ["V NaOH (mL)", "Veq = 25 mL", "pH = 7,00"]
+    text_absent: ["pKa"]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: chem_titration_t1_base_fuerte
+  feature: titration
+  tier: 1
+  description: 'Base fuerte (`strong_base`, NaOH) titulada con HCl: pH inicial 13,00 y Veq = 25 mL (pH 7,00)'
+  tinta: true
+  block:
+    type: titration
+    title: NaOH 0,1 M con HCl 0,1 M
+    analyte: {kind: strong_base, conc: 0.1, volume: 25}
+    titrant: {conc: 0.1, name: HCl}
+    annotations: [equivalence, initial]
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 280
+    text_contains: ["NaOH 0,1 M con HCl 0,1 M", "V HCl (mL)", "Veq = 25 mL", "pH = 7,00", "pH inicial = 13,00"]
+    text_absent: ["pKa"]
+
+- id: chem_titration_t1_carbonato_con_datos_exp
+  feature: titration
+  tier: 1
+  description: 'Base diprótica con `charge: -2` (carbonato) y puntos experimentales `data`'
+  tinta: true
+  block:
+    type: titration
+    analyte: {kind: weak_base, pKa: [6.35, 10.33], charge: -2, conc: 0.1, volume: 25}
+    titrant: {conc: 0.1, name: HCl}
+    data: [[0, 11.6], [25, 8.3]]
+    annotations: [equivalence, half, initial]
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 280
+    text_contains: ["pH inicial = 11,65", "Veq1 = 25 mL", "Veq2 = 50 mL"]
+    svg_contains: ["<circle"]
+
+- id: chem_titration_t2_blank_annotations_amoniaco
+  feature: titration
+  tier: 2
+  description: 'Fixture `titulacion-amoniaco` ampliado con todas las anotaciones en blanco'
+  tinta: true
+  block:
+    type: titration
+    title: NH3 con HCl
+    analyte: {kind: weak_base, pKb: 4.75, conc: 0.1, volume: 25}
+    titrant: {conc: 0.1, name: HCl}
+    annotations: [equivalence, half, initial]
+    blankAnnotations: true
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 300
+    text_contains: ["Veq = 25 mL", "pH =", "pKa =", "pH inicial ="]
+    text_absent: ["5,28", "9,25", "11,12"]
+
+- id: chem_titration_t2_vmax_chico_inksaver
+  feature: titration
+  tier: 2
+  description: 'Borde `vMax: 10` menor que `veq` y `semi`, más override `inkSaver: true`'
+  tinta: false
+  block:
+    type: titration
+    analyte: {kind: weak_acid, pKa: 4.76, conc: 0.1, volume: 25}
+    vMax: 10
+    inkSaver: true
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 280
+    text_contains: ["V NaOH (mL)", "pH"]
+    text_absent: ["Veq", "pKa"]
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: chem_titration_t2_titulante_formula_utf8
+  feature: titration
+  tier: 2
+  description: 'Titulante con paréntesis y subíndice (`Ba(OH)2`) y título con fórmula'
+  tinta: true
+  block:
+    type: titration
+    title: Titulación de CH3COOH
+    analyte: {kind: weak_acid, pKa: 4.76, conc: 0.1, volume: 25}
+    titrant: {conc: 0.2, name: "Ba(OH)2"}
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 300
+    text_contains: ["Titulación de CH3COOH", "V Ba(OH)2 (mL)", "Veq = 12,5 mL"]
+
+- id: chem_titration_t2_err_falta_analyte
+  feature: titration
+  tier: 2
+  description: 'Error controlado cuando falta `analyte`'
+  block:
+    type: titration
+  expect:
+    ok: false
+    error_contains: "'analyte' es"
+
+- id: chem_titration_t2_err_kind_invalido
+  feature: titration
+  tier: 2
+  description: 'Error controlado para `analyte.kind` desconocido (`sal`)'
+  block:
+    type: titration
+    analyte: {kind: sal}
+  expect:
+    ok: false
+    error_contains: "analyte.kind"
+
+- id: chem_titration_t2_err_debil_sin_pka
+  feature: titration
+  tier: 2
+  description: 'Error controlado cuando un ácido débil omite `pKa`'
+  block:
+    type: titration
+    analyte: {kind: weak_acid, conc: 0.1}
+  expect:
+    ok: false
+    error_contains: "necesita pKa"
+
+- id: chem_titration_t2_err_conc_no_positivo
+  feature: titration
+  tier: 2
+  description: 'Error controlado cuando `analyte.conc` no es positivo'
+  block:
+    type: titration
+    analyte: {kind: strong_acid, conc: 0}
+  expect:
+    ok: false
+    error_contains: "tiene que ser positivo"
+
+# ===========================================================================
+# 7. speciation (5 Tier 1 + 6 Tier 2 = 11 casos)
+# ===========================================================================
+- id: chem_speciation_t1_monoprotico_default
+  feature: speciation
+  tier: 1
+  description: 'Ácido monoprótico escalar `pKa: 4.76` con especies por defecto'
+  tinta: true
+  block:
+    type: speciation
+    pKa: 4.76
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 280
+    text_contains: ["pH", "fracción α", "HA", "A−", "pKa = 4,76"]
+
+- id: chem_speciation_t1_diprotico_carbonico
+  feature: speciation
+  tier: 1
+  description: 'Sistema diprótico carbónico con especies explícitas'
+  tinta: true
+  block:
+    type: speciation
+    pKa: [6.35, 10.33]
+    species: ["H2CO3", "HCO3^-", "CO3^2-"]
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 280
+    text_contains: ["H2CO3", "HCO3−", "CO32−", "pKa1 = 6,35", "pKa2 = 10,33"]
+
+- id: chem_speciation_t1_triprotico_fosforico
+  feature: speciation
+  tier: 1
+  description: 'Fixture `especies-fosfato`: 4 especies y 3 valores de pKa'
+  tinta: true
+  block:
+    type: speciation
+    title: Especies del ácido fosfórico
+    pKa: [2.15, 7.2, 12.35]
+    species: ["H3PO4", "H2PO4^-", "HPO4^2-", "PO4^3-"]
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 300
+    text_contains: ["Especies del ácido fosfórico", "H3PO4", "H2PO4−", "HPO42−", "PO43−", "pKa1 = 2,15", "pKa2 = 7,20", "pKa3 = 12,35"]
+
+- id: chem_speciation_t1_default_species_diprotico
+  feature: speciation
+  tier: 1
+  description: 'Especies dipróticas autogeneradas cuando se omite `species`'
+  tinta: true
+  block:
+    type: speciation
+    pKa: [3.0, 8.0]
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 280
+    text_contains: ["H2A", "HA−", "A2−", "pKa1 = 3,00", "pKa2 = 8,00"]
+
+- id: chem_speciation_t1_color_titulo_formula
+  feature: speciation
+  tier: 1
+  description: 'Título con fórmula (`NH4^+`) en paleta color'
+  tinta: false
+  block:
+    type: speciation
+    title: "Especiación de NH4^+"
+    pKa: 9.25
+    species: ["NH4^+", "NH3"]
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 300
+    text_contains: ["Especiación de NH4+", "NH4+", "NH3", "pKa = 9,25"]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: chem_speciation_t2_blank_pka_y_species
+  feature: speciation
+  tier: 2
+  description: 'Fixture `especies-carbonico-blanco` ampliado con `blankPKa` y `blankSpecies`'
+  tinta: true
+  block:
+    type: speciation
+    pKa: [6.35, 10.33]
+    blankPKa: true
+    blankSpecies: true
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 280
+    text_contains: ["pKa1 =", "pKa2 ="]
+    text_absent: ["H2A", "HA−", "A2−", "6,35", "10,33"]
+    svg_contains: ["stroke-dasharray=\"3 2\"", "<rect"]
+
+- id: chem_speciation_t2_pka_desordenado
+  feature: speciation
+  tier: 2
+  description: 'Ordenamiento automático de lista `pKa` desordenada `[10.33, 2.15]`'
+  tinta: true
+  block:
+    type: speciation
+    pKa: [10.33, 2.15]
+    species: ["H2A", "HA^-", "A^2-"]
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 280
+    text_contains: ["pKa1 = 2,15", "pKa2 = 10,33"]
+
+- id: chem_speciation_t2_pka_extremos_inksaver
+  feature: speciation
+  tier: 2
+  description: 'Borde de pKa cercanos a 0 y 14 con clamping horizontal y override `inkSaver: true`'
+  tinta: false
+  block:
+    type: speciation
+    pKa: [0.2, 13.8]
+    inkSaver: true
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 280
+    text_contains: ["pKa1 = 0,20", "pKa2 = 13,80"]
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: chem_speciation_t2_err_falta_pka
+  feature: speciation
+  tier: 2
+  description: 'Error controlado cuando falta `pKa`'
+  block:
+    type: speciation
+  expect:
+    ok: false
+    error_contains: "falta pKa"
+
+- id: chem_speciation_t2_err_pka_vacio
+  feature: speciation
+  tier: 2
+  description: 'Error controlado cuando `pKa` es lista vacía'
+  block:
+    type: speciation
+    pKa: []
+  expect:
+    ok: false
+    error_contains: "falta pKa"
+
+- id: chem_speciation_t2_err_cantidad_especies
+  feature: speciation
+  tier: 2
+  description: 'Error controlado cuando `len(species) != len(pKa) + 1`'
+  block:
+    type: speciation
+    pKa: [2, 7]
+    species: [A, B]
+  expect:
+    ok: false
+    error_contains: "3 especies"
+
+# ===========================================================================
+# 8. kinetics (6 Tier 1 + 8 Tier 2 = 14 casos)
+# ===========================================================================
+- id: chem_kinetics_t1_primer_orden_semivida
+  feature: kinetics
+  tier: 1
+  description: 'Fixture `cinetica-primer-orden`: `[A]` y `[P]` con marcas `t½`'
+  tinta: true
+  block:
+    type: kinetics
+    title: "Primer orden, k = 0,1 s⁻¹"
+    order: 1
+    k: 0.1
+    A0: 1
+    annotations: [halfLife]
+    showProduct: true
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 300
+    text_contains: ["Primer orden, k = 0,1 s⁻¹", "[A]", "[P]", "t½", "2·t½", "3·t½", "t½ = 6,93"]
+
+- id: chem_kinetics_t1_comparacion_ordenes
+  feature: kinetics
+  tier: 1
+  description: 'Fixture `cinetica-comparacion`: tres curvas simultáneas órdenes 0, 1 y 2'
+  tinta: true
+  block:
+    type: kinetics
+    title: Órdenes 0, 1 y 2
+    curves:
+      - {order: 0, k: 0.05, A0: 1}
+      - {order: 1, k: 0.1, A0: 1}
+      - {order: 2, k: 0.2, A0: 1}
+    tEnd: 30
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 300
+    text_contains: ["Órdenes 0, 1 y 2", "orden 0", "orden 1", "orden 2", "[A] (M)", "t (s)"]
+
+- id: chem_kinetics_t1_lineal_segundo_orden
+  feature: kinetics
+  tier: 1
+  description: 'Fixture `cinetica-lineal-segundo`: gráfico lineal `1/[A]` con pendiente `+k`'
+  tinta: true
+  block:
+    type: kinetics
+    order: 2
+    k: 0.5
+    A0: 0.8
+    plot: linear
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 280
+    text_contains: ["1/[A] (M⁻¹)", "pendiente = 0,5", "= +k"]
+
+- id: chem_kinetics_t1_consecutiva
+  feature: kinetics
+  tier: 1
+  description: 'Fixture `cinetica-consecutiva`: `A → B → C` con máximo de intermediario'
+  tinta: true
+  block:
+    type: kinetics
+    title: "A → B → C"
+    model: consecutive
+    k1: 0.5
+    k2: 0.2
+    species: [N2O5, NO2, O2]
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 300
+    text_contains: ["[N2O5]", "[NO2]", "[O2]", "t máx = 3,05"]
+
+- id: chem_kinetics_t1_reversible
+  feature: kinetics
+  tier: 1
+  description: 'Fixture `cinetica-reversible`: equilibrio cinético con constante `K = kf/kb`'
+  tinta: true
+  block:
+    type: kinetics
+    model: reversible
+    kf: 0.3
+    kb: 0.1
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 280
+    text_contains: ["[A]", "[B]", "K = kf/kb = 3"]
+
+- id: chem_kinetics_t1_arrhenius_color
+  feature: kinetics
+  tier: 1
+  description: 'Fixture `arrhenius`: recta `ln k` vs `1000/T` en paleta color'
+  tinta: false
+  block:
+    type: kinetics
+    plot: arrhenius
+    Ea: 75
+    A: 1.0e+12
+    T: [290, 360]
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 280
+    text_contains: ["1000/T (K⁻¹)", "ln k", "pendiente = −Ea/R = −9020 K"]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: chem_kinetics_t2_consecutiva_k_iguales_blank
+  feature: kinetics
+  tier: 2
+  description: 'Rama degenerada `k1 == k2` con `blankAnnotations: true` en modo color'
+  tinta: false
+  block:
+    type: kinetics
+    model: consecutive
+    k1: 0.4
+    k2: 0.4
+    blankAnnotations: true
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 280
+    text_contains: ["t máx ="]
+    text_absent: ["t máx = 2,5"]
+    svg_contains: ["stroke-dasharray=\"3 2\"", "#1d4ed8"]
+
+- id: chem_kinetics_t2_lineal_orden0_agotamiento
+  feature: kinetics
+  tier: 2
+  description: 'Linealización orden 0 filtrada al intervalo `t <= A0/k` con `tEnd` mayor'
+  tinta: true
+  block:
+    type: kinetics
+    order: 0
+    k: 0.2
+    A0: 1
+    tEnd: 10
+    plot: linear
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 280
+    text_contains: ["pendiente = -0,2", "= −k"]
+
+- id: chem_kinetics_t2_lineal_orden1
+  feature: kinetics
+  tier: 2
+  description: 'Linealización de primer orden (`ln [A]` vs `t`, pendiente `-k`)'
+  tinta: true
+  block:
+    type: kinetics
+    order: 1
+    k: 0.1
+    A0: 1
+    plot: linear
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 280
+    text_contains: ["t (s)", "ln [A]", "pendiente = -0,1", "= −k"]
+
+- id: chem_kinetics_t2_inksaver_subindices_reversible
+  feature: kinetics
+  tier: 2
+  description: 'Especies con subíndices y override `inkSaver: true` sobre `tinta: false`'
+  tinta: false
+  block:
+    type: kinetics
+    model: reversible
+    kf: 2
+    kb: 1
+    species: ["cis-A2", "trans-A2"]
+    inkSaver: true
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 280
+    text_contains: ["[cis-A2]", "[trans-A2]", "K = kf/kb = 2"]
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: chem_kinetics_t2_err_orden_invalido
+  feature: kinetics
+  tier: 2
+  description: 'Error controlado para orden de reacción inválido (`3`)'
+  block:
+    type: kinetics
+    order: 3
+  expect:
+    ok: false
+    error_contains: "orden 3 (vale 0, 1 o 2)"
+
+- id: chem_kinetics_t2_err_model_invalido
+  feature: kinetics
+  tier: 2
+  description: 'Error controlado para `model` desconocido'
+  block:
+    type: kinetics
+    model: autocatalytic
+  expect:
+    ok: false
+    error_contains: "vale simple, consecutive o reversible"
+
+- id: chem_kinetics_t2_err_lineal_varias_curvas
+  feature: kinetics
+  tier: 2
+  description: 'Error controlado al pedir linealización con múltiples curvas'
+  block:
+    type: kinetics
+    plot: linear
+    curves:
+      - {order: 1, k: 0.1}
+      - {order: 2, k: 0.2}
+  expect:
+    ok: false
+    error_contains: "la linealización es de una sola curva"
+
+- id: chem_kinetics_t2_err_k_no_positivo
+  feature: kinetics
+  tier: 2
+  description: 'Error controlado cuando `k` no es positivo (`0`)'
+  block:
+    type: kinetics
+    k: 0
+  expect:
+    ok: false
+    error_contains: "tiene que ser positivo"
+
+# ===========================================================================
+# 9. phase_diagram (5 Tier 1 + 8 Tier 2 = 13 casos)
+# ===========================================================================
+- id: chem_phase_diagram_t1_agua_esquema_con_punto
+  feature: phase_diagram
+  tier: 1
+  description: 'Fixture `fases-agua`: diagrama esquemático del agua con punto extra X'
+  tinta: true
+  block:
+    type: phase_diagram
+    title: Diagrama de fases del agua (esquema)
+    substance: water
+    points:
+      - {T: 300, P: 0.01, label: X}
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 300
+    text_contains: ["Diagrama de fases del agua (esquema)", "Punto triple", "273,2 K; 0,00604 atm", "Punto crítico", "647,1 K; 218 atm", "1 atm", "Tf = 273,1 K", "Teb = 373,1 K", "Sólido", "Líquido", "Gas", "Fluido supercrítico", "X", "H2O"]
+
+- id: chem_phase_diagram_t1_co2_log_sublimacion
+  feature: phase_diagram
+  tier: 1
+  description: 'Fixture `fases-co2-log`: escala logarítmica con sublimación a 1 atm'
+  tinta: true
+  block:
+    type: phase_diagram
+    title: CO2 (escala logarítmica)
+    substance: co2
+    scale: log
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 300
+    text_contains: ["CO2 (escala logarítmica)", "T (K)", "log₁₀ P (atm)", "Tsub = 194,7 K", "CO2"]
+    text_absent: ["Tf ="]
+
+- id: chem_phase_diagram_t1_sustancia_custom_i2
+  feature: phase_diagram
+  tier: 1
+  description: 'Sustancia custom I2 sin región de fluido supercrítico'
+  tinta: true
+  block:
+    type: phase_diagram
+    name: I2
+    triple: [386.8, 0.12]
+    critical: [819, 116]
+    meltingSlope: 35
+    normalMelting: 386.85
+    normalBoiling: 457.5
+    supercritical: false
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 280
+    text_contains: ["I2", "Punto triple", "Tf = 386,9 K", "Teb = 457,5 K"]
+    text_absent: ["Fluido supercrítico"]
+
+- id: chem_phase_diagram_t1_eutectico_pb_sn
+  feature: phase_diagram
+  tier: 1
+  description: 'Fixture `eutectico`: diagrama binario Pb–Sn con curva de enfriamiento'
+  tinta: true
+  block:
+    type: phase_diagram
+    kind: eutectic
+    title: Sistema Pb–Sn
+    components: [Pb, Sn]
+    meltingA: 327
+    meltingB: 232
+    eutectic: [61.9, 183]
+    cooling: 30
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 300
+    text_contains: ["Sistema Pb–Sn", "% Sn (en masa)", "T (°C)", "E = 61,9 %, 183 °C", "L + Pb(s)", "L + Sn(s)", "Pb(s) + Sn(s)", "Tliq = 270 °C"]
+
+- id: chem_phase_diagram_t1_color_sin_1atm
+  feature: phase_diagram
+  tier: 1
+  description: 'Oculta isobara `1 atm` (`atm: false`) en paleta color'
+  tinta: false
+  block:
+    type: phase_diagram
+    substance: water
+    atm: false
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 280
+    text_contains: ["Punto triple", "Punto crítico", "Sólido", "Líquido", "Gas"]
+    text_absent: ["1 atm", "Tf =", "Teb ="]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: chem_phase_diagram_t2_blanco_total_co2
+  feature: phase_diagram
+  tier: 2
+  description: 'Fixture `fases-blanco`: oculta regiones y coordenadas de puntos'
+  tinta: true
+  block:
+    type: phase_diagram
+    substance: co2
+    blankRegions: true
+    blankPoints: true
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 280
+    text_absent: ["Sólido", "Líquido", "Gas", "Fluido supercrítico", "216,6 K", "194,7 K"]
+    svg_contains: ["stroke-dasharray=\"3 2\""]
+
+- id: chem_phase_diagram_t2_eutectico_utf8_blank_inksaver
+  feature: phase_diagram
+  tier: 2
+  description: 'Eutéctico con enfriamiento en la composición eutéctica exacta (`50`), blancos e `inkSaver: true`'
+  tinta: false
+  block:
+    type: phase_diagram
+    kind: eutectic
+    components: [KCl, NaCl]
+    meltingA: 770
+    meltingB: 801
+    eutectic: [50, 657]
+    cooling: 50
+    blankRegions: true
+    blankCooling: true
+    blankPoints: true
+    inkSaver: true
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 280
+    text_contains: ["T liq =", "E ="]
+    text_absent: ["657 °C", "50 %"]
+    svg_contains: ["stroke-dasharray=\"3 2\""]
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: chem_phase_diagram_t2_err_sustancia_desconocida
+  feature: phase_diagram
+  tier: 2
+  description: 'Error controlado para sustancia desconocida (`mercurio`)'
+  block:
+    type: phase_diagram
+    substance: mercurio
+  expect:
+    ok: false
+    error_contains: "sustancia"
+
+- id: chem_phase_diagram_t2_err_critico_menor_triple
+  feature: phase_diagram
+  tier: 2
+  description: 'Error controlado cuando el punto crítico está por debajo o a la izquierda del triple'
+  block:
+    type: phase_diagram
+    triple: [300, 1]
+    critical: [200, 50]
+  expect:
+    ok: false
+    error_contains: "crítico"
+
+- id: chem_phase_diagram_t2_err_melting_slope_cero
+  feature: phase_diagram
+  tier: 2
+  description: 'Error controlado cuando `meltingSlope` es 0'
+  block:
+    type: phase_diagram
+    triple: [200, 1]
+    critical: [400, 50]
+    meltingSlope: 0
+  expect:
+    ok: false
+    error_contains: "meltingSlope no puede ser 0"
+
+- id: chem_phase_diagram_t2_err_eutectico_fuera_rango
+  feature: phase_diagram
+  tier: 2
+  description: 'Error controlado cuando la temperatura eutéctica supera el punto de fusión'
+  block:
+    type: phase_diagram
+    kind: eutectic
+    meltingA: 327
+    meltingB: 232
+    eutectic: [60, 250]
+  expect:
+    ok: false
+    error_contains: "por debajo de los dos puntos de fusión"
+
+- id: chem_phase_diagram_t2_err_eutectico_sin_datos
+  feature: phase_diagram
+  tier: 2
+  description: 'Error controlado en `kind: eutectic` cuando faltan `meltingB` y `eutectic`'
+  block:
+    type: phase_diagram
+    kind: eutectic
+    meltingA: 300
+  expect:
+    ok: false
+    error_contains: "eutéctico"
+
+- id: chem_phase_diagram_t2_err_point_mal_formado
+  feature: phase_diagram
+  tier: 2
+  description: 'Error controlado cuando un punto extra omite `P`'
+  block:
+    type: phase_diagram
+    substance: water
+    points:
+      - {T: 300}
+  expect:
+    ok: false
+    error_contains: "points[0]"
+
+# ===========================================================================
+# 10. heating_curve (5 Tier 1 + 7 Tier 2 = 12 casos)
+# ===========================================================================
+- id: chem_heating_curve_t1_agua_cinco_tramos
+  feature: heating_curve
+  tier: 1
+  description: 'Fixture `calentamiento-agua`: 5 tramos completos de -20 °C a 120 °C'
+  tinta: true
+  block:
+    type: heating_curve
+    title: "100 g de hielo de −20 °C a 120 °C"
+    substance: water
+    mass: 100
+    from: -20
+    to: 120
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 300
+    text_contains: ["100 g de hielo de −20 °C a 120 °C", "sólido", "4,18 kJ", "fusión", "33,4 kJ", "líquido", "41,8 kJ", "vaporización", "226 kJ", "gas", "4,02 kJ", "Tf = 0 °C", "Teb = 100 °C", "Q total = 309,1 kJ"]
+
+- id: chem_heating_curve_t1_solo_liquido
+  feature: heating_curve
+  tier: 1
+  description: 'Tramo único en fase líquida sin cambios de estado'
+  tinta: true
+  block:
+    type: heating_curve
+    substance: water
+    mass: 50
+    from: 20
+    to: 80
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 280
+    text_contains: ["líquido", "12,5 kJ", "Q total = 12,54 kJ"]
+    text_absent: ["fusión", "vaporización", "Tf", "Teb"]
+
+- id: chem_heating_curve_t1_custom_etanol
+  feature: heating_curve
+  tier: 1
+  description: 'Sustancia personalizada (etanol) con todos los parámetros térmicos explícitos'
+  tinta: true
+  block:
+    type: heating_curve
+    title: Calentamiento de etanol
+    substance: etanol
+    mass: 200
+    from: -120
+    to: 90
+    melting: -114
+    boiling: 78
+    cpSolid: 1.5
+    cpLiquid: 2.44
+    cpGas: 1.4
+    hFusion: 109
+    hVaporization: 841
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 300
+    text_contains: ["Calentamiento de etanol", "Tf = -114 °C", "Teb = 78 °C", "sólido", "fusión", "líquido", "vaporización", "gas"]
+
+- id: chem_heating_curve_t1_sin_calores_ni_total_color
+  feature: heating_curve
+  tier: 1
+  description: 'Oculta valores `showHeat: false` y `showTotal: false` en modo color'
+  tinta: false
+  block:
+    type: heating_curve
+    substance: water
+    showHeat: false
+    showTotal: false
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 280
+    text_contains: ["Q (kJ)", "sólido", "fusión", "líquido", "vaporización", "gas"]
+    text_absent: ["4,18 kJ", "33,4 kJ", "41,8 kJ", "226 kJ", "4,02 kJ", "Q total"]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: chem_heating_curve_t1_solo_solido_y_fusion
+  feature: heating_curve
+  tier: 1
+  description: 'Calentamiento parcial cubriendo sólido, fusión y líquido'
+  tinta: true
+  block:
+    type: heating_curve
+    substance: water
+    mass: 100
+    from: -10
+    to: 40
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 280
+    text_contains: ["sólido", "fusión", "líquido", "Tf = 0 °C"]
+    text_absent: ["vaporización", "gas", "Teb"]
+
+- id: chem_heating_curve_t2_borde_melting_a_boiling
+  feature: heating_curve
+  tier: 2
+  description: 'Borde exacto `from == melting` (0) y `to == boiling` (100): solo fusión y líquido'
+  tinta: true
+  block:
+    type: heating_curve
+    substance: water
+    mass: 100
+    from: 0
+    to: 100
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 280
+    text_contains: ["fusión", "33,4 kJ", "líquido", "41,8 kJ", "Q total = 75,2 kJ"]
+    text_absent: ["sólido", "vaporización", "gas"]
+
+- id: chem_heating_curve_t2_blank_fases_y_calores
+  feature: heating_curve
+  tier: 2
+  description: 'Fixture `calentamiento-blanco`: oculta nombres de fase y valores de calor'
+  tinta: true
+  block:
+    type: heating_curve
+    substance: water
+    mass: 50
+    from: -10
+    to: 110
+    blankHeat: true
+    blankPhases: true
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 280
+    text_contains: ["Q (kJ)", "Q total =", "Tf = 0 °C", "Teb = 100 °C"]
+    text_absent: ["sólido", "fusión", "líquido", "vaporización", "gas", "1,04 kJ", "16,7 kJ", "20,9 kJ", "113 kJ", "152,5 kJ"]
+    svg_contains: ["stroke-dasharray=\"3 2\""]
+
+- id: chem_heating_curve_t2_masa_pequena_inksaver
+  feature: heating_curve
+  tier: 2
+  description: 'Masa pequeña (`0.5 g`) con override `inkSaver: true` sobre `tinta: false`'
+  tinta: false
+  block:
+    type: heating_curve
+    substance: water
+    mass: 0.5
+    from: 10
+    to: 20
+    inkSaver: true
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 280
+    text_contains: ["Q total = 0,0209 kJ"]
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: chem_heating_curve_t2_err_from_mayor_to
+  feature: heating_curve
+  tier: 2
+  description: 'Error controlado cuando `from >= to`'
+  block:
+    type: heating_curve
+    from: 50
+    to: 10
+  expect:
+    ok: false
+    error_contains: "from < to"
+
+- id: chem_heating_curve_t2_err_melting_mayor_boiling
+  feature: heating_curve
+  tier: 2
+  description: 'Error controlado cuando `melting >= boiling`'
+  block:
+    type: heating_curve
+    melting: 120
+    boiling: 100
+  expect:
+    ok: false
+    error_contains: "melting < boiling"
+
+- id: chem_heating_curve_t2_err_sustancia_sin_datos
+  feature: heating_curve
+  tier: 2
+  description: 'Error controlado para sustancia desconocida sin parámetros térmicos'
+  block:
+    type: heating_curve
+    substance: benceno
+  expect:
+    ok: false
+    error_contains: "faltan datos"
+
+- id: chem_heating_curve_t2_err_masa_no_positiva
+  feature: heating_curve
+  tier: 2
+  description: 'Error controlado cuando `mass <= 0`'
+  block:
+    type: heating_curve
+    mass: 0
+  expect:
+    ok: false
+    error_contains: "tiene que ser positivo"
+
+# ===========================================================================
+# 11. spectrum (5 Tier 1 + 7 Tier 2 = 12 casos)
+# ===========================================================================
+- id: chem_spectrum_t1_ir_acido
+  feature: spectrum
+  tier: 1
+  description: 'Fixture `ir-acido`: espectro IR con banda ancha O–H y picos C=O, C–O'
+  tinta: true
+  block:
+    type: spectrum
+    kind: ir
+    title: Espectro IR de un ácido carboxílico
+    peaks:
+      - {at: 3000, depth: 0.75, broad: true, width: 500, label: "O–H"}
+      - {at: 2950, depth: 0.35}
+      - {at: 1710, depth: 0.85, label: "C=O"}
+      - {at: 1280, depth: 0.55, label: "C–O"}
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 280
+    text_contains: ["Espectro IR de un ácido carboxílico", "número de onda (cm⁻¹)", "transmitancia (%)", "O–H", "C=O", "C–O", "1000", "2000", "3000", "4000"]
+
+- id: chem_spectrum_t1_nmr_etanol
+  feature: spectrum
+  tier: 1
+  description: 'Fixture `rmn-etanol`: ¹H-RMN con TMS, triplete, cuadruplete y singulete'
+  tinta: true
+  block:
+    type: spectrum
+    kind: nmr
+    title: ¹H-RMN del etanol
+    tms: true
+    signals:
+      - {shift: 1.22, integration: 3, neighbors: 2, J: 7, label: "a"}
+      - {shift: 3.69, integration: 2, neighbors: 3, J: 7, label: "b"}
+      - {shift: 2.6, integration: 1, multiplicity: s, label: "c"}
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 280
+    text_contains: ["¹H-RMN del etanol", "δ (ppm)", "RMN de ¹H, 400 MHz", "TMS", "a 3H", "b 2H", "c 1H"]
+
+- id: chem_spectrum_t1_c13_acetato
+  feature: spectrum
+  tier: 1
+  description: 'Fixture `c13-acetato`: ¹³C-RMN con picos simples y fórmulas con subíndices'
+  tinta: true
+  block:
+    type: spectrum
+    kind: c13
+    signals:
+      - {shift: 171, label: "C=O"}
+      - {shift: 60.4, label: "OCH2"}
+      - {shift: 21, label: "CH3CO"}
+      - {shift: 14.2, label: "CH3"}
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 260
+    text_contains: ["RMN de ¹³C", "C=O", "OCH2", "CH3CO", "CH3"]
+
+- id: chem_spectrum_t1_uv_dos_bandas_color
+  feature: spectrum
+  tier: 1
+  description: 'Fixture `uv` ampliado: UV-vis con etiqueta automática λmáx y personalizada en paleta color'
+  tinta: false
+  block:
+    type: spectrum
+    kind: uv
+    bands:
+      - {at: 254, absorbance: 0.9, width: 18}
+      - {at: 430, absorbance: 0.35, width: 40, label: "n→π*"}
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 260
+    text_contains: ["λ (nm)", "absorbancia", "λmáx = 254 nm", "n→π*"]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: chem_spectrum_t1_ms_etanol
+  feature: spectrum
+  tier: 1
+  description: 'Fixture `masas`: espectro de masas normalizado a pico base 100 %'
+  tinta: true
+  block:
+    type: spectrum
+    kind: ms
+    title: Masas del etanol
+    peaks:
+      - {mz: 46, intensity: 20, label: "M⁺"}
+      - {mz: 45, intensity: 45}
+      - {mz: 31, intensity: 100, label: "pico base"}
+      - {mz: 29, intensity: 25}
+      - {mz: 27, intensity: 20}
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 280
+    text_contains: ["Masas del etanol", "m/z", "intensidad relativa (%)", "46 M⁺", "31 pico base"]
+
+- id: chem_spectrum_t2_nmr_sin_integracion_blank
+  feature: spectrum
+  tier: 2
+  description: 'NMR 600 MHz con `shift > 12`, `showIntegration: false` y `blankLabels: true`'
+  tinta: true
+  block:
+    type: spectrum
+    kind: nmr
+    MHz: 600
+    showIntegration: false
+    blankLabels: true
+    signals:
+      - {shift: 13.5, multiplicity: sept, integration: 1, label: "CH"}
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 260
+    text_contains: ["RMN de ¹H, 600 MHz"]
+    text_absent: ["1H", "CH"]
+    svg_contains: ["stroke-dasharray=\"3 2\""]
+
+- id: chem_spectrum_t2_ir_colision_etiquetas_inksaver
+  feature: spectrum
+  tier: 2
+  description: 'IR con picos cercanos (evita colisión de etiquetas) y override `inkSaver: true`'
+  tinta: false
+  block:
+    type: spectrum
+    kind: ir
+    inkSaver: true
+    peaks:
+      - {at: 1710, label: "C=O"}
+      - {at: 1690, label: "C=N"}
+      - {at: 1670, label: "C=C"}
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 260
+    text_contains: ["C=O", "C=N", "C=C"]
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: chem_spectrum_t2_c13_shift_alto_tms
+  feature: spectrum
+  tier: 2
+  description: '¹³C-RMN con `shift: 250` (auto-expansión), `intensity > 1` recortada y `tms: true`'
+  tinta: true
+  block:
+    type: spectrum
+    kind: c13
+    tms: true
+    signals:
+      - {shift: 250, intensity: 1.5, label: "C=O"}
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 260
+    text_contains: ["RMN de ¹³C", "TMS", "C=O"]
+
+- id: chem_spectrum_t2_err_kind_invalido
+  feature: spectrum
+  tier: 2
+  description: 'Error controlado para `kind` desconocido (`raman`)'
+  block:
+    type: spectrum
+    kind: raman
+    peaks:
+      - {at: 1}
+  expect:
+    ok: false
+    error_contains: "kind 'raman'"
+
+- id: chem_spectrum_t2_err_multiplicidad_invalida
+  feature: spectrum
+  tier: 2
+  description: 'Error controlado para multiplicidad desconocida (`x`) en NMR'
+  block:
+    type: spectrum
+    kind: nmr
+    signals:
+      - {shift: 1, multiplicity: x}
+  expect:
+    ok: false
+    error_contains: "multiplicidad"
+
+- id: chem_spectrum_t2_err_peaks_vacio
+  feature: spectrum
+  tier: 2
+  description: 'Error controlado cuando `peaks` está vacío en IR'
+  block:
+    type: spectrum
+    kind: ir
+    peaks: []
+  expect:
+    ok: false
+    error_contains: "falta peaks"
+
+- id: chem_spectrum_t2_err_signal_no_dict
+  feature: spectrum
+  tier: 2
+  description: 'Error controlado cuando un ítem de `peaks` en MS no es un diccionario'
+  block:
+    type: spectrum
+    kind: ms
+    peaks: [31]
+  expect:
+    ok: false
+    error_contains: "un diccionario"
+
+# ===========================================================================
+# 12. galvanic_cell (5 Tier 1 + 7 Tier 2 = 12 casos)
+# ===========================================================================
+- id: chem_galvanic_cell_t1_daniell_nernst_deltag
+  feature: galvanic_cell
+  tier: 1
+  description: 'Fixture `pila-daniell`: ordena por E0, calcula Nernst 25 °C y ΔG°'
+  tinta: true
+  block:
+    type: galvanic_cell
+    title: Pila de Daniell
+    halfCells:
+      - {couple: "Cu^2+/Cu", E0: 0.34, n: 2, conc: 1}
+      - {couple: "Zn^2+/Zn", E0: -0.76, n: 2, conc: 0.01}
+    showDeltaG: true
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 300
+    text_contains: ["Pila de Daniell", "Ánodo (−)", "Cátodo (+)", "E° = 1,10 V", "Zn(s) | Zn2+ (0,01 M) || Cu2+ (1 M) | Cu(s)", "E (Nernst, 25 °C) = 1,159 V", "ΔG° = -212,3 kJ/mol", "puente salino (KNO3)", "K+", "NO3−"]
+
+- id: chem_galvanic_cell_t1_distinto_n_puente_dict
+  feature: galvanic_cell
+  tier: 1
+  description: 'Estequiometría asimétrica (`n=1` y `n=2`) con puente salino personalizado `NaCl`'
+  tinta: true
+  block:
+    type: galvanic_cell
+    halfCells:
+      - {couple: "Ag^+/Ag", E0: 0.80, n: 1, conc: 0.1}
+      - {couple: "Cu^2+/Cu", E0: 0.34, n: 2, conc: 1}
+    saltBridge: {name: NaCl, cation: "Na^+", anion: "Cl^-"}
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 280
+    text_contains: ["E° = 0,46 V", "E (Nernst, 25 °C) = 0,401 V", "puente salino (NaCl)", "Na+", "Cl−"]
+
+- id: chem_galvanic_cell_t1_electrodo_inerte_pt
+  feature: galvanic_cell
+  tier: 1
+  description: 'Semiceldas con electrodos inertes de Pt y notación de celda con Pt(s)'
+  tinta: true
+  block:
+    type: galvanic_cell
+    anode: {couple: "H^+/H2", E0: 0.0, n: 2, electrode: Pt, solution: "HCl 1 M"}
+    cathode: {couple: "Fe^3+/Fe^2+", E0: 0.77, n: 1, electrode: Pt, solution: "Fe^3+/Fe^2+ 1 M"}
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 280
+    text_contains: ["Pt", "HCl 1 M", "E° = 0,77 V", "Pt(s) | H+ (1 M) || Fe3+ (1 M) | Pt(s)"]
+
+- id: chem_galvanic_cell_t1_sin_iones_ni_notacion_color
+  feature: galvanic_cell
+  tier: 1
+  description: 'Oculta iones del puente y notación (`showIons: false`, `showNotation: false`) en color'
+  tinta: false
+  block:
+    type: galvanic_cell
+    halfCells:
+      - {couple: "Ni^2+/Ni", E0: -0.25}
+      - {couple: "Pb^2+/Pb", E0: -0.13}
+    showIons: false
+    showNotation: false
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 260
+    text_contains: ["E° = 0,12 V", "Ánodo (−)"]
+    text_absent: ["Notación:", "K+", "NO3−"]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: chem_galvanic_cell_t1_solo_una_conc_sin_nernst
+  feature: galvanic_cell
+  tier: 1
+  description: 'Cuando solo una semicelda tiene `conc`, no dibuja Nernst'
+  tinta: true
+  block:
+    type: galvanic_cell
+    halfCells:
+      - {couple: "Zn^2+/Zn", E0: -0.76, conc: 0.1}
+      - {couple: "Cu^2+/Cu", E0: 0.34}
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 280
+    text_contains: ["Zn2+ 0,1 M", "Cu2+ 1 M"]
+    text_absent: ["Nernst"]
+
+- id: chem_galvanic_cell_t2_todos_los_blank
+  feature: galvanic_cell
+  tier: 2
+  description: 'Fixture `pila-blanco` ampliado con todos los `blank*` activados'
+  tinta: true
+  block:
+    type: galvanic_cell
+    halfCells:
+      - {couple: "Ag^+/Ag", E0: 0.80, n: 1, conc: 0.5}
+      - {couple: "Cu^2+/Cu", E0: 0.34, n: 2, conc: 0.5}
+    showDeltaG: true
+    blankPolarity: true
+    blankPotential: true
+    blankReactions: true
+    blankFlow: true
+    blankNotation: true
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 280
+    text_contains: ["E° =", "Notación:", "E (Nernst, 25 °C) =", "ΔG° ="]
+    text_absent: ["Ánodo", "Cátodo", "oxidación", "reducción", "0,46", "e⁻"]
+    svg_contains: ["stroke-dasharray=\"3 2\""]
+
+- id: chem_galvanic_cell_t2_reordenamiento_invertido_inksaver
+  feature: galvanic_cell
+  tier: 2
+  description: 'Reordenamiento automático cuando `anode` tiene mayor `E0` que `cathode`, más `inkSaver: true`'
+  tinta: false
+  block:
+    type: galvanic_cell
+    anode: {couple: "Cu^2+/Cu", E0: 0.34}
+    cathode: {couple: "Zn^2+/Zn", E0: -0.76}
+    inkSaver: true
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 280
+    text_contains: ["E° = 1,10 V", "Ánodo (−)", "Cátodo (+)"]
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: chem_galvanic_cell_t2_potenciales_iguales_e0_cero
+  feature: galvanic_cell
+  tier: 2
+  description: 'Celda de concentración (`E° = 0,00 V` y Nernst > 0)'
+  tinta: true
+  block:
+    type: galvanic_cell
+    halfCells:
+      - {couple: "Cu^2+/Cu", E0: 0.34, conc: 0.01}
+      - {couple: "Cu^2+/Cu", E0: 0.34, conc: 1}
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 280
+    text_contains: ["E° = 0,00 V", "E (Nernst, 25 °C) = 0,059 V"]
+
+- id: chem_galvanic_cell_t2_err_couple_sin_barra
+  feature: galvanic_cell
+  tier: 2
+  description: 'Error controlado cuando `couple` no tiene formato `ox/red`'
+  block:
+    type: galvanic_cell
+    halfCells:
+      - {couple: Zn, E0: 1}
+      - {couple: "Cu^2+/Cu", E0: 0.34}
+  expect:
+    ok: false
+    error_contains: "oxidada/reducida"
+
+- id: chem_galvanic_cell_t2_err_falta_semicelda
+  feature: galvanic_cell
+  tier: 2
+  description: 'Error controlado cuando `halfCells` tiene menos de 2 semiceldas'
+  block:
+    type: galvanic_cell
+    halfCells:
+      - {couple: "Cu^2+/Cu", E0: 0.34}
+  expect:
+    ok: false
+    error_contains: "dos semiceldas"
+
+- id: chem_galvanic_cell_t2_err_n_cero
+  feature: galvanic_cell
+  tier: 2
+  description: 'Error controlado cuando `n < 1`'
+  block:
+    type: galvanic_cell
+    halfCells:
+      - {couple: "Cu^2+/Cu", E0: 0.34, n: 0}
+      - {couple: "Zn^2+/Zn", E0: -0.76}
+  expect:
+    ok: false
+    error_contains: "al menos 1"
+
+- id: chem_galvanic_cell_t2_err_conc_no_positiva
+  feature: galvanic_cell
+  tier: 2
+  description: 'Error controlado cuando `conc <= 0`'
+  block:
+    type: galvanic_cell
+    halfCells:
+      - {couple: "Cu^2+/Cu", E0: 0.34, conc: -0.1}
+      - {couple: "Zn^2+/Zn", E0: -0.76}
+  expect:
+    ok: false
+    error_contains: "tiene que ser positivo"
+
+# ===========================================================================
+# 13. unit_cell (6 Tier 1 + 6 Tier 2 = 12 casos)
+# ===========================================================================
+- id: chem_unit_cell_t1_fcc_cu_densidad
+  feature: unit_cell
+  tier: 1
+  description: 'Fixture `celda-fcc`: cobre fcc con parámetro de red y densidad calculada'
+  tinta: true
+  block:
+    type: unit_cell
+    title: Cobre (fcc)
+    lattice: fcc
+    element: Cu
+    a: 361.5
+    molarMass: 63.55
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 220
+    text_contains: ["Cobre (fcc)", "Red cúbica centrada en las caras", "Cu:", "8 × 1/8 + 6 × 1/2 = 4", "Número de coordinación = 12", "Empaquetamiento = 74 %", "a = 2√2 r", "a = 361,5 pm; M = 63,55 g/mol", "ρ = 8,94 g/cm³"]
+
+- id: chem_unit_cell_t1_sc_po
+  feature: unit_cell
+  tier: 1
+  description: 'Fixture `celda-sc`: celda cúbica simple del polonio'
+  tinta: true
+  block:
+    type: unit_cell
+    lattice: sc
+    element: Po
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 200
+    text_contains: ["Red cúbica simple", "Po:", "8 × 1/8 = 1", "Número de coordinación = 6", "Empaquetamiento = 52,4 %", "a = 2r"]
+
+- id: chem_unit_cell_t1_bcc_fe_color
+  feature: unit_cell
+  tier: 1
+  description: 'Celda bcc del hierro en paleta color'
+  tinta: false
+  block:
+    type: unit_cell
+    lattice: bcc
+    element: Fe
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 200
+    text_contains: ["Red cúbica centrada en el cuerpo", "Fe:", "8 × 1/8 + 1 = 2", "Número de coordinación = 8", "Empaquetamiento = 68 %", "a = 4r/√3"]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: chem_unit_cell_t1_nacl_densidad
+  feature: unit_cell
+  tier: 1
+  description: 'Fixture `celda-nacl`: red iónica NaCl con densidad y sin fila de empaquetamiento'
+  tinta: true
+  block:
+    type: unit_cell
+    lattice: nacl
+    a: 564
+    molarMass: 58.44
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 200
+    text_contains: ["Red tipo NaCl", "Cl−:", "8 × 1/8 + 6 × 1/2 = 4", "Na+:", "12 × 1/4 + 1 = 4", "Número de coordinación = 6:6", "a = 2(r₊ + r₋)", "ρ = 2,16 g/cm³"]
+    text_absent: ["Empaquetamiento"]
+
+- id: chem_unit_cell_t1_cscl_species_custom
+  feature: unit_cell
+  tier: 1
+  description: 'Red tipo CsCl con especies custom `Br^-` y `Cs^+`'
+  tinta: true
+  block:
+    type: unit_cell
+    lattice: cscl
+    species: ["Br^-", "Cs^+"]
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 200
+    text_contains: ["Red tipo CsCl", "Br−:", "8 × 1/8 = 1", "Cs+:", "1 = 1", "Número de coordinación = 8:8", "a√3 = 2(r₊ + r₋)"]
+
+- id: chem_unit_cell_t1_cscl_default
+  feature: unit_cell
+  tier: 1
+  description: 'Fixture `celda-cscl`: red CsCl con especies por defecto (`Cl−`, `Cs+`)'
+  tinta: true
+  block:
+    type: unit_cell
+    lattice: cscl
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 200
+    text_contains: ["Red tipo CsCl", "Cl−:", "8 × 1/8 = 1", "Cs+:", "1 = 1", "Cl−", "Cs+", "Número de coordinación = 8:8", "a√3 = 2(r₊ + r₋)"]
+
+- id: chem_unit_cell_t2_blank_true_bcc
+  feature: unit_cell
+  tier: 2
+  description: 'Fixture `celda-bcc-blanco` ampliado con densidad oculta por `blank: true`'
+  tinta: true
+  block:
+    type: unit_cell
+    lattice: bcc
+    element: Fe
+    a: 286.6
+    molarMass: 55.85
+    blank: true
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 200
+    text_contains: ["Número de coordinación =", "Empaquetamiento =", "ρ =", "a = 286,6 pm; M = 55,85 g/mol"]
+    text_absent: ["8 × 1/8 + 1", "68 %", "7,88"]
+    svg_contains: ["stroke-dasharray=\"3 2\""]
+
+- id: chem_unit_cell_t2_blank_selectivo
+  feature: unit_cell
+  tier: 2
+  description: 'Modo `blank` selectivo (`["packing", "z"]`) conserva coordinación'
+  tinta: true
+  block:
+    type: unit_cell
+    lattice: fcc
+    element: Ag
+    blank: [packing, z]
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 200
+    text_contains: ["Número de coordinación = 12", "Empaquetamiento ="]
+    text_absent: ["74 %", "8 × 1/8"]
+    svg_contains: ["stroke-dasharray=\"3 2\""]
+
+- id: chem_unit_cell_t2_solo_a_sin_molar_mass_inksaver
+  feature: unit_cell
+  tier: 2
+  description: 'Con `a` sin `molarMass` omite densidad; respeta override `inkSaver: true`'
+  tinta: false
+  block:
+    type: unit_cell
+    lattice: fcc
+    element: Al
+    a: 405
+    inkSaver: true
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 200
+    text_contains: ["Al:", "Número de coordinación = 12"]
+    text_absent: ["405 pm", "ρ ="]
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: chem_unit_cell_t2_err_red_invalida
+  feature: unit_cell
+  tier: 2
+  description: 'Error controlado para red cristalina desconocida (`hcp`)'
+  block:
+    type: unit_cell
+    lattice: hcp
+  expect:
+    ok: false
+    error_contains: "red 'hcp'"
+
+- id: chem_unit_cell_t2_err_a_no_positivo
+  feature: unit_cell
+  tier: 2
+  description: 'Error controlado cuando `a <= 0`'
+  block:
+    type: unit_cell
+    lattice: fcc
+    a: 0
+    molarMass: 63.55
+  expect:
+    ok: false
+    error_contains: "a (pm): tiene que ser positivo"
+
+- id: chem_unit_cell_t2_err_molar_mass_negativa
+  feature: unit_cell
+  tier: 2
+  description: 'Error controlado cuando `molarMass <= 0`'
+  block:
+    type: unit_cell
+    lattice: fcc
+    a: 361.5
+    molarMass: -10
+  expect:
+    ok: false
+    error_contains: "molarMass (g/mol): tiene que ser positivo"

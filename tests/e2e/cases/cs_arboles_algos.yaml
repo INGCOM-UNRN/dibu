@@ -1,0 +1,1763 @@
+# Suite E2E CS Árboles y Algoritmos: 9 tipos (call_stack, call_tree, tree, struct, adt, complexity, flowchart, cost_table, trace_table).
+# >= 5 Tier 1 + >= 5 Tier 2 por tipo (102 casos totales).
+# Derivado de `alucarD/generador_examenes/diagramas.py` y `alucarD/tests/test_diagramas.py`.
+
+# ===========================================================================
+# 1. call_stack (5 Tier 1 + 6 Tier 2 = 11 casos)
+# ===========================================================================
+- id: cs_call_stack_t1_marcos_dirs_punteros
+  feature: call_stack
+  tier: 1
+  description: 'Pila de llamadas LP64 con showAddresses, showTypes, returnTo y 2 punteros entre marcos'
+  tinta: true
+  block:
+    type: call_stack
+    showAddresses: true
+    showTypes: true
+    frames:
+      - function: main
+        vars:
+          - {name: a, value: 3, type: int}
+          - {name: b, value: 7, type: int}
+      - function: intercambiar
+        returnTo: main
+        params:
+          - {name: x, value: "&a", type: "int *"}
+          - {name: y, value: "&b", type: "int *"}
+        vars: ["aux = 3"]
+    pointers: "1.x -> 0.a; intercambiar.y -> main.b"
+  expect:
+    ok: true
+    min_width: 240
+    min_height: 200
+    text_contains: ["intercambiar(x, y)", "main()", "vuelve a main", "int * x", "&a", "0x7FFC", "0x7FF8", "0x7FF0", "0x7FE8", "0x7FE4", "base de la pila"]
+    svg_contains: ["marker-end", "&amp;a"]
+
+- id: cs_call_stack_t1_steps_popped_color
+  feature: call_stack
+  tier: 1
+  description: 'Evolución en el tiempo con steps, returns y marco popped punteado en modo color'
+  tinta: false
+  block:
+    type: call_stack
+    steps:
+      - label: "llama a fact(2)"
+        frames:
+          - {function: main, vars: {r: "?"}}
+          - {function: fact, params: {n: 2}}
+      - label: "fact(1) devuelve 1"
+        frames:
+          - {function: main, vars: {r: "?"}}
+          - {function: fact, params: {n: 2}}
+          - {function: fact, params: {n: 1}, returns: 1, popped: true}
+  expect:
+    ok: true
+    min_width: 330
+    min_height: 180
+    text_contains: ["llama a fact(2)", "fact(1) devuelve 1", "devolvió 1", "fact(n)"]
+    svg_contains: ["#1d4ed8", 'stroke-dasharray="5 3"']
+
+- id: cs_call_stack_t1_sin_direcciones_ni_tipos
+  feature: call_stack
+  tier: 1
+  description: 'Pila de llamadas sin direcciones ni tipos con label superior y valores compuestos'
+  tinta: true
+  block:
+    type: call_stack
+    label: "Estado inicial"
+    frames:
+      - function: procesar
+        vars:
+          a: 10
+          ok: true
+          arr: [1, 2]
+  expect:
+    ok: true
+    min_width: 140
+    min_height: 120
+    text_contains: ["Estado inicial", "procesar()", "10", "true", "[1, 2]"]
+    text_absent: ["0x7FFC"]
+
+- id: cs_call_stack_t1_vars_con_addr_y_size
+  feature: call_stack
+  tier: 1
+  description: 'Variables con addr explícita, size personalizado y typeSize=8'
+  tinta: true
+  block:
+    type: call_stack
+    showAddresses: true
+    baseAddr: "0x9000"
+    typeSize: 8
+    frames:
+      - function: leer
+        vars:
+          - {name: buf, value: "ok", size: 16, addr: "0x8000"}
+          - {name: p, value: "&buf", type: "char *"}
+  expect:
+    ok: true
+    min_width: 190
+    min_height: 120
+    text_contains: ["leer()", "0x8000", "0x7FF8", "buf", "ok", "p"]
+
+- id: cs_call_stack_t1_pointers_lista_recursivo
+  feature: call_stack
+  tier: 1
+  description: 'Punteros en formato lista YAML desambiguando marcos homónimos por índice'
+  tinta: false
+  block:
+    type: call_stack
+    frames:
+      - function: f
+        vars: {x: 1}
+      - function: f
+        vars: {p: "&x"}
+    pointers: ["1.p -> 0.x"]
+  expect:
+    ok: true
+    min_width: 150
+    min_height: 150
+    text_contains: ["f()", "base de la pila"]
+    svg_contains: ["#1d4ed8", "marker-end"]
+
+- id: cs_call_stack_t2_marco_sin_variables
+  feature: call_stack
+  tier: 2
+  description: 'Marco sin parámetros ni variables locales muestra (sin variables)'
+  tinta: true
+  block:
+    type: call_stack
+    showAddresses: true
+    frames:
+      - function: vacia
+  expect:
+    ok: true
+    min_width: 150
+    min_height: 80
+    text_contains: ["vacia()", "(sin variables)", "base de la pila"]
+
+- id: cs_call_stack_t2_blank_values_y_addrs
+  feature: call_stack
+  tier: 2
+  description: 'Modo en blanco oculta valores de variables y direcciones con 0x____'
+  tinta: true
+  block:
+    type: call_stack
+    showAddresses: true
+    blankValues: true
+    blankAddrs: true
+    frames:
+      - function: main
+        vars:
+          - {name: secreto, value: 77, type: int}
+  expect:
+    ok: true
+    min_width: 200
+    min_height: 100
+    text_contains: ["main()", "secreto", "0x____"]
+    text_absent: ["77", "0x7FFC"]
+    svg_contains: ['stroke-dasharray="3 2"']
+
+- id: cs_call_stack_t2_rotulos_largos_utf8_ink_saver
+  feature: call_stack
+  tier: 2
+  description: 'Rótulos largos en steps no se pisan, UTF-8 en título y override inkSaver=true'
+  tinta: false
+  block:
+    type: call_stack
+    inkSaver: true
+    title: "Pila en ejecución — ñ/á"
+    steps:
+      - label: "segunda llamada, antes de c++"
+        frames: [{function: f}]
+      - label: "segunda llamada, antes de c++"
+        frames: [{function: f}]
+  expect:
+    ok: true
+    min_width: 440
+    min_height: 140
+    text_contains: ["Pila en ejecución — ñ/á", "segunda llamada, antes de c++"]
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: cs_call_stack_t2_err_frames_vacio
+  feature: call_stack
+  tier: 2
+  description: 'Error cuando frames es lista vacía'
+  block:
+    type: call_stack
+    frames: []
+  expect:
+    ok: false
+    error_contains: "lista de marcos"
+
+- id: cs_call_stack_t2_err_puntero_var_inexistente
+  feature: call_stack
+  tier: 2
+  description: 'Error cuando pointers refiere a una variable inexistente en el marco'
+  block:
+    type: call_stack
+    frames:
+      - function: main
+        vars: {x: 1}
+    pointers: "0.x -> 0.z"
+  expect:
+    ok: false
+    error_contains: "no tiene la variable 'z'"
+
+- id: cs_call_stack_t2_err_max_steps
+  feature: call_stack
+  tier: 2
+  description: 'Error cuando steps supera el máximo permitido de 8 momentos'
+  block:
+    type: call_stack
+    steps:
+      - {frames: [{function: main}]}
+      - {frames: [{function: main}]}
+      - {frames: [{function: main}]}
+      - {frames: [{function: main}]}
+      - {frames: [{function: main}]}
+      - {frames: [{function: main}]}
+      - {frames: [{function: main}]}
+      - {frames: [{function: main}]}
+      - {frames: [{function: main}]}
+  expect:
+    ok: false
+    error_contains: "el máximo es 8"
+
+# ===========================================================================
+# 2. call_tree (5 Tier 1 + 6 Tier 2 = 11 casos)
+# ===========================================================================
+- id: cs_call_tree_t1_fib3_orden_y_highlight
+  feature: call_tree
+  tier: 1
+  description: 'Árbol de llamadas fib(3) con orden de preorden, retornos y nodos resaltados'
+  tinta: true
+  block:
+    type: call_tree
+    showOrder: true
+    highlight: ["fib(3)", "fib(1)"]
+    root:
+      call: "fib(3)"
+      returns: 2
+      children:
+        - call: "fib(2)"
+          returns: 1
+          children:
+            - {call: "fib(1)", returns: 1}
+            - {call: "fib(0)", returns: 0}
+        - {call: "fib(1)", returns: 1}
+  expect:
+    ok: true
+    min_width: 220
+    min_height: 180
+    text_contains: ["fib(3)", "→ 2", "1", "2", "3", "4", "5"]
+    svg_contains: ["#e2e8f0"]
+
+- id: cs_call_tree_t1_costos_nivel_y_total_color
+  feature: call_tree
+  tier: 1
+  description: 'Árbol de llamadas en modo color con costos por nivel y fórmula T(n)'
+  tinta: false
+  block:
+    type: call_tree
+    levelCosts: ["c", "2c", "2c"]
+    total: "2^n"
+    root:
+      call: "fib(3)"
+      returns: 2
+      children:
+        - call: "fib(2)"
+          returns: 1
+          children:
+            - {call: "fib(1)", returns: 1}
+            - {call: "fib(0)", returns: 0}
+        - {call: "fib(1)", returns: 1}
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 200
+    text_contains: ["costo del nivel", "2c", "T(n) = 2^n"]
+    svg_contains: ["#1d4ed8"]
+
+- id: cs_call_tree_t1_sin_retornos
+  feature: call_tree
+  tier: 1
+  description: 'Árbol de llamadas sin retornos usando hijos escalares'
+  tinta: true
+  block:
+    type: call_tree
+    root:
+      call: "merge(0,3)"
+      children: ["merge(0,1)", "merge(2,3)"]
+  expect:
+    ok: true
+    min_width: 180
+    min_height: 100
+    text_contains: ["merge(0,3)", "merge(0,1)", "merge(2,3)"]
+    text_absent: ["→"]
+
+- id: cs_call_tree_t1_nodo_escalar_unico
+  feature: call_tree
+  tier: 1
+  description: 'Árbol de llamadas con un único nodo escalar en root'
+  tinta: true
+  block:
+    type: call_tree
+    root: "f(0)"
+  expect:
+    ok: true
+    min_width: 60
+    min_height: 50
+    text_contains: ["f(0)"]
+
+- id: cs_call_tree_t1_title_subtitle_blank_returns
+  feature: call_tree
+  tier: 1
+  description: 'Árbol de llamadas con título, subtítulo y blankReturns=true en color'
+  tinta: false
+  block:
+    type: call_tree
+    title: "Recursión"
+    subtitle: "Completar retornos"
+    blankReturns: true
+    root:
+      call: "fib(3)"
+      returns: 2
+      children:
+        - {call: "fib(2)", returns: 1}
+        - {call: "fib(1)", returns: 1}
+  expect:
+    ok: true
+    min_width: 140
+    min_height: 160
+    text_contains: ["Recursión", "Completar retornos", "fib(3)", "→"]
+    text_absent: ["→ 2"]
+    svg_contains: ["#1d4ed8", 'stroke-dasharray="3 2"']
+
+- id: cs_call_tree_t2_blank_calls_costs_total
+  feature: call_tree
+  tier: 2
+  description: 'Oculta llamadas, costos por nivel y fórmula total simultáneamente'
+  tinta: true
+  block:
+    type: call_tree
+    blankCalls: true
+    blankLevelCosts: true
+    blankTotal: true
+    levelCosts: ["c", "2c"]
+    total: "2^n"
+    root:
+      call: "fib(3)"
+      children: ["fib(2)", "fib(1)"]
+  expect:
+    ok: true
+    min_width: 250
+    min_height: 150
+    text_contains: ["costo del nivel", "T(n) = ________________________"]
+    text_absent: ["fib(3)", "fib(2)", "2c", "2^n"]
+    svg_contains: ['stroke-dasharray="3 2"']
+
+- id: cs_call_tree_t2_nodo_blank_individual_y_utf8
+  feature: call_tree
+  tier: 2
+  description: 'Nodo individual en blanco junto a etiquetas UTF-8'
+  tinta: true
+  block:
+    type: call_tree
+    root:
+      call: "búsqueda(á, ñ)"
+      returns: "sí"
+      children:
+        - {call: "oculta()", blank: true}
+  expect:
+    ok: true
+    min_width: 120
+    min_height: 120
+    text_contains: ["búsqueda(á, ñ)", "→ sí"]
+    text_absent: ["oculta()"]
+    svg_contains: ['stroke-dasharray="3 2"']
+
+- id: cs_call_tree_t2_ink_saver_false_override
+  feature: call_tree
+  tier: 2
+  description: 'Override inkSaver=false sobre tinta=true aplica paleta color'
+  tinta: true
+  block:
+    type: call_tree
+    inkSaver: false
+    root:
+      call: "g(1)"
+      children: ["g(0)"]
+  expect:
+    ok: true
+    min_width: 70
+    min_height: 100
+    text_contains: ["g(1)", "g(0)"]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: cs_call_tree_t2_borde_40_nodos
+  feature: call_tree
+  tier: 2
+  description: 'Límite exacto permitido de 40 nodos en el árbol de llamadas'
+  tinta: true
+  block:
+    type: call_tree
+    root:
+      call: r
+      children: ["c00", "c01", "c02", "c03", "c04", "c05", "c06", "c07", "c08", "c09", "c10", "c11", "c12", "c13", "c14", "c15", "c16", "c17", "c18", "c19", "c20", "c21", "c22", "c23", "c24", "c25", "c26", "c27", "c28", "c29", "c30", "c31", "c32", "c33", "c34", "c35", "c36", "c37", "c38"]
+  expect:
+    ok: true
+    min_width: 2000
+    min_height: 120
+    text_contains: ["r", "c00", "c38"]
+
+- id: cs_call_tree_t2_err_41_nodos
+  feature: call_tree
+  tier: 2
+  description: 'Error al superar el máximo de 40 llamadas (41 nodos)'
+  block:
+    type: call_tree
+    root:
+      call: r
+      children: ["c00", "c01", "c02", "c03", "c04", "c05", "c06", "c07", "c08", "c09", "c10", "c11", "c12", "c13", "c14", "c15", "c16", "c17", "c18", "c19", "c20", "c21", "c22", "c23", "c24", "c25", "c26", "c27", "c28", "c29", "c30", "c31", "c32", "c33", "c34", "c35", "c36", "c37", "c38", "c39"]
+  expect:
+    ok: false
+    error_contains: "el máximo es 40"
+
+- id: cs_call_tree_t2_err_nodo_sin_call
+  feature: call_tree
+  tier: 2
+  description: 'Error cuando el nodo raíz carece de clave call'
+  block:
+    type: call_tree
+    root:
+      returns: 1
+  expect:
+    ok: false
+    error_contains: "call"
+
+# ===========================================================================
+# 3. tree (5 Tier 1 + 6 Tier 2 = 11 casos)
+# ===========================================================================
+- id: cs_tree_t1_bst_insert_con_duplicado
+  feature: tree
+  tier: 1
+  description: 'Árbol binario de búsqueda por inserción ignorando duplicados y con nodos resaltados'
+  tinta: true
+  block:
+    type: tree
+    variant: bst
+    insert: [50, 30, 70, 20, 40, 30]
+    highlight: [30, 70]
+  expect:
+    ok: true
+    min_width: 240
+    min_height: 180
+    text_contains: ["50", "30", "70", "20", "40"]
+    svg_contains: ["#e2e8f0"]
+
+- id: cs_tree_t1_avl_rotaciones_color
+  feature: tree
+  tier: 1
+  description: 'Árbol AVL con rotaciones automáticas y badges de factor de balance en modo color'
+  tinta: false
+  block:
+    type: tree
+    variant: avl
+    insert: [10, 20, 30, 40, 50, 25]
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 180
+    text_contains: ["30", "20", "40", "-1", "0"]
+    svg_contains: ["#1d4ed8"]
+
+- id: cs_tree_t1_heap_con_arreglo
+  feature: tree
+  tier: 1
+  description: 'Montículo (heap) por niveles con índices y arreglo inferior'
+  tinta: true
+  block:
+    type: tree
+    variant: heap
+    values: [90, 70, 80, 30, 50]
+  expect:
+    ok: true
+    min_width: 350
+    min_height: 240
+    text_contains: ["90", "70", "80", "[0]", "[4]", "Valor:"]
+
+- id: cs_tree_t1_node_style_struct
+  feature: tree
+  tier: 1
+  description: 'Árbol binario con nodeStyle=struct mostrando celdas *izq y *der'
+  tinta: true
+  block:
+    type: tree
+    nodeStyle: struct
+    values: ["A", "B", "C"]
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 140
+    text_contains: ["*izq", "*der", "A", "B", "C"]
+    svg_contains: ["marker-end"]
+
+- id: cs_tree_t1_root_anidado_expresion
+  feature: tree
+  tier: 1
+  description: 'Árbol de expresión construido con estructura root anidada en modo color'
+  tinta: false
+  block:
+    type: tree
+    root:
+      value: "+"
+      left: "x"
+      right:
+        value: "*"
+        left: 2
+        right: "y"
+  expect:
+    ok: true
+    min_width: 180
+    min_height: 180
+    text_contains: ["+", "x", "*", "2", "y"]
+    svg_contains: ["#1d4ed8"]
+
+- id: cs_tree_t2_values_huecos_y_null_leaves
+  feature: tree
+  tier: 2
+  description: 'Árbol por niveles con distintos tokens de hueco y hojas NULL explícitas'
+  tinta: true
+  block:
+    type: tree
+    values: ["A", "B", "C", "", "null", "~", "D"]
+    nullLeaves: true
+  expect:
+    ok: true
+    min_width: 240
+    min_height: 200
+    text_contains: ["A", "B", "C", "D", "NULL"]
+    svg_contains: ['stroke-dasharray="3 2"']
+
+- id: cs_tree_t2_avl_blank_balance_y_values
+  feature: tree
+  tier: 2
+  description: 'Árbol AVL en blanco ocultando valores y factores de balance'
+  tinta: true
+  block:
+    type: tree
+    variant: avl
+    insert: [1, 2, 3]
+    blankBalance: true
+    blankValues: true
+  expect:
+    ok: true
+    min_width: 160
+    min_height: 120
+    text_contains: ["__"]
+    text_absent: ["1", "2", "3", "0"]
+    svg_contains: ['stroke-dasharray="3 2"']
+
+- id: cs_tree_t2_heap_sin_arreglo_y_utf8
+  feature: tree
+  tier: 2
+  description: 'Montículo con showArray=false y nodos UTF-8'
+  tinta: true
+  block:
+    type: tree
+    variant: heap
+    values: ["ñ", "á", "ü"]
+    showArray: false
+  expect:
+    ok: true
+    min_width: 160
+    min_height: 140
+    text_contains: ["ñ", "á", "ü", "[0]", "[2]"]
+    text_absent: ["Valor:"]
+
+- id: cs_tree_t2_bst_strings_ink_saver_override
+  feature: tree
+  tier: 2
+  description: 'ABB con ordenamiento lexicográfico de strings y override inkSaver=true'
+  tinta: false
+  block:
+    type: tree
+    variant: bst
+    inkSaver: true
+    insert: ["b", "a", "c"]
+  expect:
+    ok: true
+    min_width: 140
+    min_height: 120
+    text_contains: ["a", "b", "c"]
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: cs_tree_t2_err_vacio_values
+  feature: tree
+  tier: 2
+  description: 'Error cuando values es lista vacía'
+  block:
+    type: tree
+    values: []
+  expect:
+    ok: false
+    error_contains: "no tiene nodos"
+
+- id: cs_tree_t2_err_solo_huecos
+  feature: tree
+  tier: 2
+  description: 'Error cuando todos los elementos de values son huecos nulos'
+  block:
+    type: tree
+    values: ["~", "null", ""]
+  expect:
+    ok: false
+    error_contains: "no tiene nodos"
+
+# ===========================================================================
+# 4. struct (5 Tier 1 + 6 Tier 2 = 11 casos)
+# ===========================================================================
+- id: cs_struct_t1_layout_padding_lp64_y_typedef
+  feature: struct
+  tier: 1
+  description: 'Disposición LP64 GCC con relleno interno y final, valores y typedef'
+  tinta: true
+  block:
+    type: struct
+    name: "struct s"
+    typedef: s_t
+    fields: ["char a = 'A'", "int b = 30", "char c = 'Z'"]
+  expect:
+    ok: true
+    min_width: 270
+    min_height: 220
+    text_contains: ["typedef struct s s_t;", "+0", "+4", "+8", "(relleno)", "3 B", "sizeof(s_t) = 12 bytes | alineación: 4"]
+    svg_contains: ['stroke-dasharray="4 3"']
+
+- id: cs_struct_t1_layout_arrays_punteros_color
+  feature: struct
+  tier: 1
+  description: 'Struct LP64 con arreglos 1D/2D, punteros y modificadores en modo color'
+  tinta: false
+  block:
+    type: struct
+    fields: ["char nombre[10]", "int *p", "const unsigned long x", "short m[2][3]"]
+  expect:
+    ok: true
+    min_width: 350
+    min_height: 200
+    text_contains: ["+0", "+16", "+24", "+32", "10 B", "8 B", "12 B", "sizeof(struct registro) = 48 bytes | alineación: 8"]
+    svg_contains: ["#1d4ed8"]
+
+- id: cs_struct_t1_layout_packed
+  feature: struct
+  tier: 1
+  description: 'Struct empaquetado (packed=true) sin filas de relleno'
+  tinta: true
+  block:
+    type: struct
+    name: "struct empaq"
+    packed: true
+    fields: ["char a", "int b", "char c"]
+  expect:
+    ok: true
+    min_width: 310
+    min_height: 150
+    text_contains: ["+0", "+1", "+5", "sizeof(struct empaq) = 6 bytes (empaquetado)"]
+    text_absent: ["(relleno)"]
+
+- id: cs_struct_t1_layout_show_addresses
+  feature: struct
+  tier: 1
+  description: 'Struct con showAddresses=true y baseAddr explícito'
+  tinta: true
+  block:
+    type: struct
+    showAddresses: true
+    baseAddr: "0x2000"
+    fields: ["char a = x", "int b = 42"]
+  expect:
+    ok: true
+    min_width: 350
+    min_height: 160
+    text_contains: ["dirección", "0x2000", "0x2001", "0x2004", "42", "sizeof(struct registro) = 8 bytes | alineación: 4"]
+    text_absent: ["+0", "+4"]
+
+- id: cs_struct_t1_opaque_3_paneles
+  feature: struct
+  tier: 1
+  description: 'Tipo opaco en C con 3 paneles (.h, cliente .c, implementación .c) en modo color'
+  tinta: false
+  block:
+    type: struct
+    variant: opaque
+    name: "struct pila"
+    typedef: pila_t
+    operations: ["pila_t crear(void)", "void destruir(pila_t p)"]
+    fields: ["int *datos", "size_t tope"]
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 220
+    text_contains: ["pila.h (interfaz pública)", "typedef struct pila *pila_t;", "main.c (cliente)", "pila.c (implementación)", "int *datos;", "el cliente no ve los campos"]
+    svg_contains: ["#1d4ed8", 'stroke-dasharray="6 4"']
+
+- id: cs_struct_t2_anidado_size_align_y_modificadores
+  feature: struct
+  tier: 2
+  description: 'Struct con campo anidado con size/align explícitos y modificadores signed/unsigned/long long'
+  tinta: true
+  block:
+    type: struct
+    fields:
+      - "bool ok"
+      - {name: pos, type: "struct punto", size: 8, align: 4}
+      - "unsigned long long ll"
+  expect:
+    ok: true
+    min_width: 350
+    min_height: 200
+    text_contains: ["+0", "+4", "+16", "sizeof(struct registro) = 24 bytes | alineación: 8"]
+
+- id: cs_struct_t2_todos_los_blank
+  feature: struct
+  tier: 2
+  description: 'Struct con todas las banderas blank* activadas para examen'
+  tinta: true
+  block:
+    type: struct
+    name: "struct s"
+    fields: ["char a = 1", "int b = 2"]
+    blankOffsets: true
+    blankSizes: true
+    blankPadding: true
+    blankValues: true
+    blankSizeof: true
+  expect:
+    ok: true
+    min_width: 220
+    min_height: 120
+    text_contains: ["sizeof(struct s) = ______"]
+    text_absent: ["+0", "+4", "(relleno)", "4 B", "8 bytes", "alineación"]
+    svg_contains: ['stroke-dasharray="3 2"']
+
+- id: cs_struct_t2_opaque_hidden_sin_fields_utf8
+  feature: struct
+  tier: 2
+  description: 'Tipo opaco oculto (hidden=true) sin fields y con etiquetas UTF-8'
+  tinta: true
+  block:
+    type: struct
+    variant: opaque
+    name: "struct árbol"
+    typedef: "árbol_t"
+    hidden: true
+    header: arbol.h
+    source: arbol.c
+    client: uso.c
+  expect:
+    ok: true
+    min_width: 460
+    min_height: 160
+    text_contains: ["arbol.h (interfaz pública)", "uso.c (cliente)", "arbol.c (implementación)", "¿?", "typedef struct árbol *árbol_t;"]
+
+- id: cs_struct_t2_opaque_blank_values
+  feature: struct
+  tier: 2
+  description: 'Tipo opaco con blankValues=true oculta campos en el archivo .c'
+  tinta: true
+  block:
+    type: struct
+    variant: opaque
+    fields: ["int a", "char b"]
+    blankValues: true
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 160
+    text_contains: ["________________"]
+    text_absent: ["int a;"]
+
+- id: cs_struct_t2_err_tipo_desconocido_sin_size
+  feature: struct
+  tier: 2
+  description: 'Error cuando un campo tiene tipo C desconocido y no declara size'
+  block:
+    type: struct
+    fields: ["punto_t p"]
+  expect:
+    ok: false
+    error_contains: "tamaño"
+
+- id: cs_struct_t2_err_17_campos
+  feature: struct
+  tier: 2
+  description: 'Error al superar el máximo de 16 campos en struct'
+  block:
+    type: struct
+    fields: ["int a", "int b", "int c", "int d", "int e", "int f", "int g", "int h", "int i", "int j", "int k", "int l", "int m", "int n", "int o", "int p", "int q"]
+  expect:
+    ok: false
+    error_contains: "máximo es 16"
+
+# ===========================================================================
+# 5. adt (5 Tier 1 + 6 Tier 2 = 11 casos)
+# ===========================================================================
+- id: cs_adt_t1_completo
+  feature: adt
+  tier: 1
+  description: 'TAD completo con cliente, operaciones, clases, pre/post, invariante y representaciones'
+  tinta: true
+  block:
+    type: adt
+    name: Pila
+    operations:
+      - {signature: "pila_t crear(void)", kind: constructor, post: "pila vacía"}
+      - {signature: "bool apilar(pila_t p, int x)", kind: mutador, pre: "p != NULL"}
+    client: ["pila_t p = crear();", "apilar(p, 5);"]
+    invariant: "tope >= 0"
+    representations:
+      - "Arreglo dinámico"
+      - {name: "Lista enlazada", fields: ["nodo_t *cabeza", "size_t cant"]}
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 300
+    text_contains: ["TAD Pila: interfaz", "Cliente: sólo usa las operaciones", "operación", "clase", "pre", "post", "Invariante: tope >= 0", "Representaciones posibles (ocultas para el cliente):", "nodo_t *cabeza"]
+
+- id: cs_adt_t1_minimo_strings_color
+  feature: adt
+  tier: 1
+  description: 'TAD mínimo con firmas en strings en modo color sin columnas opcionales'
+  tinta: false
+  block:
+    type: adt
+    operations: ["void init(void)", "void destroy(void)"]
+  expect:
+    ok: true
+    min_width: 140
+    min_height: 100
+    text_contains: ["TAD TAD: interfaz", "operación", "void init(void)", "void destroy(void)"]
+    text_absent: ["clase", "pre", "post", "Invariante"]
+    svg_contains: ["#1d4ed8"]
+
+- id: cs_adt_t1_solo_pre_y_post_sin_clase
+  feature: adt
+  tier: 1
+  description: 'TAD con pre y post pero sin columna clase'
+  tinta: true
+  block:
+    type: adt
+    name: Cola
+    operations:
+      - {signature: "desencolar(c)", pre: "!vacia(c)", post: "tam' = tam - 1"}
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 100
+    text_contains: ["TAD Cola: interfaz", "pre", "post", "!vacia(c)"]
+    text_absent: ["clase"]
+
+- id: cs_adt_t1_guion_em_no_aplicable
+  feature: adt
+  tier: 1
+  description: 'TAD emite guion largo (—) cuando una operación no define pre/post/kind'
+  tinta: true
+  block:
+    type: adt
+    operations:
+      - {signature: "f()", kind: observador, pre: "p"}
+      - {signature: "g()", post: "q"}
+  expect:
+    ok: true
+    min_width: 240
+    min_height: 100
+    text_contains: ["f()", "g()", "observador", "—"]
+
+- id: cs_adt_t1_multiples_representaciones_mixtas
+  feature: adt
+  tier: 1
+  description: 'TAD con múltiples representaciones mezclando strings y structs en color'
+  tinta: false
+  block:
+    type: adt
+    operations: ["buscar(k)"]
+    representations:
+      - "Tabla hash"
+      - {name: AVL, fields: ["nodo_t *raiz"]}
+      - "Lista ordenada"
+  expect:
+    ok: true
+    min_width: 350
+    min_height: 180
+    text_contains: ["Tabla hash", "AVL", "nodo_t *raiz", "Lista ordenada"]
+    svg_contains: ["#1d4ed8"]
+
+- id: cs_adt_t2_blank_op_individual
+  feature: adt
+  tier: 2
+  description: 'TAD con operación individual marcada blank=true mantiene celdas — visibles'
+  tinta: true
+  block:
+    type: adt
+    operations:
+      - {signature: "f()", kind: observador}
+      - {signature: "g()", blank: true}
+  expect:
+    ok: true
+    min_width: 170
+    min_height: 100
+    text_contains: ["f()", "observador", "—"]
+    text_absent: ["g()"]
+    svg_contains: ['stroke-dasharray="3 2"']
+
+- id: cs_adt_t2_blank_operations_y_blank_kinds
+  feature: adt
+  tier: 2
+  description: 'TAD con blankOperations=true y blankKinds=true agrega columna clase en blanco'
+  tinta: true
+  block:
+    type: adt
+    operations:
+      - {signature: "f()", pre: "x > 0"}
+    blankOperations: true
+    blankKinds: true
+  expect:
+    ok: true
+    min_width: 220
+    min_height: 100
+    text_contains: ["operación", "clase", "pre", "x > 0"]
+    text_absent: ["f()"]
+    svg_contains: ['stroke-dasharray="3 2"']
+
+- id: cs_adt_t2_utf8_y_title_subtitle
+  feature: adt
+  tier: 2
+  description: 'TAD con caracteres UTF-8 y símbolos matemáticos en título, subtítulo, pre/post e invariante'
+  tinta: true
+  block:
+    type: adt
+    title: "Especificación — TAD Árbol"
+    subtitle: "Invariantes ≤ n"
+    name: "Árbol"
+    operations:
+      - {signature: "inserción(α)", kind: mutador, pre: "válido ≠ NULL", post: "tamaño + 1"}
+    invariant: "altura ≤ n"
+  expect:
+    ok: true
+    min_width: 320
+    min_height: 160
+    text_contains: ["Especificación — TAD Árbol", "Invariantes ≤ n", "TAD Árbol: interfaz", "inserción(α)", "válido ≠ NULL", "Invariante: altura ≤ n"]
+
+- id: cs_adt_t2_ink_saver_override
+  feature: adt
+  tier: 2
+  description: 'Override inkSaver=true sobre tinta=false en TAD'
+  tinta: false
+  block:
+    type: adt
+    inkSaver: true
+    operations: ["op()"]
+  expect:
+    ok: true
+    min_width: 85
+    min_height: 80
+    text_contains: ["op()"]
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: cs_adt_t2_err_operations_vacio
+  feature: adt
+  tier: 2
+  description: 'Error cuando operations es lista vacía'
+  block:
+    type: adt
+    operations: []
+  expect:
+    ok: false
+    error_contains: "al menos un elemento"
+
+- id: cs_adt_t2_err_op_sin_signature
+  feature: adt
+  tier: 2
+  description: 'Error cuando un diccionario de operación no tiene signature'
+  block:
+    type: adt
+    operations:
+      - {kind: observador}
+  expect:
+    ok: false
+    error_contains: "signature"
+
+# ===========================================================================
+# 6. complexity (5 Tier 1 + 8 Tier 2 = 13 casos)
+# ===========================================================================
+- id: cs_complexity_t1_growth_default_tinta
+  feature: complexity
+  tier: 1
+  description: 'Gráfico de complejidad por defecto con 6 curvas comunes en modo tinta'
+  tinta: true
+  block:
+    type: complexity
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 300
+    text_contains: ["O(1)", "O(log n)", "O(n)", "O(n log n)", "O(n²)", "O(2ⁿ)", "n (tamaño de la entrada)", "operaciones"]
+
+- id: cs_complexity_t1_all_9_y_unicode_color
+  feature: complexity
+  tier: 1
+  description: 'Las 9 funciones de crecimiento usando alias O/Θ/Ω/Unicode en modo color'
+  tinta: false
+  block:
+    type: complexity
+    curves: ["O(1)", "log n", "O(√n)", "n", "Θ(n log n)", "Θ(n²)", "Ω(n³)", "O(2ⁿ)", "n!"]
+    maxN: 10
+    maxY: 100
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 300
+    text_contains: ["O(1)", "O(log n)", "O(√n)", "O(n)", "O(n log n)", "O(n²)", "O(n³)", "O(2ⁿ)", "O(n!)"]
+    svg_contains: ["#1d4ed8"]
+
+- id: cs_complexity_t1_empirical_points_y_rotulos
+  feature: complexity
+  tier: 1
+  description: 'Curva empírica por puntos desordenados con círculos, título y ejes personalizados'
+  tinta: true
+  block:
+    type: complexity
+    title: "Medición empírica"
+    subtitle: "Caso real"
+    xLabel: "N"
+    yLabel: "ms"
+    curves:
+      - label: medido
+        points: [[10, 50], [2, 5], [15, 90]]
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 300
+    text_contains: ["Medición empírica", "Caso real", "medido", "N", "ms"]
+    svg_contains: ["<circle"]
+
+- id: cs_complexity_t1_blank_labels_y_ink_saver
+  feature: complexity
+  tier: 1
+  description: 'Curvas rotuladas A/B con blankLabels=true y override inkSaver=false'
+  tinta: true
+  block:
+    type: complexity
+    inkSaver: false
+    curves: ["n", "n^2"]
+    blankLabels: true
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 300
+    text_contains: ["A", "B"]
+    text_absent: ["O(n)", "O(n²)"]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: cs_complexity_t1_classes_nested_items
+  feature: complexity
+  tier: 1
+  description: 'Variante classes con conjuntos anidados e ítems escalares y listas en color'
+  tinta: false
+  block:
+    type: complexity
+    variant: classes
+    classes: ["O(1)", "P", "NP"]
+    items:
+      "O(1)": ["acceso array"]
+      P: ["ordenar", "BFS"]
+      NP: SAT
+  expect:
+    ok: true
+    min_width: 180
+    min_height: 180
+    text_contains: ["O(1)", "P", "NP", "• acceso array", "• ordenar", "• BFS", "• SAT"]
+    svg_contains: ["#1d4ed8"]
+
+- id: cs_complexity_t2_overflow_max_n_y_clipping
+  feature: complexity
+  tier: 2
+  description: 'Curvas exponencial/factorial con maxN=10000 sin OverflowError ni NaN'
+  tinta: true
+  block:
+    type: complexity
+    curves: ["2^n", "n!", "n^3"]
+    maxN: 10000
+    maxY: 1000
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 300
+    text_contains: ["2500", "5000", "7500", "10000", "250", "500", "750", "1000", "n (tamaño de la entrada)", "operaciones"]
+
+- id: cs_complexity_t2_clipping_polilinea_no_vacia
+  feature: complexity
+  tier: 2
+  description: 'Curva 2^n con maxN=20 y maxY=100 verifica recorte vertical en polilínea no vacía'
+  tinta: true
+  block:
+    type: complexity
+    curves: ["2^n"]
+    maxN: 20
+    maxY: 100
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 300
+    text_contains: ["O(2ⁿ)", "20", "100", "n (tamaño de la entrada)", "operaciones"]
+    svg_contains: ["<polyline", 'points="']
+
+- id: cs_complexity_t2_classes_blank
+  feature: complexity
+  tier: 2
+  description: 'Variante classes con blankClasses=true oculta nombres de conjuntos con rayas punteadas'
+  tinta: true
+  block:
+    type: complexity
+    variant: classes
+    blankClasses: true
+    items:
+      "O(n)": ["búsqueda lineal"]
+  expect:
+    ok: true
+    min_width: 240
+    min_height: 200
+    text_contains: ["• búsqueda lineal"]
+    text_absent: ["O(n)", "O(1)"]
+    svg_contains: ['stroke-dasharray="3 2"']
+
+- id: cs_complexity_t2_err_unknown_curve
+  feature: complexity
+  tier: 2
+  description: 'Error cuando se solicita una función de crecimiento desconocida'
+  block:
+    type: complexity
+    curves: ["n^4"]
+  expect:
+    ok: false
+    error_contains: "desconocido"
+
+- id: cs_complexity_t2_err_too_many_curves
+  feature: complexity
+  tier: 2
+  description: 'Error cuando se pasan más de 9 curvas'
+  block:
+    type: complexity
+    curves: ["1", "n", "n", "n", "n", "n", "n", "n", "n", "n"]
+  expect:
+    ok: false
+    error_contains: "hasta 9 curvas"
+
+- id: cs_complexity_t2_err_invalid_points_dict
+  feature: complexity
+  tier: 2
+  description: 'Error cuando un diccionario de curva no tiene points'
+  block:
+    type: complexity
+    curves:
+      - {label: x}
+  expect:
+    ok: false
+    error_contains: "points"
+
+- id: cs_complexity_t2_err_invalid_variant
+  feature: complexity
+  tier: 2
+  description: 'Error cuando variant de complexity no es growth ni classes'
+  block:
+    type: complexity
+    variant: otra
+  expect:
+    ok: false
+    error_contains: "variante de complexity"
+
+- id: cs_complexity_t2_err_classes_unknown_item_key
+  feature: complexity
+  tier: 2
+  description: 'Error cuando items referencia una clase ausente en classes'
+  block:
+    type: complexity
+    variant: classes
+    classes: ["P"]
+    items:
+      NP: ["SAT"]
+  expect:
+    ok: false
+    error_contains: "no está en 'classes'"
+
+# ===========================================================================
+# 7. flowchart (5 Tier 1 + 6 Tier 2 = 11 casos)
+# ===========================================================================
+- id: cs_flowchart_t1_secuencia_y_io
+  feature: flowchart
+  tier: 1
+  description: 'Diagrama de flujo secuencial con pasos de proceso y entrada/salida (io)'
+  tinta: true
+  block:
+    type: flowchart
+    steps:
+      - "x = 0"
+      - {io: "leer n"}
+      - {step: "x = x + n"}
+      - {io: "mostrar x"}
+  expect:
+    ok: true
+    min_width: 150
+    min_height: 250
+    text_contains: ["Inicio", "Fin", "x = 0", "leer n", "x = x + n", "mostrar x"]
+    svg_contains: ["<polygon", "<rect"]
+
+- id: cs_flowchart_t1_if_then_else_y_while_color
+  feature: flowchart
+  tier: 1
+  description: 'Diagrama de flujo completo con while e if/then/else anidados en modo color'
+  tinta: false
+  block:
+    type: flowchart
+    steps:
+      - {io: "leer n"}
+      - "i = 0"
+      - while: "i < n"
+        do:
+          - if: "par(i)"
+            then: ["s = s + i"]
+            else: ["s = s - i"]
+          - "i = i + 1"
+      - if: "s > 0"
+        else: ["s = 0"]
+      - if: "s == 0"
+        then: ["t = 1"]
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 450
+    text_contains: ["Inicio", "Fin", "leer n", "i < n", "par(i)", "s = 0", "Sí", "No"]
+    svg_contains: ["#1d4ed8", "<polygon"]
+
+- id: cs_flowchart_t1_for_loop_y_terminales_custom
+  feature: flowchart
+  tier: 1
+  description: 'Bucle for con if de rama única y terminales start/end personalizados'
+  tinta: true
+  block:
+    type: flowchart
+    start: Comienzo
+    end: "Término"
+    steps:
+      - for: "i = 0; i < n; i++"
+        do:
+          - if: "v[i] > 0"
+            then: ["c++"]
+  expect:
+    ok: true
+    min_width: 220
+    min_height: 300
+    text_contains: ["Comienzo", "Término", "i = 0; i < n; i++", "v[i] > 0", "c++", "Sí", "No"]
+
+- id: cs_flowchart_t1_blank_step_sin_terminales
+  feature: flowchart
+  tier: 1
+  description: 'Pasos individuales en blanco y terminales ocultos con start=false y end=false'
+  tinta: true
+  block:
+    type: flowchart
+    start: false
+    end: false
+    steps:
+      - "a = 1"
+      - {step: "b = 2", blank: true}
+      - {io: "leer c", blank: true}
+  expect:
+    ok: true
+    min_width: 140
+    min_height: 150
+    text_contains: ["a = 1"]
+    text_absent: ["Inicio", "Fin", "b = 2", "leer c"]
+    svg_contains: ['stroke-dasharray="3 2"']
+
+- id: cs_flowchart_t1_blank_values_global
+  feature: flowchart
+  tier: 1
+  description: 'Ocultamiento global blankValues=true con override inkSaver=true'
+  tinta: false
+  block:
+    type: flowchart
+    inkSaver: true
+    blankValues: true
+    steps:
+      - "x = 1"
+      - if: "x > 0"
+        then:
+          - {io: "ok"}
+  expect:
+    ok: true
+    min_width: 180
+    min_height: 220
+    text_contains: ["Inicio", "Fin", "Sí", "No"]
+    text_absent: ["x = 1", "x > 0", "ok"]
+    svg_contains: ['stroke-dasharray="3 2"']
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: cs_flowchart_t2_utf8_y_escape_xml
+  feature: flowchart
+  tier: 2
+  description: 'Escape de caracteres XML especiales y UTF-8 en condiciones e instrucciones'
+  tinta: true
+  block:
+    type: flowchart
+    steps:
+      - {io: 'leer <n> & "m"'}
+      - if: "n <= 0 && ñ != 'á'"
+        then: ["r = n < 1 ? 0 : 1"]
+  expect:
+    ok: true
+    min_width: 240
+    min_height: 240
+    text_contains: ['leer <n> & "m"', "n <= 0 && ñ != 'á'", "r = n < 1 ? 0 : 1"]
+    svg_contains: ["&lt;n&gt; &amp;"]
+
+- id: cs_flowchart_t2_ramas_largas_sin_solape
+  feature: flowchart
+  tier: 2
+  description: 'Ramas then/else con textos largos se separan horizontalmente sin solaparse'
+  tinta: true
+  block:
+    type: flowchart
+    steps:
+      - if: c
+        then: ["una instruccion bastante larga"]
+        else: ["otra instruccion bastante larga"]
+  expect:
+    ok: true
+    min_width: 400
+    min_height: 220
+    text_contains: ["una instruccion bastante larga", "otra instruccion bastante larga"]
+
+- id: cs_flowchart_t2_err_sin_steps
+  feature: flowchart
+  tier: 2
+  description: 'Error cuando falta la clave obligatoria steps'
+  block:
+    type: flowchart
+  expect:
+    ok: false
+    error_contains: "steps"
+
+- id: cs_flowchart_t2_err_clave_desconocida
+  feature: flowchart
+  tier: 2
+  description: 'Error cuando un paso es un diccionario sin clave válida'
+  block:
+    type: flowchart
+    steps:
+      - {x: 1}
+  expect:
+    ok: false
+    error_contains: "paso 0"
+
+- id: cs_flowchart_t2_err_while_sin_do
+  feature: flowchart
+  tier: 2
+  description: 'Error cuando un bucle while no tiene cuerpo do'
+  block:
+    type: flowchart
+    steps:
+      - {while: a}
+  expect:
+    ok: false
+    error_contains: "cuerpo"
+
+- id: cs_flowchart_t2_err_then_no_lista
+  feature: flowchart
+  tier: 2
+  description: 'Error cuando then es string en vez de lista de pasos'
+  block:
+    type: flowchart
+    steps:
+      - {if: a, then: b}
+  expect:
+    ok: false
+    error_contains: "en una lista"
+
+# ===========================================================================
+# 8. cost_table (5 Tier 1 + 6 Tier 2 = 11 casos)
+# ===========================================================================
+- id: cs_cost_table_t1_basica_y_total
+  feature: cost_table
+  tier: 1
+  description: 'Tabla de costos básica con listas y pie T(n)'
+  tinta: true
+  block:
+    type: cost_table
+    lines:
+      - ["int s = 0;", "c1", 1]
+      - ["return s;", "c2", 1]
+    total: "c1 + c2"
+  expect:
+    ok: true
+    min_width: 220
+    min_height: 110
+    text_contains: ["#", "código", "costo", "veces", "int s = 0;", "c1", "return s;", "T(n) = c1 + c2"]
+
+- id: cs_cost_table_t1_sangria_y_dicts_color
+  feature: cost_table
+  tier: 1
+  description: 'Tabla de costos con diccionarios, sangría preservada de 4/8 espacios y modo color'
+  tinta: false
+  block:
+    type: cost_table
+    title: "Búsqueda lineal"
+    lines:
+      - {code: "for (int i = 0; i < n; i++)", cost: c1, times: "n + 1"}
+      - {code: "    if (v[i] == x)", cost: c2, times: "n"}
+      - {code: "        return i;", cost: c3, times: 1}
+    total: "O(n)"
+  expect:
+    ok: true
+    min_width: 330
+    min_height: 160
+    text_contains: ["Búsqueda lineal", "for (int i = 0; i < n; i++)", "if (v[i] == x)", "return i;", "T(n) = O(n)"]
+    svg_contains: ["#1d4ed8"]
+
+- id: cs_cost_table_t1_filas_parciales_y_escalar
+  feature: cost_table
+  tier: 1
+  description: 'Filas mixtas (escalar y lista de 2 elementos) sin pie total'
+  tinta: true
+  block:
+    type: cost_table
+    lines:
+      - "int x = 0;"
+      - ["x++;", "c1"]
+      - ["return x;", "c2", 1]
+  expect:
+    ok: true
+    min_width: 220
+    min_height: 120
+    text_contains: ["int x = 0;", "x++;", "c1", "return x;", "c2"]
+    text_absent: ["T(n) ="]
+    svg_contains: ['stroke-dasharray="3 2"']
+
+- id: cs_cost_table_t1_blank_all_examen
+  feature: cost_table
+  tier: 1
+  description: 'Tabla de costos completamente en blanco para evaluación'
+  tinta: true
+  block:
+    type: cost_table
+    lines:
+      - ["for (;;)", "c1", "n"]
+      - ["    x++;", "c2", "n - 1"]
+    total: "2n"
+    blankCosts: true
+    blankTimes: true
+    blankTotal: true
+  expect:
+    ok: true
+    min_width: 240
+    min_height: 120
+    text_contains: ["for (;;)", "x++;", "T(n) = ________________________"]
+    text_absent: ["c1", "n - 1", "T(n) = 2n"]
+    svg_contains: ['stroke-dasharray="3 2"']
+
+- id: cs_cost_table_t1_blank_total_sin_total_y_ink_saver
+  feature: cost_table
+  tier: 1
+  description: 'blankTotal=true emite T(n) en blanco aun sin clave total, con override inkSaver=false'
+  tinta: true
+  block:
+    type: cost_table
+    inkSaver: false
+    lines:
+      - ["x = 1;", "c1", 1]
+    blankTotal: true
+  expect:
+    ok: true
+    min_width: 240
+    min_height: 100
+    text_contains: ["x = 1;", "c1", "T(n) = ________________________"]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: cs_cost_table_t2_utf8_y_xml_special_chars
+  feature: cost_table
+  tier: 2
+  description: 'Caracteres UTF-8 y operadores XML (<, >, &) en código y costos'
+  tinta: true
+  block:
+    type: cost_table
+    lines:
+      - ["if (a < b && c > 0) // ñ", "c₁", "n / 2"]
+      - ['    á = "ok";', "c₂", "n"]
+    total: "c₁(n/2) + c₂n"
+  expect:
+    ok: true
+    min_width: 310
+    min_height: 120
+    text_contains: ["if (a < b && c > 0) // ñ", "c₁", "c₂", "T(n) = c₁(n/2) + c₂n"]
+    svg_contains: ["&lt; b &amp;&amp; c &gt;"]
+
+- id: cs_cost_table_t2_blank_costs_only
+  feature: cost_table
+  tier: 2
+  description: 'Oculta sólo costos (blankCosts=true) preservando veces y T(n)'
+  tinta: true
+  block:
+    type: cost_table
+    lines:
+      - ["a = 1;", "c1", "n"]
+    blankCosts: true
+    total: "n"
+  expect:
+    ok: true
+    min_width: 195
+    min_height: 100
+    text_contains: ["a = 1;", "n", "T(n) = n"]
+    text_absent: ["c1"]
+    svg_contains: ['stroke-dasharray="3 2"']
+
+- id: cs_cost_table_t2_lista_4_elementos_fallback
+  feature: cost_table
+  tier: 2
+  description: 'Lista de 4 elementos cae al formateo de texto plano sin panic ni error'
+  tinta: true
+  block:
+    type: cost_table
+    lines:
+      - [1, 2, 3, 4]
+  expect:
+    ok: true
+    min_width: 230
+    min_height: 80
+    text_contains: ["[1, 2, 3, 4]"]
+
+- id: cs_cost_table_t2_err_sin_lines
+  feature: cost_table
+  tier: 2
+  description: 'Error cuando falta la clave lines'
+  block:
+    type: cost_table
+  expect:
+    ok: false
+    error_contains: "lines"
+
+- id: cs_cost_table_t2_err_lines_vacio
+  feature: cost_table
+  tier: 2
+  description: 'Error cuando lines es lista vacía'
+  block:
+    type: cost_table
+    lines: []
+  expect:
+    ok: false
+    error_contains: "al menos un elemento"
+
+- id: cs_cost_table_t2_err_lines_tipo_invalido
+  feature: cost_table
+  tier: 2
+  description: 'Error cuando lines es un string en vez de lista'
+  block:
+    type: cost_table
+    lines: "int x;"
+  expect:
+    ok: false
+    error_contains: "lines"
+
+# ===========================================================================
+# 9. trace_table (5 Tier 1 + 7 Tier 2 = 12 casos)
+# ===========================================================================
+- id: cs_trace_table_t1_variables_columns_rows
+  feature: trace_table
+  tier: 1
+  description: 'Tabla de traza de variables básica con columns y rows'
+  tinta: true
+  block:
+    type: trace_table
+    columns: ["i", "suma"]
+    rows:
+      - [0, 0]
+      - [1, 5]
+      - [2, 15]
+  expect:
+    ok: true
+    min_width: 100
+    min_height: 110
+    text_contains: ["i", "suma", "5", "15"]
+
+- id: cs_trace_table_t1_variables_operations_y_rowcount_color
+  feature: trace_table
+  tier: 1
+  description: 'Tabla de traza con operaciones, operationHeader personalizado, fila parcial y rowCount en color'
+  tinta: false
+  block:
+    type: trace_table
+    columns: ["i", "s"]
+    operations: ["s = 0", "i = 1", "s += i"]
+    operationHeader: "Línea"
+    rows:
+      - [0, 0]
+      - [1, null]
+    rowCount: 4
+  expect:
+    ok: true
+    min_width: 160
+    min_height: 140
+    text_contains: ["Línea", "i", "s", "s = 0", "s += i"]
+    svg_contains: ["#1d4ed8", 'stroke-dasharray="3 2"']
+
+- id: cs_trace_table_t1_variables_blank_values
+  feature: trace_table
+  tier: 1
+  description: 'Tabla de traza con blankValues=true oculta los datos existentes'
+  tinta: true
+  block:
+    type: trace_table
+    columns: ["a", "b"]
+    rows:
+      - [10, 20]
+      - [30, 40]
+    blankValues: true
+  expect:
+    ok: true
+    min_width: 100
+    min_height: 90
+    text_contains: ["a", "b"]
+    text_absent: ["10", "20", "30", "40"]
+    svg_contains: ['stroke-dasharray="3 2"']
+
+- id: cs_trace_table_t1_statics_stack
+  feature: trace_table
+  tier: 1
+  description: 'Traza modo statics para pila con capacity=5 y pointerLabel'
+  tinta: true
+  block:
+    type: trace_table
+    variant: stack
+    capacity: 5
+    pointerLabel: "TOPE: ___"
+    operations: ["1. push(10)", "2. pop()"]
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 110
+    text_contains: ["Operación / Instrucción C", "[0]", "[4]", "Puntero TOPE", "1. push(10)", "2. pop()", "TOPE: ___"]
+    svg_contains: ['stroke-dasharray="3 2"']
+
+- id: cs_trace_table_t1_statics_queue_defaults
+  feature: trace_table
+  tier: 1
+  description: 'Traza modo statics para cola con valores por defecto en modo color'
+  tinta: false
+  block:
+    type: trace_table
+    operations: ["encolar(a)", "desencolar()"]
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 110
+    text_contains: ["Operación / Instrucción C", "[0]", "[5]", "Punteros / Índ.", "F:___ R:___", "encolar(a)"]
+    svg_contains: ["#1d4ed8"]
+
+- id: cs_trace_table_t2_statics_clamp_max_sin_index_header
+  feature: trace_table
+  tier: 2
+  description: 'Traza statics con capacity=20 acotada a 10 y showIndexHeader=false'
+  tinta: true
+  block:
+    type: trace_table
+    capacity: 20
+    showIndexHeader: false
+    pointerHeader: "Índices"
+    pointerLabel: "F=? R=?"
+    operations: ["op1"]
+  expect:
+    ok: true
+    min_width: 600
+    min_height: 80
+    text_contains: ["Índices", "F=? R=?", "op1"]
+    text_absent: ["[0]", "[10]"]
+
+- id: cs_trace_table_t2_statics_clamp_min_y_ink_saver
+  feature: trace_table
+  tier: 2
+  description: 'Traza statics con capacity=2 acotada a mínimo 3 celdas y override inkSaver=true'
+  tinta: false
+  block:
+    type: trace_table
+    inkSaver: true
+    capacity: 2
+    operations: ["op(ñ)"]
+  expect:
+    ok: true
+    min_width: 350
+    min_height: 80
+    text_contains: ["[0]", "[2]", "op(ñ)"]
+    text_absent: ["[3]"]
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: cs_trace_table_t2_columns_solo_operations_sin_rows
+  feature: trace_table
+  tier: 2
+  description: 'Traza de variables con columns y operations sin clave rows'
+  tinta: true
+  block:
+    type: trace_table
+    columns: ["x", "y"]
+    operations: ["x = 1", "y = x + 2"]
+  expect:
+    ok: true
+    min_width: 190
+    min_height: 100
+    text_contains: ["Instrucción", "x", "y", "x = 1", "y = x + 2"]
+    svg_contains: ['stroke-dasharray="3 2"']
+
+- id: cs_trace_table_t2_err_vacio
+  feature: trace_table
+  tier: 2
+  description: 'Error cuando faltan columns y operations'
+  block:
+    type: trace_table
+  expect:
+    ok: false
+    error_contains: "filas"
+
+- id: cs_trace_table_t2_err_columns_sin_filas
+  feature: trace_table
+  tier: 2
+  description: 'Error cuando columns está presente sin rows, operations ni rowCount'
+  block:
+    type: trace_table
+    columns: ["a"]
+  expect:
+    ok: false
+    error_contains: "filas"
+
+- id: cs_trace_table_t2_err_fila_desborda_columnas
+  feature: trace_table
+  tier: 2
+  description: 'Error cuando una fila tiene más valores que columnas declaradas'
+  block:
+    type: trace_table
+    columns: ["a"]
+    rows:
+      - [1, 2]
+  expect:
+    ok: false
+    error_contains: "columnas"
+
+- id: cs_trace_table_t2_err_rows_no_lista_de_listas
+  feature: trace_table
+  tier: 2
+  description: 'Error cuando un elemento de rows no es una lista'
+  block:
+    type: trace_table
+    columns: ["a"]
+    rows: [1]
+  expect:
+    ok: false
+    error_contains: "lista de filas"

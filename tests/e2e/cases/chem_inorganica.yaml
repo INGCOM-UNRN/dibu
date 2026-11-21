@@ -1,0 +1,936 @@
+# Suite E2E Química Inorgánica: 5 tipos × (>=5 Tier 1 + >=5 Tier 2) = 56 casos.
+# Tipos: crystal_field, complex, latimer, frost, born_haber.
+# Derivado de `fixtures/diagramas_quimica.yaml`, `alucarD/tests/test_diagramas_quimica.py` y `spec_inorganica.md`.
+
+# ===========================================================================
+# 17. crystal_field (5 Tier 1 + 7 Tier 2 = 12 casos)
+# ===========================================================================
+- id: chem_crystal_field_t1_oct_low_ligand
+  feature: crystal_field
+  tier: 1
+  description: 'Fixture `campo-co-nh3`: Co(III) octaédrico con NH3 (bajo espín por serie espectroquímica)'
+  tinta: true
+  block:
+    type: crystal_field
+    title: "[Co(NH3)6]^3+"
+    metal: Co
+    oxidation: 3
+    ligand: NH3
+  expect:
+    ok: true
+    min_width: 430
+    min_height: 350
+    text_contains: ["[Co(NH3)6]3+", "d6: t2g6 eg0", "bajo (NH3: campo fuerte)", "0,00 μB", "−2,4 Δo"]
+
+- id: chem_crystal_field_t1_oct_high_h2o
+  feature: crystal_field
+  tier: 1
+  description: 'Fixture `campo-fe-agua`: Fe(III) octaédrico con H2O (d5 alto espín, EECC 0,0)'
+  tinta: true
+  block:
+    type: crystal_field
+    complex: "[Fe(H2O)6]^3+"
+    metal: Fe
+    oxidation: 3
+    ligand: H2O
+  expect:
+    ok: true
+    min_width: 430
+    min_height: 320
+    text_contains: ["[Fe(H2O)6]3+", "d5: t2g3 eg2", "alto (H2O: campo débil)", "5,92 μB", "0,0 Δo"]
+
+- id: chem_crystal_field_t1_tetrahedral_color
+  feature: crystal_field
+  tier: 1
+  description: 'Fixture `campo-tetraedrico`: Co(II) tetraédrico siempre alto espín en modo color'
+  tinta: false
+  block:
+    type: crystal_field
+    geometry: tetrahedral
+    complex: "[CoCl4]^2-"
+    metal: Co
+    oxidation: 2
+  expect:
+    ok: true
+    min_width: 430
+    min_height: 320
+    text_contains: ["[CoCl4]2−", "d7: e4 t23", "alto (Δt chico: siempre alto espín)", "3,87 μB", "−1,2 Δt"]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: chem_crystal_field_t1_square_planar
+  feature: crystal_field
+  tier: 1
+  description: 'Fixture `campo-cuadrado-plano`: Ni(II) cuadrado plano sin fila EECC'
+  tinta: true
+  block:
+    type: crystal_field
+    geometry: square_planar
+    complex: "[Ni(CN)4]^2-"
+    metal: Ni
+    oxidation: 2
+  expect:
+    ok: true
+    min_width: 430
+    min_height: 300
+    text_contains: ["[Ni(CN)4]2−", "dxz, dyz", "dz²", "dxy", "dx²−y²", "d8", "bajo", "0,00 μB"]
+    text_absent: ["EECC:"]
+
+- id: chem_crystal_field_t1_electrons_directo
+  feature: crystal_field
+  tier: 1
+  description: 'Especificación directa de `electrons: 4` y `spin: low`'
+  tinta: true
+  block:
+    type: crystal_field
+    electrons: 4
+    spin: low
+  expect:
+    ok: true
+    min_width: 430
+    min_height: 320
+    text_contains: ["d4: t2g4 eg0", "bajo", "2,83 μB", "−1,6 Δo"]
+
+- id: chem_crystal_field_t2_d0_ti4
+  feature: crystal_field
+  tier: 2
+  description: 'Caso borde d0 (Ti4+) sin electrones desapareados'
+  tinta: true
+  block:
+    type: crystal_field
+    metal: Ti
+    oxidation: 4
+    ligand: "Cl^-"
+  expect:
+    ok: true
+    min_width: 430
+    min_height: 320
+    text_contains: ["d0: t2g0 eg0", "0,00 μB", "0,0 Δo"]
+
+- id: chem_crystal_field_t2_lantano_inksaver
+  feature: crystal_field
+  tier: 2
+  description: 'Rama especial `La` (Z=57) con override `inkSaver: true` sobre `tinta: false`'
+  tinta: false
+  block:
+    type: crystal_field
+    metal: La
+    oxidation: 0
+    inkSaver: true
+  expect:
+    ok: true
+    min_width: 430
+    min_height: 320
+    text_contains: ["d3: t2g3 eg0", "3,87 μB", "−1,2 Δo"]
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: chem_crystal_field_t2_blank_total
+  feature: crystal_field
+  tier: 2
+  description: 'Fixture `campo-blanco`: oculta flechas de electrones y todas las filas del panel'
+  tinta: true
+  block:
+    type: crystal_field
+    metal: Fe
+    oxidation: 2
+    ligand: "CN^-"
+    blankElectrons: true
+    blank: true
+  expect:
+    ok: true
+    min_width: 430
+    min_height: 320
+    text_contains: ["Configuración:", "Espín:", "Desapareados:", "μ (solo espín):", "EECC:"]
+    text_absent: ["d6", "bajo", "0,00 μB", "−2,4 Δo"]
+    svg_contains: ["stroke-dasharray=\"3 2\""]
+
+- id: chem_crystal_field_t2_err_sin_electrones
+  feature: crystal_field
+  tier: 2
+  description: 'Error controlado cuando faltan `electrons` y `metal`+`oxidation`'
+  block:
+    type: crystal_field
+    geometry: octahedral
+  expect:
+    ok: false
+    error_contains: "falta electrons"
+
+- id: chem_crystal_field_t2_err_metal_no_d
+  feature: crystal_field
+  tier: 2
+  description: 'Error controlado para metal fuera del bloque d (`Na`)'
+  block:
+    type: crystal_field
+    metal: Na
+    oxidation: 1
+  expect:
+    ok: false
+    error_contains: "metal de transición del bloque d"
+
+- id: chem_crystal_field_t2_err_ligando_desconocido
+  feature: crystal_field
+  tier: 2
+  description: 'Error controlado para ligando ausente de la serie espectroquímica sin `spin`'
+  block:
+    type: crystal_field
+    electrons: 5
+    ligand: agua
+  expect:
+    ok: false
+    error_contains: "serie espectroquímica"
+
+- id: chem_crystal_field_t2_err_spin_invalido
+  feature: crystal_field
+  tier: 2
+  description: 'Error controlado para `spin` inválido (`medium`)'
+  block:
+    type: crystal_field
+    electrons: 5
+    spin: medium
+  expect:
+    ok: false
+    error_contains: "spin vale high o low"
+
+# ===========================================================================
+# 18. complex (7 Tier 1 + 6 Tier 2 = 13 casos)
+# ===========================================================================
+- id: chem_complex_t1_oct_trans
+  feature: complex
+  tier: 1
+  description: 'Fixture `complejo-trans`: octaédrico MA4B2 isómero trans'
+  tinta: true
+  block:
+    type: complex
+    title: "trans-[Co(NH3)4Cl2]^+"
+    metal: Co
+    charge: 1
+    ligands: [NH3, NH3, Cl, Cl, NH3, NH3]
+  expect:
+    ok: true
+    min_width: 540
+    min_height: 200
+    text_contains: ["trans-[Co(NH3)4Cl2]+", "[Co(NH3)4Cl2]+", "Co(III)", "d6", "trans"]
+    text_absent: ["cis"]
+
+- id: chem_complex_t1_oct_fac
+  feature: complex
+  tier: 1
+  description: 'Complejo octaédrico MA3B3 isómero facial (`fac`)'
+  tinta: true
+  block:
+    type: complex
+    metal: Co
+    ligands: [Cl, NH3, Cl, NH3, Cl, NH3]
+  expect:
+    ok: true
+    min_width: 540
+    min_height: 180
+    text_contains: ["[CoCl3(NH3)3]", "Co(III)", "d6", "fac"]
+
+- id: chem_complex_t1_oct_mer
+  feature: complex
+  tier: 1
+  description: 'Complejo octaédrico MA3B3 isómero meridional (`mer`)'
+  tinta: true
+  block:
+    type: complex
+    metal: Co
+    ligands: [Cl, Cl, Cl, NH3, NH3, NH3]
+  expect:
+    ok: true
+    min_width: 540
+    min_height: 180
+    text_contains: ["[CoCl3(NH3)3]", "Co(III)", "d6", "mer"]
+    text_absent: ["fac"]
+
+- id: chem_complex_t1_sq_pl_cis_color
+  feature: complex
+  tier: 1
+  description: 'Fixture `complejo-cisplatino`: cuadrado plano isómero cis en modo color'
+  tinta: false
+  block:
+    type: complex
+    title: Cisplatino
+    geometry: square_planar
+    metal: Pt
+    ligands: [Cl, NH3, Cl, NH3]
+  expect:
+    ok: true
+    min_width: 540
+    min_height: 200
+    text_contains: ["Cisplatino", "[PtCl2(NH3)2]", "Pt(II)", "d8", "cis"]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: chem_complex_t1_sq_pl_trans
+  feature: complex
+  tier: 1
+  description: 'Complejo cuadrado plano MA2B2 isómero trans (`[PtCl2(NH3)2]`)'
+  tinta: true
+  block:
+    type: complex
+    geometry: square_planar
+    metal: Pt
+    ligands: [Cl, Cl, NH3, NH3]
+  expect:
+    ok: true
+    min_width: 540
+    min_height: 180
+    text_contains: ["[PtCl2(NH3)2]", "Pt(II)", "d8", "trans"]
+
+- id: chem_complex_t1_tetrahedral_carga_neg
+  feature: complex
+  tier: 1
+  description: 'Complejo tetraédrico aniónico sin fila `Isómero`'
+  tinta: true
+  block:
+    type: complex
+    geometry: tetrahedral
+    metal: Fe
+    charge: -1
+    ligands: ["Cl^-", "Cl^-", "Cl^-", "Cl^-"]
+  expect:
+    ok: true
+    min_width: 540
+    min_height: 180
+    text_contains: ["[FeCl4]−", "Fe(III)", "d5"]
+    text_absent: ["Isómero:"]
+
+- id: chem_complex_t1_oxidation_explicita_lig_desconocido
+  feature: complex
+  tier: 1
+  description: 'Oxidación explícita `0` con ligando `PF3` fuera de `CARGA_LIGANDOS`'
+  tinta: true
+  block:
+    type: complex
+    geometry: tetrahedral
+    metal: Ni
+    charge: 0
+    oxidation: 0
+    ligands: [PF3, PF3, PF3, PF3]
+  expect:
+    ok: true
+    min_width: 540
+    min_height: 180
+    text_contains: ["[Ni(PF3)4]", "Ni(0)", "d10"]
+
+- id: chem_complex_t2_metal_no_d_omite_electrones_d
+  feature: complex
+  tier: 2
+  description: 'Metal representativo (`Al`) omite silenciosamente la fila `Electrones d:`'
+  tinta: true
+  block:
+    type: complex
+    geometry: tetrahedral
+    metal: Al
+    charge: -1
+    ligands: ["Cl^-", "Cl^-", "Cl^-", "Cl^-"]
+  expect:
+    ok: true
+    min_width: 540
+    min_height: 180
+    text_contains: ["[AlCl4]−", "Al(III)"]
+    text_absent: ["Electrones d:"]
+
+- id: chem_complex_t2_oxidacion_negativa
+  feature: complex
+  tier: 2
+  description: 'Estado de oxidación negativo `Fe(-2)` en `[Fe(CO)4]2−`'
+  tinta: true
+  block:
+    type: complex
+    geometry: tetrahedral
+    metal: Fe
+    charge: -2
+    ligands: [CO, CO, CO, CO]
+  expect:
+    ok: true
+    min_width: 540
+    min_height: 180
+    text_contains: ["[Fe(CO)4]2−", "Fe(-2)", "d10"]
+
+- id: chem_complex_t2_blank_selectivo_inksaver
+  feature: complex
+  tier: 2
+  description: 'Fixture `complejo-fac-blanco` con `blank: [isomer, oxidation]` y override `inkSaver: true`'
+  tinta: false
+  block:
+    type: complex
+    metal: Co
+    ligands: [Cl, NH3, Cl, NH3, Cl, NH3]
+    blank: [isomer, oxidation]
+    inkSaver: true
+  expect:
+    ok: true
+    min_width: 540
+    min_height: 180
+    text_contains: ["[CoCl3(NH3)3]", "d6", "Estado de oxidación:", "Isómero:"]
+    text_absent: ["Co(III)", "fac"]
+    svg_contains: ["stroke-dasharray=\"3 2\""]
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: chem_complex_t2_err_sitios_incorrectos
+  feature: complex
+  tier: 2
+  description: 'Error controlado por cantidad incorrecta de ligandos en octaédrico (5 != 6)'
+  block:
+    type: complex
+    ligands: [Cl, Cl, Cl, Cl, Cl]
+  expect:
+    ok: false
+    error_contains: "6 sitios"
+
+- id: chem_complex_t2_err_geometria_invalida
+  feature: complex
+  tier: 2
+  description: 'Error controlado para geometría inválida (`linear`)'
+  block:
+    type: complex
+    geometry: linear
+    ligands: [Cl, Cl]
+  expect:
+    ok: false
+    error_contains: "geometry vale octahedral, square_planar o tetrahedral"
+
+- id: chem_complex_t2_err_ligando_sin_carga
+  feature: complex
+  tier: 2
+  description: 'Error controlado para ligando desconocido sin `oxidation` explícita'
+  block:
+    type: complex
+    metal: Co
+    ligands: [X, X, X, X, X, X]
+  expect:
+    ok: false
+    error_contains: "no sé la carga del ligando"
+
+# ===========================================================================
+# 19. latimer (5 Tier 1 + 5 Tier 2 = 10 casos)
+# ===========================================================================
+- id: chem_latimer_t1_manganeso_completo
+  feature: latimer
+  tier: 1
+  description: 'Fixture `latimer-manganeso`: cadena completa, arcos `compute` y desproporción'
+  tinta: true
+  block:
+    type: latimer
+    title: "Manganeso en medio ácido"
+    species: ["MnO4^-", "MnO4^2-", "MnO2", "Mn^3+", "Mn^2+", "Mn"]
+    oxidation: [7, 6, 4, 3, 2, 0]
+    potentials: [0.56, 2.26, 0.95, 1.51, -1.18]
+    compute: [[0, 2], [0, 4]]
+    showDisproportionation: true
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 200
+    text_contains: ["Manganeso en medio ácido", "+7", "0,56", "-1,18", "E° = 1,69 V", "E° = 1,51 V", "Desproporcionan = MnO42−, Mn3+"]
+
+- id: chem_latimer_t1_cobre_minimo
+  feature: latimer
+  tier: 1
+  description: 'Cadena mínima de 3 especies con desproporción de Cu+'
+  tinta: true
+  block:
+    type: latimer
+    species: ["Cu^2+", "Cu^+", "Cu"]
+    oxidation: [2, 1, 0]
+    potentials: [0.16, 0.52]
+    compute: [[0, 2]]
+    showDisproportionation: true
+  expect:
+    ok: true
+    min_width: 200
+    min_height: 150
+    text_contains: ["Cu2+", "Cu+", "Cu", "E° = 0,34 V", "Desproporcionan = Cu+"]
+
+- id: chem_latimer_t1_sin_desproporcion_color
+  feature: latimer
+  tier: 1
+  description: 'Cadena estable sin especies que desproporcionen en modo color'
+  tinta: false
+  block:
+    type: latimer
+    species: ["Fe^3+", "Fe^2+", "Fe"]
+    oxidation: [3, 2, 0]
+    potentials: [0.77, -0.44]
+    showDisproportionation: true
+  expect:
+    ok: true
+    min_width: 200
+    min_height: 100
+    text_contains: ["Fe3+", "Fe2+", "Fe", "Desproporcionan = ninguna"]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: chem_latimer_t1_ox_negativos_compute_invertido
+  feature: latimer
+  tier: 1
+  description: 'Estados de oxidación negativos y arco `compute` con índices invertidos `[3, 0]`'
+  tinta: true
+  block:
+    type: latimer
+    species: ["N2", "NH3OH^+", "N2H5^+", "NH4^+"]
+    oxidation: [0, -1, -2, -3]
+    potentials: [-1.87, 1.41, 1.28]
+    compute: [[3, 0]]
+  expect:
+    ok: true
+    min_width: 320
+    min_height: 120
+    text_contains: ["-1", "-2", "-3", "E° = 0,27 V"]
+
+- id: chem_latimer_t1_ox_fraccionario
+  feature: latimer
+  tier: 1
+  description: 'Estado de oxidación fraccionario (`2.5` -> `2,5`) en pareja tiosulfato/tetrationato'
+  tinta: true
+  block:
+    type: latimer
+    species: ["S4O6^2-", "S2O3^2-"]
+    oxidation: [2.5, 2]
+    potentials: [0.08]
+  expect:
+    ok: true
+    min_width: 150
+    min_height: 70
+    text_contains: ["S4O62−", "S2O32−", "2,5", "+2", "0,08"]
+
+- id: chem_latimer_t2_blanks_totales
+  feature: latimer
+  tier: 2
+  description: 'Fixture `latimer-cobre-blanco` ampliado con `blankPotentials`, `blankComputed` y `blankDisproportionation`'
+  tinta: true
+  block:
+    type: latimer
+    species: ["Cu^2+", "Cu^+", "Cu"]
+    oxidation: [2, 1, 0]
+    potentials: [0.16, 0.52]
+    compute: [[0, 2]]
+    blankPotentials: [0, 1]
+    blankComputed: true
+    showDisproportionation: true
+    blankDisproportionation: true
+  expect:
+    ok: true
+    min_width: 200
+    min_height: 150
+    text_contains: ["E° =", "Desproporcionan ="]
+    text_absent: ["0,16", "0,52", "0,34", "Desproporcionan = Cu+"]
+    svg_contains: ["stroke-dasharray=\"3 2\""]
+
+- id: chem_latimer_t2_inksaver_override
+  feature: latimer
+  tier: 2
+  description: 'Override `inkSaver: true` sobre `tinta: false` en par Cl2/Cl-'
+  tinta: false
+  block:
+    type: latimer
+    species: ["Cl2", "Cl^-"]
+    oxidation: [0, -1]
+    potentials: [1.36]
+    inkSaver: true
+  expect:
+    ok: true
+    min_width: 120
+    min_height: 70
+    text_contains: ["Cl2", "Cl−", "1,36"]
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: chem_latimer_t2_err_oxidacion_no_baja
+  feature: latimer
+  tier: 2
+  description: 'Error controlado cuando estados de oxidación no decrecen de izquierda a derecha'
+  block:
+    type: latimer
+    species: ["A", "B"]
+    oxidation: [0, 2]
+    potentials: [1.0]
+  expect:
+    ok: false
+    error_contains: "tienen que bajar de izquierda a derecha"
+
+- id: chem_latimer_t2_err_longitud_despareja
+  feature: latimer
+  tier: 2
+  description: 'Error controlado cuando falta un potencial entre especies'
+  block:
+    type: latimer
+    species: ["A", "B"]
+    oxidation: [2, 1]
+    potentials: []
+  expect:
+    ok: false
+    error_contains: "uno por especie"
+
+- id: chem_latimer_t2_err_compute_invalido
+  feature: latimer
+  tier: 2
+  description: 'Error controlado cuando `compute` tiene índices iguales `[0, 0]`'
+  block:
+    type: latimer
+    species: ["A", "B"]
+    oxidation: [2, 1]
+    potentials: [0.5]
+    compute: [[0, 0]]
+  expect:
+    ok: false
+    error_contains: "dos índices distintos de species"
+
+# ===========================================================================
+# 20. frost (5 Tier 1 + 5 Tier 2 = 10 casos)
+# ===========================================================================
+- id: chem_frost_t1_manganeso_con_desprop
+  feature: frost
+  tier: 1
+  description: 'Fixture `frost-manganeso`: curva N·E° vs oxidación marcando especies que desproporcionan'
+  tinta: true
+  block:
+    type: frost
+    title: "Diagrama de Frost del manganeso"
+    species: ["MnO4^-", "MnO4^2-", "MnO2", "Mn^3+", "Mn^2+", "Mn"]
+    oxidation: [7, 6, 4, 3, 2, 0]
+    potentials: [0.56, 2.26, 0.95, 1.51, -1.18]
+    showDisproportionation: true
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 350
+    text_contains: ["Diagrama de Frost del manganeso", "estado de oxidación", "N·E° (V)", "○ desproporciona", "MnO4−"]
+
+- id: chem_frost_t1_sin_desproporcion_color
+  feature: frost
+  tier: 1
+  description: 'Diagrama de Frost sin desproporción en modo color'
+  tinta: false
+  block:
+    type: frost
+    species: ["Fe^3+", "Fe^2+", "Fe"]
+    oxidation: [3, 2, 0]
+    potentials: [0.77, -0.44]
+    showDisproportionation: true
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 310
+    text_contains: ["Fe3+", "Fe2+", "Fe", "N·E° (V)"]
+    text_absent: ["○ desproporciona"]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: chem_frost_t1_sin_cero_en_oxidacion
+  feature: frost
+  tier: 1
+  description: 'Referencia en la última especie cuando ninguna tiene estado de oxidación 0'
+  tinta: true
+  block:
+    type: frost
+    species: ["FeO4^2-", "Fe^3+", "Fe^2+"]
+    oxidation: [6, 3, 2]
+    potentials: [2.20, 0.77]
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 310
+    text_contains: ["FeO42−", "Fe3+", "Fe2+"]
+
+- id: chem_frost_t1_ox_negativos_nitrogeno
+  feature: frost
+  tier: 1
+  description: 'Estados de oxidación positivos y negativos (nitrógeno) con desproporción'
+  tinta: true
+  block:
+    type: frost
+    species: ["NO3^-", "HNO2", "NO", "N2O", "N2", "NH4^+"]
+    oxidation: [5, 3, 2, 1, 0, -3]
+    potentials: [0.94, 0.99, 1.59, 1.77, -0.27]
+    showDisproportionation: true
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 310
+    text_contains: ["NO3−", "NH4+", "○ desproporciona"]
+
+- id: chem_frost_t1_dos_especies
+  feature: frost
+  tier: 1
+  description: 'Diagrama de Frost mínimo con 2 especies'
+  tinta: true
+  block:
+    type: frost
+    species: ["Cu^2+", "Cu"]
+    oxidation: [2, 0]
+    potentials: [0.34]
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 310
+    text_contains: ["Cu2+", "Cu", "estado de oxidación", "N·E° (V)"]
+
+- id: chem_frost_t2_blank_labels
+  feature: frost
+  tier: 2
+  description: 'Modo `blankLabels: true` reemplaza nombres de especies por cajas punteadas'
+  tinta: true
+  block:
+    type: frost
+    species: ["Cu^2+", "Cu^+", "Cu"]
+    oxidation: [2, 1, 0]
+    potentials: [0.16, 0.52]
+    blankLabels: true
+    showDisproportionation: true
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 310
+    text_contains: ["○ desproporciona"]
+    text_absent: ["Cu2+", "Cu+"]
+    svg_contains: ["stroke-dasharray=\"3 2\""]
+
+- id: chem_frost_t2_todos_ceros_sin_zero_div
+  feature: frost
+  tier: 2
+  description: 'Borde de potenciales nulos (`margen` cae a 1 sin ZeroDivisionError)'
+  tinta: true
+  block:
+    type: frost
+    species: ["A", "B"]
+    oxidation: [2, 0]
+    potentials: [0.0]
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 310
+    text_contains: ["A", "B", "N·E° (V)"]
+
+- id: chem_frost_t2_inksaver_override
+  feature: frost
+  tier: 2
+  description: 'Override `inkSaver: true` sobre `tinta: false`'
+  tinta: false
+  block:
+    type: frost
+    species: ["A", "B"]
+    oxidation: [1, 0]
+    potentials: [0.5]
+    inkSaver: true
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 310
+    text_contains: ["A", "B"]
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: chem_frost_t2_err_ox_no_baja
+  feature: frost
+  tier: 2
+  description: 'Error controlado en `frost` cuando los estados de oxidación crecen'
+  block:
+    type: frost
+    species: ["A", "B"]
+    oxidation: [1, 2]
+    potentials: [0.5]
+  expect:
+    ok: false
+    error_contains: "tienen que bajar de izquierda a derecha"
+
+- id: chem_frost_t2_err_pocas_especies
+  feature: frost
+  tier: 2
+  description: 'Error controlado en `frost` con menos de 2 especies'
+  block:
+    type: frost
+    species: ["A"]
+    oxidation: [1]
+    potentials: []
+  expect:
+    ok: false
+    error_contains: "uno por especie"
+
+# ===========================================================================
+# 21. born_haber (5 Tier 1 + 6 Tier 2 = 11 casos)
+# ===========================================================================
+- id: chem_born_haber_t1_nacl_completo
+  feature: born_haber
+  tier: 1
+  description: 'Fixture `born-haber-nacl`: ciclo completo del NaCl con energía de red calculada'
+  tinta: true
+  block:
+    type: born_haber
+    title: "Ciclo de Born-Haber del NaCl"
+    start: "Na(s) + ½ Cl2(g)"
+    product: "NaCl(s)"
+    formation: -411
+    steps:
+      - {to: "Na(g) + ½ Cl2(g)", dH: 107, label: "ΔH_sub"}
+      - {to: "Na^+(g) + ½ Cl2(g)", dH: 496, label: "EI"}
+      - {to: "Na^+(g) + Cl(g)", dH: 122, label: "½ D"}
+      - {to: "Na^+(g) + Cl^-(g)", dH: -349, label: "AE"}
+  expect:
+    ok: true
+    min_width: 650
+    min_height: 400
+    text_contains: ["Ciclo de Born-Haber del NaCl", "Na(s) + ½ Cl2(g)", "ΔHsub +107", "AE -349", "Ured = -787 kJ/mol", "ΔHf = -411", "Energías en kJ/mol."]
+
+- id: chem_born_haber_t1_defaults_minimo
+  feature: born_haber
+  tier: 1
+  description: 'Defaults `start` ("elementos") y `product` ("MX(s)") con un único paso'
+  tinta: true
+  block:
+    type: born_haber
+    formation: -300
+    steps:
+      - {to: "M^+(g) + X^-(g)", dH: 400}
+  expect:
+    ok: true
+    min_width: 350
+    min_height: 380
+    text_contains: ["elementos", "MX(s)", "+400", "Ured = -700 kJ/mol", "ΔHf = -300"]
+
+- id: chem_born_haber_t1_mgo_exotermico_color
+  feature: born_haber
+  tier: 1
+  description: 'Ciclo de MgO con energía de red alta (-3790) en paleta color'
+  tinta: false
+  block:
+    type: born_haber
+    start: "Mg(s) + ½ O2(g)"
+    product: "MgO(s)"
+    formation: -602
+    steps:
+      - {to: "Mg(g) + ½ O2(g)", dH: 148, label: "ΔH_sub"}
+      - {to: "Mg^2+(g) + ½ O2(g)", dH: 2188, label: "EI1+EI2"}
+      - {to: "Mg^2+(g) + O(g)", dH: 249, label: "½ D"}
+      - {to: "Mg^2+(g) + O^2-(g)", dH: 603, label: "AE1+AE2"}
+  expect:
+    ok: true
+    min_width: 650
+    min_height: 380
+    text_contains: ["Ured = -3790 kJ/mol", "ΔHf = -602"]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: chem_born_haber_t1_formacion_endotermica
+  feature: born_haber
+  tier: 1
+  description: 'Formación endotérmica (`formation > 0`, AgN3)'
+  tinta: true
+  block:
+    type: born_haber
+    start: "Ag(s) + 3/2 N2(g)"
+    product: "AgN3(s)"
+    formation: 300
+    steps:
+      - {to: "iones(g)", dH: 1000, label: "paso"}
+  expect:
+    ok: true
+    min_width: 350
+    min_height: 380
+    text_contains: ["AgN3(s)", "Ured = -700 kJ/mol", "ΔHf = 300"]
+
+- id: chem_born_haber_t1_blank_lattice
+  feature: born_haber
+  tier: 1
+  description: 'Fixture `born-haber-blanco`: `blankLattice: true` oculta el valor de U_red'
+  tinta: true
+  block:
+    type: born_haber
+    start: "K(s) + ½ Br2(l)"
+    product: "KBr(s)"
+    formation: -394
+    steps:
+      - {to: "K(g)", dH: 89, label: "ΔH_sub"}
+      - {to: "K^+(g)", dH: 419, label: "EI"}
+      - {to: "K^+(g) + Br(g)", dH: 112, label: "½ D + vap"}
+      - {to: "K^+(g) + Br^-(g)", dH: -325, label: "AE"}
+    blankLattice: true
+  expect:
+    ok: true
+    min_width: 650
+    min_height: 380
+    text_contains: ["Ured =", "ΔHf = -394"]
+    text_absent: ["-689"]
+    svg_contains: ["stroke-dasharray=\"3 2\""]
+
+- id: chem_born_haber_t2_steps_blank_con_y_sin_label
+  feature: born_haber
+  tier: 2
+  description: 'Pasos con `blank: true` con y sin `label`'
+  tinta: true
+  block:
+    type: born_haber
+    formation: -100
+    steps:
+      - {to: "A", dH: 50, blank: true}
+      - {to: "B", dH: -20, label: "AE", blank: true}
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 380
+    text_contains: ["=", "AE =", "Ured = -130 kJ/mol"]
+    text_absent: ["+50", "-20"]
+    svg_contains: ["stroke-dasharray=\"3 2\""]
+
+- id: chem_born_haber_t2_inksaver_override
+  feature: born_haber
+  tier: 2
+  description: 'Override `inkSaver: true` sobre `tinta: false`'
+  tinta: false
+  block:
+    type: born_haber
+    formation: -200
+    steps:
+      - {to: "A", dH: 100}
+    inkSaver: true
+  expect:
+    ok: true
+    min_width: 350
+    min_height: 380
+    text_contains: ["Ured = -300 kJ/mol", "ΔHf = -200"]
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: chem_born_haber_t2_err_steps_vacio
+  feature: born_haber
+  tier: 2
+  description: 'Error controlado cuando `steps` está vacío'
+  block:
+    type: born_haber
+    steps: []
+    formation: -100
+  expect:
+    ok: false
+    error_contains: "faltan steps"
+
+- id: chem_born_haber_t2_err_falta_formation
+  feature: born_haber
+  tier: 2
+  description: 'Error controlado cuando falta `formation`'
+  block:
+    type: born_haber
+    steps:
+      - {to: "A", dH: 100}
+  expect:
+    ok: false
+    error_contains: "faltan steps"
+
+- id: chem_born_haber_t2_err_step_sin_dh
+  feature: born_haber
+  tier: 2
+  description: 'Error controlado cuando un paso no incluye `dH`'
+  block:
+    type: born_haber
+    steps:
+      - {to: "A"}
+    formation: -100
+  expect:
+    ok: false
+    error_contains: "steps[0]"
+
+- id: chem_born_haber_t2_err_dh_no_numerico
+  feature: born_haber
+  tier: 2
+  description: 'Error controlado cuando `dH` no es numérico'
+  block:
+    type: born_haber
+    steps:
+      - {to: "A", dH: "abc"}
+    formation: -100
+  expect:
+    ok: false
+    error_contains: "no es un número"

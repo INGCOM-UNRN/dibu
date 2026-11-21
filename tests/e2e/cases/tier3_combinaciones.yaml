@@ -1,0 +1,1039 @@
+# Suite E2E Tier 3: Combinaciones Pairwise Cross-Feature (50 casos declarativos, tier: 3).
+# Cubre los 44 tipos de diagramas (9 control + 21 chem + 14 cs) combinados por pares entre:
+#   - Dominio / tipo de diagrama
+#   - Paleta CLI (`tinta: true` vs `tinta: false`) y override `inkSaver` (`true`/`false`)
+#   - Flags de visibilidad / docentes (`blank*`, `show*`, `margins`, `asymptotes`, etc.) y UTF-8
+# + 5 casos de composición CLI cross-feature en `suites/test_tier3.py` (= 55 casos Tier 3).
+
+# ===========================================================================
+# A. Control (9 tipos + 2 combinaciones extra = 11 casos)
+# ===========================================================================
+- id: tier3_control_block_diagram_color_inksaver_blank
+  feature: block_diagram
+  tier: 3
+  description: 'Pairwise: block_diagram + tinta:false + inkSaver:true + blank + blankSigns + UTF-8'
+  tinta: false
+  block:
+    type: block_diagram
+    title: "Lazo térmico — ñ/á"
+    inkSaver: true
+    forward: [{blank: true}, {label: "Gp(s)", out: "Y(s)"}]
+    feedback: [{blank: true}]
+    blankSigns: true
+  expect:
+    ok: true
+    min_width: 180
+    min_height: 80
+    text_contains: ["Lazo térmico — ñ/á", "Gp(s)", "Y(s)"]
+    text_absent: ["−", "+"]
+    svg_contains: ['stroke-dasharray="3 2"', 'stroke-dasharray="2 2"']
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: tier3_control_time_response_color_blank_annotations
+  feature: time_response
+  tier: 3
+  description: 'Pairwise: time_response + tinta:false + multi-anotaciones + blankAnnotations'
+  tinta: false
+  block:
+    type: time_response
+    title: "Respuesta subamortiguada"
+    system: {gain: 1, zeta: 0.4, wn: 2}
+    annotations: [final, overshoot, peak]
+    blankAnnotations: true
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 200
+    text_contains: ["Respuesta subamortiguada", "y∞ =", "Mp =", "tp ="]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: tier3_control_bode_tinta_inksaver_false_margins
+  feature: bode
+  tier: 3
+  description: 'Pairwise: bode + tinta:true + inkSaver:false + asymptotes + margins'
+  tinta: true
+  block:
+    type: bode
+    title: "Bode con override color"
+    inkSaver: false
+    system: {k: 10, poles: [0, -1, -10]}
+    asymptotes: true
+    margins: true
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 250
+    text_contains: ["Bode con override color", "MG =", "MF ="]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: tier3_control_nyquist_tinta_unit_circle_sin_margins
+  feature: nyquist
+  tier: 3
+  description: 'Pairwise: nyquist + tinta:true + unitCircle:true + margins:false + UTF-8'
+  tinta: true
+  block:
+    type: nyquist
+    title: "Nyquist — α/β"
+    system: {k: 5, poles: [-1, -2, -3]}
+    unitCircle: true
+    margins: false
+  expect:
+    ok: true
+    min_width: 280
+    min_height: 240
+    text_contains: ["Nyquist — α/β", "Re", "Im"]
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: tier3_control_pole_zero_color_damping_show_values
+  feature: pole_zero
+  tier: 3
+  description: 'Pairwise: pole_zero + tinta:false + dampingLines + wnCircles + showValues:true'
+  tinta: false
+  block:
+    type: pole_zero
+    title: "Mapa s"
+    poles: [-1, [-2, 3]]
+    zeros: [-4]
+    dampingLines: [0.5]
+    wnCircles: [3]
+    showValues: true
+  expect:
+    ok: true
+    min_width: 260
+    min_height: 220
+    text_contains: ["Mapa s", "ζ = 0,5", "ωn = 3"]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: tier3_control_root_locus_tinta_inksaver_false_blank_marks
+  feature: root_locus
+  tier: 3
+  description: 'Pairwise: root_locus + tinta:true + inkSaver:false + blankMarks:true + marks'
+  tinta: true
+  block:
+    type: root_locus
+    inkSaver: false
+    system: {k: 1, poles: [0, -1, -2]}
+    blankMarks: true
+    marks: [1]
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 250
+    text_contains: ["σa =", "Kcrít =", "■ K = 1"]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: tier3_control_instrumentation_color_inksaver_true_blank
+  feature: instrumentation
+  tier: 3
+  description: 'Pairwise: instrumentation + tinta:false + inkSaver:true + legend:false + blank instrument'
+  tinta: false
+  block:
+    type: instrumentation
+    inkSaver: true
+    legend: false
+    equipment:
+      - {id: TK, kind: tank, at: [2, 2], label: "TK-10"}
+    instruments:
+      - {id: LT, tag: "LT 10", at: [5, 1], location: dcs}
+      - {id: XY, tag: "XY 99", at: [7, 1], location: field, blank: true}
+    lines:
+      - {from: TK, to: LT, kind: electric}
+  expect:
+    ok: true
+    min_width: 200
+    min_height: 100
+    text_contains: ["TK-10", "LT", "10"]
+    text_absent: ["XY", "99", "señal eléctrica"]
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: tier3_control_ladder_tinta_blank_or_y_ton
+  feature: ladder
+  tier: 3
+  description: 'Pairwise: ladder + tinta:true + rama or + blank:true + temporizador ton'
+  tinta: true
+  block:
+    type: ladder
+    title: "Enclavamiento parcial"
+    rungs:
+      - comment: "Arranque"
+        logic:
+          - or:
+              - [{no: "I0.0", label: "Start"}]
+              - [{no: "Q0.0"}]
+          - {no: "", blank: true}
+          - {coil: "Q0.0", label: "Motor"}
+      - logic:
+          - {no: "Q0.0"}
+          - {ton: "T1", preset: "5 s"}
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 160
+    text_contains: ["Enclavamiento parcial", "Start", "Motor", "TON", "PT 5 s"]
+    svg_contains: ['stroke-dasharray="3 2"']
+
+- id: tier3_control_grafcet_color_blank_y_loop_false
+  feature: grafcet
+  tier: 3
+  description: 'Pairwise: grafcet + tinta:false + loop:false + or + blank en etapa/transición'
+  tinta: false
+  block:
+    type: grafcet
+    loop: false
+    steps:
+      - {step: 0, initial: true}
+      - {transition: "t_oculta", blank: true}
+      - or:
+          - [{step: 1, blank: true}]
+          - [{step: 2, actions: ["Vaciar"]}]
+      - {step: 3}
+  expect:
+    ok: true
+    min_width: 180
+    min_height: 200
+    text_contains: ["0", "Vaciar", "3"]
+    text_absent: ["t_oculta"]
+    svg_contains: ["#1d4ed8", 'stroke-dasharray="3 2"']
+
+- id: tier3_control_bode_tinta_sin_asintotas_sin_margenes
+  feature: bode
+  tier: 3
+  description: 'Pairwise: bode + tinta:true + asymptotes:false + margins:false'
+  tinta: true
+  block:
+    type: bode
+    system: {k: 2, poles: [-1, -5]}
+    asymptotes: false
+    margins: false
+  expect:
+    ok: true
+    min_width: 280
+    min_height: 220
+    text_absent: ["MG =", "MF ="]
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: tier3_control_block_diagram_err_loop_vacio
+  feature: block_diagram
+  tier: 3
+  description: 'Pairwise error: block_diagram + inkSaver:false + forward vacío'
+  tinta: true
+  block:
+    type: block_diagram
+    inkSaver: false
+    forward: []
+  expect:
+    ok: false
+    error_contains: "forward: tiene que ser una lista de bloques"
+
+# ===========================================================================
+# B. Química (21 tipos + 2 combinaciones extra = 23 casos)
+# ===========================================================================
+- id: tier3_chem_molecule_color_inksaver_true_blank_charges
+  feature: molecule
+  tier: 3
+  description: 'Pairwise: molecule + tinta:false + inkSaver:true + átomo/enlace blank'
+  tinta: false
+  block:
+    type: molecule
+    inkSaver: true
+    title: "Molécula en tinta forzada"
+    atoms:
+      - {id: o, el: O, at: [0, 0], blank: true, lonePairs: 2}
+      - {id: h1, el: H, at: [-1, -0.7]}
+      - {id: h2, el: H, at: [1, -0.7]}
+    bonds:
+      - {from: o, to: h1, blank: true}
+      - {from: o, to: h2}
+  expect:
+    ok: true
+    min_width: 150
+    min_height: 120
+    text_contains: ["Molécula en tinta forzada", "H"]
+    text_absent: ["O"]
+    svg_contains: ['stroke-dasharray="3 2"']
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: tier3_chem_reaction_tinta_inksaver_false_blank_reagents
+  feature: reaction
+  tier: 3
+  description: 'Pairwise: reaction + tinta:true + inkSaver:false + flecha equilibrio'
+  tinta: true
+  block:
+    type: reaction
+    inkSaver: false
+    title: "Esterificación a color"
+    steps:
+      - "CH3COOH"
+      - "+"
+      - "CH3CH2OH"
+      - {arrow: "<=>", above: "H2SO4", below: "Δ"}
+      - "CH3COOCH2CH3"
+      - "+"
+      - "H2O"
+  expect:
+    ok: true
+    min_width: 400
+    min_height: 80
+    text_contains: ["Esterificación a color", "CH3COOH", "H2SO4", "H2O"]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: tier3_chem_vsepr_color_blank_geometry_y_angle
+  feature: vsepr
+  tier: 3
+  description: 'Pairwise: vsepr + tinta:false + lonePairs + blank selectivo'
+  tinta: false
+  block:
+    type: vsepr
+    title: "Amoníaco evaluación"
+    central: N
+    ligands: ["H", "H", "H"]
+    lonePairs: 1
+    blank: ["name", "angle", "hybridization"]
+  expect:
+    ok: true
+    min_width: 240
+    min_height: 200
+    text_contains: ["Amoníaco evaluación", "N", "H"]
+    text_absent: ["piramidal", "107", "sp³"]
+    svg_contains: ["#1d4ed8", 'stroke-dasharray="3 2"']
+
+- id: tier3_chem_orbitals_tinta_inksaver_false_core_blank
+  feature: orbitals
+  tier: 3
+  description: 'Pairwise: orbitals + tinta:true + inkSaver:false + core:true + blankElectrons'
+  tinta: true
+  block:
+    type: orbitals
+    inkSaver: false
+    element: Fe
+    core: true
+    blankElectrons: true
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 100
+    text_contains: ["Fe", "[Ar]"]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: tier3_chem_energy_profile_color_catalyzed_y_blank
+  feature: energy_profile
+  tier: 3
+  description: 'Pairwise: energy_profile + tinta:false + catalyzed + blankAnnotations'
+  tinta: false
+  block:
+    type: energy_profile
+    title: "Perfil catalizado"
+    states:
+      - {label: "A + B", energy: 0}
+      - {label: "ET‡", energy: 80, ts: true}
+      - {label: "P", energy: -30}
+    catalyzed:
+      - {energy: 0}
+      - {energy: 40, ts: true}
+      - {energy: -30}
+    blankAnnotations: true
+  expect:
+    ok: true
+    min_width: 600
+    min_height: 280
+    text_contains: ["Perfil catalizado", "Ea =", "ΔH ="]
+    text_absent: ["80 kJ/mol", "-30 kJ/mol"]
+    svg_contains: ["#1d4ed8", 'stroke-dasharray="3 2"']
+
+- id: tier3_chem_titration_color_inksaver_true_blank_annotations
+  feature: titration
+  tier: 3
+  description: 'Pairwise: titration + tinta:false + inkSaver:true + indicator + blankAnnotations'
+  tinta: false
+  block:
+    type: titration
+    inkSaver: true
+    analyte: {kind: weak_acid, pKa: 4.76, conc: 0.1, volume: 25}
+    titrant: {conc: 0.1, name: NaOH}
+    indicator: {name: fenolftaleína, range: [8.2, 10]}
+    annotations: [equivalence, half, initial]
+    blankAnnotations: true
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 280
+    text_contains: ["Veq = 25 mL", "pH =", "pKa ="]
+    text_absent: ["8,73", "4,76", "2,88"]
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: tier3_chem_speciation_color_blank_pka_y_species
+  feature: speciation
+  tier: 3
+  description: 'Pairwise: speciation + tinta:false + diprótico + blankPKa + blankSpecies'
+  tinta: false
+  block:
+    type: speciation
+    pKa: [6.35, 10.33]
+    species: ["H2CO3", "HCO3^-", "CO3^2-"]
+    blankPKa: true
+    blankSpecies: true
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 280
+    text_contains: ["pKa1 =", "pKa2 ="]
+    text_absent: ["H2CO3", "6,35", "10,33"]
+    svg_contains: ["#1d4ed8", 'stroke-dasharray="3 2"']
+
+- id: tier3_chem_kinetics_tinta_inksaver_false_half_life_product
+  feature: kinetics
+  tier: 3
+  description: 'Pairwise: kinetics + tinta:true + inkSaver:false + showProduct + halfLife'
+  tinta: true
+  block:
+    type: kinetics
+    inkSaver: false
+    order: 1
+    k: 0.1
+    A0: 1
+    annotations: [halfLife]
+    showProduct: true
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 280
+    text_contains: ["[A]", "[P]", "t½ = 6,93"]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: tier3_chem_phase_diagram_color_inksaver_true_points
+  feature: phase_diagram
+  tier: 3
+  description: 'Pairwise: phase_diagram + tinta:false + inkSaver:true + points + blankLabels'
+  tinta: false
+  block:
+    type: phase_diagram
+    inkSaver: true
+    substance: water
+    blankLabels: true
+    points:
+      - {T: 298, P: 1, label: "Cond. norm."}
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 280
+    text_contains: ["T", "P"]
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: tier3_chem_heating_curve_color_blank_heat_phases
+  feature: heating_curve
+  tier: 3
+  description: 'Pairwise: heating_curve + tinta:false + blankHeat + blankPhases'
+  tinta: false
+  block:
+    type: heating_curve
+    substance: water
+    mass: 100
+    from: -10
+    to: 110
+    blankHeat: true
+    blankPhases: true
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 280
+    text_contains: ["Q (kJ)", "Q total =", "Tf = 0 °C", "Teb = 100 °C"]
+    text_absent: ["sólido", "fusión", "líquido", "33,4 kJ"]
+    svg_contains: ["#1d4ed8", 'stroke-dasharray="3 2"']
+
+- id: tier3_chem_spectrum_tinta_inksaver_false_nmr_blank
+  feature: spectrum
+  tier: 3
+  description: 'Pairwise: spectrum (nmr) + tinta:true + inkSaver:false + tms + blankLabels'
+  tinta: true
+  block:
+    type: spectrum
+    inkSaver: false
+    kind: nmr
+    tms: true
+    blankLabels: true
+    signals:
+      - {shift: 1.22, integration: 3, neighbors: 2, label: "CH3"}
+      - {shift: 3.69, integration: 2, neighbors: 3, label: "CH2"}
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 260
+    text_contains: ["RMN de ¹H, 400 MHz", "TMS"]
+    text_absent: ["CH3", "CH2"]
+    svg_contains: ["#1d4ed8", 'stroke-dasharray="3 2"']
+
+- id: tier3_chem_galvanic_cell_color_nernst_deltag_blank
+  feature: galvanic_cell
+  tier: 3
+  description: 'Pairwise: galvanic_cell + tinta:false + showDeltaG + blankPolarity + blankPotential'
+  tinta: false
+  block:
+    type: galvanic_cell
+    halfCells:
+      - {couple: "Cu^2+/Cu", E0: 0.34, n: 2, conc: 1}
+      - {couple: "Zn^2+/Zn", E0: -0.76, n: 2, conc: 0.01}
+    showDeltaG: true
+    blankPolarity: true
+    blankPotential: true
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 280
+    text_contains: ["E° =", "ΔG° ="]
+    text_absent: ["Ánodo", "Cátodo", "1,10 V"]
+    svg_contains: ["#1d4ed8", 'stroke-dasharray="3 2"']
+
+- id: tier3_chem_unit_cell_color_inksaver_true_blank_params
+  feature: unit_cell
+  tier: 3
+  description: 'Pairwise: unit_cell (fcc) + tinta:false + inkSaver:true + blank'
+  tinta: false
+  block:
+    type: unit_cell
+    inkSaver: true
+    lattice: fcc
+    element: Cu
+    a: 361.5
+    molarMass: 63.55
+    blank: true
+  expect:
+    ok: true
+    min_width: 350
+    min_height: 220
+    svg_contains: ['stroke-dasharray="3 2"']
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: tier3_chem_newman_color_conformations_blank
+  feature: newman
+  tier: 3
+  description: 'Pairwise: newman + tinta:false + dihedral:60 + blank'
+  tinta: false
+  block:
+    type: newman
+    title: "Butano gauche"
+    axis: "C2–C3"
+    front: ["CH3", "H", "H"]
+    back: ["H", "CH3", "H"]
+    dihedral: 60
+    blank: true
+  expect:
+    ok: true
+    min_width: 220
+    min_height: 200
+    text_contains: ["Butano gauche"]
+    svg_contains: ["#1d4ed8", 'stroke-dasharray="3 2"']
+
+- id: tier3_chem_chair_tinta_inksaver_false_flip_blank
+  feature: chair
+  tier: 3
+  description: 'Pairwise: chair + tinta:true + inkSaver:false + flip:true + showStability'
+  tinta: true
+  block:
+    type: chair
+    inkSaver: false
+    title: "Metilciclohexano en color"
+    substituents: [{position: 1, group: CH3, axial: true}]
+    flip: true
+    showStability: true
+  expect:
+    ok: true
+    min_width: 350
+    min_height: 180
+    text_contains: ["Metilciclohexano en color", "CH3"]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: tier3_chem_fischer_color_inksaver_true_blank_rs
+  feature: fischer
+  tier: 3
+  description: 'Pairwise: fischer + tinta:false + inkSaver:true + blankConfig + blankSeries'
+  tinta: false
+  block:
+    type: fischer
+    inkSaver: true
+    top: CHO
+    bottom: CH2OH
+    centers: [{left: H, right: OH}]
+    blankConfig: true
+    blankSeries: true
+  expect:
+    ok: true
+    min_width: 180
+    min_height: 160
+    text_contains: ["CHO", "CH2OH", "OH"]
+    svg_contains: ['stroke-dasharray="3 2"']
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: tier3_chem_crystal_field_color_blank_electrons
+  feature: crystal_field
+  tier: 3
+  description: 'Pairwise: crystal_field + tinta:false + octahedral + blankElectrons + blank'
+  tinta: false
+  block:
+    type: crystal_field
+    metal: Fe
+    oxidation: 2
+    ligand: "CN^-"
+    blankElectrons: true
+    blank: true
+  expect:
+    ok: true
+    min_width: 430
+    min_height: 320
+    text_contains: ["Configuración:", "EECC:"]
+    text_absent: ["d6", "−2,4 Δo"]
+    svg_contains: ["#1d4ed8", 'stroke-dasharray="3 2"']
+
+- id: tier3_chem_complex_tinta_inksaver_false_blank_selectivo
+  feature: complex
+  tier: 3
+  description: 'Pairwise: complex + tinta:true + inkSaver:false + blank:[isomer, oxidation]'
+  tinta: true
+  block:
+    type: complex
+    inkSaver: false
+    metal: Co
+    ligands: [Cl, NH3, Cl, NH3, Cl, NH3]
+    blank: [isomer, oxidation]
+  expect:
+    ok: true
+    min_width: 540
+    min_height: 180
+    text_contains: ["[CoCl3(NH3)3]", "d6"]
+    text_absent: ["Co(III)", "fac"]
+    svg_contains: ["#1d4ed8", 'stroke-dasharray="3 2"']
+
+- id: tier3_chem_latimer_color_inksaver_true_blank_all
+  feature: latimer
+  tier: 3
+  description: 'Pairwise: latimer + tinta:false + inkSaver:true + compute + blankPotentials + blankComputed'
+  tinta: false
+  block:
+    type: latimer
+    inkSaver: true
+    species: ["Cu^2+", "Cu^+", "Cu"]
+    oxidation: [2, 1, 0]
+    potentials: [0.16, 0.52]
+    compute: [[0, 2]]
+    blankPotentials: [0, 1]
+    blankComputed: true
+    showDisproportionation: true
+    blankDisproportionation: true
+  expect:
+    ok: true
+    min_width: 200
+    min_height: 150
+    text_contains: ["E° =", "Desproporcionan ="]
+    text_absent: ["0,16", "0,52", "0,34"]
+    svg_contains: ['stroke-dasharray="3 2"']
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: tier3_chem_frost_color_blank_labels_y_desprop
+  feature: frost
+  tier: 3
+  description: 'Pairwise: frost + tinta:false + showDisproportionation + blankLabels'
+  tinta: false
+  block:
+    type: frost
+    species: ["Cu^2+", "Cu^+", "Cu"]
+    oxidation: [2, 1, 0]
+    potentials: [0.16, 0.52]
+    showDisproportionation: true
+    blankLabels: true
+  expect:
+    ok: true
+    min_width: 500
+    min_height: 310
+    text_contains: ["○ desproporciona"]
+    text_absent: ["Cu2+", "Cu+"]
+    svg_contains: ["#1d4ed8", 'stroke-dasharray="3 2"']
+
+- id: tier3_chem_born_haber_tinta_inksaver_false_blank_lattice
+  feature: born_haber
+  tier: 3
+  description: 'Pairwise: born_haber + tinta:true + inkSaver:false + blank'
+  tinta: true
+  block:
+    type: born_haber
+    inkSaver: false
+    title: "Born-Haber NaCl"
+    start: "Na(s) + ½ Cl2(g)"
+    product: "NaCl(s)"
+    formation: -411
+    blank: true
+    steps:
+      - {to: "Na(g) + ½ Cl2(g)", dH: 107, label: "ΔH_sub"}
+      - {to: "Na^+(g) + ½ Cl2(g)", dH: 496, label: "EI"}
+      - {to: "Na^+(g) + Cl(g)", dH: 122, label: "½ D"}
+      - {to: "Na^+(g) + Cl^-(g)", dH: -349, label: "AE"}
+  expect:
+    ok: true
+    min_width: 600
+    min_height: 350
+    text_contains: ["Born-Haber NaCl", "NaCl(s)"]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: tier3_chem_titration_color_data_experimental_triprotico
+  feature: titration
+  tier: 3
+  description: 'Pairwise: titration + tinta:false + triprótico + indicator + annotations'
+  tinta: false
+  block:
+    type: titration
+    title: "H3PO4 con NaOH (color)"
+    analyte: {kind: weak_acid, pKa: [2.15, 7.2, 12.35], conc: 0.1, volume: 20}
+    titrant: {conc: 0.1}
+    annotations: [equivalence, half]
+  expect:
+    ok: true
+    min_width: 450
+    min_height: 300
+    text_contains: ["H3PO4 con NaOH (color)", "Veq1 = 20 mL", "Veq2 = 40 mL"]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: tier3_chem_born_haber_err_steps_vacio_inksaver
+  feature: born_haber
+  tier: 3
+  description: 'Pairwise error: born_haber + inkSaver:true + steps faltante'
+  tinta: false
+  block:
+    type: born_haber
+    inkSaver: true
+    formation: -411
+  expect:
+    ok: false
+    error_contains: "steps"
+
+# ===========================================================================
+# C. Ciencias de la Computación (14 tipos + 2 combinaciones extra = 16 casos)
+# ===========================================================================
+- id: tier3_cs_array_color_inksaver_true_addrs_offsets_blank
+  feature: array
+  tier: 3
+  description: 'Pairwise: array + tinta:false + inkSaver:true + showAddresses + showOffsets + blankValues'
+  tinta: false
+  block:
+    type: array
+    inkSaver: true
+    values: [41, 42, 43]
+    baseAddr: "0x3000"
+    typeSize: 4
+    showAddresses: true
+    showOffsets: true
+    blankValues: true
+  expect:
+    ok: true
+    min_width: 240
+    min_height: 110
+    text_contains: ["Dirección:", "Offset:", "0x3000", "+0B", "+4B", "+8B"]
+    text_absent: ["41", "42", "43"]
+    svg_contains: ['stroke-dasharray="3 2"']
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: tier3_cs_matrix_tinta_inksaver_false_dynamic_addrs
+  feature: matrix
+  tier: 3
+  description: 'Pairwise: matrix (dynamic) + tinta:true + inkSaver:false + showAddresses + showLinear'
+  tinta: true
+  block:
+    type: matrix
+    inkSaver: false
+    variant: dynamic
+    values: [[1, 2], [3, 4]]
+    showAddresses: true
+  expect:
+    ok: true
+    min_width: 240
+    min_height: 140
+    text_contains: ["1", "2", "3", "4"]
+    svg_contains: ["#1d4ed8", "#0f172a", "marker-end"]
+
+- id: tier3_cs_linked_list_color_doubly_addrs_blank_ptrs
+  feature: linked_list
+  tier: 3
+  description: 'Pairwise: linked_list (doubly) + tinta:false + showAddresses + blankValues'
+  tinta: false
+  block:
+    type: linked_list
+    variant: doubly
+    values: ["nodoX", "nodoY", "nodoZ"]
+    showAddresses: true
+    blankValues: true
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 110
+    text_absent: ["nodoX", "nodoY", "nodoZ"]
+    svg_contains: ["#1d4ed8", 'stroke-dasharray="3 2"', "marker-end"]
+
+- id: tier3_cs_stack_tinta_inksaver_false_addrs_blank
+  feature: stack
+  tier: 3
+  description: 'Pairwise: stack + tinta:true + inkSaver:false + showAddresses + blankValues + capacity'
+  tinta: true
+  block:
+    type: stack
+    inkSaver: false
+    values: [7, 14]
+    capacity: 4
+    showAddresses: true
+    blankValues: true
+  expect:
+    ok: true
+    min_width: 140
+    min_height: 160
+    text_absent: ["7", "14"]
+    svg_contains: ["#1d4ed8", 'stroke-dasharray="3 2"']
+
+- id: tier3_cs_call_stack_color_inksaver_true_addrs_types_blank
+  feature: call_stack
+  tier: 3
+  description: 'Pairwise: call_stack + tinta:false + inkSaver:true + showAddresses + showTypes + blankValues + blankAddrs'
+  tinta: false
+  block:
+    type: call_stack
+    inkSaver: true
+    showAddresses: true
+    showTypes: true
+    blankValues: true
+    blankAddrs: true
+    frames:
+      - function: main
+        vars:
+          - {name: x, value: 42, type: int}
+  expect:
+    ok: true
+    min_width: 200
+    min_height: 100
+    text_contains: ["main()", "x", "0x____"]
+    text_absent: ["42", "0x7FFC"]
+    svg_contains: ['stroke-dasharray="3 2"']
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: tier3_cs_call_tree_tinta_inksaver_false_order_costs
+  feature: call_tree
+  tier: 3
+  description: 'Pairwise: call_tree + tinta:true + inkSaver:false + showOrder + levelCosts + highlight'
+  tinta: true
+  block:
+    type: call_tree
+    inkSaver: false
+    showOrder: true
+    highlight: ["f(2)"]
+    levelCosts: ["c", "2c"]
+    total: "3c"
+    root:
+      call: "f(2)"
+      returns: 1
+      children:
+        - {call: "f(1)", returns: 1}
+        - {call: "f(0)", returns: 0}
+  expect:
+    ok: true
+    min_width: 260
+    min_height: 160
+    text_contains: ["f(2)", "f(1)", "f(0)", "3c"]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: tier3_cs_queue_color_circular_addrs_blank
+  feature: queue
+  tier: 3
+  description: 'Pairwise: queue (circular) + tinta:false + blankValues + blankPointers'
+  tinta: false
+  block:
+    type: queue
+    variant: circular
+    capacity: 6
+    frontIndex: 1
+    rearIndex: 3
+    values: ["", "alfa", "beta", "gamma"]
+    blankValues: true
+    blankPointers: true
+  expect:
+    ok: true
+    min_width: 240
+    min_height: 200
+    text_absent: ["alfa", "beta", "gamma"]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: tier3_cs_tree_tinta_inksaver_false_avl_highlight_blank
+  feature: tree
+  tier: 3
+  description: 'Pairwise: tree (avl) + tinta:true + inkSaver:false + blankBalance + blankValues'
+  tinta: true
+  block:
+    type: tree
+    inkSaver: false
+    variant: avl
+    insert: [30, 20, 40, 10]
+    blankBalance: true
+    blankValues: true
+  expect:
+    ok: true
+    min_width: 240
+    min_height: 160
+    text_absent: ["10", "20", "30", "40"]
+    svg_contains: ["#1d4ed8", 'stroke-dasharray="3 2"']
+
+- id: tier3_cs_struct_color_inksaver_true_packed_blank
+  feature: struct
+  tier: 3
+  description: 'Pairwise: struct + tinta:false + inkSaver:true + packed:true + showOffsets + blankOffsets'
+  tinta: false
+  block:
+    type: struct
+    inkSaver: true
+    name: "struct pkt"
+    packed: true
+    showOffsets: true
+    blankOffsets: true
+    fields: ["char a", "int b"]
+  expect:
+    ok: true
+    min_width: 240
+    min_height: 120
+    text_contains: ["struct pkt", "char a", "int b"]
+    svg_contains: ['stroke-dasharray="3 2"']
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: tier3_cs_adt_tinta_inksaver_false_invariante
+  feature: adt
+  tier: 3
+  description: 'Pairwise: adt + tinta:true + inkSaver:false + invariant + representations'
+  tinta: true
+  block:
+    type: adt
+    inkSaver: false
+    name: "Cola"
+    invariant: "0 <= count <= cap"
+    operations:
+      - {signature: "void encolar(T x)", kind: mutador, pre: "no llena", post: "x al final"}
+      - {signature: "T frente(void)", kind: observador, pre: "no vacía"}
+    representations:
+      - {name: "Arreglo circular", fields: ["T *datos", "size_t cap"]}
+  expect:
+    ok: true
+    min_width: 320
+    min_height: 180
+    text_contains: ["Cola", "void encolar(T x)", "Arreglo circular", "T *datos"]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: tier3_cs_complexity_color_empirical_max_y
+  feature: complexity
+  tier: 3
+  description: 'Pairwise: complexity + tinta:false + curves empíricas + maxY + UTF-8'
+  tinta: false
+  block:
+    type: complexity
+    title: "Complejidad empírica — α"
+    maxY: 120
+    curves:
+      - "n"
+      - {label: "medido", points: [[1, 2], [4, 16], [8, 64]]}
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 220
+    text_contains: ["Complejidad empírica — α", "medido"]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: tier3_cs_flowchart_tinta_inksaver_false_if_while
+  feature: flowchart
+  tier: 3
+  description: 'Pairwise: flowchart + tinta:true + inkSaver:false + if/then/else + while'
+  tinta: true
+  block:
+    type: flowchart
+    inkSaver: false
+    steps:
+      - "i = 0"
+      - if: "n > 0"
+        then: ["ok = true"]
+        else: ["ok = false"]
+      - while: "i < n"
+        do: ["i = i + 1"]
+  expect:
+    ok: true
+    min_width: 240
+    min_height: 240
+    text_contains: ["n > 0", "ok = true", "i < n", "i = i + 1"]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: tier3_cs_cost_table_color_inksaver_true_blank_costs
+  feature: cost_table
+  tier: 3
+  description: 'Pairwise: cost_table + tinta:false + inkSaver:true + blankCosts + blankTotal'
+  tinta: false
+  block:
+    type: cost_table
+    inkSaver: true
+    blankCosts: true
+    blankTotal: true
+    lines:
+      - ["for (int i = 0; i < n; i++)", "c1", "n + 1"]
+      - ["    s += v[i];", "c2", "n"]
+    total: "c1(n + 1) + c2·n"
+  expect:
+    ok: true
+    min_width: 320
+    min_height: 120
+    text_contains: ["for (int i = 0; i < n; i++)", "s += v[i];"]
+    text_absent: ["c1(n + 1) + c2·n"]
+    svg_contains: ['stroke-dasharray="3 2"']
+    svg_absent: ["#1d4ed8", "#0f172a"]
+
+- id: tier3_cs_trace_table_tinta_inksaver_false_blank_cells
+  feature: trace_table
+  tier: 3
+  description: 'Pairwise: trace_table + tinta:true + inkSaver:false + blankValues'
+  tinta: true
+  block:
+    type: trace_table
+    inkSaver: false
+    columns: ["i", "suma"]
+    rows: [[10, 20], [30, 40]]
+    blankValues: true
+  expect:
+    ok: true
+    min_width: 90
+    min_height: 110
+    text_contains: ["i", "suma"]
+    text_absent: ["10", "20", "30", "40"]
+    svg_contains: ["#1d4ed8", 'stroke-dasharray="3 2"']
+
+- id: tier3_cs_tree_color_heap_show_array
+  feature: tree
+  tier: 3
+  description: 'Pairwise: tree (heap) + tinta:false + showArray:true + values'
+  tinta: false
+  block:
+    type: tree
+    variant: heap
+    values: [90, 70, 80, 30, 50]
+    showArray: true
+  expect:
+    ok: true
+    min_width: 260
+    min_height: 200
+    text_contains: ["90", "70", "80", "30", "50", "[0]"]
+    svg_contains: ["#1d4ed8", "#0f172a"]
+
+- id: tier3_cs_struct_tinta_opaque_3_paneles
+  feature: struct
+  tier: 3
+  description: 'Pairwise: struct (opaque) + tinta:true + 3 paneles + UTF-8'
+  tinta: true
+  block:
+    type: struct
+    variant: opaque
+    name: "struct pila"
+    typedef: "pila_t"
+    header: "pila.h"
+    source: "pila.c"
+    operations: ["pila_t crear(void)", "void destruir(pila_t p)"]
+    fields: ["int *datos", "size_t tope", "size_t cap"]
+  expect:
+    ok: true
+    min_width: 400
+    min_height: 180
+    text_contains: ["pila_t", "pila.h", "pila.c", "int *datos"]
+    svg_absent: ["#1d4ed8", "#0f172a"]

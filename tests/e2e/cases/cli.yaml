@@ -1,0 +1,295 @@
+# Suite E2E CLI de `dibu`: >= 5 Tier 1 + >= 5 Tier 2 por cada uno de los 4 subcomandos (40 casos).
+
+# ---------------------------------------------------------------------------
+# 1. list-types (5 Tier 1 + 5 Tier 2)
+# ---------------------------------------------------------------------------
+- id: cli_list_types_exit_zero
+  feature: cli:list-types
+  tier: 1
+  description: "`dibu list-types` termina con rc=0, stderr vacío y al menos 1 tipo"
+  subcommand: list-types
+  action: list_types_basic
+
+- id: cli_list_types_sorted_unique
+  feature: cli:list-types
+  tier: 1
+  description: 'La salida de `list-types` está ordenada lexicográficamente, sin duplicados ni líneas vacías'
+  subcommand: list-types
+  action: list_types_sorted_unique
+
+- id: cli_list_types_contains_control_9
+  feature: cli:list-types
+  tier: 1
+  description: "`list-types` incluye los 9 tipos base de control de procesos"
+  subcommand: list-types
+  action: list_types_contains_control_9
+
+- id: cli_list_types_contains_all_44
+  feature: cli:list-types
+  tier: 1
+  description: "`list-types` expone exactamente los 44 tipos del catálogo completo"
+  subcommand: list-types
+  action: list_types_contains_all_44
+  requires_all_44: true
+
+- id: cli_list_types_help
+  feature: cli:list-types
+  tier: 1
+  description: "`dibu list-types --help` termina con rc=0 y muestra la ayuda del subcomando"
+  subcommand: list-types
+  action: list_types_help
+
+- id: cli_list_types_extra_arg_rejected
+  feature: cli:list-types
+  tier: 2
+  description: "`dibu list-types foo` rechaza argumentos posicionales inesperados con rc=2"
+  subcommand: list-types
+  action: list_types_extra_arg
+
+- id: cli_list_types_unknown_flag_rejected
+  feature: cli:list-types
+  tier: 2
+  description: "`dibu list-types --color` rechaza flags no válidos con rc=2"
+  subcommand: list-types
+  action: list_types_unknown_flag
+
+- id: cli_list_types_determinism
+  feature: cli:list-types
+  tier: 2
+  description: 'Dos invocaciones seguidas de `list-types` producen bytes idénticos'
+  subcommand: list-types
+  action: list_types_determinism
+
+- id: cli_list_types_ignores_stdin
+  feature: cli:list-types
+  tier: 2
+  description: "`list-types` ignora basura en stdin y mantiene rc=0 y misma salida"
+  subcommand: list-types
+  action: list_types_ignores_stdin
+
+- id: cli_list_types_root_no_args_error
+  feature: cli:list-types
+  tier: 2
+  description: 'Invocar `dibu` sin subcomando ni flags falla con rc=2 y Usage'
+  subcommand: list-types
+  action: root_no_args
+
+# ---------------------------------------------------------------------------
+# 2. render (5 Tier 1 + 5 Tier 2)
+# ---------------------------------------------------------------------------
+- id: cli_render_single_yaml_default_output
+  feature: cli:render
+  tier: 1
+  description: 'Render de bloque único YAML sin `-o` ni `id` crea `./output/<stem>_1.svg` en paleta tinta'
+  subcommand: render
+  action: render_single_default_output
+
+- id: cli_render_multi_yaml_custom_id_and_dir
+  feature: cli:render
+  tier: 1
+  description: 'Lista YAML con `id` explícito y sin `id` usando `-o` genera `<id>.svg` y `<stem>_2.svg`'
+  subcommand: render
+  action: render_multi_custom_id_and_dir
+
+- id: cli_render_json_blocks_wrapper
+  feature: cli:render
+  tier: 1
+  description: 'Archivo JSON con envoltorio `{"blocks": [...]}` renderiza todos sus bloques'
+  subcommand: render
+  action: render_json_blocks_wrapper
+
+- id: cli_render_color_flag
+  feature: cli:render
+  tier: 1
+  description: 'Flag `--color` aplica la paleta color (`#1d4ed8` en `<defs>` y `#0f172a` en cuerpo)'
+  subcommand: render
+  action: render_color_flag
+
+- id: cli_render_ink_saver_override
+  feature: cli:render
+  tier: 1
+  description: "`inkSaver: true/false` sobreescribe la paleta solicitada por CLI (`--color` o default)"
+  subcommand: render
+  action: render_ink_saver_override
+
+- id: cli_render_missing_file
+  feature: cli:render
+  tier: 2
+  description: 'Archivo de entrada inexistente devuelve rc=2 y error controlado sin panic'
+  subcommand: render
+  action: render_missing_file
+
+- id: cli_render_malformed_yaml
+  feature: cli:render
+  tier: 2
+  description: 'YAML sintácticamente roto devuelve rc=2 con mensaje de YAML inválido'
+  subcommand: render
+  action: render_malformed_yaml
+
+- id: cli_render_empty_file_and_empty_list
+  feature: cli:render
+  tier: 2
+  description: 'Archivo vacío devuelve rc=2; lista vacía `[]` devuelve rc=1 sin escribir archivos'
+  subcommand: render
+  action: render_empty_file_and_list
+
+- id: cli_render_unsupported_only_vs_partial_success
+  feature: cli:render
+  tier: 2
+  description: 'Bloque único no soportado da rc=1; mezcla válido + inválido/no soportado escribe el válido y da rc=0'
+  subcommand: render
+  action: render_unsupported_and_partial
+
+- id: cli_render_id_empty_or_numeric_fallback_and_determinism
+  feature: cli:render
+  tier: 2
+  description: "`id: ''` e `id: 123` caen a `<stem>_<n>.svg` y dos corridas son idénticas byte a byte"
+  subcommand: render
+  action: render_id_fallback_and_determinism
+
+# ---------------------------------------------------------------------------
+# 3. batch (5 Tier 1 + 5 Tier 2)
+# ---------------------------------------------------------------------------
+- id: cli_batch_single_default_tinta
+  feature: cli:batch
+  tier: 1
+  description: "`batch` con un ítem sin campo `tinta` usa paleta tinta por defecto y rc=0"
+  subcommand: batch
+  action: batch_single_default_tinta
+
+- id: cli_batch_tinta_false_color
+  feature: cli:batch
+  tier: 1
+  description: "`batch` con `tinta: false` produce SVG con paleta color"
+  subcommand: batch
+  action: batch_tinta_false_color
+
+- id: cli_batch_multiple_preserves_order
+  feature: cli:batch
+  tier: 1
+  description: "`batch` procesa múltiples bloques heterogéneos preservando el orden y paridad con oráculo"
+  subcommand: batch
+  action: batch_multiple_preserves_order
+
+- id: cli_batch_ink_saver_overrides_tinta
+  feature: cli:batch
+  tier: 1
+  description: "`block.inkSaver` prevalece sobre el campo `tinta` del request en `batch`"
+  subcommand: batch
+  action: batch_ink_saver_overrides_tinta
+
+- id: cli_batch_empty_stdin
+  feature: cli:batch
+  tier: 1
+  description: "`batch` con stdin vacío termina con rc=0 y sin líneas en stdout ni stderr"
+  subcommand: batch
+  action: batch_empty_stdin
+
+- id: cli_batch_blank_and_whitespace_lines_skipped
+  feature: cli:batch
+  tier: 2
+  description: "`batch` saltea líneas vacías o solo whitespace sin emitir líneas extra"
+  subcommand: batch
+  action: batch_blank_lines_skipped
+
+- id: cli_batch_malformed_json_does_not_abort
+  feature: cli:batch
+  tier: 2
+  description: 'JSON malformado en el medio del lote emite error para esa línea y continúa procesando el resto'
+  subcommand: batch
+  action: batch_malformed_json_continues
+
+- id: cli_batch_missing_fields_or_wrong_id_type
+  feature: cli:batch
+  tier: 2
+  description: 'Falta de `block` o `id` no string emite error `JSON inválido` controlado con rc=0'
+  subcommand: batch
+  action: batch_missing_fields_or_wrong_id
+
+- id: cli_batch_domain_and_unknown_type_errors_preserve_id
+  feature: cli:batch
+  tier: 2
+  description: 'Errores de dominio y tipo desconocido preservan el `id` original en la respuesta sin abortar'
+  subcommand: batch
+  action: batch_domain_and_unknown_errors
+
+- id: cli_batch_determinism_and_extra_flag_rejected
+  feature: cli:batch
+  tier: 2
+  description: "`batch` es determinista byte-a-byte entre dos corridas y rechaza `--color` con rc=2"
+  subcommand: batch
+  action: batch_determinism_and_flag_rejected
+
+# ---------------------------------------------------------------------------
+# 4. sync-md (5 Tier 1 + 5 Tier 2)
+# ---------------------------------------------------------------------------
+- id: cli_sync_md_dir_creates_hashed_svgs
+  feature: cli:sync-md
+  tier: 1
+  description: "`sync-md` crea `diagramas/estructura-<sha1[:12]>.svg` coincidente con Python y rc=1 al escribir"
+  subcommand: sync-md
+  action: sync_md_dir_creates_hashed
+
+- id: cli_sync_md_idempotent_second_run_and_verificar
+  feature: cli:sync-md
+  tier: 1
+  description: 'Segunda corrida de `sync-md` y `--verificar` al día terminan con rc=0 sin salidas'
+  subcommand: sync-md
+  action: sync_md_idempotent_and_verificar
+
+- id: cli_sync_md_statics_and_tilde_fences
+  feature: cli:sync-md
+  tier: 1
+  description: "`sync-md` reconoce fences `~~~statics` y ```` ```statics ```` con igual hash y SVG"
+  subcommand: sync-md
+  action: sync_md_statics_and_tilde
+
+- id: cli_sync_md_multiblock_stacking_and_dedup
+  feature: cli:sync-md
+  tier: 1
+  description: 'Fence multi-bloque apila verticalmente (8 px) y cuerpos idénticos trimmeados deduplican archivo'
+  subcommand: sync-md
+  action: sync_md_multiblock_and_dedup
+
+- id: cli_sync_md_color_flag_and_verificar_mismatch
+  feature: cli:sync-md
+  tier: 1
+  description: "`sync-md --verificar --color` tras sync tinta reporta `Desactualizado:` (rc=1) sin sobreescribir"
+  subcommand: sync-md
+  action: sync_md_color_verificar_mismatch
+
+- id: cli_sync_md_relative_filename_no_parent
+  feature: cli:sync-md
+  tier: 2
+  description: "`dibu sync-md doc.md` (ruta relativa sin `./`) debe sincronizar `diagramas/` (regresión bug M2)"
+  subcommand: sync-md
+  action: sync_md_relative_no_parent
+  known_issue_m2: true
+
+- id: cli_sync_md_orphan_cleanup_and_empty_dir_removal
+  feature: cli:sync-md
+  tier: 2
+  description: 'Borra `estructura-*.svg` huérfanos, conserva otros archivos, soporta `Sobra:` en `--verificar` y elimina `diagramas/` vacío'
+  subcommand: sync-md
+  action: sync_md_orphan_and_empty_dir
+
+- id: cli_sync_md_invalid_block_in_md
+  feature: cli:sync-md
+  tier: 2
+  description: 'Bloque inválido en `.md` reporta `Error:` en stderr y rc=1 sin panic, procesando otros válidos'
+  subcommand: sync-md
+  action: sync_md_invalid_block
+
+- id: cli_sync_md_unclosed_fence_and_crlf
+  feature: cli:sync-md
+  tier: 2
+  description: 'Fence sin cierre se ignora y Markdown con CRLF produce exactamente el mismo hash y SVG que LF'
+  subcommand: sync-md
+  action: sync_md_unclosed_and_crlf
+
+- id: cli_sync_md_no_args_and_non_md
+  feature: cli:sync-md
+  tier: 2
+  description: "`dibu sync-md` sin argumentos devuelve rc=2; archivo `.txt` sin `.md` termina con rc=0 sin crear `diagramas/`"
+  subcommand: sync-md
+  action: sync_md_no_args_and_non_md

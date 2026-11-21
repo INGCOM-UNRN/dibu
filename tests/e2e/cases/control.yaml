@@ -1,0 +1,1435 @@
+# Suite E2E Control de Procesos: 9 tipos × (>=5 Tier 1 + >=5 Tier 2) = 90 casos.
+# Derivado de `fixtures/diagramas_control.yaml` y `alucarD/tests/test_diagramas_control.py`.
+
+# ===========================================================================
+# 1. block_diagram (5 Tier 1 + 5 Tier 2)
+# ===========================================================================
+- id: bd_t1_lazo_abierto
+  feature: block_diagram
+  tier: 1
+  description: 'Lazo abierto simple con dos bloques en serie'
+  tinta: true
+  block:
+    type: block_diagram
+    forward: ["G1(s)", "G2(s)"]
+  expect:
+    ok: true
+    min_width: 150
+    min_height: 60
+    text_contains: ["R(s)", "G1(s)", "G2(s)", "Y(s)"]
+    text_absent: ["−"]
+
+- id: bd_t1_realim_unitaria_color
+  feature: block_diagram
+  tier: 1
+  description: 'Realimentación unitaria en modo color'
+  tinta: false
+  block:
+    type: block_diagram
+    forward: ["Gp(s)"]
+    feedback: []
+  expect:
+    ok: true
+    min_width: 150
+    min_height: 80
+    text_contains: ["R(s)", "Gp(s)", "Y(s)", "−", "+"]
+    svg_contains: ["#1d4ed8"]
+
+- id: bd_t1_completo_con_perturbacion
+  feature: block_diagram
+  tier: 1
+  description: 'Fixture `bloques` completo con forward, perturbación, feedback y señales intermedias'
+  tinta: false
+  block:
+    type: block_diagram
+    title: Lazo de control de temperatura
+    input: "R(s)"
+    output: "Y(s)"
+    error: "E(s)"
+    forward:
+      - {label: "Gc(s)", out: "U(s)"}
+      - {label: "Gv(s)", out: "M(s)"}
+      - "Gp(s)"
+    disturbance: {at: 2, label: "D(s)", block: "Gd(s)"}
+    feedback: ["H(s)"]
+    measured: "B(s)"
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 150
+    text_contains: ["Lazo de control de temperatura", "R(s)", "E(s)", "U(s)", "M(s)", "D(s)", "Gd(s)", "H(s)", "B(s)", "Y(s)"]
+
+- id: bd_t1_cascada_anidada
+  feature: block_diagram
+  tier: 1
+  description: 'Fixture `cascada` con lazo interno anidado (`loop`)'
+  tinta: true
+  block:
+    type: block_diagram
+    title: Control en cascada
+    forward:
+      - "Gc1(s)"
+      - loop:
+          forward: ["Gc2(s)", "Gp2(s)"]
+          feedback: ["H2(s)"]
+      - "Gp1(s)"
+    feedback: ["H1(s)"]
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 150
+    text_contains: ["Control en cascada", "Gc1(s)", "Gc2(s)", "Gp2(s)", "H2(s)", "Gp1(s)", "H1(s)"]
+
+- id: bd_t1_blank_y_signo_pos
+  feature: block_diagram
+  tier: 1
+  description: 'Bloques `blank` y signos en blanco (`blankSigns`) con realimentación positiva'
+  tinta: true
+  block:
+    type: block_diagram
+    forward: [{blank: true}, {label: "Gp", out: "Y"}]
+    feedback: [{blank: true}]
+    sign: "+"
+    blankSigns: true
+  expect:
+    ok: true
+    min_width: 150
+    min_height: 80
+    text_contains: ["Gp", "Y"]
+    text_absent: ["−", "+"]
+    svg_contains: ["stroke-dasharray=\"3 2\"", "stroke-dasharray=\"2 2\""]
+
+- id: bd_t2_perturbacion_en_extremo
+  feature: block_diagram
+  tier: 2
+  description: 'Perturbación en límite inferior `at: 0` con signo negativo'
+  tinta: true
+  block:
+    type: block_diagram
+    forward: ["G"]
+    disturbance: {at: 0, sign: "-"}
+  expect:
+    ok: true
+    min_width: 120
+    min_height: 80
+    text_contains: ["D(s)", "G", "−"]
+
+- id: bd_t2_err_forward_vacio
+  feature: block_diagram
+  tier: 2
+  description: 'Error al pasar `forward` vacío'
+  block:
+    type: block_diagram
+    forward: []
+  expect:
+    ok: false
+    error_contains: "forward: tiene que ser una lista de bloques"
+
+- id: bd_t2_err_sign_invalido
+  feature: block_diagram
+  tier: 2
+  description: 'Error al pasar `sign` distinto de `+` o `-`'
+  block:
+    type: block_diagram
+    forward: ["G"]
+    sign: "*"
+  expect:
+    ok: false
+    error_contains: "sign: es '-' o '+'"
+
+- id: bd_t2_err_bloque_vacio
+  feature: block_diagram
+  tier: 2
+  description: 'Error cuando un bloque no tiene label ni `blank: true`'
+  block:
+    type: block_diagram
+    forward: [""]
+  expect:
+    ok: false
+    error_contains: "un bloque necesita label (o blank: true)"
+
+- id: bd_t2_err_disturbance_oob
+  feature: block_diagram
+  tier: 2
+  description: 'Error cuando `disturbance.at` excede la cantidad de bloques'
+  block:
+    type: block_diagram
+    forward: ["G"]
+    disturbance: {at: 2}
+  expect:
+    ok: false
+    error_contains: "disturbance.at: va de 0 a 1"
+
+# ===========================================================================
+# 2. time_response (5 Tier 1 + 5 Tier 2)
+# ===========================================================================
+- id: tr_t1_segundo_orden_anotado
+  feature: time_response
+  tier: 1
+  description: 'Fixture `respuesta2` de segundo orden subamortiguado con 5 anotaciones'
+  tinta: false
+  block:
+    type: time_response
+    title: Segundo orden subamortiguado
+    system: {gain: 1, zeta: 0.3, wn: 2}
+    annotations: [final, overshoot, peak, rise, settling]
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 200
+    text_contains: ["y∞ = 1", "Mp = 37,2 %", "tp = 1,65", "tr =", "ts (2 %) ="]
+
+- id: tr_t1_fopdt_tangente_blank
+  feature: time_response
+  tier: 1
+  description: 'Fixture `fopdt` con tangente de Ziegler-Nichols y `blankAnnotations`'
+  tinta: true
+  block:
+    type: time_response
+    title: Curva de reacción (Ziegler-Nichols)
+    system: {gain: 2, num: [2], den: [15, 8, 1], delay: 1}
+    annotations: [final, tangent]
+    blankAnnotations: true
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 200
+    text_contains: ["y∞ =", "L =", "T =", "L+T"]
+
+- id: tr_t1_multi_sistemas_leyenda
+  feature: time_response
+  tier: 1
+  description: 'Fixture `zetas` comparando 3 sistemas con leyenda'
+  tinta: true
+  block:
+    type: time_response
+    title: Efecto de ζ
+    systems:
+      - {label: "ζ = 0,2", zeta: 0.2, wn: 1}
+      - {label: "ζ = 0,5", zeta: 0.5, wn: 1}
+      - {label: "ζ = 1", zeta: 1, wn: 1}
+    tEnd: 20
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 200
+    text_contains: ["ζ = 0,2", "ζ = 0,5", "ζ = 1"]
+    svg_contains: ["7 3", "2 3"]
+
+- id: tr_t1_lazo_pid_perturbacion
+  feature: time_response
+  tier: 1
+  description: 'Fixture `pi` en lazo cerrado con controlador PI y perturbación'
+  tinta: true
+  block:
+    type: time_response
+    title: Lazo cerrado con PI y perturbación
+    closedLoop:
+      plant: {gain: 2, tau: 5, delay: 1}
+      controller: {kp: 1.2, ki: 0.25}
+    disturbance: {at: 30, amplitude: -0.5}
+    tEnd: 60
+    annotations: [overshoot, settling]
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 200
+    text_contains: ["Mp =", "ts (2 %) ="]
+
+- id: tr_t1_ramp_y_datos_medidos
+  feature: time_response
+  tier: 1
+  description: 'Respuesta a rampa combinada con curva empírica `data`'
+  tinta: false
+  block:
+    type: time_response
+    systems: [{label: "Modelo", tau: 2}]
+    input: ramp
+    amplitude: 0.5
+    tEnd: 6
+    data: [[0, 0], [3, 0.8], [6, 2.1]]
+    dataLabel: Exp
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 200
+    text_contains: ["Modelo", "Exp", "t (s)", "y(t)"]
+
+- id: tr_t2_ganancia_neg_y_delay_tau
+  feature: time_response
+  tier: 2
+  description: 'Sistema de segundo orden con ganancia negativa y todas las anotaciones clave'
+  tinta: true
+  block:
+    type: time_response
+    system: {gain: -2, zeta: 0.3, wn: 2}
+    annotations: [final, overshoot, peak, tau, delay]
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 200
+    text_contains: ["y∞ = -2", "Mp = 37,2 %", "tp = 1,65"]
+
+- id: tr_t2_integrador_e_inestable
+  feature: time_response
+  tier: 2
+  description: 'Simulación conjunta de sistema integrador y sistema inestable (RHP) con `tEnd` acotado'
+  tinta: true
+  block:
+    type: time_response
+    systems:
+      - {label: "Int", k: 1, poles: [0, -1]}
+      - {label: "RHP", k: 1, poles: [0.5, -1]}
+    tEnd: 4
+    annotations: [final]
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 200
+    text_contains: ["Int", "RHP"]
+
+- id: tr_t2_err_sin_sistema
+  feature: time_response
+  tier: 2
+  description: 'Error cuando falta `system`, `systems`, `closedLoop` y `data`'
+  block:
+    type: time_response
+  expect:
+    ok: false
+    error_contains: "falta system, systems, closedLoop o data"
+
+- id: tr_t2_err_impropio
+  feature: time_response
+  tier: 2
+  description: 'Error al intentar simular un sistema impropio (más ceros que polos)'
+  block:
+    type: time_response
+    system: {num: [1, 0, 0], den: [1, 1]}
+  expect:
+    ok: false
+    error_contains: "el sistema es impropio"
+
+- id: tr_t2_err_anotacion_desconocida
+  feature: time_response
+  tier: 2
+  description: 'Error cuando `annotations` incluye un nombre inválido'
+  block:
+    type: time_response
+    system: {tau: 1}
+    annotations: ["magia"]
+  expect:
+    ok: false
+    error_contains: "anotaciones desconocidas"
+
+# ===========================================================================
+# 3. bode (5 Tier 1 + 5 Tier 2)
+# ===========================================================================
+- id: bode_t1_both_asymptotes_margins
+  feature: bode
+  tier: 1
+  description: 'Fixture `bode` completo con asíntotas y márgenes de fase/ganancia'
+  tinta: false
+  block:
+    type: bode
+    title: Bode de L(s) = 10 / (s(s+1)(s+10))
+    system: {k: 10, poles: [0, -1, -10]}
+    asymptotes: true
+    margins: true
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 250
+    text_contains: ["|G(jω)| (dB)", "∠G(jω) (°)", "ω (rad/s)", "MG =", "ω180 =", "MF =", "ωc ="]
+
+- id: bode_t1_solo_magnitud
+  feature: bode
+  tier: 1
+  description: 'Panel único de magnitud (`show: magnitude`)'
+  tinta: true
+  block:
+    type: bode
+    system: {tau: 1}
+    show: magnitude
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 150
+    text_contains: ["|G(jω)| (dB)", "ω (rad/s)"]
+    text_absent: ["∠G(jω) (°)"]
+
+- id: bode_t1_solo_fase
+  feature: bode
+  tier: 1
+  description: 'Panel único de fase (`show: phase`)'
+  tinta: true
+  block:
+    type: bode
+    system: {tau: 1}
+    show: phase
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 150
+    text_contains: ["∠G(jω) (°)", "ω (rad/s)"]
+    text_absent: ["|G(jω)| (dB)"]
+
+- id: bode_t1_closedLoop_blankMargins
+  feature: bode
+  tier: 1
+  description: 'Bode de lazo abierto desde `closedLoop` con `blankMargins: true`'
+  tinta: true
+  block:
+    type: bode
+    closedLoop:
+      plant: {k: 1, poles: [0, -1, -2]}
+      controller: {kp: 1}
+    margins: true
+    blankMargins: true
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 250
+    text_contains: ["MG =", "MF ="]
+    text_absent: ["15,6"]
+
+- id: bode_t1_multi_sistemas_delay
+  feature: bode
+  tier: 1
+  description: 'Múltiples sistemas en Bode incluyendo retardo puro y ganancia negativa'
+  tinta: false
+  block:
+    type: bode
+    systems:
+      - {label: "Con retardo", gain: 1, tau: 1, delay: 0.5}
+      - {label: "Negativo", gain: -2, tau: 2}
+    wMin: 0.1
+    wMax: 100
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 250
+    text_contains: ["Con retardo", "Negativo"]
+
+- id: bode_t2_ganancia_pura_sin_quiebres
+  feature: bode
+  tier: 2
+  description: 'Ganancia pura sin cruces de 0 dB ni -180° emite MG infinito y MF guion'
+  tinta: true
+  block:
+    type: bode
+    system: {num: [2], den: [1]}
+    margins: true
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 250
+    text_contains: ["MG = ∞", "MF = —"]
+
+- id: bode_t2_orden_alto_clip_fase
+  feature: bode
+  tier: 2
+  description: 'Sistema de orden 9 recorta límite inferior de fase a -720°'
+  tinta: true
+  block:
+    type: bode
+    system: {k: 1, poles: [-1, -1, -1, -1, -1, -1, -1, -1, -1]}
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 250
+    text_contains: ["-720"]
+
+- id: bode_t2_err_sin_sistema
+  feature: bode
+  tier: 2
+  description: 'Error en `bode` sin `system`, `systems` ni `closedLoop`'
+  block:
+    type: bode
+  expect:
+    ok: false
+    error_contains: "bode: falta system, systems o closedLoop"
+
+- id: bode_t2_err_wmin_ge_wmax
+  feature: bode
+  tier: 2
+  description: 'Error cuando `wMin >= wMax`'
+  block:
+    type: bode
+    system: {tau: 1}
+    wMin: 10
+    wMax: 1
+  expect:
+    ok: false
+    error_contains: "wMin y wMax son positivas y wMin < wMax"
+
+- id: bode_t2_err_show_invalido
+  feature: bode
+  tier: 2
+  description: 'Error cuando `show` tiene valor desconocido'
+  block:
+    type: bode
+    system: {tau: 1}
+    show: todo
+  expect:
+    ok: false
+    error_contains: "bode: show es both, magnitude o phase"
+
+# ===========================================================================
+# 4. nyquist (5 Tier 1 + 5 Tier 2)
+# ===========================================================================
+- id: nyq_t1_basico_unitCircle
+  feature: nyquist
+  tier: 1
+  description: 'Fixture `nyquist` con círculo unitario activado'
+  tinta: false
+  block:
+    type: nyquist
+    title: Nyquist
+    system: {k: 5, poles: [-1, -2, -3]}
+    unitCircle: true
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 200
+    text_contains: ["Re", "Im", "−1"]
+
+- id: nyq_t1_sin_negativas_y_limit
+  feature: nyquist
+  tier: 1
+  description: 'Traza de Nyquist con `showNegative: false` y `limit` fijo'
+  tinta: true
+  block:
+    type: nyquist
+    system: {k: 2, poles: [-1, -2]}
+    showNegative: false
+    limit: 3.0
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 200
+    text_contains: ["Re", "Im", "−1"]
+
+- id: nyq_t1_closedLoop
+  feature: nyquist
+  tier: 1
+  description: 'Nyquist evaluado desde `closedLoop`'
+  tinta: true
+  block:
+    type: nyquist
+    closedLoop:
+      plant: {k: 2, poles: [-1, -2]}
+      controller: {kp: 1.5}
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 200
+    text_contains: ["−1"]
+
+- id: nyq_t1_multi_sistemas
+  feature: nyquist
+  tier: 1
+  description: 'Múltiples curvas de Nyquist con leyenda'
+  tinta: false
+  block:
+    type: nyquist
+    systems:
+      - {label: "Estable", k: 1, poles: [-1, -2]}
+      - {label: "Tipo 1", k: 5, poles: [0, -1, -2]}
+  expect:
+    ok: true
+    min_width: 150
+    min_height: 200
+    text_contains: ["Estable", "Tipo 1", "−1"]
+
+- id: nyq_t1_con_retardo
+  feature: nyquist
+  tier: 1
+  description: 'Nyquist de sistema de primer orden con retardo y círculo unitario'
+  tinta: true
+  block:
+    type: nyquist
+    system: {gain: 1, tau: 1, delay: 0.8}
+    unitCircle: true
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 200
+    text_contains: ["−1"]
+
+- id: nyq_t2_ganancia_pura
+  feature: nyquist
+  tier: 2
+  description: 'Nyquist degenerado de ganancia pura (punto único en el eje real)'
+  tinta: true
+  block:
+    type: nyquist
+    system: {num: [2], den: [1]}
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 200
+    text_contains: ["−1", "Re", "Im"]
+
+- id: nyq_t2_polo_en_origen
+  feature: nyquist
+  tier: 2
+  description: 'Nyquist de sistema tipo 1 con polo en el origen y rango acotado'
+  tinta: true
+  block:
+    type: nyquist
+    system: {k: 1, poles: [0, -1, -2]}
+    wMin: 0.05
+    wMax: 50
+  expect:
+    ok: true
+    min_width: 120
+    min_height: 200
+    text_contains: ["−1"]
+
+- id: nyq_t2_wmin_gt_wmax_resiliente
+  feature: nyquist
+  tier: 2
+  description: 'Nyquist con `wMin > wMax` no produce panic y renderiza punto crítico'
+  tinta: true
+  block:
+    type: nyquist
+    system: {tau: 1}
+    wMin: 10
+    wMax: 1
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 200
+    text_contains: ["−1"]
+
+- id: nyq_t2_err_sin_sistema
+  feature: nyquist
+  tier: 2
+  description: 'Error en `nyquist` sin sistema'
+  block:
+    type: nyquist
+  expect:
+    ok: false
+    error_contains: "nyquist: falta system, systems o closedLoop"
+
+- id: nyq_t2_err_sistema_invalido
+  feature: nyquist
+  tier: 2
+  description: 'Error en `nyquist` por `tau` negativa'
+  block:
+    type: nyquist
+    system: {tau: -1}
+  expect:
+    ok: false
+    error_contains: "tau: tiene que ser positiva"
+
+# ===========================================================================
+# 5. pole_zero (5 Tier 1 + 5 Tier 2)
+# ===========================================================================
+- id: pz_t1_polos_ceros_grilla
+  feature: pole_zero
+  tier: 1
+  description: 'Fixture `polos` con grilla de amortiguamiento/frecuencia y valores'
+  tinta: false
+  block:
+    type: pole_zero
+    title: Polos y ceros
+    poles: [-1, [-2, 3]]
+    zeros: [-4]
+    dampingLines: [0.5]
+    wnCircles: [3]
+    showValues: true
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 250
+    text_contains: ["Polos y ceros", "ζ = 0,5", "ωn = 3", "-1", "-2 + j3", "-2 − j3", "-4"]
+
+- id: pz_t1_desde_system
+  feature: pole_zero
+  tier: 1
+  description: 'Mapa de polos y ceros extraído de `system`'
+  tinta: true
+  block:
+    type: pole_zero
+    system: {k: 2, poles: [-1, -3], zeros: [-2]}
+    showValues: true
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 200
+    text_contains: ["-1", "-3", "-2"]
+
+- id: pz_t1_desde_closedLoop
+  feature: pole_zero
+  tier: 1
+  description: 'Polos de lazo cerrado calculados desde `closedLoop`'
+  tinta: true
+  block:
+    type: pole_zero
+    closedLoop:
+      plant: {k: 4, poles: [0, -2]}
+      controller: {kp: 1}
+    showValues: true
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 200
+    text_contains: ["-1 + j1,73", "-1 − j1,73"]
+
+- id: pz_t1_blank
+  feature: pole_zero
+  tier: 1
+  description: 'Modo `blank: true` conserva grilla y omite marcas/valores de polos y ceros'
+  tinta: true
+  block:
+    type: pole_zero
+    poles: [-1, -2]
+    zeros: [-3]
+    blank: true
+    showValues: true
+    dampingLines: [0.707]
+    wnCircles: [2]
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 200
+    text_contains: ["ζ = 0,707", "ωn = 2"]
+    svg_absent: ["<circle", "stroke-width=\"1.8\""]
+
+- id: pz_t1_rangos_custom
+  feature: pole_zero
+  tier: 1
+  description: 'Rangos explícitos `xRange` e `yRange` en plano s'
+  tinta: false
+  block:
+    type: pole_zero
+    poles: [-1, [-1, 2]]
+    xRange: [-4, 2]
+    yRange: [-3, 3]
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 200
+    text_contains: ["σ (Re s)", "jω (Im s)"]
+
+- id: pz_t2_vacio
+  feature: pole_zero
+  tier: 2
+  description: 'Plano s vacío sin polos ni ceros renderiza ejes por defecto'
+  tinta: true
+  block:
+    type: pole_zero
+  expect:
+    ok: true
+    min_width: 250
+    min_height: 200
+    text_contains: ["σ (Re s)", "jω (Im s)"]
+
+- id: pz_t2_origen_doble_y_rhp
+  feature: pole_zero
+  tier: 2
+  description: 'Polos múltiples en el origen, semiplano derecho y rectas ζ límite 0 y 1'
+  tinta: true
+  block:
+    type: pole_zero
+    poles: [0, 0, 2]
+    zeros: [0, -1]
+    dampingLines: [0, 1]
+    showValues: true
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 200
+    text_contains: ["0", "2", "-1", "ζ = 0", "ζ = 1"]
+
+- id: pz_t2_err_damping_gt1
+  feature: pole_zero
+  tier: 2
+  description: 'Error si `dampingLines` supera 1'
+  block:
+    type: pole_zero
+    poles: [-1]
+    dampingLines: [1.2]
+  expect:
+    ok: false
+    error_contains: "dampingLines: cada ζ va de 0 a 1"
+
+- id: pz_t2_err_damping_neg
+  feature: pole_zero
+  tier: 2
+  description: 'Error si `dampingLines` es negativo'
+  block:
+    type: pole_zero
+    poles: [-1]
+    dampingLines: [-0.1]
+  expect:
+    ok: false
+    error_contains: "dampingLines: cada ζ va de 0 a 1"
+
+- id: pz_t2_err_par_complejo_invalido
+  feature: pole_zero
+  tier: 2
+  description: 'Error cuando un par complejo tiene 3 elementos'
+  block:
+    type: pole_zero
+    poles: [[1, 2, 3]]
+  expect:
+    ok: false
+    error_contains: "un par complejo es [real, imaginaria]"
+
+# ===========================================================================
+# 6. root_locus (5 Tier 1 + 5 Tier 2)
+# ===========================================================================
+- id: rl_t1_tercer_orden_cruce
+  feature: root_locus
+  tier: 1
+  description: 'Fixture `lugar` de tercer orden con asíntotas, cruce jω y marca `K = 1`'
+  tinta: false
+  block:
+    type: root_locus
+    title: Lugar de las raíces de K / (s(s+1)(s+2))
+    system: {k: 1, poles: [0, -1, -2]}
+    marks: [1]
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 250
+    text_contains: ["σa = -1", "■ K = 1", "Kcrít = 6", "ωcrít = 1,41"]
+
+- id: rl_t1_cuarto_orden_con_cero
+  feature: root_locus
+  tier: 1
+  description: 'Cuarto orden con un cero finito y `showCrossing: false`'
+  tinta: true
+  block:
+    type: root_locus
+    system: {k: 1, poles: [0, -1, -2, -4], zeros: [-3]}
+    showCrossing: false
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 250
+    text_contains: ["σa = -1,33"]
+    text_absent: ["Kcrít"]
+
+- id: rl_t1_blankMarks
+  feature: root_locus
+  tier: 1
+  description: "`blankMarks: true` reemplaza valores de centroide y cruce por espacios en blanco"
+  tinta: true
+  block:
+    type: root_locus
+    system: {k: 1, poles: [0, -1, -2]}
+    blankMarks: true
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 250
+    text_contains: ["σa =", "Kcrít =", "ωcrít ="]
+    text_absent: ["1,41"]
+
+- id: rl_t1_closedLoop_pi
+  feature: root_locus
+  tier: 1
+  description: 'Lugar de las raíces desde `closedLoop` con PI y grilla ζ/ωn'
+  tinta: false
+  block:
+    type: root_locus
+    closedLoop:
+      plant: {k: 1, poles: [0, -2]}
+      controller: {kp: 1, ki: 0.5}
+    dampingLines: [0.5]
+    wnCircles: [1]
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 250
+    text_contains: ["ζ = 0,5", "ωn = 1"]
+
+- id: rl_t1_sin_asintotas_kMax
+  feature: root_locus
+  tier: 1
+  description: "`asymptotes: false` con `kMax` y múltiples marcas de ganancia"
+  tinta: true
+  block:
+    type: root_locus
+    system: {k: 1, poles: [-1, -2], zeros: [-3]}
+    asymptotes: false
+    kMax: 20
+    marks: [2, 5]
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 200
+    text_contains: ["■ K = 2", "■ K = 5"]
+    text_absent: ["σa"]
+
+- id: rl_t2_n_igual_m_sin_asintotas
+  feature: root_locus
+  tier: 2
+  description: 'Igual número de polos y ceros (`n == m`) no genera asíntotas ni cruce'
+  tinta: true
+  block:
+    type: root_locus
+    system: {k: 1, poles: [-1, -2], zeros: [-3, -4]}
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 200
+    text_absent: ["σa", "Kcrít"]
+
+- id: rl_t2_n_menos_m_1
+  feature: root_locus
+  tier: 2
+  description: 'Exceso polo-cero `n - m = 1` tiene única asíntota en 180° sin rótulo `σa`'
+  tinta: true
+  block:
+    type: root_locus
+    system: {k: 1, poles: [-1, -2], zeros: [-3]}
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 200
+    text_absent: ["σa"]
+
+- id: rl_t2_err_sin_polos
+  feature: root_locus
+  tier: 2
+  description: 'Error cuando el sistema no tiene polos finitos'
+  block:
+    type: root_locus
+    system: {num: [1], den: [2]}
+  expect:
+    ok: false
+    error_contains: "root_locus: el sistema no tiene polos"
+
+- id: rl_t2_err_sin_sistema
+  feature: root_locus
+  tier: 2
+  description: 'Error en `root_locus` sin `system` ni `closedLoop`'
+  block:
+    type: root_locus
+  expect:
+    ok: false
+    error_contains: "falta system (o closedLoop)"
+
+- id: rl_t2_err_damping_fuera_rango
+  feature: root_locus
+  tier: 2
+  description: 'Error cuando `dampingLines` supera 1'
+  block:
+    type: root_locus
+    system: {k: 1, poles: [-1]}
+    dampingLines: [2]
+  expect:
+    ok: false
+    error_contains: "dampingLines: cada ζ va de 0 a 1"
+
+# ===========================================================================
+# 7. instrumentation (5 Tier 1 + 5 Tier 2)
+# ===========================================================================
+- id: inst_t1_lazo_nivel_completo
+  feature: instrumentation
+  tier: 1
+  description: 'Fixture `pid` completo con tanque, bomba, válvula, instrumentos y leyenda'
+  tinta: false
+  block:
+    type: instrumentation
+    title: Control de nivel de un tanque
+    equipment:
+      - {id: TK, kind: tank, at: [3, 3], label: "TK-101", level: 0.6}
+      - {id: P1, kind: pump, at: [6, 5.2], label: "P-101"}
+      - {id: LV, kind: control_valve, at: [8.5, 4.8], label: "LV-101"}
+    instruments:
+      - {id: LT, tag: "LT 101", at: [5, 2]}
+      - {id: LIC, tag: "LIC 101", at: [7, 1], location: dcs}
+    lines:
+      - {from: [0.5, 1.4], to: TK, label: "entrada", via: [[3, 1.4]]}
+      - {from: TK, to: P1, via: [[3, 5.2]]}
+      - {from: P1, to: LV, via: [[7, 4.8]]}
+      - {from: LV, to: [11, 4.8], label: "salida"}
+      - {from: TK, to: LT, kind: capillary, via: [[4, 2]]}
+      - {from: LT, to: LIC, kind: electric, via: [[5, 1]]}
+      - {from: LIC, to: LV, kind: electric, via: [[8.5, 1]]}
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 200
+    text_contains: ["TK-101", "P-101", "LV-101", "LT", "LIC", "entrada", "salida", "señal eléctrica", "tubo capilar"]
+
+- id: inst_t1_todos_equipos
+  feature: instrumentation
+  tier: 1
+  description: 'Cobertura de equipos `vessel`, `reactor`, `column`, `heat_exchanger`, `valve` y `control_valve`'
+  tinta: true
+  block:
+    type: instrumentation
+    equipment:
+      - {id: V1, kind: vessel, at: [1, 2], label: "V-1", size: [1.2, 2.0]}
+      - {id: R1, kind: reactor, at: [3, 2], label: "R-1"}
+      - {id: C1, kind: column, at: [5, 2], label: "C-1"}
+      - {id: E1, kind: heat_exchanger, at: [7, 2], label: "E-1"}
+      - {id: HV1, kind: valve, at: [9, 2], label: "HV-1", orientation: v}
+      - {id: FV1, kind: control_valve, at: [11, 2], label: "FV-1", orientation: v}
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 150
+    text_contains: ["V-1", "R-1", "M", "C-1", "E-1", "HV-1", "FV-1"]
+
+- id: inst_t1_todas_ubicaciones_y_blank
+  feature: instrumentation
+  tier: 1
+  description: 'Todas las ubicaciones ISA-5.1 (`field`, `panel`, `panel_back`, `dcs`, `plc`) y `blank`'
+  tinta: false
+  block:
+    type: instrumentation
+    instruments:
+      - {id: I1, tag: "FT 101", at: [1, 1], location: field}
+      - {id: I2, tag: "FIC 101", at: [3, 1], location: panel}
+      - {id: I3, tag: "TY 101", at: [5, 1], location: panel_back}
+      - {id: I4, tag: "PIC 200", at: [7, 1], location: dcs}
+      - {id: I5, tag: "XY 999", at: [9, 1], location: plc, blank: true}
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 80
+    text_contains: ["FT", "101", "FIC", "TY", "PIC", "200"]
+    text_absent: ["XY", "999"]
+
+- id: inst_t1_senales_y_leyenda_off
+  feature: instrumentation
+  tier: 1
+  description: 'Líneas `pneumatic`, `data`, `electric`, `capillary`, `route: vh` y `legend: false`'
+  tinta: true
+  block:
+    type: instrumentation
+    legend: false
+    instruments:
+      - {id: A, tag: "PT 1", at: [1, 1]}
+      - {id: B, tag: "PIC 1", at: [4, 2]}
+      - {id: C, tag: "PV 1", at: [7, 1]}
+    lines:
+      - {from: A, to: B, kind: pneumatic, route: vh, label: "3-15 psi"}
+      - {from: B, to: C, kind: data}
+  expect:
+    ok: true
+    min_width: 200
+    min_height: 100
+    text_contains: ["3-15 psi"]
+    text_absent: ["señal neumática", "enlace de datos"]
+
+- id: inst_t1_actuador_y_coordenadas
+  feature: instrumentation
+  tier: 1
+  description: 'Conexión a actuador (`fromActuator`/`toActuator`), `via`, `arrow: false` y `grid: 40`'
+  tinta: true
+  block:
+    type: instrumentation
+    grid: 40
+    equipment:
+      - {id: CV, kind: control_valve, at: [4, 3]}
+    instruments:
+      - {id: FC, tag: "FC 1", at: [1, 1]}
+    lines:
+      - {from: FC, to: CV, kind: electric, toActuator: true, arrow: false, via: [[4, 1]]}
+  expect:
+    ok: true
+    min_width: 150
+    min_height: 120
+    text_contains: ["FC", "1"]
+
+- id: inst_t2_grid_cero
+  feature: instrumentation
+  tier: 2
+  description: 'Parámetro límite `grid: 0` no produce panic'
+  tinta: true
+  block:
+    type: instrumentation
+    grid: 0
+    instruments: [{id: a, tag: "T1", at: [1, 1]}]
+  expect:
+    ok: true
+    min_width: 50
+    min_height: 50
+    text_contains: ["T", "1"]
+
+- id: inst_t2_err_vacio
+  feature: instrumentation
+  tier: 2
+  description: 'Error en `instrumentation` sin equipos ni instrumentos'
+  block:
+    type: instrumentation
+  expect:
+    ok: false
+    error_contains: "instrumentation: falta equipment o instruments"
+
+- id: inst_t2_err_kind_invalido
+  feature: instrumentation
+  tier: 2
+  description: 'Error por `kind` desconocido en `equipment`'
+  block:
+    type: instrumentation
+    equipment: [{id: a, kind: rocket, at: [1, 1]}]
+  expect:
+    ok: false
+    error_contains: "equipment[0].kind"
+
+- id: inst_t2_err_location_invalido
+  feature: instrumentation
+  tier: 2
+  description: 'Error por `location` desconocido en `instruments`'
+  block:
+    type: instrumentation
+    instruments: [{id: a, tag: "T1", at: [1, 1], location: cloud}]
+  expect:
+    ok: false
+    error_contains: "instruments[0].location"
+
+- id: inst_t2_err_ref_inexistente
+  feature: instrumentation
+  tier: 2
+  description: 'Error cuando `lines.to` apunta a un ID inexistente'
+  block:
+    type: instrumentation
+    instruments: [{id: a, tag: "T1", at: [1, 1]}]
+    lines: [{from: a, to: ghost}]
+  expect:
+    ok: false
+    error_contains: "no hay un equipo ni un instrumento"
+
+# ===========================================================================
+# 8. ladder (5 Tier 1 + 5 Tier 2)
+# ===========================================================================
+- id: lad_t1_enclavamiento_y_ton
+  feature: ladder
+  tier: 1
+  description: 'Fixture `escalera` con enclavamiento `or`, `nc`, `coil`, `ton` y `set`'
+  tinta: false
+  block:
+    type: ladder
+    title: Arranque y parada con enclavamiento
+    rungs:
+      - comment: "Motor con enclavamiento"
+        logic:
+          - or:
+              - [{no: "I0.0", label: "Marcha"}]
+              - [{no: "Q0.0"}]
+          - {nc: "I0.1", label: "Parada"}
+          - {nc: "I0.2", label: "Térmico"}
+          - {coil: "Q0.0", label: "Motor"}
+      - comment: "Temporizador de llenado"
+        logic:
+          - {no: "Q0.0"}
+          - {ton: "T1", preset: "10 s"}
+      - logic:
+          - {no: "T1"}
+          - {set: "Q0.1", label: "Alarma"}
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 200
+    text_contains: ["Motor con enclavamiento", "I0.0", "Marcha", "Q0.0", "Motor", "TON", "PT 10 s", "Alarma"]
+
+- id: lad_t1_todos_contactos_y_bobinas
+  feature: ladder
+  tier: 1
+  description: 'Contactos `na`, `p`, `n`, `nc` y bobinas `coil`, `set`, `reset`, `ncoil`'
+  tinta: true
+  block:
+    type: ladder
+    rungs:
+      - logic: [{na: "I0.0"}, {p: "I0.1"}, {n: "I0.2"}, {nc: "I0.3"}, {coil: "Q0.0"}]
+      - logic: [{no: "I0.4"}, {set: "Q0.1"}]
+      - logic: [{no: "I0.5"}, {reset: "Q0.1"}]
+      - logic: [{no: "I0.6"}, {ncoil: "Q0.2"}]
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 200
+    text_contains: ["P", "N", "S", "R", "/"]
+
+- id: lad_t1_todas_cajas
+  feature: ladder
+  tier: 1
+  description: 'Bloques de temporizador/contador `ton`, `tof`, `tp`, `ctu`, `ctd` con `preset`'
+  tinta: false
+  block:
+    type: ladder
+    rungs:
+      - logic: [{no: "I0.0"}, {ton: "T1", preset: "5 s"}]
+      - logic: [{no: "I0.1"}, {tof: "T2", preset: "2 s"}]
+      - logic: [{no: "I0.2"}, {tp: "T3", preset: "1 s"}]
+      - logic: [{no: "I0.3"}, {ctu: "C1", preset: 10}]
+      - logic: [{no: "I0.4"}, {ctd: "C2", preset: 3}]
+  expect:
+    ok: true
+    min_width: 250
+    min_height: 250
+    text_contains: ["TON", "TOF", "TP", "CTU", "CTD", "PT", "PV"]
+
+- id: lad_t1_or_anidado
+  feature: ladder
+  tier: 1
+  description: 'Ramas paralelas `or` anidadas dentro de otra rama `or`'
+  tinta: true
+  block:
+    type: ladder
+    rungs:
+      - logic:
+          - or:
+              - - or:
+                    - [{no: "I0.0"}]
+                    - [{no: "I0.1"}]
+                - {nc: "I0.2"}
+              - [{no: "I0.3"}]
+          - {coil: "Q0.0"}
+  expect:
+    ok: true
+    min_width: 250
+    min_height: 150
+    text_contains: ["I0.0", "I0.1", "I0.2", "I0.3", "Q0.0"]
+
+- id: lad_t1_blank_y_yaml_no
+  feature: ladder
+  tier: 1
+  description: 'Clave YAML 1.1 `no:` (parseada como bool `False` en PyYAML) y elemento `blank: true`'
+  tinta: true
+  block:
+    type: ladder
+    rungs:
+      - logic:
+          - no: "I0.0"
+          - {no: "", blank: true}
+          - {coil: "Q0.0", label: "Resp"}
+  expect:
+    ok: true
+    min_width: 250
+    min_height: 80
+    text_contains: ["I0.0", "Resp", "Q0.0"]
+    svg_contains: ["stroke-dasharray=\"3 2\""]
+
+- id: lad_t2_err_rungs_faltante
+  feature: ladder
+  tier: 2
+  description: 'Error cuando falta `rungs`'
+  block:
+    type: ladder
+  expect:
+    ok: false
+    error_contains: "'rungs' tiene que ser una lista de escalones con logic"
+
+- id: lad_t2_err_logic_vacio
+  feature: ladder
+  tier: 2
+  description: 'Error cuando `rungs[0].logic` está vacío'
+  block:
+    type: ladder
+    rungs: [{logic: []}]
+  expect:
+    ok: false
+    error_contains: "rungs[0].logic: tiene que ser una lista de elementos"
+
+- id: lad_t2_err_sin_salida
+  feature: ladder
+  tier: 2
+  description: 'Error cuando el escalón no termina en bobina ni caja'
+  block:
+    type: ladder
+    rungs: [{logic: [{no: "I0.0"}]}]
+  expect:
+    ok: false
+    error_contains: "tiene que terminar en una salida"
+
+- id: lad_t2_err_sin_contacto
+  feature: ladder
+  tier: 2
+  description: 'Error cuando el escalón no tiene al menos un contacto previo'
+  block:
+    type: ladder
+    rungs: [{logic: [{coil: "Q0.0"}]}]
+  expect:
+    ok: false
+    error_contains: "necesita al menos un contacto antes de la salida"
+
+- id: lad_t2_err_elem_desconocido
+  feature: ladder
+  tier: 2
+  description: 'Error cuando un elemento de `logic` usa una clave desconocida'
+  block:
+    type: ladder
+    rungs: [{logic: [{no: "I0"}, {motor: "Q"}, {coil: "Q0"}]}]
+  expect:
+    ok: false
+    error_contains: "ladder: elemento desconocido"
+
+# ===========================================================================
+# 9. grafcet (5 Tier 1 + 5 Tier 2)
+# ===========================================================================
+- id: grf_t1_and_divergencia
+  feature: grafcet
+  tier: 1
+  description: 'Fixture `grafcet` con etapa inicial, divergencia simultánea `and` y lazo'
+  tinta: false
+  block:
+    type: grafcet
+    title: Llenado y mezcla
+    steps:
+      - {step: 0, initial: true}
+      - {transition: "Marcha · nivel bajo"}
+      - {step: 1, actions: ["Abrir V1"]}
+      - {transition: "nivel alto"}
+      - and:
+          - [{step: 2, actions: ["Agitador"]}, {transition: "t/X2/30 s"}, {step: 4}]
+          - [{step: 3, actions: ["Calentar"]}, {transition: "T > 60 °C"}, {step: 5}]
+      - {transition: "1"}
+      - {step: 6, actions: ["Abrir V2"]}
+      - {transition: "nivel bajo"}
+  expect:
+    ok: true
+    min_width: 300
+    min_height: 300
+    text_contains: ["0", "Marcha · nivel bajo", "Abrir V1", "Agitador", "Calentar", "T > 60 °C", "Abrir V2"]
+
+- id: grf_t1_or_divergencia_sin_loop
+  feature: grafcet
+  tier: 1
+  description: 'Divergencia selectiva `or` con `loop: false`'
+  tinta: true
+  block:
+    type: grafcet
+    loop: false
+    steps:
+      - {step: 0, initial: true}
+      - {transition: "t0"}
+      - or:
+          - [{step: 1}, {transition: "t1"}]
+          - [{step: 2}, {transition: "t2"}]
+      - {step: 3}
+  expect:
+    ok: true
+    min_width: 150
+    min_height: 200
+    text_contains: ["0", "t0", "1", "t1", "2", "t2", "3"]
+    svg_absent: ["marker-end=\"url(#flecha-main-"]
+
+- id: grf_t1_blank_etapa_transicion
+  feature: grafcet
+  tier: 1
+  description: 'Etapa y transición en blanco (`blank: true`) más acción en blanco'
+  tinta: true
+  block:
+    type: grafcet
+    steps:
+      - {step: 1, blank: true}
+      - {transition: "oculto", blank: true}
+      - {step: 2, actions: [""]}
+  expect:
+    ok: true
+    min_width: 150
+    min_height: 150
+    text_contains: ["2"]
+    text_absent: ["oculto"]
+    svg_contains: ["stroke-dasharray=\"3 2\""]
+
+- id: grf_t1_secuencia_lineal_multi_acciones
+  feature: grafcet
+  tier: 1
+  description: 'Etapa lineal con múltiples acciones encadenadas horizontalmente'
+  tinta: false
+  block:
+    type: grafcet
+    steps:
+      - {step: 0, initial: true, actions: ["Acc1", "Acc2", "Acc3"]}
+      - {transition: "fin"}
+  expect:
+    ok: true
+    min_width: 250
+    min_height: 80
+    text_contains: ["0", "Acc1", "Acc2", "Acc3", "fin"]
+
+- id: grf_t1_anidado_or_en_and
+  feature: grafcet
+  tier: 1
+  description: 'Divergencia `or` anidada dentro de una rama `and`'
+  tinta: true
+  block:
+    type: grafcet
+    steps:
+      - {step: 0, initial: true}
+      - {transition: "start"}
+      - and:
+          - - {step: 1}
+            - {transition: "sel"}
+            - or:
+                - [{step: 2}, {transition: "a"}]
+                - [{step: 3}, {transition: "b"}]
+            - {step: 4}
+          - - {step: 5, actions: ["Paralela"]}
+            - {transition: "ok"}
+      - {step: 6}
+  expect:
+    ok: true
+    min_width: 250
+    min_height: 250
+    text_contains: ["0", "start", "1", "2", "3", "4", "5", "Paralela", "6"]
+
+- id: grf_t2_etapa_unica_minima
+  feature: grafcet
+  tier: 2
+  description: 'GRAFCET mínimo con una única etapa inicial sin acciones ni transiciones'
+  tinta: true
+  block:
+    type: grafcet
+    steps: [{step: 0, initial: true}]
+  expect:
+    ok: true
+    min_width: 60
+    min_height: 60
+    text_contains: ["0"]
+
+- id: grf_t2_err_steps_faltante
+  feature: grafcet
+  tier: 2
+  description: 'Error cuando falta `steps`'
+  block:
+    type: grafcet
+  expect:
+    ok: false
+    error_contains: "'steps' tiene que ser una lista de step, transition, or y and"
+
+- id: grf_t2_err_steps_vacio
+  feature: grafcet
+  tier: 2
+  description: 'Error cuando `steps` es lista vacía'
+  block:
+    type: grafcet
+    steps: []
+  expect:
+    ok: false
+    error_contains: "'steps' tiene que ser una lista de step, transition, or y and"
+
+- id: grf_t2_err_elem_desconocido
+  feature: grafcet
+  tier: 2
+  description: 'Error cuando un paso usa clave desconocida'
+  block:
+    type: grafcet
+    steps: [{etapa: 1}]
+  expect:
+    ok: false
+    error_contains: "grafcet: elemento desconocido"
+
+- id: grf_t2_err_rama_invalida
+  feature: grafcet
+  tier: 2
+  description: 'Error cuando una rama de `or` no es una lista de pasos'
+  block:
+    type: grafcet
+    steps:
+      - or:
+          - {step: 1}
+  expect:
+    ok: false
+    error_contains: "grafcet"
