@@ -505,7 +505,17 @@ impl Estado {
         for i in (1..=n).rev() {
             a.push(-den[i]);
         }
-        let n_atraso = (s.delay / dt).round().max(0.0) as usize;
+        if !s.delay.is_finite() || s.delay < 0.0 {
+            return Err(err("delay tiene que ser finito y no negativo"));
+        }
+        if !dt.is_finite() || dt <= 0.0 {
+            return Err(err("dt de simulación inválido"));
+        }
+        let n_atraso_f = (s.delay / dt).round();
+        if !n_atraso_f.is_finite() || n_atraso_f > 100_000.0 {
+            return Err(err("delay demasiado grande para simular"));
+        }
+        let n_atraso = n_atraso_f.max(0.0) as usize;
         let mut atraso = VecDeque::with_capacity(n_atraso);
         for _ in 0..n_atraso {
             atraso.push_back(0.0);
@@ -1061,5 +1071,32 @@ mod tests {
         let m = margenes(&s, 0.1, 100.0);
         assert!((m.w180.unwrap() - 3.0_f64.sqrt()).abs() < 1e-3);
         assert!((m.gm.unwrap() - 18.0618).abs() < 0.05);
+    }
+
+    #[test]
+    fn time_response_rechaza_delay_extremo_o_invalido_sin_panic() {
+        let base = sistema(&json!({"gain": 1.0, "tau": 1.0}), "system").unwrap();
+        for malo in [1e308, f64::NAN, f64::INFINITY, f64::NEG_INFINITY, -0.5] {
+            let mut s = base.clone();
+            s.delay = malo;
+            assert!(
+                Estado::new(&s, 0.01).is_err(),
+                "Estado::new debe rechazar delay={malo:?}"
+            );
+            assert!(
+                simular_abierto(&s, 10.0, "step", 1.0, 3000).is_err(),
+                "simular_abierto debe rechazar delay={malo:?}"
+            );
+        }
+
+        // También desde bloque completo de time_response (delay gigante y negativo)
+        for val in [
+            json!({"type": "time_response", "system": {"gain": 1, "tau": 1, "delay": 1e308}}),
+            json!({"type": "time_response", "system": {"gain": 1, "tau": 1, "delay": -1.0}}),
+        ] {
+            let mut lienzo = dibu_core::Lienzo::new(dibu_core::Paleta::para(true), "test".to_string());
+            let res = crate::plots::render_time_response(&mut lienzo, val.as_object().unwrap());
+            assert!(res.is_err(), "render_time_response debe devolver Err para {val}");
+        }
     }
 }

@@ -822,6 +822,11 @@ fn medir_grafcet(seq: &[Value]) -> Result<(f64, f64, f64), ErrorDiagrama> {
             let doble = e.contains_key("and");
             let ramas_v = e.get("or").or_else(|| e.get("and")).and_then(Value::as_array)
                 .ok_or_else(|| ErrorDiagrama::new("grafcet: or/and requiere una lista de ramas"))?;
+            if ramas_v.is_empty() {
+                return Err(ErrorDiagrama::new(
+                    "grafcet: or/and requiere al menos una rama",
+                ));
+            }
             let mut medidas = Vec::with_capacity(ramas_v.len());
             for r in ramas_v {
                 let ra = r.as_array().ok_or_else(|| ErrorDiagrama::new("grafcet: rama inválida"))?;
@@ -895,7 +900,16 @@ fn dibujar_grafcet(c: &mut Lienzo, seq: &[Value], x: f64, mut y: f64) -> Result<
             y += 4.0;
         } else {
             let doble = e.contains_key("and");
-            let ramas = e.get("or").or_else(|| e.get("and")).and_then(Value::as_array).unwrap();
+            let ramas = e
+                .get("or")
+                .or_else(|| e.get("and"))
+                .and_then(Value::as_array)
+                .ok_or_else(|| ErrorDiagrama::new("grafcet: or/and requiere una lista de ramas"))?;
+            if ramas.is_empty() {
+                return Err(ErrorDiagrama::new(
+                    "grafcet: or/and requiere al menos una rama",
+                ));
+            }
             let mut medidas = Vec::with_capacity(ramas.len());
             for r in ramas {
                 medidas.push(medir_grafcet(r.as_array().unwrap())?);
@@ -956,4 +970,40 @@ pub fn render_grafcet(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama
         fin += 16.0;
     }
     Ok((x + der + 10.0, fin + 10.0))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use dibu_core::Paleta;
+    use serde_json::json;
+
+    #[test]
+    fn grafcet_rechaza_or_y_and_vacios_sin_panic() {
+        for clave in ["or", "and"] {
+            let val = json!({
+                "type": "grafcet",
+                "steps": [{ clave: [] }]
+            });
+            let bloque = val.as_object().unwrap();
+            let mut lienzo = Lienzo::new(Paleta::para(true), "test".to_string());
+            let res = render_grafcet(&mut lienzo, bloque);
+            assert!(res.is_err(), "grafcet con '{clave}: []' debe devolver Err");
+        }
+    }
+
+    #[test]
+    fn grafcet_rechaza_or_vacio_anidado_sin_panic() {
+        let val = json!({
+            "type": "grafcet",
+            "steps": [
+                {"step": 0, "initial": true},
+                {"or": [[{"step": 1}], [{"and": []}]]}
+            ]
+        });
+        let bloque = val.as_object().unwrap();
+        let mut lienzo = Lienzo::new(Paleta::para(true), "test".to_string());
+        let res = render_grafcet(&mut lienzo, bloque);
+        assert!(res.is_err());
+    }
 }
