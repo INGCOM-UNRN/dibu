@@ -1,0 +1,872 @@
+# Catálogo Kitchen Sink de `dibu` — 44 tipos con variantes (paleta tinta/color, blank*, UTF-8, XML &<>)
+
+# === A. CONTROL DE PROCESOS (9 tipos) ===
+
+- id: ks_control_block_diagram_lazo
+  type: block_diagram
+  title: "Lazo con perturbación <D(s) & H(s)>"
+  input: "R(s)"
+  output: "Y(s)"
+  error: "E(s)"
+  forward:
+    - {label: "Gc(s)", out: "U(s)"}
+    - {label: "Gv(s)", out: "M(s)"}
+    - "Gp(s)"
+  disturbance: {at: 2, label: "D(s)", block: "Gd(s)"}
+  feedback: ["H(s)"]
+  measured: "B(s)"
+  inkSaver: true
+
+- id: ks_control_block_diagram_cascada_blank
+  type: block_diagram
+  title: Control en cascada (evaluación)
+  forward:
+    - "Gc1(s)"
+    - loop:
+        forward: ["Gc2(s)", "Gp2(s)"]
+        feedback: ["H2(s)"]
+    - "Gp1(s)"
+  feedback: ["H1(s)"]
+  blank: true
+  blankSigns: true
+  inkSaver: false
+
+- id: ks_control_time_response_subamortiguado
+  type: time_response
+  title: Segundo orden subamortiguado (ζ = 0,3)
+  system: {gain: 1, zeta: 0.3, wn: 2}
+  annotations: [final, overshoot, peak, rise, settling]
+
+- id: ks_control_time_response_fopdt_blank
+  type: time_response
+  title: Curva FOPDT con retardo (para completar)
+  system: {gain: 2, num: [2], den: [15, 8, 1], delay: 1}
+  annotations: [final, tangent]
+  blankAnnotations: true
+  inkSaver: false
+
+- id: ks_control_time_response_pi_lazo
+  type: time_response
+  title: Lazo cerrado con PI y perturbación
+  closedLoop:
+    plant: {gain: 2, tau: 5, delay: 1}
+    controller: {kp: 1.2, ki: 0.25}
+  disturbance: {at: 30, amplitude: -0.5}
+  tEnd: 60
+  annotations: [overshoot, settling]
+
+- id: ks_control_bode_margenes
+  type: bode
+  title: Bode de L(s) = 10 / (s(s+1)(s+10))
+  system: {k: 10, poles: [0, -1, -10]}
+  asymptotes: true
+  margins: true
+
+- id: ks_control_nyquist_circulo
+  type: nyquist
+  title: Nyquist con círculo unitario
+  system: {k: 5, poles: [-1, -2, -3]}
+  unitCircle: true
+  inkSaver: false
+
+- id: ks_control_pole_zero_completo
+  type: pole_zero
+  title: Polos y ceros con ζ y ωn
+  poles: [-1, [-2, 3]]
+  zeros: [-4]
+  dampingLines: [0.5]
+  wnCircles: [3]
+  showValues: true
+  inkSaver: false
+
+- id: ks_control_root_locus_marcas
+  type: root_locus
+  title: Lugar de las raíces K / (s(s+1)(s+2))
+  system: {k: 1, poles: [0, -1, -2]}
+  marks: [1]
+
+- id: ks_control_instrumentation_pid
+  type: instrumentation
+  title: Control de nivel TK-101 (ISA-5.1)
+  equipment:
+    - {id: TK, kind: tank, at: [3, 3], label: "TK-101", level: 0.6}
+    - {id: P1, kind: pump, at: [6, 5.2], label: "P-101"}
+    - {id: LV, kind: control_valve, at: [8.5, 4.8], label: "LV-101"}
+  instruments:
+    - {id: LT, tag: "LT 101", at: [5, 2]}
+    - {id: LIC, tag: "LIC 101", at: [7, 1], location: dcs}
+  lines:
+    - {from: [0.5, 1.4], to: TK, label: "entrada", via: [[3, 1.4]]}
+    - {from: TK, to: P1, via: [[3, 5.2]]}
+    - {from: P1, to: LV, via: [[7, 4.8]]}
+    - {from: LV, to: [11, 4.8], label: "salida"}
+    - {from: TK, to: LT, kind: capillary, via: [[4, 2]]}
+    - {from: LT, to: LIC, kind: electric, via: [[5, 1]]}
+    - {from: LIC, to: LV, kind: electric, via: [[8.5, 1]]}
+  inkSaver: false
+
+- id: ks_control_instrumentation_blank
+  type: instrumentation
+  title: Instrumento en blanco
+  equipment:
+    - {id: TK, kind: tank, at: [2, 2], label: "TK-1"}
+  instruments:
+    - {id: LT, tag: "LT 1", at: [5, 1], blank: true}
+  lines:
+    - {from: TK, to: LT, kind: capillary}
+
+- id: ks_control_ladder_enclavamiento
+  type: ladder
+  title: Arranque y parada con enclavamiento
+  rungs:
+    - comment: "Motor con enclavamiento"
+      logic:
+        - or:
+            - [{"no": "I0.0", label: "Marcha"}]
+            - [{"no": "Q0.0"}]
+        - {nc: "I0.1", label: "Parada"}
+        - {nc: "I0.2", label: "Térmico"}
+        - {coil: "Q0.0", label: "Motor"}
+    - comment: "Temporizador de llenado"
+      logic:
+        - {"no": "Q0.0"}
+        - {ton: "T1", preset: "10 s"}
+    - logic:
+        - {"no": "T1"}
+        - {set: "Q0.1", label: "Alarma"}
+  inkSaver: true
+
+- id: ks_control_grafcet_and
+  type: grafcet
+  title: Llenado y mezcla en paralelo
+  steps:
+    - {step: 0, initial: true}
+    - {transition: "Marcha · nivel bajo"}
+    - {step: 1, actions: ["Abrir V1"]}
+    - {transition: "nivel alto"}
+    - and:
+        - [{step: 2, actions: ["Agitador"]}, {transition: "t/X2/30 s"}, {step: 4}]
+        - [{step: 3, actions: ["Calentar"]}, {transition: "T > 60 °C"}, {step: 5}]
+    - {transition: "1"}
+    - {step: 6, actions: ["Abrir V2"]}
+    - {transition: "nivel bajo"}
+
+- id: ks_control_grafcet_or_blank
+  type: grafcet
+  title: Divergencia OR con campos en blanco
+  steps:
+    - {step: 0, initial: true}
+    - {transition: "Auto & <Listo>", blank: true}
+    - or:
+        - [{step: 1, actions: ["Ciclo A"], blank: true}]
+        - [{step: 2, actions: ["Ciclo B"]}]
+    - {transition: "Fin"}
+  inkSaver: false
+
+# === B. QUÍMICA (21 tipos) ===
+
+- id: ks_chem_molecule_nitrato
+  type: molecule
+  title: Ion nitrato (Lewis resonante)
+  atoms:
+    - {id: n, el: N, at: [0, 0], charge: 1}
+    - {id: o1, el: O, from: n, angle: 90, bond: 2, lonePairs: 2}
+    - {id: o2, el: O, from: n, angle: 210, lonePairs: 3, charge: -1}
+    - {id: o3, el: O, from: n, angle: 330, lonePairs: 3, charge: -1}
+
+- id: ks_chem_molecule_naftaleno_skeletal
+  type: molecule
+  title: Naftaleno (anillos fusionados)
+  skeletal: true
+  rings:
+    - {size: 6, center: [0, 0], start: 30, kekule: true}
+    - {size: 6, center: [1.732, 0], start: 30}
+  bonds:
+    - [r1_1, r1_2, 2]
+    - [r1_5, r1_0, 2]
+  inkSaver: false
+
+- id: ks_chem_molecule_sn2_estereo
+  type: molecule
+  title: "Mecanismo S_N\\2 y carbono quiral"
+  atoms:
+    - {id: oh, el: HO, at: [-2.2, 0], charge: -1, lonePairs: 2}
+    - {id: c, el: C, at: [0, 0]}
+    - {id: br, el: Br, from: c, angle: 0, lonePairs: 3}
+    - {id: h1, el: H, from: c, angle: 90, bond: {stereo: hash}}
+    - {id: cl, el: Cl, from: c, angle: 225, bond: {stereo: wedge}}
+    - {id: h3, el: H, from: c, angle: 135, length: 0.8}
+  arrows:
+    - {from: oh, to: c, bend: 1}
+    - {from: [c, br], to: br, bend: -1}
+
+- id: ks_chem_reaction_esterificacion
+  type: reaction
+  title: Esterificación de Fischer
+  steps:
+    - "CH3COOH"
+    - "+"
+    - "CH3CH2OH"
+    - {arrow: "<=>", above: "H2SO4", below: "Δ"}
+    - "CH3COOCH2CH3"
+    - "+"
+    - "H2O"
+
+- id: ks_chem_reaction_resonancia_blank
+  type: reaction
+  title: Resonancia carboxilato y completar
+  steps:
+    - atoms:
+        - {id: c, el: C, at: [0, 0]}
+        - {id: r, el: R, from: c, angle: 180}
+        - {id: o1, el: O, from: c, angle: 60, bond: 2, lonePairs: 2}
+        - {id: o2, el: O, from: c, angle: 300, lonePairs: 3, charge: -1}
+    - {arrow: "<->"}
+    - {blank: true, width: 60}
+  inkSaver: false
+
+- id: ks_chem_vsepr_sf4
+  type: vsepr
+  title: Geometría de SF4 (balancín)
+  central: S
+  ligands: [F, F, F, F]
+  lonePairs: 1
+
+- id: ks_chem_vsepr_xef4_blank
+  type: vsepr
+  title: XeF4 (para completar)
+  central: Xe
+  ligands: [F, F, F, F]
+  lonePairs: 2
+  blank: [name, angle, hybridization]
+  inkSaver: false
+
+- id: ks_chem_orbitals_hierro
+  type: orbitals
+  title: Configuración electrónica de Fe
+  element: Fe
+  core: true
+  showUnpaired: true
+
+- id: ks_chem_orbitals_cu2_blank
+  type: orbitals
+  title: Ion Cu²⁺ (para completar)
+  element: Cu
+  charge: 2
+  core: true
+  blank: true
+
+- id: ks_chem_orbitals_molecular_o2
+  type: orbitals
+  kind: molecular
+  title: Diagrama OM de O2
+  atoms: [O, O]
+  inkSaver: false
+
+- id: ks_chem_orbitals_molecular_n2_blank
+  type: orbitals
+  kind: molecular
+  title: Diagrama OM de N2
+  atoms: [N, N]
+  blankBondOrder: true
+
+- id: ks_chem_energy_profile_catalizada
+  type: energy_profile
+  title: Reacción exotérmica catalizada
+  states:
+    - {label: "A + B", energy: 0}
+    - {label: "ET‡", energy: 85, ts: true}
+    - {label: "C + D", energy: -40}
+  catalyzed:
+    - {energy: 0}
+    - {energy: 45, ts: true}
+    - {energy: -40}
+
+- id: ks_chem_energy_profile_dos_etapas_blank
+  type: energy_profile
+  title: Dos etapas con etapa determinante
+  states:
+    - {label: Reactivos, energy: 0}
+    - {label: "ET1", energy: 60, ts: true}
+    - {label: Intermediario, energy: 25}
+    - {label: "ET2", energy: 90, ts: true}
+    - {label: Productos, energy: 15}
+  showRateDetermining: true
+  blankAnnotations: true
+  inkSaver: false
+
+- id: ks_chem_titration_acetico
+  type: titration
+  title: CH3COOH 0,1 M con NaOH 0,1 M
+  analyte: {kind: weak_acid, pKa: 4.76, conc: 0.1, volume: 25}
+  titrant: {conc: 0.1, name: NaOH}
+  indicator: {name: fenolftaleína, range: [8.2, 10]}
+  annotations: [equivalence, half, initial]
+
+- id: ks_chem_titration_fosforico_triprotica
+  type: titration
+  title: Ácido poliprótico H3PO4 con NaOH
+  analyte: {kind: weak_acid, pKa: [2.15, 7.2, 12.35], conc: 0.1, volume: 20}
+  titrant: {conc: 0.1}
+  inkSaver: false
+
+- id: ks_chem_titration_amoniaco_blank
+  type: titration
+  title: Base débil NH3 con HCl
+  analyte: {kind: weak_base, pKb: 4.75, conc: 0.1, volume: 25}
+  titrant: {conc: 0.1, name: HCl}
+  blankAnnotations: true
+
+- id: ks_chem_speciation_fosfato
+  type: speciation
+  title: Especiación del ácido fosfórico
+  pKa: [2.15, 7.2, 12.35]
+  species: [H3PO4, H2PO4^-, HPO4^2-, PO4^3-]
+
+- id: ks_chem_speciation_carbonico_blank
+  type: speciation
+  title: Sistema carbonato (pKa en blanco)
+  pKa: [6.35, 10.33]
+  species: [H2CO3, HCO3^-, CO3^2-]
+  blankPKa: true
+  inkSaver: false
+
+- id: ks_chem_kinetics_comparacion
+  type: kinetics
+  title: Órdenes 0, 1 y 2
+  curves:
+    - {order: 0, k: 0.05, A0: 1}
+    - {order: 1, k: 0.1, A0: 1}
+    - {order: 2, k: 0.2, A0: 1}
+  tEnd: 30
+
+- id: ks_chem_kinetics_consecutiva
+  type: kinetics
+  title: Cinética consecutiva A → B → C
+  model: consecutive
+  k1: 0.5
+  k2: 0.2
+  inkSaver: false
+
+- id: ks_chem_kinetics_arrhenius
+  type: kinetics
+  title: Gráfico de Arrhenius
+  plot: arrhenius
+  Ea: 75
+  A: 1.0e+12
+  T: [290, 360]
+
+- id: ks_chem_phase_diagram_co2_blank
+  type: phase_diagram
+  title: CO2 en escala logarítmica
+  substance: co2
+  scale: log
+  blankRegions: true
+  blankPoints: true
+
+- id: ks_chem_phase_diagram_eutectico
+  type: phase_diagram
+  kind: eutectic
+  title: Diagrama eutéctico Pb–Sn
+  components: [Pb, Sn]
+  meltingA: 327
+  meltingB: 232
+  eutectic: [61.9, 183]
+  cooling: 30
+  inkSaver: false
+
+- id: ks_chem_heating_curve_agua
+  type: heating_curve
+  title: 100 g de hielo de −20 °C a 120 °C
+  substance: water
+  mass: 100
+  from: -20
+  to: 120
+
+- id: ks_chem_heating_curve_blank
+  type: heating_curve
+  title: Curva de calentamiento (evaluación)
+  substance: water
+  mass: 50
+  from: -10
+  to: 110
+  blankHeat: true
+  blankPhases: true
+  inkSaver: false
+
+- id: ks_chem_spectrum_ir
+  type: spectrum
+  kind: ir
+  title: Espectro IR de ácido carboxílico
+  peaks:
+    - {at: 3000, depth: 0.75, broad: true, width: 500, label: "O–H"}
+    - {at: 1710, depth: 0.85, label: "C=O"}
+    - {at: 1280, depth: 0.55, label: "C–O"}
+
+- id: ks_chem_spectrum_nmr
+  type: spectrum
+  kind: nmr
+  title: ¹H-RMN del etanol
+  tms: true
+  signals:
+    - {shift: 1.22, integration: 3, neighbors: 2, J: 7, label: "a"}
+    - {shift: 3.69, integration: 2, neighbors: 3, J: 7, label: "b"}
+    - {shift: 2.6, integration: 1, multiplicity: s, label: "c"}
+  inkSaver: false
+
+- id: ks_chem_spectrum_ms
+  type: spectrum
+  kind: ms
+  title: Espectro de masas del etanol
+  peaks:
+    - {mz: 46, intensity: 20, label: "M⁺"}
+    - {mz: 45, intensity: 45}
+    - {mz: 31, intensity: 100, label: "pico base"}
+    - {mz: 29, intensity: 25}
+
+- id: ks_chem_galvanic_cell_daniell
+  type: galvanic_cell
+  title: Pila de Daniell (Nernst + ΔG°)
+  halfCells:
+    - {couple: "Cu^2+/Cu", E0: 0.34, n: 2, conc: 1}
+    - {couple: "Zn^2+/Zn", E0: -0.76, n: 2, conc: 0.01}
+  showDeltaG: true
+
+- id: ks_chem_galvanic_cell_blank
+  type: galvanic_cell
+  title: Celda galvánica (para completar)
+  halfCells:
+    - {couple: "Ag^+/Ag", E0: 0.80, n: 1}
+    - {couple: "Cu^2+/Cu", E0: 0.34, n: 2}
+  blankPolarity: true
+  blankPotential: true
+  blankReactions: true
+  blankFlow: true
+  inkSaver: false
+
+- id: ks_chem_unit_cell_fcc
+  type: unit_cell
+  title: Celda unitaria Cu (fcc)
+  lattice: fcc
+  element: Cu
+  a: 361.5
+  molarMass: 63.55
+
+- id: ks_chem_unit_cell_nacl_bcc_blank
+  type: unit_cell
+  title: Celda bcc Fe (para completar)
+  lattice: bcc
+  element: Fe
+  blank: true
+  inkSaver: false
+
+- id: ks_chem_newman_butano_anti
+  type: newman
+  title: Butano conformación anti (C2–C3)
+  axis: C2–C3
+  front: [CH3, H, H]
+  back: [CH3, H, H]
+  dihedral: 180
+
+- id: ks_chem_newman_gauche_blank
+  type: newman
+  title: Conformación gauche (en blanco)
+  front: [CH3, H, H]
+  back: [CH3, H, H]
+  dihedral: 60
+  blankName: true
+  inkSaver: false
+
+- id: ks_chem_chair_metil
+  type: chair
+  title: Metilciclohexano con flip
+  substituents:
+    - {position: 1, group: CH3, axial: true}
+  flip: true
+
+- id: ks_chem_chair_terbutil_blank
+  type: chair
+  title: Ciclohexano disustituido (blanco)
+  substituents:
+    - {position: 1, group: tBu, axial: false}
+    - {position: 4, group: CH3, axial: false}
+  flip: true
+  blank: true
+  inkSaver: false
+
+- id: ks_chem_fischer_glucosa
+  type: fischer
+  title: D-glucosa (4 centros quirales)
+  top: CHO
+  bottom: CH2OH
+  centers:
+    - {left: H, right: OH, priorities: [right, top, bottom, left]}
+    - {left: HO, right: H, priorities: [left, top, bottom, right]}
+    - {left: H, right: OH, priorities: [right, top, bottom, left]}
+    - {left: H, right: OH, priorities: [right, top, bottom, left]}
+
+- id: ks_chem_fischer_alanina_blank
+  type: fischer
+  title: Alanina (configuración en blanco)
+  top: COOH
+  bottom: CH3
+  centers:
+    - {left: NH2, right: H}
+  blankConfig: true
+  blankSeries: true
+  inkSaver: false
+
+- id: ks_chem_crystal_field_octa
+  type: crystal_field
+  title: "[Co(NH3)6]^3+ (bajo espín)"
+  metal: Co
+  oxidation: 3
+  ligand: NH3
+  inkSaver: false
+
+- id: ks_chem_crystal_field_blanco
+  type: crystal_field
+  title: "[Fe(CN)6]^4- (evaluación)"
+  metal: Fe
+  oxidation: 2
+  ligand: CN^-
+  blankElectrons: true
+  blank: true
+
+- id: ks_chem_complex_trans
+  type: complex
+  title: "trans-[Co(NH3)4Cl2]^+"
+  metal: Co
+  charge: 1
+  ligands: [NH3, NH3, Cl, Cl, NH3, NH3]
+  inkSaver: false
+
+- id: ks_chem_complex_fac_blank
+  type: complex
+  title: Complejo fac (para completar)
+  metal: Co
+  ligands: [Cl, NH3, Cl, NH3, Cl, NH3]
+  blank: [isomer, oxidation]
+
+- id: ks_chem_latimer_manganeso
+  type: latimer
+  title: Diagrama Latimer del Mn (medio ácido)
+  species: [MnO4^-, MnO4^2-, MnO2, Mn^3+, Mn^2+, Mn]
+  oxidation: [7, 6, 4, 3, 2, 0]
+  potentials: [0.56, 2.26, 0.95, 1.51, -1.18]
+  compute: [[0, 2], [0, 4]]
+  showDisproportionation: true
+
+- id: ks_chem_latimer_cobre_blank
+  type: latimer
+  title: Latimer Cu (en blanco)
+  species: [Cu^2+, Cu^+, Cu]
+  oxidation: [2, 1, 0]
+  potentials: [0.16, 0.52]
+  compute: [[0, 2]]
+  blankComputed: true
+  showDisproportionation: true
+  blankDisproportionation: true
+  inkSaver: false
+
+- id: ks_chem_frost_manganeso
+  type: frost
+  title: Diagrama de Frost del Mn
+  species: [MnO4^-, MnO4^2-, MnO2, Mn^3+, Mn^2+, Mn]
+  oxidation: [7, 6, 4, 3, 2, 0]
+  potentials: [0.56, 2.26, 0.95, 1.51, -1.18]
+  showDisproportionation: true
+  inkSaver: false
+
+- id: ks_chem_born_haber_nacl
+  type: born_haber
+  title: Ciclo de Born-Haber del NaCl
+  start: "Na(s) + ½ Cl2(g)"
+  product: "NaCl(s)"
+  formation: -411
+  steps:
+    - {to: "Na(g) + ½ Cl2(g)", dH: 107, label: "ΔH_sub"}
+    - {to: "Na^+(g) + ½ Cl2(g)", dH: 496, label: "EI"}
+    - {to: "Na^+(g) + Cl(g)", dH: 122, label: "½ D"}
+    - {to: "Na^+(g) + Cl^-(g)", dH: -349, label: "AE"}
+
+- id: ks_chem_born_haber_kbr_blank
+  type: born_haber
+  title: Ciclo KBr (energía reticular en blanco)
+  start: "K(s) + ½ Br2(l)"
+  product: "KBr(s)"
+  formation: -394
+  steps:
+    - {to: "K(g)", dH: 89, label: "ΔH_sub"}
+    - {to: "K^+(g)", dH: 419, label: "EI"}
+    - {to: "K^+(g) + Br(g)", dH: 112, label: "½ D + vap"}
+    - {to: "K^+(g) + Br^-(g)", dH: -325, label: "AE"}
+  blankLattice: true
+  inkSaver: false
+
+# === C. CIENCIAS DE LA COMPUTACIÓN (14 tipos) ===
+
+- id: ks_cs_array_punteros_utf8
+  type: array
+  title: "Arreglo v[0..2] con <p & q> → α·β"
+  values: [3, 1, 4]
+  pointers: "p:0, q:2"
+  showAddresses: true
+  showOffsets: true
+
+- id: ks_cs_array_blank
+  type: array
+  title: Arreglo para completar
+  values: [41, 42]
+  blankValues: true
+  inkSaver: false
+
+- id: ks_cs_matrix_estatica_lineal
+  type: matrix
+  title: Matriz estática row-major
+  values: [[1, 2, 3], [4, 5, 6]]
+  baseAddr: "0x1000"
+  typeSize: 4
+  showAddresses: true
+  showLinear: true
+  highlight: [[0, 0], [1, 2]]
+
+- id: ks_cs_matrix_jagged_duena
+  type: matrix
+  title: Matriz dentada con dueña y zonas
+  variant: jagged
+  name: filas
+  values: [[4, 8], [9]]
+  showAddresses: true
+  baseAddr: "@F"
+  rowAddresses: ["@R0", "@R1"]
+  lengthsType: int
+  lengthsAddr: "@L"
+  zones: true
+  owner:
+    name: d
+    type: dentada_t
+    fields:
+      - "n = 2"
+      - "largos -> lengths"
+      - "filas -> rows"
+
+- id: ks_cs_matrix_flat_color
+  type: matrix
+  title: Matriz plana con vista lógica
+  variant: flat
+  values: [[1, 2], [3, 4]]
+  showLogical: true
+  showAddresses: true
+  inkSaver: false
+
+- id: ks_cs_linked_list_cabecera_zonas
+  type: linked_list
+  title: Lista enlazada con cabecera y zonas
+  values: [12, 25, 8]
+  addresses: ["@N1", "@N2", "@N3"]
+  nodeType: nodo_t
+  zones:
+    stack: "Stack: main"
+    heap: Heap
+  header:
+    name: mi_lista
+    type: lista_t
+    fields:
+      - "primero -> 0"
+      - "ultimo -> 2"
+      - "cant = 3"
+
+- id: ks_cs_linked_list_circular_doubly
+  type: linked_list
+  title: Lista circular doblemente enlazada
+  variant: circular_doubly
+  values: ["α", "β", "γ"]
+  pointers: "actual:1"
+  inkSaver: false
+
+- id: ks_cs_stack_vertical_multi
+  type: stack
+  title: Pila con traza vertical
+  layout: vertical_multi
+  values: [1]
+  traceLabels: ["Inicio", "push(2)", "pop()"]
+
+- id: ks_cs_call_stack_marcos
+  type: call_stack
+  title: Marcos de activación con punteros
+  showAddresses: true
+  showTypes: true
+  frames:
+    - function: main
+      vars:
+        - {name: a, value: 3, type: int}
+        - {name: b, value: 7, type: int}
+    - function: intercambiar
+      returnTo: main
+      params:
+        - {name: x, value: "&a", type: "int *"}
+        - {name: y, value: "&b", type: "int *"}
+      vars: ["aux = 3"]
+  pointers: "1.x -> 0.a; intercambiar.y -> main.b"
+
+- id: ks_cs_call_stack_steps_blank
+  type: call_stack
+  title: Pila de llamadas por pasos
+  blankValues: true
+  steps:
+    - label: "llama a fact(2)"
+      frames:
+        - {function: main, vars: {r: "?"}}
+        - {function: fact, params: {n: 2}}
+    - label: "fact(1) devuelve 1"
+      frames:
+        - {function: main, vars: {r: "?"}}
+        - {function: fact, params: {n: 2}}
+        - {function: fact, params: {n: 1}, returns: 1, popped: true}
+  inkSaver: false
+
+- id: ks_cs_call_tree_fib3_costos
+  type: call_tree
+  title: Árbol de llamadas fib(3)
+  showOrder: true
+  levelCosts: ["1", "2", "2"]
+  total: "2^n"
+  root:
+    call: "fib(3)"
+    returns: 2
+    children:
+      - call: "fib(2)"
+        returns: 1
+        children:
+          - {call: "fib(1)", returns: 1}
+          - {call: "fib(0)", returns: 0}
+      - {call: "fib(1)", returns: 1}
+
+- id: ks_cs_call_tree_blank
+  type: call_tree
+  title: Árbol de llamadas (retornos en blanco)
+  blankReturns: true
+  blankLevelCosts: true
+  levelCosts: ["n", "2n"]
+  total: "n^2"
+  root:
+    call: "f(2)"
+    returns: 2
+    children:
+      - {call: "f(1)", returns: 1}
+      - {call: "f(0)", returns: 0}
+  inkSaver: false
+
+- id: ks_cs_queue_circular
+  type: queue
+  title: Cola circular en arreglo de capacidad 8
+  variant: circular
+  capacity: 8
+  frontIndex: 5
+  rearIndex: 1
+  inkSaver: false
+
+- id: ks_cs_tree_avl
+  type: tree
+  title: Árbol AVL rebalanceado
+  variant: avl
+  insert: [10, 20, 30, 40, 50, 25]
+
+- id: ks_cs_tree_heap_array
+  type: tree
+  title: Max-Heap con arreglo subyacente
+  variant: heap
+  values: [90, 70, 80, 30]
+  showArray: true
+  inkSaver: false
+
+- id: ks_cs_struct_layout
+  type: struct
+  title: Layout LP64 con padding
+  name: struct outer
+  fields:
+    - {name: c, type: char}
+    - {name: pos, type: struct punto, size: 8, align: 4}
+
+- id: ks_cs_struct_opaque
+  type: struct
+  title: TAD opaco en C
+  variant: opaque
+  name: struct pila
+  typedef: pila_t
+  operations: ["void f(pila_t p)"]
+  fields: ["int *datos", "size_t tope"]
+  hidden: true
+  inkSaver: false
+
+- id: ks_cs_adt_pila
+  type: adt
+  title: Especificación TAD Pila
+  name: Pila
+  blankKinds: true
+  operations:
+    - {signature: "f()", kind: observador, pre: "p != NULL"}
+    - {signature: "g()", post: "tope' > 0", blank: true}
+  client: ["crear();"]
+  invariant: "tope >= 0"
+  representations:
+    - Arreglo
+    - {name: Lista, fields: ["nodo_t *cabeza"]}
+
+- id: ks_cs_complexity_growth
+  type: complexity
+  title: Órdenes de crecimiento Θ(n²)
+  curves:
+    - "Θ(n²)"
+    - "n log n"
+    - label: medido
+      points: [[2, 5], [10, 90]]
+
+- id: ks_cs_complexity_classes
+  type: complexity
+  title: Clases de complejidad P vs NP
+  variant: classes
+  classes: ["P", "NP"]
+  items:
+    P: ["ordenar"]
+  inkSaver: false
+
+- id: ks_cs_flowchart_completo
+  type: flowchart
+  title: "Bucle con condición < & >"
+  steps:
+    - {io: "leer n"}
+    - "i = 0"
+    - while: "i < n && n > 0"
+      do:
+        - if: "par(i)"
+          then: ["s = s + i"]
+          else: ["s = s - i"]
+        - "i = i + 1"
+
+- id: ks_cs_cost_table_sangria_blank
+  type: cost_table
+  title: Análisis línea a línea (evaluación)
+  lines:
+    - ["for (;;)", "c1", "n"]
+    - ["    x++;", "c2", "n - 1"]
+  total: 2n
+  blankCosts: true
+  blankTotal: true
+
+- id: ks_cs_trace_table_variables
+  type: trace_table
+  title: Tabla de seguimiento de variables
+  columns: ["i", "suma"]
+  rows: [[0, 7], [1, null]]
+  rowCount: 4
+
+- id: ks_cs_trace_table_statics_stack
+  type: trace_table
+  title: Seguimiento de pila (statics)
+  variant: stack
+  capacity: 5
+  pointerLabel: "TOPE: ___"
+  operations: ["1. push(10)", "2. pop()"]
+  inkSaver: false
