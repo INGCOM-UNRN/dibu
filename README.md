@@ -29,6 +29,55 @@ cargo build --release -p dibu-cli --no-default-features --features control
 # familias: cs, control, chem, comp, math (todas por defecto)
 ```
 
+## Themes
+
+Cada diagrama se dibuja con un **theme**: una paleta semántica (fondo, trazos, rellenos, acento
+y textos) más una tipografía (familias sans y mono, escala y factor de ancho por carácter).
+
+| Preset | Uso |
+|---|---|
+| `ink` (`tinta`) | por defecto: grises y negro, pensado para imprimir |
+| `color` | acentos azules (lo mismo que `--color`) |
+| `high-contrast` (`alto-contraste`) | todo en negro sobre blanco, para proyectar o fotocopiar |
+| `dark` (`oscuro`) | fondo oscuro, para pantallas y presentaciones |
+
+```bash
+dibu list-themes
+dibu render examen.yaml --theme dark
+dibu render examen.yaml --theme mi-tema.yaml     # archivo YAML/JSON
+DIBU_THEME=high-contrast dibu sync-md apuntes/  # también por variable de entorno
+```
+
+Un archivo de theme parte de un preset con `extends` y pisa sólo lo que cambia:
+
+```yaml
+extends: ink
+colors:
+  background: "#fafaf9"
+  strokeMain: "#1b365d"
+  accentPrimary: "#b45309"
+typography:
+  sans: "Liberation Sans, Arial, sans-serif"
+  mono: "Liberation Mono, monospace"
+  scale: 1.2            # 0.6 a 1.8: agranda la letra y el diagrama se acomoda
+  charWidthFactor: 0.62 # ancho medio de un carácter, en em (0.4 a 1.0)
+```
+
+Colores disponibles: `background`, `strokeMain`, `strokeSub`, `strokeMuted`, `fillHeader`,
+`fillCell`, `fillPointerBox`, `fillBadge`, `accentPrimary`, `textMain`, `textSub`, `textMuted`
+y `fillHighlight`. Se aceptan `#RGB`, `#RRGGBB`, `#RRGGBBAA`, `transparent` y `none`; los colores
+y las familias tipográficas se validan, así que un theme no puede inyectar atributos en el SVG.
+
+Prioridad, de mayor a menor:
+1. `theme:` dentro del bloque (un preset o un objeto como el de arriba).
+2. `inkSaver: true|false` dentro del bloque (elige `ink` o `color` y conserva la tipografía).
+3. `--theme` o `DIBU_THEME`.
+4. `--color` (`color`) o, si no hay nada, `ink`.
+
+En `dibu batch` cada línea JSONL puede traer su propio `theme` (preset u objeto); `tinta` sigue
+funcionando. Con el theme por defecto la salida es idéntica byte a byte a la de versiones
+anteriores, así que los SVG versionados con `sync-md` no cambian.
+
 ## Tipos de `dibu-comp` y `dibu-math`
 
 Ejemplos completos en `fixtures/diagramas_comp.yaml` y `fixtures/diagramas_math.yaml`. Ninguno
