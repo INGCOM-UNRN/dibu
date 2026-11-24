@@ -1,0 +1,149 @@
+# Jerarquía del manual: área → subárea → tipos, en el orden en que se presentan.
+areas:
+  - clave: estructuras
+    nombre: Estructuras de datos y algoritmos
+    crate: dibu-cs y dibu-comp
+    descripcion: |
+      Diagramas de memoria y de estructuras de datos de un curso de programación en C, y de los
+      algoritmos que se estudian sobre ellas: arreglos, matrices, listas, pilas y colas; la pila
+      de llamadas y la recursión; árboles, heaps, tablas de hash; complejidad, trazas y
+      programación dinámica. Las direcciones, los offsets y los resultados los calcula dibu.
+    subareas:
+      - clave: lineales
+        nombre: Estructuras lineales
+        descripcion: Arreglos, matrices, listas enlazadas, pilas y colas, con sus direcciones de memoria.
+        tipos: [array, matrix, linked_list, stack, queue]
+      - clave: memoria
+        nombre: Memoria, tipos y recursión
+        descripcion: La pila de llamadas, el árbol de llamadas recursivas, la disposición de un struct y los tipos abstractos de datos.
+        tipos: [call_stack, call_tree, struct, adt]
+      - clave: arboles
+        nombre: Árboles y tablas
+        descripcion: Árboles binarios y de búsqueda, montículos, AVL con sus rotaciones, árboles B+ y tablas de hash.
+        tipos: [tree, heap, avl, bplus_tree, hash_table]
+      - clave: algoritmos
+        nombre: Análisis de algoritmos
+        descripcion: Complejidad, diagramas de flujo, costos línea por línea, pruebas de escritorio, programación dinámica y caminos mínimos.
+        tipos: [complexity, flowchart, cost_table, trace_table, dp_table, dijkstra]
+      - clave: computabilidad
+        nombre: Computabilidad
+        descripcion: Máquinas de Turing con la traza de sus configuraciones.
+        tipos: [turing]
+
+  - clave: computacion
+    nombre: Sistemas de computación
+    crate: dibu-comp
+    descripcion: |
+      Sistemas digitales, arquitectura de computadoras, sistemas operativos, redes y bases de
+      datos. Cada diagrama simula o calcula a partir de los datos: minimiza la función, planifica
+      los procesos, simula la caché, asigna las subredes.
+    subareas:
+      - clave: digital
+        nombre: Sistemas digitales
+        descripcion: Álgebra de Boole, tablas de verdad, mapas de Karnaugh y circuitos con compuertas.
+        tipos: [truth_table, karnaugh, logic_circuit]
+      - clave: arquitectura
+        nombre: Arquitectura de computadoras
+        descripcion: Segmentación, punto flotante IEEE 754 y memoria caché.
+        tipos: [pipeline, ieee754, cache]
+      - clave: sistemas-operativos
+        nombre: Sistemas operativos
+        descripcion: Planificación de la CPU, paginación y reemplazo de páginas.
+        tipos: [cpu_scheduling, page_table, page_replacement]
+      - clave: redes
+        nombre: Redes
+        descripcion: Direccionamiento IPv4 y subnetting.
+        tipos: [subnetting]
+      - clave: bases-de-datos
+        nombre: Bases de datos
+        descripcion: Control de concurrencia y serializabilidad.
+        tipos: [transaction_schedule]
+
+  - clave: control
+    nombre: Control de procesos
+    crate: dibu-control
+    descripcion: |
+      Los temas de una asignatura de control: modelado con diagramas de bloques, respuesta
+      temporal, análisis en frecuencia, el plano s y la automatización. dibu simula la respuesta,
+      evalúa la respuesta en frecuencia y calcula raíces y márgenes, así que el dibujo coincide con
+      la teoría.
+    subareas:
+      - clave: modelado
+        nombre: Modelado
+        descripcion: Diagramas de bloques con realimentación, perturbaciones y lazos en cascada.
+        tipos: [block_diagram]
+      - clave: respuesta
+        nombre: Respuesta temporal
+        descripcion: La salida de un sistema ante escalón, rampa o impulso, con sus parámetros.
+        tipos: [time_response]
+      - clave: frecuencia
+        nombre: Respuesta en frecuencia
+        descripcion: Diagramas de Bode y de Nyquist, con márgenes de estabilidad.
+        tipos: [bode, nyquist]
+      - clave: plano-s
+        nombre: Plano s
+        descripcion: Polos y ceros, y lugar de las raíces.
+        tipos: [pole_zero, root_locus]
+      - clave: automatizacion
+        nombre: Instrumentación y automatización
+        descripcion: P&ID con símbolos ISA-5.1, diagramas escalera de PLC y GRAFCET.
+        tipos: [instrumentation, ladder, grafcet]
+
+  - clave: quimica
+    nombre: Química
+    crate: dibu-chem
+    descripcion: |
+      Química general, fisicoquímica, analítica, orgánica e inorgánica. dibu calcula el pH de cada
+      punto de una titulación, las configuraciones electrónicas, el llenado de los orbitales
+      moleculares, la cinética, la pila con Nernst, la densidad de una celda unidad, R/S y la EECC.
+      Los rótulos aceptan fórmulas: `H2SO4`, `SO4^2-`, `K_a`.
+    subareas:
+      - clave: estructura
+        nombre: Estructura y enlace
+        descripcion: Fórmulas de Lewis y esqueletales, geometría molecular, orbitales y celdas unidad.
+        tipos: [molecule, vsepr, orbitals, unit_cell]
+      - clave: reacciones
+        nombre: Reacciones y cinética
+        descripcion: Ecuaciones y mecanismos, perfiles de energía y cinética.
+        tipos: [reaction, energy_profile, kinetics]
+      - clave: termodinamica
+        nombre: Termodinámica
+        descripcion: Diagramas de fases y curvas de calentamiento.
+        tipos: [phase_diagram, heating_curve]
+      - clave: equilibrio
+        nombre: Equilibrio y análisis
+        descripcion: Titulaciones, especiación y espectros (IR, RMN, UV-visible, masas).
+        tipos: [titration, speciation, spectrum]
+      - clave: electroquimica
+        nombre: Electroquímica
+        descripcion: Pilas, y diagramas de Latimer y de Frost.
+        tipos: [galvanic_cell, latimer, frost]
+      - clave: organica
+        nombre: Química orgánica
+        descripcion: Conformaciones y estereoquímica.
+        tipos: [newman, chair, fischer]
+      - clave: inorganica
+        nombre: Química inorgánica
+        descripcion: Campo cristalino, complejos de coordinación y ciclos de Born-Haber.
+        tipos: [crystal_field, complex, born_haber]
+
+  - clave: matematica
+    nombre: Matemática aplicada
+    crate: dibu-math
+    descripcion: |
+      Señales y sistemas, probabilidad y circuitos eléctricos. Las señales se escriben como
+      expresiones, las probabilidades se calculan exactas y los circuitos se resuelven con
+      impedancias complejas.
+    subareas:
+      - clave: senales
+        nombre: Señales y sistemas
+        descripcion: Señales continuas y discretas, convolución, Fourier y muestreo.
+        tipos: [signal, convolution, fourier, sampling]
+      - clave: probabilidad
+        nombre: Probabilidad
+        descripcion: Distribuciones con su área sombreada y diagramas de Venn.
+        tipos: [distribution, venn]
+      - clave: circuitos
+        nombre: Circuitos eléctricos
+        descripcion: Redes serie y paralelo, impedancia equivalente y fasores.
+        tipos: [circuit, phasor]

@@ -1,0 +1,441 @@
+# Química. En los rótulos, un número después de un símbolo o de un paréntesis es subíndice
+# (`H2SO4`), lo que sigue a `^` es superíndice (`SO4^2-`) y `_` fuerza un subíndice (`K_a`).
+
+molecule:
+  nombre: Molécula
+  para: Fórmulas de Lewis y esqueletales, con cargas, pares libres, estereoquímica y flechas de mecanismo.
+  resumen: |
+    Dibuja una molécula a partir de sus átomos y enlaces: en fórmula de Lewis (con pares libres,
+    cargas y radicales) o esqueletal (sin carbonos ni hidrógenos explícitos). Los átomos se ubican
+    por coordenadas o encadenados por ángulo desde otro; los anillos se arman solos y dos que
+    comparten vértices se fusionan. Las flechas curvas muestran un mecanismo.
+  campos:
+    atoms: 'Los átomos: `id`, `el` (el símbolo, también grupos como `OH`), `at: [x, y]` en largos de enlace, o `from` y `angle` (con `length` y `bond`, el orden del enlace con ese átomo); `charge`, `lonePairs`, `radical`, `note` (como δ+), `show`, `blank`.'
+    rings: 'Anillos: `size`, `center`, `start`, `ids` (los ids de sus vértices), `aromatic` (con círculo) o `kekule` (dobles alternados).'
+    bonds: 'Enlaces extra: `[a, b, orden]` o `{from, to, order, stereo, dashed, blank}`. El orden es 1, 2, 3, 1.5 o 0.5; `stereo` es `wedge` (cuña) o `hash` (rayas).'
+    arrows: 'Flechas curvas de mecanismo: `from` y `to` (un átomo o un enlace `[a, b]`), `bend` (la curvatura) y `half` (un solo electrón).'
+    skeletal: Fórmula esqueletal.
+    bondLength: El largo de un enlace, en píxeles.
+    caption: Un rótulo debajo de la molécula.
+  sin_ejemplo: [bondLength]
+
+vsepr:
+  nombre: Geometría molecular (TRePEV)
+  para: La geometría de una molécula por TRePEV, con ángulo e hibridación.
+  resumen: |
+    Dibuja la geometría molecular según la teoría de repulsión de pares electrónicos de valencia,
+    con el átomo central, los ligandos y los pares libres. La geometría sale de la cantidad de
+    pares, o se fija con `geometry`. Debajo, la notación AXE, el nombre de la geometría, el ángulo
+    y la hibridación.
+  calcula:
+    - La geometría, la notación AXE, el ángulo de enlace y la hibridación a partir de los pares.
+  campos:
+    central: El átomo central.
+    ligands: Los ligandos.
+    lonePairs: Los pares libres sobre el átomo central.
+    geometry: 'La geometría, si no sale de los pares: `linear`, `trigonal_planar`, `bent_trigonal`, `tetrahedral`, `trigonal_pyramidal`, `bent`, `trigonal_bipyramidal`, `seesaw`, `t_shaped`, `linear_tbp`, `octahedral`, `square_pyramidal`, `square_planar`.'
+    showAngle: Escribe el ángulo.
+    showHybridization: Escribe la hibridación.
+    blank: '`true` o una lista de `axe`, `name`, `angle` y `hybridization` para dejar en blanco.'
+
+orbitals:
+  nombre: Orbitales
+  para: Diagramas de casilleros atómicos y de orbitales moleculares.
+  resumen: |
+    En la variante atómica dibuja los casilleros de la configuración electrónica de un elemento o
+    ion, con la configuración abreviada y los electrones desapareados. En la molecular, el diagrama
+    de orbitales moleculares de una molécula diatómica del segundo período, con el orden de enlace
+    y el magnetismo.
+  calcula:
+    - La configuración electrónica, con las excepciones del Cr y el Cu y los cationes de transición.
+    - El llenado de los orbitales moleculares, con o sin mezcla s-p, el orden de enlace y el magnetismo.
+  campos:
+    kind: '`atomic` (por omisión) o `molecular`.'
+    element: En `atomic`, el elemento.
+    charge: La carga del ion.
+    core: En `atomic`, abrevia con el gas noble (`[Ar]`) y dibuja sólo la capa de valencia.
+    showConfig: Escribe la configuración.
+    showUnpaired: Escribe los electrones desapareados.
+    atoms: 'En `molecular`, los dos átomos (`[O, O]`, `[C, O]`; de H a Ne).'
+    maxWidth: El ancho máximo, en píxeles.
+    blank: Deja los casilleros vacíos.
+    blankConfig: Deja la configuración en blanco.
+    blankUnpaired: Deja en blanco los desapareados.
+    blankElectrons: En `molecular`, deja los orbitales vacíos.
+    blankBondOrder: En `molecular`, deja el orden de enlace en blanco.
+    blankMagnetism: En `molecular`, deja el magnetismo en blanco.
+  sin_ejemplo: [blankBondOrder, blankMagnetism, blankElectrons]
+
+unit_cell:
+  nombre: Celda unidad
+  para: Celdas cúbicas y redes iónicas, con átomos por celda, coordinación, empaquetamiento y densidad.
+  resumen: |
+    Dibuja una celda unidad cúbica en perspectiva y calcula sus propiedades: la cantidad de
+    átomos por celda, el número de coordinación, la fracción de empaquetamiento y, con el lado y
+    la masa molar, la densidad.
+  calcula:
+    - Z, la coordinación y la fracción de empaquetamiento de cada red.
+    - La densidad ρ = Z·M / (N_A·a³).
+  campos:
+    lattice: '`sc`, `bcc`, `fcc`, `nacl` o `cscl`.'
+    element: El elemento (en las redes de un solo tipo de átomo).
+    species: Las especies de una red iónica.
+    a: El lado de la celda, en pm.
+    molarMass: La masa molar, en g/mol (para la densidad).
+    blank: '`true` o una lista de `z`, `coordination`, `packing` y `density`.'
+
+reaction:
+  nombre: Reacción
+  para: Ecuaciones químicas, equilibrios, resonancia, mecanismos y productos para completar.
+  resumen: |
+    Dibuja una ecuación química o un mecanismo: fórmulas, signos más, moléculas dibujadas (como
+    las de [`molecule`](../estructura/molecule.md)) y flechas de reacción, equilibrio, resonancia o
+    retrosíntesis con texto arriba y abajo. Un casillero en blanco deja un producto para completar.
+  campos:
+    steps: 'Los elementos en orden: fórmulas, `"+"`, moléculas (bloques de `molecule`), `{arrow: "->", "<=>", "<->" (resonancia) o "=>" (retrosíntesis), above, below, blank}` y `{blank: true, width}` (un producto para completar).'
+    maxWidth: El ancho máximo; más largo, la ecuación sigue en otro renglón.
+
+energy_profile:
+  nombre: Perfil de energía
+  para: El perfil de energía de una reacción, con energías de activación y ΔH, catalizada o no.
+  resumen: |
+    Dibuja el camino de una reacción: reactivos, intermediarios, estados de transición y
+    productos, unidos por curvas. Opcionalmente, un camino catalizado punteado, las energías de
+    activación de cada etapa y el ΔH, y la etapa determinante de la velocidad.
+  calcula:
+    - La Ea de cada etapa, el ΔH y la etapa determinante (la de mayor Ea).
+  campos:
+    states: 'Los estados en orden: `label`, `energy` y `ts: true` para un estado de transición.'
+    catalyzed: Otro camino, punteado (la misma forma que `states`).
+    annotations: '`Ea` (de cada etapa) y `dH`.'
+    unit: La unidad de energía (por omisión kJ/mol).
+    showEnergies: Escribe la energía de cada estado.
+    showRateDetermining: Marca la etapa determinante.
+    xLabel: Rótulo del eje horizontal.
+    yLabel: Rótulo del eje vertical.
+    blankAnnotations: Deja en blanco las anotaciones.
+  sin_ejemplo: [unit]
+
+kinetics:
+  nombre: Cinética
+  para: Concentración en el tiempo, linealizaciones, Arrhenius y reacciones consecutivas o reversibles.
+  resumen: |
+    Dibuja la cinética de una reacción: la concentración en función del tiempo para orden 0, 1 o
+    2 (o varias curvas para comparar), su linealización, la gráfica de Arrhenius, o los modelos
+    consecutivo (A → B → C) y reversible.
+  calcula:
+    - Las concentraciones integradas de cada orden y la vida media.
+    - En la linealización, la recta de cada orden con su pendiente.
+    - En el consecutivo, el máximo del intermediario; en Arrhenius, k a cada temperatura.
+  campos:
+    order: El orden, 0, 1 o 2.
+    k: La constante de velocidad.
+    A0: La concentración inicial.
+    curves: Varias curvas para comparar, cada una con su `order`, `k`, `A0` y `label`.
+    plot: '`linear` (la recta de cada orden) o `arrhenius`.'
+    Ea: En Arrhenius, la energía de activación en kJ/mol.
+    A: En Arrhenius, el factor preexponencial.
+    T: En Arrhenius, las temperaturas `[T1, T2]`.
+    model: '`consecutive` (A → B → C) o `reversible`.'
+    k1: En el consecutivo, la constante de A → B.
+    k2: En el consecutivo, la constante de B → C.
+    kf: En el reversible, la constante directa.
+    kb: En el reversible, la constante inversa.
+    species: Los nombres de las especies.
+    showProduct: Dibuja también el producto.
+    tEnd: El tiempo final.
+    annotations: '`halfLife` marca la vida media.'
+    xLabel: Rótulo del eje horizontal.
+    yLabel: Rótulo del eje vertical.
+    blankAnnotations: Deja en blanco las anotaciones.
+
+phase_diagram:
+  nombre: Diagrama de fases
+  para: Diagramas de fases de una sustancia y diagramas eutécticos de dos componentes.
+  resumen: |
+    Dibuja el diagrama P-T de una sustancia con las curvas de fusión, vaporización y sublimación,
+    los puntos triple y crítico y las regiones sólido, líquido y gas; o, con `kind: eutectic`, el
+    diagrama de dos componentes con su punto eutéctico y una curva de enfriamiento.
+  calcula:
+    - Las curvas, ajustadas a los puntos triple, crítico y normales.
+  campos:
+    kind: '`substance` (por omisión) o `eutectic`.'
+    substance: Una sustancia conocida, `water` o `co2`.
+    triple: 'El punto triple, `[T en K, P en atm]`.'
+    critical: El punto crítico.
+    meltingSlope: La pendiente de la curva de fusión (negativa en el agua).
+    normalMelting: La temperatura normal de fusión.
+    normalBoiling: La temperatura normal de ebullición.
+    normalSublimation: La temperatura normal de sublimación.
+    scale: '`schematic` (por omisión) o `log` (presión en escala logarítmica).'
+    atm: Dibuja la recta de 1 atm.
+    points: 'Puntos marcados: `T`, `P` y `label`.'
+    supercritical: Marca la región supercrítica.
+    blankRegions: Deja en blanco los nombres de las regiones.
+    blankPoints: Deja en blanco los puntos.
+    components: En `eutectic`, los dos componentes.
+    meltingA: En `eutectic`, la fusión del componente A.
+    meltingB: En `eutectic`, la fusión del componente B.
+    eutectic: 'En `eutectic`, el punto eutéctico `[x %, T]`.'
+    cooling: En `eutectic`, una composición para dibujar su enfriamiento.
+    blankCooling: En `eutectic`, deja en blanco el enfriamiento.
+    yLabel: Rótulo del eje vertical.
+  sin_ejemplo: [triple, critical, meltingSlope, normalMelting, normalBoiling, normalSublimation]
+
+heating_curve:
+  nombre: Curva de calentamiento
+  para: La temperatura en función del calor entregado, con los cambios de fase.
+  resumen: |
+    Dibuja la curva de calentamiento de una masa de sustancia, desde una temperatura inicial hasta
+    una final: los tramos en cada fase y las mesetas de fusión y ebullición, con el calor de cada
+    tramo y el total.
+  calcula:
+    - El calor de cada tramo (m·c·ΔT y m·ΔH) y el total.
+  campos:
+    substance: Una sustancia conocida, `water`.
+    cpSolid: El calor específico del sólido, en J/g·K.
+    cpLiquid: El calor específico del líquido.
+    cpGas: El calor específico del gas.
+    melting: La temperatura de fusión, en °C.
+    boiling: La temperatura de ebullición.
+    hFusion: El calor de fusión, en J/g.
+    hVaporization: El calor de vaporización.
+    mass: La masa, en g.
+    from: La temperatura inicial.
+    to: La temperatura final.
+    showHeat: Escribe el calor de cada tramo.
+    showTotal: Escribe el calor total.
+    blankHeat: Deja en blanco los calores.
+    blankPhases: Deja en blanco los nombres de las fases.
+  sin_ejemplo: [cpSolid, cpLiquid, cpGas, melting, boiling, hFusion, hVaporization]
+
+titration:
+  nombre: Titulación
+  para: Curvas de titulación de ácidos y bases, fuertes, débiles y polipróticos, con indicador.
+  resumen: |
+    Calcula y dibuja el pH en función del volumen de titulante, con los puntos de equivalencia
+    que tienen un salto visible, la semiequivalencia, el pH inicial y la franja de viraje del
+    indicador. También dibuja puntos medidos.
+  calcula:
+    - El pH de cada punto por balance de cargas, también para ácidos polipróticos.
+    - Los puntos de equivalencia, la semiequivalencia y el pH inicial.
+  campos:
+    analyte: 'El analito: `kind` (`strong_acid`, `strong_base`, `weak_acid`, `weak_base`), `conc`, `volume`, `pKa` (uno o una lista) o `pKb`, y `charge` de la forma agregada (`-2` para el carbonato).'
+    titrant: 'El titulante: `conc` y `name`.'
+    vMax: El volumen máximo de titulante.
+    annotations: '`equivalence`, `half`, `initial`.'
+    indicator: 'El indicador: `name` y `range` (`[8.2, 10]`).'
+    data: Puntos medidos `[V, pH]`.
+    blankAnnotations: Deja en blanco las anotaciones.
+  notas:
+    - En la semiequivalencia, el dibujo muestra el pH calculado, que con un pKa bajo ya no es igual al pKa.
+
+speciation:
+  nombre: Especiación
+  para: Las fracciones α de cada especie de un ácido en función del pH.
+  resumen: |
+    Dibuja las fracciones α de cada especie de un ácido monoprótico o poliprótico en función del
+    pH, con los pKa marcados donde se cruzan las curvas.
+  calcula:
+    - Las fracciones de cada especie a partir de los pKa.
+  campos:
+    pKa: Los pKa.
+    species: 'Los nombres de las especies (por omisión H₃A, H₂A⁻…).'
+    blankPKa: Deja los pKa en blanco.
+    blankSpecies: Deja en blanco los nombres de las especies.
+
+spectrum:
+  nombre: Espectro
+  para: Espectros IR, ¹H-RMN, ¹³C-RMN, UV-visible y de masas.
+  resumen: |
+    Dibuja un espectro: IR (transmitancia con bandas), RMN de protón (señales con su
+    multiplicidad e integración) o de carbono, UV-visible (absorbancia) y de masas (picos por
+    m/z), con sus ejes y rótulos.
+  calcula:
+    - En RMN, las líneas de cada multiplete por la regla n + 1.
+  campos:
+    kind: '`ir`, `nmr`, `c13`, `uv` o `ms`.'
+    peaks: 'En `ir`, `at` (cm⁻¹), `depth`, `width`, `broad`, `label`; en `ms`, `mz`, `intensity`, `label`.'
+    signals: 'En `nmr`, `shift`, `integration`, `multiplicity` (s, d, t, q…) o `neighbors`, `J`, `label`; en `c13`, `shift` y `label`.'
+    bands: 'En `uv`, `at` (nm), `absorbance`, `width`.'
+    MHz: En RMN, la frecuencia del equipo (por omisión 400).
+    lineSpacing: En RMN, la separación entre líneas de un multiplete (por omisión 5).
+    showIntegration: En RMN, escribe la integración (por omisión, sí).
+    tms: En RMN, la señal del TMS en 0.
+    range: El rango del eje horizontal.
+    blankLabels: Deja los rótulos en blanco.
+
+galvanic_cell:
+  nombre: Pila
+  para: Pilas galvánicas con semirreacciones, flujo de electrones, notación, fem y ΔG.
+  resumen: |
+    Dibuja una pila con sus dos semiceldas, el puente salino y el circuito externo. El ánodo es la
+    semicelda de menor E°. Opcionalmente, las semirreacciones, el sentido de los electrones y de
+    los iones, la notación de la pila, la fem y ΔG.
+  calcula:
+    - El ánodo y el cátodo, la fem estándar y con Nernst, y ΔG = −nFE.
+  campos:
+    halfCells: 'Las dos semiceldas: `{couple: "Zn^2+/Zn", E0, n, conc, electrode, solution, reaction}`.'
+    anode: La semicelda del ánodo, en lugar de `halfCells`.
+    cathode: La semicelda del cátodo.
+    saltBridge: 'El puente salino: `name` (por omisión KNO₃), `cation` y `anion`.'
+    showIons: Dibuja el movimiento de los iones del puente.
+    showNotation: Escribe la notación de la pila.
+    showDeltaG: Escribe ΔG.
+    blankPolarity: Deja en blanco el signo de los electrodos.
+    blankReactions: Deja en blanco las semirreacciones.
+    blankPotential: Deja la fem en blanco.
+    blankFlow: Deja en blanco el sentido de los electrones.
+    blankNotation: Deja la notación en blanco.
+  ignorar: [name, cation, anion]
+  sin_ejemplo: [anode, cathode]
+
+latimer:
+  nombre: Diagrama de Latimer
+  para: Potenciales entre estados de oxidación y potenciales entre especies no vecinas.
+  resumen: |
+    Dibuja las especies de un elemento de la más oxidada a la más reducida con el potencial
+    estándar entre cada par. Calcula el potencial entre especies no vecinas y marca las que se
+    desproporcionan.
+  calcula:
+    - E° entre dos especies cualesquiera, Σ nE° / Σ n.
+    - Las especies que se desproporcionan (E° a la derecha mayor que a la izquierda).
+  campos:
+    species: Las especies, de la más oxidada a la más reducida.
+    oxidation: El estado de oxidación de cada especie.
+    potentials: El E° entre cada par de vecinas.
+    compute: 'Pares de índices `[i, j]` cuyo potencial se calcula.'
+    showDisproportionation: Marca las especies que se desproporcionan.
+    blankPotentials: Índices de los potenciales que quedan en blanco.
+    blankComputed: Deja en blanco los potenciales calculados.
+    blankDisproportionation: Deja en blanco la desproporción.
+
+frost:
+  nombre: Diagrama de Frost
+  para: N·E° en función del estado de oxidación, con las especies que se desproporcionan.
+  resumen: |
+    Dibuja N·E° de cada especie respecto del estado 0 en función del estado de oxidación, con
+    los mismos datos que un diagrama de Latimer. Las especies que quedan por encima de la recta
+    entre sus vecinas se desproporcionan.
+  campos:
+    species: Las especies, de la más oxidada a la más reducida.
+    oxidation: El estado de oxidación de cada especie.
+    potentials: El E° entre cada par de vecinas.
+    showDisproportionation: Marca las especies que se desproporcionan.
+    blankLabels: Deja en blanco los rótulos.
+
+newman:
+  nombre: Proyección de Newman
+  para: Conformaciones alrededor de un enlace C–C, con el diedro y su nombre.
+  resumen: |
+    Dibuja la proyección de Newman de un enlace: los tres sustituyentes del carbono de adelante y
+    los del de atrás, girados según el diedro. Nombra la conformación (anti, gauche, eclipsada).
+  campos:
+    front: Los tres sustituyentes del carbono de adelante.
+    back: Los tres del de atrás.
+    dihedral: 'El diedro entre el primero de adelante y el primero de atrás: 180 anti, 60 gauche, 0 eclipsada.'
+    start: El ángulo del primer sustituyente de adelante.
+    axis: El rótulo del enlace (`C2–C3`).
+    blank: Deja los sustituyentes en blanco.
+    blankName: Deja en blanco el nombre de la conformación.
+    blankDihedral: Deja el diedro en blanco.
+
+chair:
+  nombre: Silla del ciclohexano
+  para: Conformaciones de silla con sustituyentes axiales y ecuatoriales, cis/trans y estabilidad.
+  resumen: |
+    Dibuja la silla del ciclohexano con sus sustituyentes axiales y ecuatoriales y, con `flip`,
+    también la silla invertida. Dice si los sustituyentes son cis o trans y, con los valores A
+    conocidos, cuál silla es más estable y por cuánta energía.
+  calcula:
+    - La relación cis/trans y la diferencia de energía entre las sillas por valores A (CH₃ 7,3 kJ/mol, tBu 21…).
+  campos:
+    substituents: 'Los sustituyentes: `position` (1 a 6), `group`, `axial` y `blank`.'
+    flip: Dibuja también la silla invertida (los axiales pasan a ecuatoriales).
+    showRelation: Escribe si es cis o trans (por omisión, sí).
+    showStability: Escribe cuál silla es más estable.
+    blank: Deja los sustituyentes en blanco.
+    blankRelation: Deja en blanco la relación cis/trans.
+    blankStability: Deja en blanco la estabilidad.
+
+fischer:
+  nombre: Proyección de Fischer
+  para: Proyecciones de Fischer con R/S por las reglas CIP y la serie D/L.
+  resumen: |
+    Dibuja la proyección de Fischer de una molécula con uno o varios centros quirales, de arriba
+    hacia abajo. Con un solo centro asigna R o S por las reglas CIP para los grupos comunes; la
+    serie D o L sale del último centro.
+  calcula:
+    - R/S con prioridades CIP (OH, NH₂, CHO, COOH, CH₂OH, CH₃, halógenos…), o con `priorities`.
+    - La serie D/L.
+  campos:
+    top: El grupo de arriba.
+    bottom: El grupo de abajo.
+    centers: 'Los centros, de arriba hacia abajo: `left`, `right`, `blank` (`left`, `right` o `true`) y `priorities` (los lugares `top`, `right`, `bottom`, `left` de mayor a menor prioridad).'
+    showConfig: Escribe R o S.
+    showSeries: Escribe la serie D o L (por omisión, sí).
+    blank: Deja los grupos en blanco.
+    blankConfig: Deja R/S en blanco.
+    blankSeries: Deja la serie en blanco.
+
+crystal_field:
+  nombre: Campo cristalino
+  para: El desdoblamiento de los orbitales d, alto y bajo espín, desapareados, μ y EECC.
+  resumen: |
+    Dibuja el desdoblamiento de los orbitales d en un campo octaédrico, tetraédrico o cuadrado
+    plano y los llena con los electrones d del metal, en alto o bajo espín según el ligando.
+    Calcula los electrones desapareados, el momento magnético de solo espín y la energía de
+    estabilización.
+  calcula:
+    - Los electrones d a partir del metal y su estado de oxidación.
+    - El espín por la serie espectroquímica (desde el NH₃, campo fuerte), μ = √(n(n+2)) y la EECC.
+  campos:
+    geometry: '`octahedral`, `tetrahedral` o `square_planar`.'
+    electrons: Los electrones d, o `metal` y `oxidation`.
+    metal: El metal.
+    oxidation: Su estado de oxidación.
+    spin: '`high` o `low`, o el que dé `ligand`.'
+    ligand: El ligando, de la serie espectroquímica.
+    complex: La fórmula del complejo, de título.
+    blank: Deja los orbitales vacíos.
+    blankElectrons: Deja los electrones en blanco.
+    blankConfig: Deja la configuración en blanco.
+    blankSpin: Deja el espín en blanco.
+    blankUnpaired: Deja los desapareados en blanco.
+    blankMoment: Deja μ en blanco.
+    blankCFSE: Deja la EECC en blanco.
+  ignorar: [crystal_field]
+
+complex:
+  nombre: Complejo de coordinación
+  para: La geometría de un complejo con su fórmula, estado de oxidación e isomería.
+  resumen: |
+    Dibuja un complejo de coordinación octaédrico, tetraédrico o cuadrado plano con sus ligandos
+    en su lugar, y calcula la fórmula, el estado de oxidación del metal, la coordinación, los
+    electrones d y el isómero (cis/trans, fac/mer).
+  calcula:
+    - La fórmula y el estado de oxidación a partir de las cargas de los ligandos.
+    - El isómero geométrico.
+  campos:
+    geometry: '`octahedral`, `tetrahedral` o `square_planar`.'
+    metal: El metal.
+    ligands: 'Los ligandos, en orden: arriba, abajo, izquierda, derecha, adelante, atrás (en el cuadrado plano: izquierda, derecha, adelante, atrás).'
+    charge: La carga del complejo.
+    oxidation: El estado de oxidación, si un ligando no es de la tabla.
+    blank: '`true` o una lista de `formula`, `oxidation`, `coordination`, `d` e `isomer`.'
+
+born_haber:
+  nombre: Ciclo de Born-Haber
+  para: La energía de red de un sólido iónico por la ley de Hess.
+  resumen: |
+    Dibuja el ciclo de Born-Haber como un diagrama de niveles: desde los elementos, cada paso
+    hasta los iones gaseosos y la formación del sólido, y calcula la energía de red por la ley de
+    Hess.
+  calcula:
+    - La energía de red, como la diferencia entre ΔHf y la suma de los pasos.
+  campos:
+    start: El estado inicial (los elementos).
+    steps: 'Los pasos hasta los iones gaseosos: `to`, `dH`, `label` y `blank`.'
+    formation: La entalpía de formación ΔHf.
+    product: El sólido.
+    blankLattice: Deja la energía de red en blanco.

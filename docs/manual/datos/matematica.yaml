@@ -1,0 +1,163 @@
+# Matemática aplicada: señales, probabilidad y circuitos.
+
+signal:
+  nombre: Señal
+  para: Señales continuas y discretas definidas por una expresión.
+  resumen: |
+    Evalúa una o varias expresiones de t (continuas) o de n (discretas) y las grafica. Las
+    continuas se dibujan como curvas, juntas con su leyenda o una debajo de la otra; las
+    discretas, como varillas, una por gráfico.
+  campos:
+    expr: 'La expresión: `+ − * / ^`, multiplicación implícita (`2t`, `3(t+1)`), `pi` y `e`, y las funciones `sin`, `cos`, `tan`, `exp`, `log` (ln), `log10`, `sqrt`, `abs`, `sgn`, `u` (escalón), `rect`, `tri`, `sinc`, `ramp`, `floor`, `ceil`, `round`, `min`, `max`, `pow`, `mod`, `delta`.'
+    label: El nombre de la señal (`x(t)`).
+    signals: 'Varias señales: `{expr, label}` o una lista de expresiones (hasta 6).'
+    domain: '`continuous` o `discrete`.'
+    variable: La variable (por omisión `t`, o `n` en las discretas).
+    range: 'El intervalo de la variable, `[desde, hasta]` (hasta 400 muestras en las discretas).'
+    yrange: El rango del eje vertical, si no se calcula solo.
+    stack: Un gráfico por señal (por omisión, en las discretas).
+    height: La altura de cada gráfico, en píxeles.
+    blank: Dibuja los ejes sin las curvas, para graficarlas.
+  sin_ejemplo: [variable, yrange]
+
+convolution:
+  nombre: Convolución
+  para: La convolución discreta, con el paso de voltear y desplazar.
+  resumen: |
+    Calcula y dibuja la convolución discreta y[n] = Σ x[k]·h[n−k]: las secuencias x[k] y h[k] y
+    el resultado y[n]. Con `step`, agrega el paso intermedio: h[n−k] volteada y desplazada sobre
+    x[k], con la cuenta de esa muestra.
+  calcula:
+    - y[n] completa y, con `step`, los productos de la muestra elegida.
+  campos:
+    x: Las muestras de x (hasta 64).
+    xStart: El índice de la primera muestra de x (por omisión 0).
+    h: Las muestras de h.
+    hStart: El índice de la primera muestra de h.
+    step: Un n para mostrar el paso de voltear y desplazar.
+    values: Escribe y[n] como lista debajo (por omisión, sí).
+    blank: Oculta y[n] y el resultado del paso.
+  sin_ejemplo: [xStart, hStart]
+
+fourier:
+  nombre: Fourier
+  para: La DFT de una secuencia y la serie de Fourier de ondas clásicas.
+  resumen: |
+    Con `sequence`, calcula la DFT de una secuencia y dibuja la secuencia, el módulo |X[k]| (y la
+    fase) y una tabla con cada X[k]. Con `wave`, dibuja el espectro de amplitud de la serie de
+    Fourier de una onda cuadrada, diente de sierra o triangular, y la suma parcial frente a la
+    onda ideal.
+  calcula:
+    - La DFT de N puntos.
+    - Los coeficientes de la serie y la suma parcial con los primeros armónicos.
+  campos:
+    sequence: La secuencia, para la DFT (hasta 128 muestras).
+    phase: Agrega la fase de X[k].
+    table: La tabla de X[k] (por omisión, sí, hasta 16 muestras).
+    wave: '`square`, `sawtooth` o `triangle`.'
+    harmonics: La cantidad de armónicos (de 1 a 60, por omisión 7).
+    amplitude: La amplitud A de la onda.
+    period: El período T.
+    blank: Oculta el espectro (y la suma parcial) y los valores de la tabla.
+  sin_ejemplo: [phase, amplitude, period]
+
+sampling:
+  nombre: Muestreo
+  para: El muestreo de un tono, el aliasing y el criterio de Nyquist.
+  resumen: |
+    Dibuja un tono senoidal, sus muestras y, si no se cumple Nyquist, el alias que pasa por las
+    mismas muestras. Debajo, si hay aliasing y la frecuencia aparente. Con `spectrum`, agrega las
+    réplicas del espectro en k·fs ± f₀.
+  calcula:
+    - La frecuencia aparente del tono muestreado.
+  campos:
+    frequency: La frecuencia del tono, en Hz.
+    fs: La frecuencia de muestreo, en Hz.
+    amplitude: La amplitud.
+    phase: La fase, en grados.
+    periods: Cuántos períodos del tono se dibujan (por omisión 3).
+    reconstruction: Dibuja el alias (por omisión, sí).
+    spectrum: Agrega el espectro con las réplicas.
+    blank: Oculta el alias y deja en blanco las conclusiones.
+  sin_ejemplo: [amplitude, phase]
+
+distribution:
+  nombre: Distribución
+  para: Densidades y funciones de masa con el área de un intervalo y su probabilidad exacta.
+  resumen: |
+    Dibuja la densidad de una distribución continua o la función de masa de una discreta, sombrea
+    el intervalo pedido y calcula su probabilidad, además de la esperanza y la varianza.
+  calcula:
+    - 'La probabilidad exacta con la función de distribución: la normal por la función gamma incompleta, la t por la beta incompleta, la χ² por la gamma incompleta y las discretas sumando la masa.'
+  campos:
+    dist: '`normal`, `uniform`, `exponential`, `t`, `chi2`, `binomial`, `poisson` o `geometric`.'
+    mean: En la normal, la media.
+    sd: En la normal, el desvío.
+    a: En la uniforme, el extremo inferior.
+    b: En la uniforme, el extremo superior.
+    lambda: En la exponencial y la Poisson, λ.
+    df: En la t y la χ², los grados de libertad.
+    n: En la binomial, los ensayos.
+    p: En la binomial y la geométrica, la probabilidad de éxito.
+    interval: 'El intervalo `[a, b]`; `null` es −∞ o +∞. En las discretas, los extremos van incluidos.'
+    showMean: Marca la media.
+    blank: Oculta el área sombreada y la probabilidad.
+  sin_ejemplo: [showMean, lambda]
+
+venn:
+  nombre: Diagrama de Venn
+  para: Dos o tres conjuntos con las regiones de una expresión sombreadas.
+  resumen: |
+    Dibuja dos o tres conjuntos dentro del universo y sombrea las regiones que forman una
+    expresión de conjuntos. Con varias expresiones, un diagrama por cada una, rotulados a), b)…
+    Los elementos o cantidades de cada región se pueden escribir adentro.
+  calcula:
+    - Las regiones de la expresión, con unión, intersección, diferencia, diferencia simétrica y complemento.
+  campos:
+    sets: Los nombres de los conjuntos (2 o 3).
+    shade: 'Una expresión o una lista (hasta 8): `∪` (`|`, `+`), `∩` (`&`, `·` o yuxtaposición), `−` (`\`), `Δ` (`^`) y el complemento con `''` o `¬`. `U` es el universo.'
+    regions: 'Lo que va en cada región, por los conjuntos que la forman: `"A": [1, 3]`, `"A,B": [7]`, `U` (afuera de todos).'
+    counts: Cantidades por región, con las mismas claves que `regions`.
+    blank: Dibuja los conjuntos sin sombrear, para sombrear la expresión.
+  sin_ejemplo: [counts]
+
+circuit:
+  nombre: Circuito
+  para: Redes serie y paralelo con su fuente, impedancia equivalente y corriente.
+  resumen: |
+    Dibuja un circuito con una fuente y una red de resistencias, inductores, capacitores y
+    fuentes armada como serie y paralelo anidados. Calcula la resistencia o la impedancia
+    equivalente (a la frecuencia dada) y la corriente de la fuente.
+  calcula:
+    - La impedancia de cada elemento (R, jωL, 1/(jωC)) y la equivalente, en forma rectangular y polar.
+    - La corriente I = V/Z.
+  campos:
+    network: 'La red: `{series: […]}` o `{parallel: […]}` anidados; cada elemento es un texto (`"R1 = 10k"`, `"C2: 100uF"`) o `{type, name, value}`. Tipos: R, L, C, V, I y Z.'
+    source: 'La fuente, como un elemento: `"V1 = 12V"` o `{type: I, name, value}`.'
+    frequency: La frecuencia, en Hz (para los inductores y capacitores).
+    style: '`ansi` (resistencias en zigzag) o `iec` (rectángulos).'
+    results: Escribe la impedancia equivalente y la corriente (por omisión, sí).
+    blank: Deja los resultados en blanco.
+    blankValues: Con `blank`, oculta también los valores de los elementos.
+  notas:
+    - 'Los valores aceptan prefijos del SI: `4.7k`, `10mH`, `100uF`, `2,2µF`, `1M`.'
+  sin_ejemplo: [blankValues]
+
+phasor:
+  nombre: Diagrama fasorial
+  para: Fasores en el plano complejo y su suma.
+  resumen: |
+    Dibuja los fasores como flechas en el plano complejo, sobre una grilla polar, y opcionalmente
+    su suma (desde el origen o encadenados punta con cola). Debajo, una tabla con cada fasor en
+    forma polar y rectangular.
+  calcula:
+    - La suma, en forma polar y rectangular.
+  campos:
+    phasors: 'Los fasores (hasta 12): `{label, magnitude, angle}` (el ángulo en grados) o `{label, re, im}`.'
+    sum: Dibuja la suma.
+    tipToTail: Encadena los fasores punta con cola.
+    sumLabel: El rótulo de la suma (por omisión Σ).
+    unit: La unidad, para la tabla.
+    table: La tabla de fasores (por omisión, sí).
+    blank: Oculta la suma y sus valores.
+  sin_ejemplo: [tipToTail]

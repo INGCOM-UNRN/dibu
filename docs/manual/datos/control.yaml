@@ -1,0 +1,173 @@
+# Control de procesos. Los sistemas (`system`, `systems`, `closedLoop`) se escriben igual en todos
+# los tipos: ver la nota de cada página.
+
+block_diagram:
+  nombre: Diagrama de bloques
+  para: Lazos de control con realimentación, perturbaciones y lazos en cascada.
+  resumen: |
+    Dibuja un diagrama de bloques: los bloques del camino directo en serie, el sumador con su
+    signo, la realimentación y las señales con sus nombres. Una perturbación entra en un sumador
+    propio antes del bloque que se indique, y un bloque puede ser a su vez un lazo interno, para
+    los esquemas en cascada.
+  campos:
+    forward: 'Los bloques del camino directo: un texto, `{label, out, blank}` (`out` es el nombre de la señal de salida) o `{loop: {forward, feedback}}` para un lazo interno.'
+    feedback: 'Los bloques de la realimentación; `[]` es realimentación unitaria. Sin la clave, el lazo queda abierto.'
+    sign: El signo de la realimentación en el sumador, `-` (por omisión) o `+`.
+    input: El nombre de la entrada, como `R(s)`.
+    output: El nombre de la salida, como `Y(s)`.
+    error: El nombre de la señal de error.
+    measured: El nombre de la señal medida (la salida de la realimentación).
+    disturbance: 'Una perturbación: `at` (antes de qué bloque entra, desde 0), `label`, `block` (un bloque propio) y `sign`.'
+    blankSigns: Deja en blanco los signos de los sumadores.
+  ignorar: [block_diagram]
+  sin_ejemplo: [sign, measured, error, disturbance]
+  notas:
+    - Los bloques son rótulos; para calcular la respuesta del lazo se usa `closedLoop` en [`time_response`](../respuesta/time_response.md).
+
+time_response:
+  nombre: Respuesta temporal
+  para: La salida de un sistema ante escalón, rampa o impulso, con sobrepico, tiempos y constantes.
+  resumen: |
+    Simula la respuesta de uno o varios sistemas (o de un lazo cerrado) a la entrada elegida y la
+    dibuja con las anotaciones pedidas: valor final, sobrepico, tiempo de pico, de subida y de
+    establecimiento, la constante de tiempo, el tiempo muerto y la tangente de la curva de
+    reacción. También dibuja puntos medidos, para comparar.
+  calcula:
+    - La simulación con tiempo muerto; un PID se simula discreto, con el derivativo filtrado.
+    - Sobrepico, tiempos de pico, subida y establecimiento (banda del 2 % o del 5 %), τ y θ.
+  campos:
+    system: 'El sistema (ver la nota sobre sistemas).'
+    systems: Varios sistemas para comparar, cada uno con `label`.
+    closedLoop: 'Un lazo cerrado: `plant`, `controller` (por omisión 1), `feedback` (por omisión 1) y `sign` (por omisión `-`).'
+    input: '`step`, `ramp` o `impulse`.'
+    amplitude: La amplitud de la entrada (por omisión 1).
+    tEnd: El tiempo final; por omisión, el que hace falta para que se establezca.
+    disturbance: 'Una perturbación en escalón: `at` (el instante), `amplitude` y `where` (`output` o `input`).'
+    annotations: '`final`, `overshoot`, `peak`, `rise`, `settling`, `tau`, `delay`, `tangent`, o `all`.'
+    settlingBand: La banda del tiempo de establecimiento, `0.02` o `0.05`.
+    showInput: Dibuja también la entrada.
+    data: 'Puntos medidos `[t, y]`, que se dibujan como marcas.'
+    dataLabel: El rótulo de los puntos medidos.
+    yMin: Mínimo del eje vertical.
+    yMax: Máximo del eje vertical.
+    xLabel: Rótulo del eje horizontal.
+    yLabel: Rótulo del eje vertical.
+    blankAnnotations: Deja en blanco los valores de las anotaciones.
+  notas:
+    - 'Un sistema se escribe como `num` y `den` (coeficientes en s, de la mayor potencia a la menor), `gain` y `tau` (primer orden K/(τs + 1)), `gain`, `zeta` y `wn` (segundo orden), o `k`, `poles` y `zeros` (`[re, im]` es un par complejo); todos con `delay` (tiempo muerto) opcional. Un controlador PID, como `kp`, `ki` y `kd`.'
+
+bode:
+  nombre: Diagrama de Bode
+  para: Magnitud y fase en frecuencia, con asíntotas y márgenes de estabilidad.
+  resumen: |
+    Evalúa la respuesta en frecuencia y dibuja la magnitud en dB y la fase en grados, en escala
+    logarítmica. Opcionalmente, las asíntotas y los márgenes de ganancia y de fase con sus
+    frecuencias de cruce. Con `closedLoop` dibuja el lazo abierto L(s) = C·G·H.
+  calcula:
+    - El margen de ganancia (en ω180) y el de fase (en ωc).
+    - Las asíntotas a partir de los polos y ceros.
+  campos:
+    system: El sistema (ver la nota de [`time_response`](../respuesta/time_response.md)).
+    systems: Varios sistemas para comparar, cada uno con `label`.
+    closedLoop: Un lazo; se dibuja su lazo abierto.
+    wMin: La frecuencia mínima, en rad/s.
+    wMax: La frecuencia máxima, en rad/s.
+    show: '`both`, `magnitude` o `phase`.'
+    asymptotes: Dibuja las asíntotas de la magnitud.
+    margins: Marca los márgenes de ganancia y de fase.
+    blankMargins: Deja los márgenes en blanco.
+
+nyquist:
+  nombre: Diagrama de Nyquist
+  para: La curva de Nyquist del lazo abierto, con el círculo unitario y las ω negativas.
+  resumen: |
+    Dibuja la curva de Nyquist del lazo abierto en el plano complejo, con el punto −1 marcado.
+    Opcionalmente, el círculo unitario y la rama de las frecuencias negativas, punteada.
+  campos:
+    system: El sistema (ver la nota de [`time_response`](../respuesta/time_response.md)).
+    systems: Varios sistemas para comparar.
+    closedLoop: Un lazo; se dibuja su lazo abierto.
+    wMin: La frecuencia mínima.
+    wMax: La frecuencia máxima.
+    limit: El radio máximo que se dibuja (recorta las ramas que se van al infinito).
+    unitCircle: Dibuja el círculo unitario.
+    showNegative: Dibuja la rama de ω negativas, punteada.
+
+pole_zero:
+  nombre: Polos y ceros
+  para: Los polos y ceros de un sistema en el plano s.
+  resumen: |
+    Ubica los polos (×) y los ceros (○) en el plano s, a partir de las listas o de un sistema (o
+    los del lazo cerrado). Opcionalmente, las rectas de amortiguamiento constante y los círculos
+    de frecuencia natural constante.
+  campos:
+    poles: 'Los polos; `[re, im]` es un par complejo.'
+    zeros: Los ceros.
+    system: Un sistema, del que salen polos y ceros.
+    closedLoop: Un lazo; se dibujan los polos y ceros del lazo cerrado.
+    showValues: Escribe el valor de cada polo y cero.
+    dampingLines: 'Rectas de amortiguamiento constante: una lista de valores de ζ (de 0 a 1).'
+    wnCircles: 'Círculos de frecuencia natural constante: una lista de valores de ωn.'
+    xRange: El rango del eje real.
+    yRange: El rango del eje imaginario.
+    blank: Dibuja sólo los ejes, para ubicarlos.
+  sin_ejemplo: [dampingLines, wnCircles]
+
+root_locus:
+  nombre: Lugar de las raíces
+  para: El lugar de las raíces con asíntotas, cruce con el eje imaginario y ganancias marcadas.
+  resumen: |
+    Dibuja cómo se mueven los polos del lazo cerrado al variar la ganancia desde 0 hasta `kMax`,
+    a partir del lazo abierto. Opcionalmente, las asíntotas, el cruce con el eje imaginario
+    (ganancia y frecuencia críticas) y la posición de los polos para ganancias elegidas.
+  calcula:
+    - Las raíces para cada ganancia, las asíntotas y su centroide.
+    - La ganancia crítica y la frecuencia del cruce.
+  campos:
+    system: El lazo abierto (ver la nota de [`time_response`](../respuesta/time_response.md)).
+    closedLoop: Un lazo; se usa su lazo abierto.
+    kMax: La ganancia máxima.
+    asymptotes: Dibuja las asíntotas.
+    showCrossing: Marca el cruce con el eje imaginario, con Kcrít y ωcrít.
+    marks: Ganancias cuyos polos se marcan con ■.
+    dampingLines: 'Rectas de amortiguamiento constante: una lista de valores de ζ (de 0 a 1).'
+    xRange: El rango del eje real.
+    yRange: El rango del eje imaginario.
+    blankMarks: Deja en blanco los valores de las marcas.
+  sin_ejemplo: [dampingLines]
+
+instrumentation:
+  nombre: P&ID
+  para: Diagramas de instrumentación con símbolos ISA-5.1.
+  resumen: |
+    Dibuja un diagrama de cañerías e instrumentos: equipos (tanques, bombas, válvulas,
+    intercambiadores), instrumentos con su tag y su ubicación (campo, panel, DCS, PLC) y las
+    líneas de proceso, eléctricas, neumáticas o de datos que los unen, sobre una grilla.
+  campos:
+    equipment: 'Los equipos: `id`, `kind` (`tank`, `vessel`, `reactor`, `column`, `pump`, `control_valve`, `valve`, `heat_exchanger`), `at: [x, y]` en la grilla, `label`, `size`, `level`, `orientation: v`.'
+    instruments: 'Los instrumentos: `id`, `tag` (`"LIC 101"`), `at`, `location` (`field`, `panel`, `panel_back`, `dcs`, `plc`) y `blank`.'
+    lines: 'Las líneas: `from` y `to` (un id o `[x, y]`), `kind` (`process`, `electric`, `pneumatic`, `data`, `capillary`), `via`, `route` (`hv` o `vh`), `label`, `arrow`.'
+    grid: Píxeles por unidad de la grilla.
+    legend: Agrega la leyenda de los tipos de línea.
+
+ladder:
+  nombre: Diagrama escalera
+  para: Programas de PLC en lenguaje escalera, con contactos, bobinas, temporizadores y contadores.
+  resumen: |
+    Dibuja los escalones de un programa en lenguaje escalera entre los dos rieles de
+    alimentación. Cada escalón es una secuencia de contactos (en serie, o en paralelo con `or`)
+    que termina en sus salidas.
+  campos:
+    rungs: 'Los escalones, cada uno con `logic` y `comment`. En `logic`: contactos `no` (o `na`), `nc`, `p`, `n`; salidas `coil`, `ncoil`, `set`, `reset`; temporizadores `ton`, `tof`, `tp` y contadores `ctu`, `ctd` con `preset`; `or` (ramas en paralelo, cada una una lista). Cada elemento con `label` y `blank`.'
+  notas:
+    - YAML lee `no:` como `false`; dibu lo entiende igual, y `na:` también vale.
+
+grafcet:
+  nombre: GRAFCET
+  para: Etapas, transiciones y divergencias en O y en Y.
+  resumen: |
+    Dibuja un GRAFCET: etapas con sus acciones, transiciones con su receptividad y divergencias
+    y convergencias en O y en Y. Por omisión, la última transición vuelve a la etapa inicial.
+  campos:
+    steps: 'En orden: `step` (número, `initial`, `actions`, `blank`), `transition` (la receptividad, `blank`), `or` y `and` (divergencias: listas de secuencias).'
+    loop: Vuelve a la etapa inicial al final (por omisión, sí).

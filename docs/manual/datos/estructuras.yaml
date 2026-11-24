@@ -1,0 +1,465 @@
+# Estructuras de datos y algoritmos.
+
+array:
+  nombre: Arreglo
+  para: Arreglos en memoria, con índices, direcciones, offsets y punteros que los recorren.
+  resumen: |
+    Dibuja un arreglo como una fila de celdas contiguas, con el índice de cada una y,
+    opcionalmente, su dirección de memoria y su offset desde el comienzo. Los punteros o índices
+    que lo recorren se dibujan como flechas sobre la celda a la que apuntan.
+  calcula:
+    - La dirección de cada celda a partir de `baseAddr` y del tamaño del elemento (`typeSize`).
+  campos:
+    values: Los valores, en orden. Un valor vacío (`""`) deja la celda sin contenido.
+    capacity: Cantidad total de celdas; las que sobran después de `values` se dibujan vacías (el espacio reservado sin usar).
+    pointers: 'Punteros o índices sobre el arreglo, como texto `"p:0, q:3"` (nombre y posición).'
+    showIndices: Muestra el índice de cada celda (por omisión, sí).
+    showAddresses: Muestra la dirección de cada celda.
+    showOffsets: Muestra el desplazamiento en bytes de cada celda respecto del comienzo.
+    baseAddr: 'Dirección de la primera celda, en hexadecimal (`0x1000`) o simbólica (`"@A"`).'
+    typeSize: Tamaño de cada elemento en bytes (por omisión 4, un `int`).
+    blankValues: Deja los valores en blanco, para completar.
+    blankAddrs: Deja las direcciones en blanco, para calcularlas.
+  notas:
+    - Para un arreglo de dos dimensiones, ver [`matrix`](matrix.md).
+  sin_ejemplo: [capacity]
+
+matrix:
+  nombre: Matriz
+  para: Matrices estáticas, dinámicas, dentadas y planas, como están en memoria.
+  resumen: |
+    Dibuja una matriz y cómo está guardada en memoria. La estática muestra la declaración
+    (`int m[3][4]`) y, con `showAddresses`, la dirección de cada celda en orden de filas; la
+    dinámica, el puntero, el arreglo de punteros a filas y cada fila; la dentada, filas de distinto
+    largo con el arreglo de largos o un centinela; la plana, un único bloque contiguo con la cuenta
+    `m[i * C + j]`.
+  calcula:
+    - La dirección de cada celda en orden de filas.
+    - En la plana, el índice lineal de cada `(i, j)`.
+    - En la dentada, el arreglo de largos a partir de las filas.
+  variantes:
+    static: Por omisión. `int m[F][C]` en un bloque, con `showLinear` también fila por fila en memoria.
+    dynamic: 'Un `int **`: el puntero, el arreglo de punteros a filas y cada fila por separado; `null` es un puntero a NULL.'
+    jagged: Dinámica con filas de distinto largo, con el arreglo de largos (`showLengths`) o un `sentinel` al final de cada fila.
+    flat: 'Un `int *` con `F * C` elementos contiguos: cada celda con su índice `[k]` y su `(i, j)`.'
+  campos:
+    values: Lista de filas (o lista plana junto con `cols`). En la dinámica, `null` es una fila que es NULL.
+    rows: Cantidad de filas, si no salen de `values` (de 1 a 10).
+    cols: Cantidad de columnas (de 1 a 10).
+    variant: Variante, ver arriba.
+    name: Nombre de la variable (por omisión `m`).
+    elementType: Tipo de los elementos, para la declaración (por omisión `int`).
+    typeSize: Tamaño de cada elemento en bytes.
+    showIndices: Muestra los índices de filas y columnas.
+    showAddresses: Muestra la dirección de cada celda.
+    baseAddr: Dirección de la primera celda (o del bloque, en la plana).
+    rowAddresses: En la dinámica, la dirección de cada fila.
+    rowsBaseAddr: En la dinámica, la dirección del arreglo de punteros a filas.
+    highlight: 'Celdas resaltadas, como `"1,2; 0,0"` o `[[1, 2]]`.'
+    highlightRows: Filas resaltadas.
+    highlightCols: Columnas resaltadas.
+    blankValues: Deja los valores en blanco.
+    blankAddrs: Deja las direcciones en blanco.
+    showLinear: En la estática, dibuja además la matriz como está en memoria, una fila detrás de la otra.
+    showLengths: En la dentada, el arreglo de largos (por omisión, sí).
+    lengths: En la dentada, los largos, si no salen de las filas.
+    lengthsName: Nombre del arreglo de largos.
+    lengthsType: Tipo de los largos (por omisión `size_t`).
+    lengthsAddr: Dirección del arreglo de largos.
+    blankLengths: Deja los largos en blanco.
+    sentinel: 'En la dentada, un valor centinela al final de cada fila, como `"''\\0''"` o `-1`.'
+    showCoords: En la plana, el `(i, j)` de cada celda (por omisión, sí).
+    showFormula: En la plana, la fórmula `m[i * C + j]` (por omisión, sí).
+    showLogical: En la plana, agrega la matriz como la piensa el programa.
+    zones: Enmarca el stack y el heap; `true` usa esos títulos, o `{stack, heap}` con títulos propios.
+    owner: 'Una estructura dueña de la matriz en lugar del puntero: `name`, `type` y `fields` (`"filas -> rows"`, `"largos -> lengths"`).'
+  notas:
+    - El máximo es 10 filas por 10 columnas; en la plana, 24 celdas.
+    - Las direcciones simbólicas (`"@F"`) van entre comillas en YAML.
+
+linked_list:
+  nombre: Lista enlazada
+  para: Listas simples, dobles y circulares, con direcciones, cursores y estructura cabecera.
+  resumen: |
+    Dibuja los nodos de una lista enlazada con su valor y el puntero al siguiente (y al anterior,
+    en las dobles), la cabeza y los cursores que la recorren. Puede mostrar dónde vive cada cosa:
+    la cabeza o una estructura cabecera en el stack y los nodos en el heap.
+  variantes:
+    singly: Por omisión. Cada nodo apunta al siguiente; el último, a NULL.
+    doubly: Cada nodo apunta al siguiente y al anterior.
+    circular: El último apunta al primero.
+    circular_doubly: Doble y circular.
+  campos:
+    values: Los valores de los nodos, en orden (hasta 7). `[]` es la lista vacía.
+    variant: Variante, ver arriba.
+    addresses: La dirección de cada nodo (hexadecimal o simbólica, como `"@N1"`).
+    headLabel: El rótulo de la cabeza (por omisión `HEAD`).
+    pointers: 'Cursores sobre la lista, como `"ant:0, actual:1"`.'
+    drawArrows: Dibuja las flechas entre nodos (por omisión, sí).
+    nodeType: Rotula cada nodo con su tipo, `@N1 (nodo_t)`.
+    header: 'Una estructura cabecera en lugar de la cabeza: `name`, `type` y `fields` (`"primero -> 0"`, `"cant = 3"`).'
+    zones: Enmarca el stack y el heap; `true` o `{stack, heap}` con títulos propios.
+    blankValues: Deja los valores en blanco.
+    blankNextAddrs: Deja en blanco las direcciones de los punteros al siguiente.
+
+stack:
+  nombre: Pila
+  para: Pilas en arreglo, con el tope, y su evolución paso a paso.
+  resumen: |
+    Dibuja una pila de abajo hacia arriba, con el tope marcado. Con `layout: vertical_multi`
+    muestra varios momentos de la misma pila uno al lado del otro, para seguir una secuencia de
+    apilar y desapilar.
+  campos:
+    values: Los valores desde la base hasta el tope. Con `vertical_multi`, una lista de estados.
+    capacity: Cantidad de lugares de la pila; los libres se dibujan vacíos.
+    topIndex: Índice del tope, si no es el último valor.
+    topLabel: Rótulo del tope (por omisión `tope`).
+    label: Rótulo de la pila.
+    layout: '`vertical_multi` dibuja varios estados uno al lado del otro.'
+    traceLabels: Con `vertical_multi`, el rótulo de cada estado (por ejemplo, la operación).
+    showAddresses: Muestra la dirección de cada lugar.
+    baseAddr: Dirección de la base.
+    typeSize: Tamaño de cada elemento en bytes.
+    blankValues: Deja los valores en blanco.
+    blankPointers: Deja el tope en blanco.
+  sin_ejemplo: [capacity]
+
+queue:
+  nombre: Cola
+  para: Colas lineales y circulares, con frente y final.
+  resumen: |
+    Dibuja una cola en arreglo con los índices de frente y final. La circular se dibuja como un
+    anillo y, con `showPanel`, con un panel que resume frente, final y cantidad.
+  variantes:
+    linear: Por omisión. Un arreglo con frente y final.
+    circular: Un anillo de `capacity` lugares.
+  campos:
+    values: Los valores en la cola, del frente al final.
+    variant: Variante, ver arriba.
+    capacity: Cantidad de lugares.
+    frontIndex: Índice del frente.
+    rearIndex: Índice del final.
+    showPanel: En la circular, un panel con frente, final y cantidad.
+    blankValues: Deja los valores en blanco.
+    blankPointers: Deja frente y final en blanco.
+
+call_stack:
+  nombre: Pila de llamadas
+  para: Los marcos de activación de una ejecución, con parámetros, variables y punteros entre marcos.
+  resumen: |
+    Dibuja los marcos de activación desde `main` (abajo) hasta el tope, que se resalta. Los
+    parámetros van en negrita y figuran en el título del marco. Con `steps`, la pila aparece en
+    varios momentos alineados en la base; un marco con `popped: true` y `returns` es el que acaba
+    de retornar y se dibuja punteado.
+  calcula:
+    - Las direcciones de las variables, desde `baseAddr` hacia abajo, según el tamaño de cada una.
+  campos:
+    frames: 'Los marcos, de `main` al tope. Cada uno con `function`, `params`, `vars`, `returnTo`, `returns` y `popped`. Las variables van como `{x: 5}`, `"x = 5"` o `{name, value, type, addr, size, blank}`.'
+    steps: 'La pila en varios momentos: cada paso con `label` y `frames` (hasta 8 pasos).'
+    pointers: 'Flechas entre variables, como `"1.p -> 0.x"`: el marco por su índice desde `main` o por el nombre de la función.'
+    showAddresses: Muestra la dirección de cada variable.
+    baseAddr: Dirección de la primera variable de `main` (por omisión `0x7FFC`); las siguientes bajan.
+    typeSize: Tamaño de una variable que no es puntero (por omisión 4); los punteros ocupan 8.
+    showTypes: Muestra el tipo de cada variable.
+    blankValues: Deja los valores en blanco.
+    blankAddrs: Deja las direcciones en blanco.
+  notas:
+    - Hasta 10 marcos.
+    - El árbol de las llamadas recursivas es [`call_tree`](call_tree.md).
+
+call_tree:
+  nombre: Árbol de llamadas
+  para: Las llamadas de una función recursiva, su orden, sus resultados y el costo por nivel.
+  resumen: |
+    Dibuja el árbol de llamadas de una función recursiva con lo que devuelve cada una. Sirve para
+    seguir la ejecución (`showOrder` numera el orden), para mostrar subproblemas repetidos
+    (`highlight`) y para resolver una recurrencia sumando el costo de cada nivel.
+  campos:
+    root: 'La llamada inicial: `call`, `returns`, `children` (las llamadas que hace) y `blank`. Hasta 40 llamadas.'
+    showOrder: Numera las llamadas en el orden en que se hacen.
+    highlight: Llamadas resaltadas, por su texto (por ejemplo `["fib(1)"]`).
+    levelCosts: El costo de cada nivel, al costado.
+    total: El costo total, debajo.
+    blankReturns: Deja en blanco lo que devuelve cada llamada.
+    blankCalls: Deja en blanco las llamadas.
+    blankLevelCosts: Deja en blanco los costos por nivel.
+    blankTotal: Deja en blanco el total.
+
+struct:
+  nombre: Struct
+  para: La disposición de un struct en memoria (offsets, relleno, sizeof) y los tipos opacos.
+  resumen: |
+    Con la variante `layout` (por omisión) dibuja los campos de un struct como los ubica gcc en 64
+    bits: offset, tamaño y relleno de cada uno, y el `sizeof` total. Con `opaque` muestra qué ve
+    cada archivo de un tipo opaco: el `.h` con el `typedef` y las operaciones, el cliente con un
+    puntero y el `.c` con los campos.
+  calcula:
+    - 'El offset, el relleno y el `sizeof` con los tamaños y alineaciones de gcc en 64 bits (`char` 1, `short` 2, `int` y `float` 4, `long`, `double`, `size_t` y punteros 8, y los `intN_t`).'
+  variantes:
+    layout: Por omisión. La disposición en memoria.
+    opaque: Lo que ve cada archivo de un tipo opaco.
+  campos:
+    fields: 'Los campos: `"char nombre[8]"`, `"int edad = 30"` o `{name, type, value, size, align, blank}` (hasta 16). `size` y `align` sirven para un tipo que dibu no conoce, como un struct anidado.'
+    name: Nombre del struct (`struct persona`).
+    typedef: Nombre del `typedef`.
+    variant: Variante, ver arriba.
+    packed: Sin relleno, como `__attribute__((packed))`.
+    showAddresses: Muestra la dirección de cada campo.
+    baseAddr: Dirección del comienzo del struct.
+    variable: El nombre de la variable de ese tipo.
+    blankValues: Deja los valores en blanco.
+    blankOffsets: Deja los offsets en blanco.
+    blankSizes: Deja los tamaños en blanco.
+    blankPadding: Saca las filas de relleno, para deducirlas de los offsets.
+    blankSizeof: Deja el `sizeof` en blanco.
+    operations: En `opaque`, las operaciones del `.h`.
+    header: En `opaque`, el nombre del `.h`.
+    source: En `opaque`, el nombre del `.c`.
+    client: En `opaque`, el código del cliente.
+    hidden: En `opaque`, oculta los campos (lo que ve el cliente); no hace falta `fields`.
+
+adt:
+  nombre: Tipo abstracto de datos
+  para: Un TAD con sus operaciones, precondiciones, invariante y representaciones posibles.
+  resumen: |
+    Dibuja un tipo abstracto de datos: el cliente, la tabla de operaciones con su clase
+    (constructor, modificador, observador…), su precondición y su poscondición, el invariante y
+    las representaciones posibles con sus campos.
+  campos:
+    name: Nombre del TAD.
+    operations: 'Las operaciones: texto (la firma) o `{signature, kind, pre, post, blank}`.'
+    invariant: El invariante de la representación.
+    representations: 'Las representaciones posibles, cada una `{name, fields}`.'
+    client: Código cliente que usa el TAD.
+    blankOperations: Deja las operaciones en blanco.
+    blankKinds: Deja en blanco la clase de cada operación.
+
+tree:
+  nombre: Árbol binario
+  para: Árboles binarios, de búsqueda, AVL y montículos, por niveles, por inserciones o anidados.
+  resumen: |
+    Dibuja un árbol binario. Los nodos se dan por niveles (`values`), por una secuencia de
+    inserciones en un árbol de búsqueda (`insert`, que en la variante `avl` rebalancea) o como una
+    estructura anidada (`root`). El AVL muestra el factor de balance y el montículo, el índice de
+    cada nodo y el arreglo debajo.
+  variantes:
+    binary: Por omisión. Un árbol binario cualquiera.
+    bst: Un árbol binario de búsqueda.
+    avl: Un AVL, con el factor de balance de cada nodo.
+    heap: Un montículo, con el arreglo que lo representa.
+  campos:
+    values: 'Los nodos por niveles; `""` es una posición sin nodo.'
+    insert: Inserciones en un árbol de búsqueda, en orden; con `avl`, rebalancea.
+    root: 'Un árbol anidado: `value`, `left`, `right`.'
+    variant: Variante, ver arriba.
+    nodeStyle: '`struct` dibuja cada nodo como un struct con `*izq` y `*der`.'
+    nullLeaves: Dibuja los punteros a NULL de las hojas.
+    highlight: Nodos resaltados, por su valor.
+    showBalance: En el AVL, el factor de balance de cada nodo.
+    showArray: En el montículo, el arreglo debajo.
+    blankValues: Deja los valores en blanco.
+    blankBalance: Deja en blanco los factores de balance.
+  notas:
+    - Para seguir las rotaciones de un AVL paso a paso, ver [`avl`](avl.md); para las operaciones de un montículo, [`heap`](heap.md).
+
+heap:
+  nombre: Montículo (heap)
+  para: Min-heaps y max-heaps construidos por inserciones o con heapify, con sus operaciones.
+  resumen: |
+    Dibuja un montículo binario como árbol y como arreglo, con el índice de cada posición. Se
+    construye insertando los valores de a uno (con *sift-up*), con el algoritmo de Floyd
+    (*heapify*) o tal como se da, y después aplica las operaciones de `ops`. Con `steps` muestra
+    el estado después de cada paso.
+  calcula:
+    - La reubicación de cada inserción (flotar) y de cada extracción (hundir).
+    - El heapify de Floyd, desde la mitad del arreglo hacia la raíz.
+  campos:
+    values: Los valores iniciales.
+    kind: '`min` (la raíz es el menor) o `max`.'
+    build: '`insert` (de a uno), `heapify` (Floyd) o `none` (el arreglo tal como está).'
+    ops: 'Operaciones a aplicar después: `"insert 12"` y `"extract"`.'
+    steps: Dibuja el estado después de cada inserción y de cada operación (hasta 16).
+    blank: Deja en blanco el estado final (árbol y arreglo), para completar.
+
+avl:
+  nombre: Árbol AVL
+  para: Inserciones y eliminaciones en un AVL, con las rotaciones que hace cada una.
+  resumen: |
+    Inserta las claves en un AVL vacío, de a una, y elimina las de `delete`. Dibuja el árbol
+    final con el factor de balance de cada nodo y, con `steps`, el árbol después de cada operación
+    con el nombre de la rotación que la rebalanceó.
+  calcula:
+    - Las rotaciones simples y dobles (izquierda-derecha, derecha-izquierda) de cada operación.
+    - El factor de balance (altura izquierda menos altura derecha) de cada nodo.
+  campos:
+    keys: Las claves a insertar, en orden (hasta 40). Las repetidas se ignoran.
+    delete: Claves a eliminar después de las inserciones.
+    steps: '`none` (sólo el final), `rotations` (los pasos que rotan) o `all` (todos).'
+    balance: Muestra el factor de balance de cada nodo (por omisión, sí).
+    blank: Deja en blanco el árbol final, para completar.
+
+bplus_tree:
+  nombre: Árbol B+
+  para: Inserciones en un árbol B+, con las divisiones de hojas y nodos internos.
+  resumen: |
+    Inserta las claves en un árbol B+ y dibuja sus niveles: los nodos internos con las claves
+    separadoras y las hojas, con todas las claves y enlazadas entre sí. Con `steps`, muestra el
+    árbol después de cada inserción que divide un nodo.
+  calcula:
+    - La división de una hoja (sube una copia de la primera clave de la derecha) y la de un nodo interno (sube la clave del medio).
+  campos:
+    keys: Las claves a insertar, en orden (hasta 60).
+    order: Orden del árbol, la cantidad máxima de hijos (por omisión 4).
+    maxKeys: Claves máximas por nodo, si no es `order − 1`.
+    steps: Dibuja el árbol después de cada inserción que divide un nodo (hasta 12).
+    blank: Deja en blanco las claves del árbol final.
+
+hash_table:
+  nombre: Tabla de hash
+  para: Inserciones en una tabla de hash, con encadenamiento o direccionamiento abierto.
+  resumen: |
+    Inserta las claves en una tabla de `size` cubetas con h(k) = k mod m y dibuja la tabla
+    resultante junto al registro de cada inserción: su hash, la secuencia de sondeos y la
+    posición final. Las colisiones se resuelven por encadenamiento o con sondeo lineal,
+    cuadrático o doble hashing.
+  calcula:
+    - El hash de cada clave (los textos, por la suma de sus caracteres o el polinomio de base 31).
+    - La secuencia de sondeos y la posición final, o «sin lugar» si la tabla está llena.
+    - El factor de carga α y la cantidad de inserciones con colisión.
+  campos:
+    size: Cantidad de cubetas m (de 1 a 101).
+    keys: Las claves, enteros o textos, en el orden en que se insertan.
+    collision: '`chaining`, `linear`, `quadratic` o `double`.'
+    R: En doble hashing, el R de h₂(k) = R − (k mod R); por omisión, el primo menor que m.
+    stringHash: 'Hash de los textos: `sum` (suma de códigos) o `poly` (base 31).'
+    blank: Deja en blanco la tabla y el registro, para completar.
+
+complexity:
+  nombre: Complejidad
+  para: Curvas de crecimiento para comparar órdenes, y jerarquías de clases de complejidad.
+  resumen: |
+    Con la variante `growth` (por omisión) dibuja curvas de crecimiento para comparar órdenes;
+    con `blankLabels` salen rotuladas A, B, C… para asociarlas con su clase. Una curva con
+    `points` son mediciones, para clasificarlas. Con `classes`, dibuja conjuntos anidados de
+    clases de complejidad.
+  variantes:
+    growth: Por omisión. Curvas de crecimiento.
+    classes: Conjuntos anidados de clases.
+  campos:
+    curves: 'Las curvas: `1`, `log n`, `sqrt n`, `n`, `n log n`, `n^2`, `n^3`, `2^n`, `n!` (también como `O(n²)`), o `{label, points}` para mediciones.'
+    variant: Variante, ver arriba.
+    maxN: El n máximo del eje horizontal.
+    maxY: El máximo del eje vertical; las curvas que se salen se cortan.
+    xLabel: Rótulo del eje horizontal.
+    yLabel: Rótulo del eje vertical.
+    blankLabels: Rotula las curvas A, B, C… en el orden de `curves`.
+    classes: 'En `classes`, la jerarquía, de la más chica a la más grande (por omisión los órdenes comunes; también `[P, NP, EXPTIME]`).'
+    items: 'En `classes`, ejemplos dentro de cada clase: `{"O(n)": [búsqueda lineal]}`.'
+    blankClasses: Deja en blanco los nombres de las clases.
+
+flowchart:
+  nombre: Diagrama de flujo
+  para: Diagramas de flujo armados a partir de la estructura del algoritmo.
+  resumen: |
+    Arma el diagrama de flujo a partir de la estructura del algoritmo: pasos, entradas y salidas,
+    condicionales y ciclos anidados. Cada paso con `blank: true` sale vacío para completar.
+  campos:
+    steps: 'Los pasos: un texto, `{io}` (entrada o salida), `{step}`, `{if, then, else}`, `{while, do}` o `{for, do}`; cada uno con `blank`.'
+    start: Rótulo del inicio (por omisión `Inicio`); `false` lo quita.
+    end: Rótulo del fin (por omisión `Fin`); `false` lo quita.
+    blankValues: Deja en blanco el texto de todos los pasos.
+
+cost_table:
+  nombre: Tabla de costos
+  para: El análisis de un algoritmo línea por línea, con el costo y las veces de cada una.
+  resumen: |
+    Dibuja el análisis línea por línea de un algoritmo: el código (con su sangría), el costo de
+    cada línea y cuántas veces se ejecuta, y el total.
+  campos:
+    lines: 'Las líneas: `[código, costo, veces]` o `{code, cost, times}`.'
+    total: El costo total, debajo.
+    blankCosts: Deja los costos en blanco.
+    blankTimes: Deja en blanco las veces.
+    blankTotal: Deja el total en blanco.
+
+trace_table:
+  nombre: Tabla de traza
+  para: Pruebas de escritorio de variables y trazas de operaciones sobre una estructura.
+  resumen: |
+    Dibuja una prueba de escritorio: columnas con las variables y una fila por paso. Las filas
+    que faltan hasta `rowCount` y los `null` quedan para completar. También dibuja las tablas de
+    traza de statics, con una secuencia de operaciones sobre una estructura de capacidad fija.
+  variantes:
+    stack: Sólo cambia los rótulos por omisión, para trazas de una pila.
+  campos:
+    columns: Las columnas (las variables).
+    rows: 'Las filas; `null` o una fila corta quedan para completar.'
+    rowCount: Cantidad total de filas; las que faltan quedan vacías.
+    operations: Las operaciones de cada fila, en la primera columna (o la traza de statics).
+    operationHeader: Encabezado de la columna de operaciones.
+    capacity: En la traza de statics, la capacidad de la estructura.
+    pointerHeader: En la traza de statics, el encabezado de la columna del puntero.
+    pointerLabel: En la traza de statics, el nombre del puntero.
+    variant: Variante, ver arriba.
+    blankValues: Deja los valores en blanco.
+
+dp_table:
+  nombre: Tabla de programación dinámica
+  para: LCS, distancia de edición, mochila 0/1 y cambio de monedas, con el camino de reconstrucción.
+  resumen: |
+    Llena la tabla de programación dinámica del problema elegido y resalta el camino de
+    reconstrucción de la solución. Debajo escribe el resultado: la subsecuencia, las operaciones
+    de edición, los objetos elegidos o las monedas.
+  calcula:
+    - '`lcs`: la longitud y una subsecuencia común más larga.'
+    - '`edit`: la distancia de Levenshtein y las operaciones (sustituir, insertar, borrar).'
+    - '`knapsack`: el valor máximo y los objetos elegidos.'
+    - '`coins`: la mínima cantidad de monedas y cuáles.'
+  campos:
+    problem: '`lcs`, `edit`, `knapsack` o `coins`.'
+    a: En `lcs` y `edit`, el primer texto (hasta 24 caracteres).
+    b: En `lcs` y `edit`, el segundo texto.
+    weights: En `knapsack`, los pesos (de 1 a 15 objetos).
+    values: En `knapsack`, los valores.
+    capacity: En `knapsack`, la capacidad de la mochila (de 1 a 40).
+    coins: En `coins`, los valores de las monedas.
+    amount: En `coins`, el monto a formar (de 1 a 60).
+    path: Resalta el camino de reconstrucción (por omisión, sí).
+    blank: Deja la tabla en blanco (salvo la primera fila y columna) y el resultado.
+
+dijkstra:
+  nombre: Dijkstra
+  para: La tabla de iteraciones del algoritmo de Dijkstra y los caminos mínimos.
+  resumen: |
+    Ejecuta Dijkstra desde `source` y dibuja la tabla de iteraciones: en cada paso, el vértice
+    que se visita y la distancia y el predecesor de cada vértice (✓ si ya fue visitado). Debajo,
+    la distancia y el camino mínimo a cada destino.
+  calcula:
+    - Las distancias y predecesores de cada iteración; los empates se rompen por el orden de los vértices.
+  campos:
+    edges: 'Las aristas: `"A-B:4"` (no dirigida), `"A->B:4"` (dirigida) o `{from, to, w}`.'
+    source: El vértice de origen (por omisión, el primero).
+    vertices: El orden de los vértices, si no sale de las aristas.
+    directed: Toma como dirigidas las aristas escritas con `-`.
+    paths: Agrega la tabla de caminos mínimos (por omisión, sí).
+    blank: Deja en blanco las iteraciones y los caminos.
+  notas:
+    - Con pesos negativos es un error, porque Dijkstra no los admite.
+    - El grafo en sí no se dibuja; para eso alcanza con Mermaid o Graphviz.
+
+turing:
+  nombre: Máquina de Turing
+  para: La traza de configuraciones de una máquina de Turing y su tabla de transiciones.
+  resumen: |
+    Simula una máquina de Turing de una cinta sobre la entrada y dibuja cada configuración: el
+    paso, el estado y la cinta con el cabezal resaltado. Debajo, si acepta, rechaza o no se
+    detuvo, y la tabla de transiciones δ.
+  campos:
+    transitions: 'Las transiciones: `"q0,1 -> q1,X,R"` (estado, símbolo leído, estado nuevo, símbolo escrito, movimiento `R`, `L` o `S`), o un mapa `"q0,1": "q1,X,R"`.'
+    input: La entrada (hasta 40 símbolos).
+    start: El estado inicial (por omisión `q0`).
+    accept: Los estados de aceptación.
+    blankSymbol: El símbolo blanco (por omisión `_`).
+    maxSteps: Pasos máximos de la simulación (de 1 a 200, por omisión 40).
+    table: Agrega la tabla de transiciones (por omisión, sí).
+    blank: Dibuja sólo la configuración inicial, para completar la traza.

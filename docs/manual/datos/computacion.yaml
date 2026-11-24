@@ -1,0 +1,225 @@
+# Sistemas de computación: digital, arquitectura, sistemas operativos, redes y bases de datos.
+
+truth_table:
+  nombre: Tabla de verdad
+  para: Tablas de verdad de una o varias funciones, con columnas intermedias y formas canónicas.
+  resumen: |
+    Evalúa una o varias expresiones booleanas en todas las combinaciones de sus variables y
+    dibuja la tabla, con los unos resaltados. Con `steps`, agrega una columna por cada
+    subexpresión, para mostrar cómo se llega al resultado; con `canonical`, la suma de mintérminos
+    y el producto de maxtérminos.
+  calcula:
+    - El valor de cada salida y de cada subexpresión en cada fila.
+    - Las formas canónicas Σm(…) y ΠM(…).
+  campos:
+    expr: 'La expresión, como `A·B + !C`. NOT: `!A`, `~A`, `¬A`, `A''`; AND: `&`, `·`, `*` o yuxtaposición (`A B`, `AB''C`); OR: `+`, `|`; XOR: `^`, `⊕`; también `AND`, `OR`, `NOT`, `XOR`, `NAND`, `NOR`, `XNOR`.'
+    outputs: 'Varias salidas que comparten variables: `[{name, expr}]` o una lista de expresiones (hasta 8).'
+    name: El nombre de la salida (por omisión `F`).
+    vars: 'Las variables, en orden (por omisión, alfabético). Obligatorias con `minterms`.'
+    minterms: La función por sus mintérminos, en lugar de `expr`.
+    maxterms: La función por sus maxtérminos.
+    dontcares: Las combinaciones indiferentes, que salen como X.
+    steps: Agrega una columna por cada subexpresión (hasta 10).
+    canonical: Escribe las formas canónicas debajo.
+    index: La columna con el número de mintérmino (por omisión, sí).
+    notation: 'Cómo se escribe la negación en los encabezados: `overline` (barra), `prime` (A'') o `neg` (¬A).'
+    multiLetterVars: 'Con `true`, `AB` es una variable; por omisión, varias mayúsculas juntas son variables de una letra.'
+    blank: Deja en blanco las salidas, las columnas intermedias y las formas canónicas.
+  sin_ejemplo: [notation]
+
+karnaugh:
+  nombre: Mapa de Karnaugh
+  para: Mapas de 2 a 4 variables con los agrupamientos mínimos y la expresión simplificada.
+  resumen: |
+    Dibuja el mapa de Karnaugh de la función, con las filas y columnas en código Gray y el número
+    de mintérmino en cada celda. Minimiza la función (Quine-McCluskey con cobertura exacta),
+    dibuja cada grupo, también los que dan la vuelta por los bordes, y escribe la suma de
+    productos o el producto de sumas mínimo.
+  calcula:
+    - Los implicantes primos y una cobertura mínima (menos términos y, a igualdad, menos literales).
+    - La expresión mínima en SOP (agrupando unos) o POS (agrupando ceros), usando las indiferentes.
+  campos:
+    expr: La función como expresión (ver [`truth_table`](truth_table.md)).
+    vars: Las variables (de 2 a 4); las primeras van en las filas.
+    minterms: La función por sus mintérminos.
+    maxterms: La función por sus maxtérminos.
+    dontcares: Las combinaciones indiferentes, que salen como X.
+    name: El nombre de la función (por omisión `F`).
+    form: '`sop` (suma de productos) o `pos` (producto de sumas).'
+    groups: Dibuja los agrupamientos (por omisión, sí).
+    implicants: Lista debajo cada implicante con los mintérminos que cubre.
+    result: Escribe la expresión simplificada (por omisión, sí).
+    notation: '`overline`, `prime` o `neg`.'
+    multiLetterVars: Con `true`, `AB` es una variable.
+    blank: Oculta los grupos y deja la expresión en blanco; las celdas se ven.
+    blankGroups: Oculta sólo los grupos.
+    blankCells: Oculta también los valores de las celdas.
+  sin_ejemplo: [notation]
+
+logic_circuit:
+  nombre: Circuito lógico
+  para: El circuito con compuertas que implementa una expresión booleana.
+  resumen: |
+    Convierte la expresión en un circuito con compuertas AND, OR, XOR, NAND, NOR, XNOR y NOT. Las
+    entradas bajan por rieles verticales a la izquierda y cada compuerta se ubica por su
+    profundidad; la negación de una AND, OR o XOR se dibuja como la compuerta negada.
+  campos:
+    expr: La expresión (ver [`truth_table`](truth_table.md)).
+    output: El nombre de la salida (por omisión `F`).
+    vars: El orden de las variables en los rieles.
+    rails: Rieles verticales para las entradas (por omisión, sí); sin ellos, cada entrada se rotula en su compuerta.
+    basicGates: Sólo AND, OR, XOR y NOT (una NAND sale como AND y NOT).
+    showExpr: Escribe la expresión debajo (por omisión, sí).
+    notation: '`overline`, `prime` o `neg`.'
+    multiLetterVars: Con `true`, `AB` es una variable.
+  ignorar: [name, minterms, maxterms, dontcares]
+  sin_ejemplo: [notation]
+
+pipeline:
+  nombre: Pipeline
+  para: El diagrama de ciclos de un pipeline de 5 etapas, con riesgos, burbujas y forwarding.
+  resumen: |
+    Ubica cada instrucción en las etapas IF, ID, EX, MEM y WB ciclo por ciclo. Detecta las
+    dependencias de datos (RAW) entre instrucciones e inserta las burbujas necesarias, con o sin
+    forwarding; dibuja las flechas de cada dependencia y debajo los ciclos totales, las burbujas y
+    el CPI.
+  calcula:
+    - 'Sin forwarding, el consumidor lee en ID en el mismo ciclo del WB del productor (escritura en la primera mitad, lectura en la segunda).'
+    - Con forwarding, de EX a EX; después de un load, de MEM a EX, con una burbuja (load-use).
+    - Mientras una instrucción espera en ID, la siguiente queda retenida en IF.
+  campos:
+    instructions: 'Las instrucciones (hasta 40): `"lw $t0, 0($s0)"`, `"add $t1, $t0, $t2"`. Reconoce cargas, almacenamientos, saltos y operaciones; `$zero` no genera dependencias. También `{text, dest, src, load}` para fijar los registros.'
+    forwarding: Con forwarding (por omisión, sí).
+    arrows: Dibuja las flechas de las dependencias (por omisión, sí).
+    summary: Escribe los ciclos totales, las burbujas y el CPI (por omisión, sí).
+    hazards: Lista las dependencias RAW debajo (por omisión, sí).
+    blank: Deja la grilla de ciclos vacía y los resultados en blanco.
+  notas:
+    - No modela riesgos de control (saltos) ni estructurales.
+
+ieee754:
+  nombre: IEEE 754
+  para: La codificación de un número en punto flotante, en los dos sentidos.
+  resumen: |
+    Dibuja los campos de signo, exponente y mantisa de un número en precisión media, simple o
+    doble, y los pasos: el número en binario y normalizado, el exponente sesgado, la mantisa, el
+    hexadecimal, el valor que queda guardado y el error de redondeo. Parte de un valor decimal o de
+    los bits.
+  calcula:
+    - La codificación con redondeo al par más cercano, también para media precisión.
+    - Los casos especiales: cero, subnormales, infinito y NaN.
+  campos:
+    value: 'El número: `-6.75`, `0.1`, o `"inf"`, `"-inf"`, `"nan"`.'
+    bits: 'Los bits, en hexadecimal (`"0x41460000"`) o en binario con todos sus dígitos.'
+    hex: Lo mismo que `bits`.
+    format: '`half` (16 bits), `single` (32) o `double` (64).'
+    blank: Si se dio el valor, oculta los bits y los pasos; si se dieron los bits, oculta los pasos.
+  sin_ejemplo: [hex]
+
+cache:
+  nombre: Memoria caché
+  para: La simulación de una caché directa o asociativa sobre una secuencia de accesos.
+  resumen: |
+    Divide la dirección en tag, índice y offset, simula cada acceso y dibuja una tabla con su
+    tag, índice, offset, si fue acierto o fallo (y de qué tipo) y qué bloque desalojó. Debajo, la
+    tasa de aciertos y el contenido final de la caché.
+  calcula:
+    - Los bits de tag, índice y offset a partir de los tamaños.
+    - Aciertos y fallos con reemplazo LRU o FIFO.
+    - 'El tipo de cada fallo: forzoso (primer acceso al bloque), de capacidad (fallaría también en una caché totalmente asociativa del mismo tamaño) o de conflicto.'
+  campos:
+    addressBits: Bits de la dirección (de 4 a 64, por omisión 16).
+    cacheSize: 'Tamaño de la caché en bytes, potencia de 2 (`64`, `"1KB"`).'
+    blockSize: Tamaño de bloque en bytes, potencia de 2.
+    associativity: '`1` (correspondencia directa), 2, 4… vías o `"full"` (totalmente asociativa).'
+    policy: '`lru` o `fifo`.'
+    accesses: 'Las direcciones accedidas: `"0x040"`, `"0b1010"` o enteros (hasta 64).'
+    missTypes: La columna con el tipo de fallo (por omisión, sí).
+    finalState: La tabla con el contenido final (por omisión, sí; hasta 64 bloques).
+    blank: Deja en blanco tag, índice, offset, resultado y el contenido final.
+
+cpu_scheduling:
+  nombre: Planificación de CPU
+  para: El diagrama de Gantt y los tiempos de FCFS, SJF, SRTF, Round Robin y prioridades.
+  resumen: |
+    Simula la planificación de los procesos y dibuja el diagrama de Gantt, con la CPU ociosa
+    cuando no hay nadie listo y una flecha en cada llegada. Debajo, la tabla con el instante de
+    fin y los tiempos de retorno, espera y respuesta de cada proceso, y sus promedios.
+  calcula:
+    - 'FCFS, SJF y prioridad no expropiativos; SRTF y prioridad expropiativos; Round Robin con quantum.'
+    - 'En Round Robin, los que llegan durante un quantum entran a la cola antes que el expropiado.'
+    - Los empates se rompen por llegada y después por el orden de la lista.
+  campos:
+    processes: 'Los procesos (hasta 26): `{name, arrival, burst, priority}`. `arrival` es 0 por omisión; la prioridad más alta es el número menor.'
+    algorithm: '`fcfs`, `sjf`, `srtf`, `rr`, `priority` o `priority_preemptive`.'
+    quantum: El quantum de Round Robin (por omisión 2).
+    blank: Deja el Gantt vacío (con la escala de tiempo) y los tiempos en blanco.
+
+page_table:
+  nombre: Tabla de páginas
+  para: La traducción de direcciones lógicas a físicas con paginación.
+  resumen: |
+    Dibuja la tabla de páginas (página, marco, bit de validez) y la traducción de cada dirección
+    lógica: número de página, desplazamiento, marco y dirección física, o el fallo de página.
+  calcula:
+    - página = dirección div tamaño; offset = dirección mod tamaño; física = marco × tamaño + offset.
+  campos:
+    pageSize: Tamaño de página en bytes, potencia de 2.
+    table: 'El marco de cada página; `null` es una página que no está en memoria.'
+    addresses: Las direcciones lógicas, en decimal o en hexadecimal.
+    base: '`dec` o `hex`: cómo se escriben las direcciones.'
+    formula: Escribe las fórmulas debajo (por omisión, sí).
+    blank: Deja en blanco la traducción.
+
+page_replacement:
+  nombre: Reemplazo de páginas
+  para: FIFO, LRU, óptimo y reloj sobre una cadena de referencias, para compararlos.
+  resumen: |
+    Simula los algoritmos de reemplazo sobre la cadena de referencias y dibuja, para cada uno,
+    una grilla con el contenido de cada marco en cada paso, la página que entra resaltada y los
+    fallos marcados. Con varios algoritmos, uno debajo del otro, con sus tasas de fallos.
+  calcula:
+    - 'FIFO, LRU, óptimo (OPT, el que se usa más lejos en el futuro) y reloj (segunda oportunidad, con el bit de referencia marcado *).'
+  campos:
+    frames: Cantidad de marcos (de 1 a 16, por omisión 3).
+    references: La cadena de referencias (hasta 60).
+    algorithm: Un algoritmo, `fifo`, `lru`, `opt` o `clock`.
+    algorithms: Varios algoritmos para comparar.
+    blank: Deja la grilla y los fallos en blanco.
+
+subnetting:
+  nombre: Subnetting
+  para: Subredes IPv4 de igual tamaño o con VLSM, con su mapa de direcciones.
+  resumen: |
+    Divide una red IPv4 en subredes, de igual tamaño o con VLSM según los hosts que necesita cada
+    una, y dibuja la tabla con la red, el prefijo, la máscara, el primer y el último host y el
+    broadcast de cada subred, más un mapa del espacio de direcciones.
+  calcula:
+    - 'Con VLSM, el prefijo mínimo para cada pedido y la asignación alineada, de la subred más grande a la más chica.'
+    - Los hosts útiles de cada subred (las /31 y /32, 2 y 1).
+  campos:
+    network: 'La red, `A.B.C.D/n` (prefijo de 0 a 30).'
+    subnets: 'Las subredes con VLSM: `{name, hosts}` o sólo la cantidad de hosts (hasta 64).'
+    count: Cantidad de subredes iguales, en lugar de `subnets`.
+    sort: Con VLSM, asigna de la más grande a la más chica (por omisión, sí).
+    summary: Escribe cuántas direcciones se usan (por omisión, sí).
+    map: Dibuja el mapa del espacio de direcciones (por omisión, sí).
+    binary: Escribe cada red en binario, con los bits de red y de host.
+    blank: Deja en blanco todo salvo el nombre y los hosts pedidos.
+
+transaction_schedule:
+  nombre: Planificación de transacciones
+  para: Conflictos, grafo de precedencia y serializabilidad por conflictos.
+  resumen: |
+    Dibuja la planificación con una columna por transacción y una fila por operación, resaltando
+    las que están en conflicto. Al lado, el grafo de precedencia; debajo, la lista de conflictos y
+    si la planificación es serializable por conflictos, con un orden serial equivalente o el
+    ciclo que lo impide.
+  calcula:
+    - Los pares en conflicto (distintas transacciones, el mismo ítem y al menos una escritura).
+    - Un orden topológico del grafo de precedencia o un ciclo.
+  campos:
+    schedule: 'Las operaciones en orden: `R1(A)`, `W2(B)`, `C1` (commit), `A3` (abort); también `"T1: R(A)"`. Una lista o un texto separado por comas.'
+    highlight: Resalta las operaciones en conflicto (por omisión, sí).
+    conflicts: Lista los conflictos debajo (por omisión, sí).
+    blank: Oculta las aristas del grafo y el veredicto.
