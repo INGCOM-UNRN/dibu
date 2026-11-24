@@ -293,6 +293,10 @@ def validar_kitchen_sink(dibu_bin: Path) -> dict[str, Any]:
         if out.error or not out.svg:
             fallos_paridad_yaml.append(f"{b['id']}: dibu error={out.error}")
             continue
+        # Los tipos propios de dibu (dibu-comp, dibu-math) no existen en alucarD: sólo se exige
+        # que rendericen sin error.
+        if b["type"] not in oracle.TODOS_LOS_TIPOS:
+            continue
         ora = oracle.renderizar_oraculo(b, tinta=True)
         if not ora.ok or not ora.svg:
             fallos_paridad_yaml.append(f"{b['id']}: oráculo error={ora.error}")
@@ -325,6 +329,8 @@ def validar_kitchen_sink(dibu_bin: Path) -> dict[str, Any]:
         if not svg_path.is_file():
             fallos_paridad_md.append(f"Fence {idx}: falta {svg_path}")
             continue
+        if any(bf["type"] not in oracle.TODOS_LOS_TIPOS for bf in bloques_fence):
+            continue  # tipos sin equivalente en alucarD: los cubre `sync-md --verificar`
         ora = oracle.renderizar_bloque_md_oraculo(cuerpo, tinta=True)
         if not ora.ok or not ora.svg:
             fallos_paridad_md.append(f"Fence {idx} ({nombre}): oráculo falló: {ora.error}")
