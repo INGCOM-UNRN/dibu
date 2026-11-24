@@ -1,5 +1,5 @@
 use clap::{Parser, Subcommand};
-use dibu_core::{leer_bloques, nombre_svg, Bloque, Registro};
+use dibu_core::{leer_bloques, nombre_svg, Bloque, ErrorDiagrama, Registro, Theme, PRESETS};
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
@@ -19,6 +19,8 @@ struct Cli {
 enum Cmd {
     /// Lista los tipos de diagramas compilados en este binario.
     ListTypes,
+    /// Lista los presets de theme disponibles.
+    ListThemes,
     /// Renderiza un archivo YAML/JSON con uno o varios bloques a SVG.
     Render {
         archivo: PathBuf,
@@ -26,9 +28,16 @@ enum Cmd {
         output_dir: PathBuf,
         #[arg(long)]
         color: bool,
+        /// Preset de theme (ink, color, high-contrast, dark) o ruta a archivo YAML/JSON.
+        #[arg(long)]
+        theme: Option<String>,
     },
     /// Modo lote por stdin/stdout (JSONL): 1 spawn por examen/documento.
-    Batch,
+    Batch {
+        /// Theme base opcional para la sesión (puede sobreescribirse por ítem en JSONL).
+        #[arg(long)]
+        theme: Option<String>,
+    },
     /// Sincroniza `<dir>/diagramas/estructura-<hash>.svg` a partir de archivos Markdown.
     SyncMd {
         #[arg(required = true)]
@@ -37,6 +46,9 @@ enum Cmd {
         verificar: bool,
         #[arg(long)]
         color: bool,
+        /// Preset de theme (ink, color, high-contrast, dark) o ruta a archivo YAML/JSON.
+        #[arg(long)]
+        theme: Option<String>,
     },
 }
 
@@ -44,12 +56,31 @@ enum Cmd {
 struct BatchReq {
     id: String,
     block: Bloque,
-    #[serde(default = "default_true")]
-    tinta: bool,
+    #[serde(default)]
+    tinta: Option<bool>,
+    #[serde(default)]
+    theme: Option<serde_json::Value>,
 }
 
-fn default_true() -> bool {
-    true
+fn cargar_tema(spec: Option<&str>, color: bool) -> Result<Theme, ErrorDiagrama> {
+    let env_theme = std::env::var("DIBU_THEME").ok();
+    let efectivo = spec
+        .map(str::trim)
+        .filter(|s| !s.is_empty())
+        .or_else(|| env_theme.as_deref().map(str::trim).filter(|s| !s.is_empty()));
+    match efectivo {
+        Some(s) => {
+            let ruta = Path::new(s);
+            if ruta.is_file() {
+                let contenido = fs::read_to_string(ruta)
+                    .map_err(|e| ErrorDiagrama::new(format!("no se pudo leer theme {s}: {e}")))?;
+                Theme::from_yaml_or_json_str(&contenido)
+            } else {
+                Theme::preset(s)
+            }
+        }
+        None => Ok(Theme::para_tinta(!color)),
+    }
 }
 
 fn id_archivo_seguro(id: &str) -> bool {
@@ -112,7 +143,7 @@ fn extraer_cuerpos_markdown(texto: &str) -> Vec<String> {
     cuerpos
 }
 
-fn sincronizar_dir(reg: &Registro, dir: &Path, tinta: bool, escribir: bool) -> (usize, usize) {
+fn sincronizar_dir(reg: &Registro, dir: &Path, tema: &Theme, escribir: bool) -> (usize, usize) {
     let destino = dir.join("diagramas");
     let mut esperados: BTreeMap<String, String> = BTreeMap::new();
     let mut errores = 0usize;
@@ -138,7 +169,7 @@ fn sincronizar_dir(reg: &Registro, dir: &Path, tinta: bool, escribir: bool) -> (
             if esperados.contains_key(&nombre) {
                 continue;
             }
-            match reg.renderizar_bloque_markdown(&cuerpo, tinta) {
+            match reg.renderizar_bloque_markdown_con_tema(&cuerpo, tema) {
                 Ok(svg) => {
                     esperados.insert(nombre, svg);
                 }
@@ -219,11 +250,25 @@ fn main() -> ExitCode {
             }
             ExitCode::SUCCESS
         }
+        Cmd::ListThemes => {
+            for t in PRESETS {
+                println!("{t}");
+            }
+            ExitCode::SUCCESS
+        }
         Cmd::Render {
             archivo,
             output_dir,
             color,
+            theme,
         } => {
+            let tema_base = match cargar_tema(theme.as_deref(), color) {
+                Ok(t) => t,
+                Err(e) => {
+                    eprintln!("Error: {e}");
+                    return ExitCode::from(2);
+                }
+            };
             let texto = match fs::read_to_string(&archivo) {
                 Ok(t) => t,
                 Err(e) => {
@@ -270,7 +315,7 @@ fn main() -> ExitCode {
                     None => format!("{stem}_{n}"),
                 };
                 let destino = output_dir.join(format!("{id}.svg"));
-                match reg.renderizar(bloque, !color) {
+                match reg.renderizar_con_tema(bloque, &tema_base) {
                     Ok(svg) => {
                         if let Err(e) = fs::write(&destino, svg) {
                             eprintln!("Error escribiendo {}: {e}", destino.display());
@@ -288,7 +333,14 @@ fn main() -> ExitCode {
                 ExitCode::FAILURE
             }
         }
-        Cmd::Batch => {
+        Cmd::Batch { theme } => {
+            let tema_sesion = match cargar_tema(theme.as_deref(), false) {
+                Ok(t) => t,
+                Err(e) => {
+                    eprintln!("Error: {e}");
+                    return ExitCode::from(2);
+                }
+            };
             let stdin = io::stdin();
             let mut reader = io::BufReader::new(stdin.lock());
             let stdout = io::stdout();
@@ -311,18 +363,35 @@ fn main() -> ExitCode {
                             continue;
                         }
                         match serde_json::from_str::<BatchReq>(trimmed) {
-                            Ok(req) => match reg.renderizar(&req.block, req.tinta) {
-                                Ok(svg) => BatchResp {
-                                    id: req.id,
-                                    svg: Some(svg),
-                                    error: None,
-                                },
-                                Err(e) => BatchResp {
-                                    id: req.id,
-                                    svg: None,
-                                    error: Some(e.to_string()),
-                                },
-                            },
+                            Ok(req) => {
+                                let tema_res = if let Some(ref tv) = req.theme {
+                                    let base = match req.tinta {
+                                        Some(t) => Theme::para_tinta(t),
+                                        None => tema_sesion.clone(),
+                                    };
+                                    Theme::from_value(tv, &base)
+                                } else if let Some(t) = req.tinta {
+                                    if theme.is_some() && t {
+                                        Ok(tema_sesion.clone())
+                                    } else {
+                                        Ok(Theme::para_tinta(t))
+                                    }
+                                } else {
+                                    Ok(tema_sesion.clone())
+                                };
+                                match tema_res.and_then(|t| reg.renderizar_con_tema(&req.block, &t)) {
+                                    Ok(svg) => BatchResp {
+                                        id: req.id,
+                                        svg: Some(svg),
+                                        error: None,
+                                    },
+                                    Err(e) => BatchResp {
+                                        id: req.id,
+                                        svg: None,
+                                        error: Some(e.to_string()),
+                                    },
+                                }
+                            }
                             Err(e) => BatchResp {
                                 id: String::new(),
                                 svg: None,
@@ -347,7 +416,15 @@ fn main() -> ExitCode {
             rutas,
             verificar,
             color,
+            theme,
         } => {
+            let tema_base = match cargar_tema(theme.as_deref(), color) {
+                Ok(t) => t,
+                Err(e) => {
+                    eprintln!("Error: {e}");
+                    return ExitCode::from(2);
+                }
+            };
             let mut dirs: BTreeSet<PathBuf> = BTreeSet::new();
             let mut errores = 0usize;
             for r in rutas {
@@ -393,7 +470,7 @@ fn main() -> ExitCode {
             }
             let mut cambios = 0usize;
             for d in dirs {
-                let (c, e) = sincronizar_dir(&reg, &d, !color, !verificar);
+                let (c, e) = sincronizar_dir(&reg, &d, &tema_base, !verificar);
                 cambios += c;
                 errores += e;
             }
