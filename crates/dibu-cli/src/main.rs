@@ -80,6 +80,10 @@ fn construir_registro() -> Registro {
     dibu_control::registrar(&mut reg);
     #[cfg(feature = "chem")]
     dibu_chem::registrar(&mut reg);
+    #[cfg(feature = "comp")]
+    dibu_comp::registrar(&mut reg);
+    #[cfg(feature = "math")]
+    dibu_math::registrar(&mut reg);
     reg
 }
 

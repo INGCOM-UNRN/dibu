@@ -9,16 +9,20 @@ name = "dibu"
 path = "src/main.rs"
 
 [features]
-default = ["cs", "control", "chem"]
+default = ["cs", "control", "chem", "comp", "math"]
 cs = ["dep:dibu-cs"]
 control = ["dep:dibu-control"]
 chem = ["dep:dibu-chem"]
+comp = ["dep:dibu-comp"]
+math = ["dep:dibu-math"]
 
 [dependencies]
 dibu-core.workspace = true
 dibu-cs = { workspace = true, optional = true }
 dibu-control = { workspace = true, optional = true }
 dibu-chem = { workspace = true, optional = true }
+dibu-comp = { workspace = true, optional = true }
+dibu-math = { workspace = true, optional = true }
 clap.workspace = true
 regex.workspace = true
 serde.workspace = true
