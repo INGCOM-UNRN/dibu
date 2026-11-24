@@ -2651,7 +2651,7 @@ mod tests {
         assert!(ts.contains(&"[1][2]".to_string()));
         assert!(svg.contains("fila por fila"));
 
-        let gris = PALETA_TINTA.fill_highlight;
+        let gris = PALETA_TINTA.fill_highlight.as_ref();
         let base_svg = render(json!({"type": "matrix", "values": [[1, 2], [3, 4]]}), true);
         assert_eq!(base_svg.matches(gris).count(), 0);
         assert!(!base_svg.contains("0x1000"));
@@ -3191,7 +3191,7 @@ mod tests {
         );
         assert!(flat_log.contains("Vista lógica"));
 
-        let mut lienzo = Lienzo::new(&dibu_core::PALETA_TINTA, String::new());
+        let mut lienzo = Lienzo::new(dibu_core::PALETA_TINTA.clone(), String::new());
         let sub_bloque = json!({"rows": 11})
             .as_object()
             .expect("objeto JSON")

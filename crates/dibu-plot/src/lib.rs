@@ -272,7 +272,9 @@ impl Ejes {
             let lx = cfg.x0 - 38.0;
             let ly = cfg.y0 + cfg.h / 2.0;
             c.add(format!(
-                r#"<text x="{lx:.1}" y="{ly:.1}" text-anchor="middle" font-family="{SANS}" font-size="10" font-weight="600" fill="{}" transform="rotate(-90 {lx:.1} {ly:.1})">{}</text>"#,
+                r#"<text x="{lx:.1}" y="{ly:.1}" text-anchor="middle" font-family="{}" font-size="{}" font-weight="600" fill="{}" transform="rotate(-90 {lx:.1} {ly:.1})">{}</text>"#,
+                c.font_sans(),
+                dibu_core::fmt_num_clean(c.font_size(10.0)),
                 c.pal.text_main,
                 esc(cfg.ylabel)
             ));

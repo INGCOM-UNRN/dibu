@@ -600,7 +600,7 @@ pub fn ancho_panel(titulo: &str, lineas: &[String]) -> f64 {
 }
 
 pub fn sub_lienzo(c: &Lienzo) -> Lienzo {
-    Lienzo::new(c.pal, c.sufijo.clone())
+    c.sub_lienzo()
 }
 
 pub fn agregar_sub_lienzo(c: &mut Lienzo, dx: f64, dy: f64, sub: Lienzo) {
@@ -792,7 +792,7 @@ mod tests {
         // titulo "lista (Lista)" = 13 chars => 13*7 + 8 = 99
         assert!((w - (67.8 + 66.0)).abs() < 1e-6);
 
-        let mut c = Lienzo::new(&PALETA_TINTA, "test".to_string());
+        let mut c = Lienzo::new(PALETA_TINTA.clone(), "test".to_string());
         let centros = cabecera(&mut c, 0.0, 20.0, w, cab_obj, &campos, &vals).unwrap();
         assert_eq!(centros, vec![33.0, 59.0, 85.0]);
         let unido = c.partes.concat();
@@ -831,7 +831,7 @@ mod tests {
             Some(("Pila".to_string(), "Heap".to_string()))
         );
 
-        let mut c = Lienzo::new(&PALETA_TINTA, "test".to_string());
+        let mut c = Lienzo::new(PALETA_TINTA.clone(), "test".to_string());
         zona(&mut c, 0.0, 100.0, 10.0, 80.0, "Pila");
         let svg = c.partes.concat();
         assert!(svg.contains(r#"rx="4""#));
@@ -841,13 +841,13 @@ mod tests {
 
     #[test]
     fn codigo_tabla_panel_utf8() {
-        let mut c = Lienzo::new(&PALETA_TINTA, "test".to_string());
+        let mut c = Lienzo::new(PALETA_TINTA.clone(), "test".to_string());
         codigo(&mut c, 10.0, 20.0, "    x = áé", 10.5, "textMain");
         let esperada_x = 10.0 + 4.0 * 10.5 * 0.602;
         assert!(c.partes[0].contains(&format!(r#"x="{esperada_x:.1}""#)));
         assert!(c.partes[0].contains(">x = áé</text>"));
 
-        let mut ct = Lienzo::new(&PALETA_TINTA, "test".to_string());
+        let mut ct = Lienzo::new(PALETA_TINTA.clone(), "test".to_string());
         let filas = vec![
             vec!["  áéíóú".to_string(), "".to_string()],
             vec!["fin".to_string(), "10".to_string()],
@@ -874,7 +874,7 @@ mod tests {
         let lineas = vec!["  if (x)".to_string(), "".to_string()];
         let pw = ancho_panel("TAD", &lineas);
         assert!((pw - (8.0 * 10.5 * 0.62 + 22.0)).abs() < 1e-6);
-        let mut cp = Lienzo::new(&PALETA_TINTA, "test".to_string());
+        let mut cp = Lienzo::new(PALETA_TINTA.clone(), "test".to_string());
         let ph = panel(&mut cp, 0.0, 0.0, pw, "TAD", &lineas, None);
         assert_eq!(ph, 24.0 + 8.0 + 2.0 * 17.0);
         let ph_fijo = panel(&mut cp, 0.0, 0.0, pw, "TAD", &[], Some(90.0));
@@ -883,7 +883,7 @@ mod tests {
 
     #[test]
     fn sub_lienzo_y_propagacion_ancho_min() {
-        let mut c = Lienzo::new(&PALETA_TINTA, "test".to_string());
+        let mut c = Lienzo::new(PALETA_TINTA.clone(), "test".to_string());
         c.ancho_min = 50.0;
         let mut sub = sub_lienzo(&c);
         sub.ancho_min = 120.0;

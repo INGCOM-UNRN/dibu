@@ -169,7 +169,7 @@ fn render_crystal_field(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagra
     }
 
     let y_cero = py(0.0);
-    let trazo = c.pal.stroke_main;
+    let trazo = c.pal.stroke_main.clone();
     for k in 0..5 {
         c.add(format!(
             r#"<rect x="{:.1}" y="{:.1}" width="{lado:.1}" height="{lado:.1}" fill="{}" stroke="{trazo}" stroke-width="1.2"/>"#,
@@ -425,7 +425,7 @@ fn render_complex(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
     let cx = 120.0_f64;
     let cy = top + 96.0;
     let largo = 60.0_f64;
-    let trazo = c.pal.stroke_main;
+    let trazo = c.pal.stroke_main.clone();
 
     for (&(ang_g, tipo), etiqueta) in sitios.iter().zip(ligandos.iter()) {
         let ang = ang_g.to_radians();
@@ -809,9 +809,9 @@ fn render_frost(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
         let x = ejes.px(ox);
         let y = ejes.py(ne);
         let relleno = if des.contains(&k) {
-            c.pal.fill_cell
+            c.pal.fill_cell.clone()
         } else {
-            c.pal.stroke_main
+            c.pal.stroke_main.clone()
         };
         c.add(format!(
             r#"<circle cx="{x:.1}" cy="{y:.1}" r="4" fill="{relleno}" stroke="{}" stroke-width="1.5"/>"#,
@@ -964,8 +964,8 @@ fn render_born_haber(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama>
 
     let x_inicio = 40.0_f64;
     let paso_x = 112.0_f64;
-    let trazo = c.pal.stroke_main;
-    let acento = c.pal.accent_primary;
+    let trazo = c.pal.stroke_main.clone();
+    let acento = c.pal.accent_primary.clone();
 
     nivel_bh(
         c,

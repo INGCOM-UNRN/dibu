@@ -57,8 +57,9 @@ impl BloqueNodo {
 
 fn sumador(c: &mut Lienzo, x: f64, y: f64, signos: &[(&str, &str)], blanco: bool) {
     c.add(format!(
-        r##"<circle cx="{x:.1}" cy="{y:.1}" r="{}" fill="#ffffff" stroke="{}" stroke-width="1.6"/>"##,
+        r#"<circle cx="{x:.1}" cy="{y:.1}" r="{}" fill="{}" stroke="{}" stroke-width="1.6"/>"#,
         dibu_core::fmt_num_clean(RADIO),
+        c.pal.background,
         c.pal.stroke_main
     ));
     for &(lado, signo) in signos {

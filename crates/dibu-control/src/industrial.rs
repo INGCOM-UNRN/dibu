@@ -77,6 +77,7 @@ fn dibujar_equipo(c: &mut Lienzo, e: &Bloque, g: f64, donde: &str) -> Result<Pie
     }
     let (x, y) = par_coords(&e["at"], g, &format!("{donde}.at"))?;
     let etiqueta = str_opt(e, "label").unwrap_or("");
+    let bg = c.pal.background.clone();
     let trazo = format!(r#"stroke="{}" stroke-width="1.8""#, c.pal.stroke_main);
     match tipo {
         "tank" | "vessel" | "reactor" | "column" => {
@@ -97,7 +98,7 @@ fn dibujar_equipo(c: &mut Lienzo, e: &Bloque, g: f64, donde: &str) -> Result<Pie
             }
             if tipo == "tank" {
                 c.add(format!(
-                    r##"<path d="M {:.1} {:.1} L {:.1} {:.1} L {:.1} {:.1} L {:.1} {:.1}" fill="#ffffff" {trazo}/>"##,
+                    r##"<path d="M {:.1} {:.1} L {:.1} {:.1} L {:.1} {:.1} L {:.1} {:.1}" fill="{bg}" {trazo}/>"##,
                     x - w / 2.0, y - h / 2.0,
                     x - w / 2.0, y + h / 2.0,
                     x + w / 2.0, y + h / 2.0,
@@ -121,7 +122,7 @@ fn dibujar_equipo(c: &mut Lienzo, e: &Bloque, g: f64, donde: &str) -> Result<Pie
             } else {
                 let radio = (w / 2.0).min(h / 4.0);
                 c.add(format!(
-                    r##"<rect x="{:.1}" y="{:.1}" width="{w:.1}" height="{h:.1}" rx="{:.1}" ry="{radio:.1}" fill="#ffffff" {trazo}/>"##,
+                    r##"<rect x="{:.1}" y="{:.1}" width="{w:.1}" height="{h:.1}" rx="{:.1}" ry="{radio:.1}" fill="{bg}" {trazo}/>"##,
                     x - w / 2.0,
                     y - h / 2.0,
                     w / 2.0
@@ -144,7 +145,7 @@ fn dibujar_equipo(c: &mut Lienzo, e: &Bloque, g: f64, donde: &str) -> Result<Pie
                 if tipo == "reactor" {
                     let tope = y - h / 2.0;
                     c.add(format!(
-                        r##"<circle cx="{x:.1}" cy="{:.1}" r="10" fill="#ffffff" {trazo}/>"##,
+                        r##"<circle cx="{x:.1}" cy="{:.1}" r="10" fill="{bg}" {trazo}/>"##,
                         tope - 16.0
                     ));
                     c.t(x, tope - 12.0, "M", 10.0, 700, "textMain", "middle", MONO);
@@ -179,7 +180,7 @@ fn dibujar_equipo(c: &mut Lienzo, e: &Bloque, g: f64, donde: &str) -> Result<Pie
                 x + r * 0.8, y + r * 1.25, x + r * 0.45, y + r * 0.7,
                 x - r, y + r * 1.25, x + r, y + r * 1.25
             ));
-            c.add(format!(r##"<circle cx="{x:.1}" cy="{y:.1}" r="{r:.1}" fill="#ffffff" {trazo}/>"##));
+            c.add(format!(r##"<circle cx="{x:.1}" cy="{y:.1}" r="{r:.1}" fill="{bg}" {trazo}/>"##));
             c.linea(x, y - r, x + r * 1.3, y - r, "strokeMain", 1.8, None, "");
             if !etiqueta.is_empty() {
                 c.t(x, y + r * 1.25 + 14.0, etiqueta, 10.0, 700, "textMain", "middle", MONO);
@@ -199,12 +200,12 @@ fn dibujar_equipo(c: &mut Lienzo, e: &Bloque, g: f64, donde: &str) -> Result<Pie
             let vertical = str_opt(e, "orientation") == Some("v");
             if vertical {
                 c.add(format!(
-                    r##"<path d="M {:.1} {:.1} L {:.1} {:.1} L {:.1} {:.1} L {:.1} {:.1} Z" fill="#ffffff" {trazo}/>"##,
+                    r##"<path d="M {:.1} {:.1} L {:.1} {:.1} L {:.1} {:.1} L {:.1} {:.1} Z" fill="{bg}" {trazo}/>"##,
                     x - a * 0.6, y - a, x + a * 0.6, y - a, x - a * 0.6, y + a, x + a * 0.6, y + a
                 ));
             } else {
                 c.add(format!(
-                    r##"<path d="M {:.1} {:.1} L {:.1} {:.1} L {:.1} {:.1} L {:.1} {:.1} Z" fill="#ffffff" {trazo}/>"##,
+                    r##"<path d="M {:.1} {:.1} L {:.1} {:.1} L {:.1} {:.1} L {:.1} {:.1} Z" fill="{bg}" {trazo}/>"##,
                     x - a, y - a * 0.6, x - a, y + a * 0.6, x + a, y - a * 0.6, x + a, y + a * 0.6
                 ));
             }
@@ -214,14 +215,14 @@ fn dibujar_equipo(c: &mut Lienzo, e: &Bloque, g: f64, donde: &str) -> Result<Pie
                 if vertical {
                     c.linea(x, y, x + a * 1.6, y, "strokeMain", 1.5, None, "");
                     c.add(format!(
-                        r##"<path d="M {:.1} {:.1} A {:.1} {:.1} 0 0 1 {:.1} {:.1} Z" fill="#ffffff" {trazo}/>"##,
+                        r##"<path d="M {:.1} {:.1} A {:.1} {:.1} 0 0 1 {:.1} {:.1} Z" fill="{bg}" {trazo}/>"##,
                         x + a * 1.6, y - a * 0.8, a * 0.6, a * 0.8, x + a * 1.6, y + a * 0.8
                     ));
                     actuador = (x + a * 2.2, y);
                 } else {
                     c.linea(x, y, x, y - a * 1.6, "strokeMain", 1.5, None, "");
                     c.add(format!(
-                        r##"<path d="M {:.1} {:.1} A {:.1} {:.1} 0 0 1 {:.1} {:.1} Z" fill="#ffffff" {trazo}/>"##,
+                        r##"<path d="M {:.1} {:.1} A {:.1} {:.1} 0 0 1 {:.1} {:.1} Z" fill="{bg}" {trazo}/>"##,
                         x - a * 0.8, y - a * 1.6, a * 0.8, a * 0.6, x + a * 0.8, y - a * 1.6
                     ));
                     tope = y - a * 2.2;
@@ -249,7 +250,7 @@ fn dibujar_equipo(c: &mut Lienzo, e: &Bloque, g: f64, donde: &str) -> Result<Pie
         _ => {
             // heat_exchanger
             let r = 0.45 * g;
-            c.add(format!(r##"<circle cx="{x:.1}" cy="{y:.1}" r="{r:.1}" fill="#ffffff" {trazo}/>"##));
+            c.add(format!(r##"<circle cx="{x:.1}" cy="{y:.1}" r="{r:.1}" fill="{bg}" {trazo}/>"##));
             c.add(format!(
                 r#"<path d="M {:.1} {y:.1} L {:.1} {y:.1} L {:.1} {:.1} L {:.1} {:.1} L {:.1} {y:.1} L {:.1} {y:.1}" fill="none" {trazo}/>"#,
                 x - r, x - r * 0.5, x - r * 0.25, y - r * 0.45, x + r * 0.25, y + r * 0.45, x + r * 0.5, x + r
@@ -280,20 +281,21 @@ fn dibujar_instrumento(c: &mut Lienzo, e: &Bloque, g: f64, donde: &str) -> Resul
     }
     let (x, y) = par_coords(&e["at"], g, &format!("{donde}.at"))?;
     let r = 0.4 * g;
+    let bg = c.pal.background.clone();
     let trazo = format!(r#"stroke="{}" stroke-width="1.5""#, c.pal.stroke_main);
     if matches!(ubicacion, "dcs" | "plc") {
         c.add(format!(
-            r##"<rect x="{:.1}" y="{:.1}" width="{:.1}" height="{:.1}" fill="#ffffff" {trazo}/>"##,
+            r##"<rect x="{:.1}" y="{:.1}" width="{:.1}" height="{:.1}" fill="{bg}" {trazo}/>"##,
             x - r, y - r, 2.0 * r, 2.0 * r
         ));
     }
     if ubicacion == "plc" {
         c.add(format!(
-            r##"<path d="M {x:.1} {:.1} L {:.1} {y:.1} L {x:.1} {:.1} L {:.1} {y:.1} Z" fill="#ffffff" {trazo}/>"##,
+            r##"<path d="M {x:.1} {:.1} L {:.1} {y:.1} L {x:.1} {:.1} L {:.1} {y:.1} Z" fill="{bg}" {trazo}/>"##,
             y - r, x + r, y + r, x - r
         ));
     } else {
-        c.add(format!(r##"<circle cx="{x:.1}" cy="{y:.1}" r="{r:.1}" fill="#ffffff" {trazo}/>"##));
+        c.add(format!(r##"<circle cx="{x:.1}" cy="{y:.1}" r="{r:.1}" fill="{bg}" {trazo}/>"##));
     }
     if matches!(ubicacion, "panel" | "dcs") {
         c.linea(x - r, y, x + r, y, "strokeMain", 1.2, None, "");
@@ -355,7 +357,8 @@ fn marcas_linea(c: &mut Lienzo, puntos: &[Punto], tipo: &str) {
                 }
                 "data" => {
                     c.add(format!(
-                        r##"<circle cx="{px:.1}" cy="{py:.1}" r="2.6" fill="#ffffff" stroke="{}" stroke-width="1"/>"##,
+                        r#"<circle cx="{px:.1}" cy="{py:.1}" r="2.6" fill="{}" stroke="{}" stroke-width="1"/>"#,
+                        c.pal.background,
                         c.pal.stroke_main
                     ));
                 }
@@ -388,7 +391,7 @@ pub fn render_instrumentation(c: &mut Lienzo, b: &Bloque) -> Result<Punto, Error
     if equipos.is_empty() && instrumentos.is_empty() {
         return Err(ErrorDiagrama::new("instrumentation: falta equipment o instruments"));
     }
-    let mut medidas = Lienzo::new(c.pal, c.sufijo.clone());
+    let mut medidas = c.sub_lienzo();
     let mut piezas: HashMap<String, Pieza> = HashMap::new();
     for (i, e) in equipos.iter().enumerate() {
         let Some(obj) = e.as_object() else {
@@ -522,8 +525,10 @@ pub fn render_instrumentation(c: &mut Lienzo, b: &Bloque) -> Result<Punto, Error
                 ((x1 + x2) / 2.0, (y1 + y2) / 2.0 - 6.0)
             };
             c.add(format!(
-                r#"<text x="{lx:.1}" y="{ly:.1}" text-anchor="{}" font-family="{SANS}" font-size="10" fill="{}">{}</text>"#,
+                r#"<text x="{lx:.1}" y="{ly:.1}" text-anchor="{}" font-family="{}" font-size="{}" fill="{}">{}</text>"#,
                 if vertical { "start" } else { "middle" },
+                c.font_sans(),
+                dibu_core::fmt_num_clean(c.font_size(10.0)),
                 c.pal.text_sub,
                 esc(lbl)
             ));

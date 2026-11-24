@@ -6,6 +6,12 @@ use std::collections::BTreeMap;
 use std::fmt::Write as _;
 use thiserror::Error;
 
+pub mod theme;
+pub use theme::{
+    Paleta, Theme, Tipografia, PALETA_COLOR, PALETA_DARK, PALETA_HIGH_CONTRAST, PALETA_TINTA,
+    PRESETS,
+};
+
 pub const MONO: &str = "DejaVu Sans Mono, Menlo, Consolas, Courier New, monospace";
 pub const SANS: &str = "DejaVu Sans, Inter, Segoe UI, Roboto, Helvetica, Arial, sans-serif";
 pub const MAX_SVG_DIM: f64 = 1_000_000.0;
@@ -22,80 +28,6 @@ pub struct ErrorDiagrama(pub String);
 impl ErrorDiagrama {
     pub fn new(msg: impl Into<String>) -> Self {
         Self(msg.into())
-    }
-}
-
-#[derive(Debug, Clone, Copy)]
-pub struct Paleta {
-    pub stroke_main: &'static str,
-    pub stroke_sub: &'static str,
-    pub stroke_muted: &'static str,
-    pub fill_header: &'static str,
-    pub fill_cell: &'static str,
-    pub fill_pointer_box: &'static str,
-    pub fill_badge: &'static str,
-    pub accent_primary: &'static str,
-    pub text_main: &'static str,
-    pub text_sub: &'static str,
-    pub text_muted: &'static str,
-    pub fill_highlight: &'static str,
-}
-
-pub const PALETA_TINTA: Paleta = Paleta {
-    stroke_main: "#000000",
-    stroke_sub: "#334155",
-    stroke_muted: "#64748b",
-    fill_header: "#f8fafc",
-    fill_cell: "#ffffff",
-    fill_pointer_box: "#f1f5f9",
-    fill_badge: "#ffffff",
-    accent_primary: "#000000",
-    text_main: "#000000",
-    text_sub: "#334155",
-    text_muted: "#475569",
-    fill_highlight: "#e2e8f0",
-};
-
-pub const PALETA_COLOR: Paleta = Paleta {
-    stroke_main: "#0f172a",
-    stroke_sub: "#1e40af",
-    stroke_muted: "#64748b",
-    fill_header: "#eff6ff",
-    fill_cell: "#ffffff",
-    fill_pointer_box: "#e0f2fe",
-    fill_badge: "#dbeafe",
-    accent_primary: "#1d4ed8",
-    text_main: "#0f172a",
-    text_sub: "#1e3a8a",
-    text_muted: "#475569",
-    fill_highlight: "#fef3c7",
-};
-
-impl Paleta {
-    pub fn para(tinta: bool) -> &'static Self {
-        if tinta {
-            &PALETA_TINTA
-        } else {
-            &PALETA_COLOR
-        }
-    }
-
-    pub fn color(&self, clave: &str) -> &'static str {
-        match clave {
-            "strokeMain" => self.stroke_main,
-            "strokeSub" => self.stroke_sub,
-            "strokeMuted" => self.stroke_muted,
-            "fillHeader" => self.fill_header,
-            "fillCell" => self.fill_cell,
-            "fillPointerBox" => self.fill_pointer_box,
-            "fillBadge" => self.fill_badge,
-            "accentPrimary" => self.accent_primary,
-            "textMain" => self.text_main,
-            "textSub" => self.text_sub,
-            "textMuted" => self.text_muted,
-            "fillHighlight" => self.fill_highlight,
-            _ => self.stroke_main,
-        }
     }
 }
 
@@ -164,20 +96,70 @@ pub fn str_opt<'a>(b: &'a Bloque, clave: &str) -> Option<&'a str> {
 }
 
 pub struct Lienzo {
-    pub pal: &'static Paleta,
+    pub pal: Paleta,
+    pub typography: Tipografia,
     pub sufijo: String,
     pub partes: Vec<String>,
     pub ancho_min: f64,
 }
 
 impl Lienzo {
-    pub fn new(pal: &'static Paleta, sufijo: String) -> Self {
+    pub fn new(pal: Paleta, sufijo: String) -> Self {
         Self {
             pal,
+            typography: Tipografia::default(),
             sufijo,
             partes: Vec::with_capacity(64),
             ancho_min: 0.0,
         }
+    }
+
+    pub fn con_tema(tema: &Theme, sufijo: String) -> Self {
+        Self {
+            pal: tema.colors.clone(),
+            typography: tema.typography.clone(),
+            sufijo,
+            partes: Vec::with_capacity(64),
+            ancho_min: 0.0,
+        }
+    }
+
+    pub fn sub_lienzo(&self) -> Self {
+        Self {
+            pal: self.pal.clone(),
+            typography: self.typography.clone(),
+            sufijo: self.sufijo.clone(),
+            partes: Vec::with_capacity(32),
+            ancho_min: 0.0,
+        }
+    }
+
+    pub fn font_sans(&self) -> &str {
+        &self.typography.sans
+    }
+
+    pub fn font_mono(&self) -> &str {
+        &self.typography.mono
+    }
+
+    pub fn resolver_fuente<'a>(&'a self, fuente: &'a str) -> &'a str {
+        if fuente == MONO {
+            &self.typography.mono
+        } else if fuente == SANS {
+            &self.typography.sans
+        } else {
+            fuente
+        }
+    }
+
+    pub fn font_size(&self, size: f64) -> f64 {
+        size * self.typography.scale
+    }
+
+    pub fn ancho_texto(&self, texto: &str, size: f64) -> f64 {
+        texto.chars().count() as f64
+            * (size * self.typography.scale)
+            * self.typography.char_width_factor
     }
 
     pub fn add(&mut self, pieza: impl Into<String>) {
@@ -196,10 +178,12 @@ impl Lienzo {
         ancla: &str,
         fuente: &str,
     ) {
+        let fam = self.resolver_fuente(fuente).to_string();
+        let sz = self.font_size(size);
+        let fill = self.pal.color(color).to_string();
         self.add(format!(
-            r#"<text x="{x:.1}" y="{y:.1}" text-anchor="{ancla}" font-family="{fuente}" font-size="{}" font-weight="{peso}" fill="{}">{}</text>"#,
-            fmt_num_clean(size),
-            self.pal.color(color),
+            r#"<text x="{x:.1}" y="{y:.1}" text-anchor="{ancla}" font-family="{fam}" font-size="{}" font-weight="{peso}" fill="{fill}">{}</text>"#,
+            fmt_num_clean(sz),
             esc(texto)
         ));
     }
@@ -366,6 +350,14 @@ impl Registro {
     }
 
     pub fn renderizar(&self, bloque: &Bloque, tinta: bool) -> Result<String, ErrorDiagrama> {
+        self.renderizar_con_tema(bloque, &Theme::para_tinta(tinta))
+    }
+
+    pub fn renderizar_con_tema(
+        &self,
+        bloque: &Bloque,
+        tema_base: &Theme,
+    ) -> Result<String, ErrorDiagrama> {
         let tipo = bloque
             .get("type")
             .and_then(Value::as_str)
@@ -376,11 +368,25 @@ impl Registro {
                 self.tipos().join(", ")
             ))
         })?;
-        let usar_tinta = bloque.get("inkSaver").and_then(Value::as_bool).unwrap_or(tinta);
-        let pal = Paleta::para(usar_tinta);
+        let tema = if let Some(val) = bloque.get("theme") {
+            Theme::from_value(val, tema_base)?
+        } else if let Some(ink_saver) = bloque.get("inkSaver").and_then(Value::as_bool) {
+            let mut t = Theme::para_tinta(ink_saver);
+            t.typography = tema_base.typography.clone();
+            t
+        } else {
+            tema_base.clone()
+        };
         let canon = serde_json::to_string(bloque).unwrap_or_default();
-        let sufijo = sha1_hex(canon.as_bytes())[..8].to_string();
-        let mut lienzo = Lienzo::new(pal, sufijo.clone());
+        let sufijo = if tema.es_default_clasico() {
+            sha1_hex(canon.as_bytes())[..8].to_string()
+        } else {
+            let mut entrada = canon;
+            entrada.push('|');
+            entrada.push_str(&tema.huella());
+            sha1_hex(entrada.as_bytes())[..8].to_string()
+        };
+        let mut lienzo = Lienzo::con_tema(&tema, sufijo.clone());
         let (ancho_raw, alto) = render_fn(&mut lienzo, bloque)?;
         if !ancho_raw.is_finite() || !alto.is_finite() || ancho_raw < 0.0 || alto < 0.0 {
             return Err(ErrorDiagrama::new(format!(
@@ -417,13 +423,14 @@ impl Registro {
             .unwrap_or(tipo);
         let defs = format!(
             r#"<defs><marker id="flecha-main-{sufijo}" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="{}"/></marker><marker id="flecha-sub-{sufijo}" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="{}"/></marker></defs>"#,
-            pal.accent_primary, pal.stroke_sub
+            tema.colors.accent_primary, tema.colors.stroke_sub
         );
         let mut svg = String::with_capacity(512 + lienzo.partes.len() * 80);
         let _ = write!(
             &mut svg,
-            r##"<svg xmlns="http://www.w3.org/2000/svg" class="estructura" width="{w}" height="{h}" viewBox="{neg_m} {neg_m} {w} {h}" role="img" aria-label="{}">{defs}<rect x="{neg_m}" y="{neg_m}" width="{w}" height="{h}" fill="#ffffff"/>"##,
+            r#"<svg xmlns="http://www.w3.org/2000/svg" class="estructura" width="{w}" height="{h}" viewBox="{neg_m} {neg_m} {w} {h}" role="img" aria-label="{}">{defs}<rect x="{neg_m}" y="{neg_m}" width="{w}" height="{h}" fill="{}"/>"#,
             esc(aria),
+            tema.colors.background,
             neg_m = -mi
         );
         for p in &lienzo.partes {
@@ -434,10 +441,18 @@ impl Registro {
     }
 
     pub fn renderizar_bloque_markdown(&self, cuerpo: &str, tinta: bool) -> Result<String, ErrorDiagrama> {
+        self.renderizar_bloque_markdown_con_tema(cuerpo, &Theme::para_tinta(tinta))
+    }
+
+    pub fn renderizar_bloque_markdown_con_tema(
+        &self,
+        cuerpo: &str,
+        tema_base: &Theme,
+    ) -> Result<String, ErrorDiagrama> {
         let bloques = leer_bloques(cuerpo)?;
         let mut svgs = Vec::with_capacity(bloques.len());
         for b in &bloques {
-            svgs.push(self.renderizar(b, tinta)?);
+            svgs.push(self.renderizar_con_tema(b, tema_base)?);
         }
         apilar_svgs(&svgs)
     }

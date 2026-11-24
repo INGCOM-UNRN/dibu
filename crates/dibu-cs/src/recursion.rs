@@ -444,10 +444,11 @@ fn pila_llamadas(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
                 c.r(x0, y, marco_w, h, "fillCell", borde, 4.0);
             }
             let cab_fill = if es_activo {
-                c.pal.fill_highlight
+                c.pal.fill_highlight.as_ref()
             } else {
-                c.pal.fill_header
-            };
+                c.pal.fill_header.as_ref()
+            }
+            .to_string();
             c.add(format!(
                 r#"<rect x="{:.1}" y="{:.1}" width="{:.1}" height="{}" rx="3" fill="{cab_fill}"/>"#,
                 x0 + 1.0,

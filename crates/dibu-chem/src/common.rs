@@ -180,9 +180,11 @@ pub fn tq(
             r#"<tspan{dx} dy="{dy:.1}" font-size="{tamano:.1}">{contenido}</tspan>"#
         );
     }
+    let fam = c.resolver_fuente(fuente).to_string();
+    let sz = c.font_size(size);
     c.add(format!(
-        r#"<text x="{x:.1}" y="{y:.1}" text-anchor="{ancla}" font-family="{fuente}" font-size="{}" font-weight="{peso}" fill="{}">{piezas}</text>"#,
-        fmt_num_clean(size),
+        r#"<text x="{x:.1}" y="{y:.1}" text-anchor="{ancla}" font-family="{fam}" font-size="{}" font-weight="{peso}" fill="{}">{piezas}</text>"#,
+        fmt_num_clean(sz),
         c.pal.color(color)
     ));
     ancho
@@ -304,7 +306,7 @@ pub fn leyenda_q(c: &mut Lienzo, x: f64, y: f64, etiquetas: &[String]) -> f64 {
 }
 
 pub fn flechita(c: &mut Lienzo, x: f64, y: f64, arriba: bool, alto: f64) {
-    let trazo = c.pal.stroke_main;
+    let trazo = c.pal.stroke_main.clone();
     let (y1, y2) = if arriba {
         (y + alto / 2.0, y - alto / 2.0)
     } else {

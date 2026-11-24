@@ -1203,7 +1203,7 @@ fn render_phase_diagram(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagra
     }
 
     let ejes_log = if esquematico {
-        let trazo = c.pal.stroke_main;
+        let trazo = c.pal.stroke_main.clone();
         c.add(format!(
             r#"<line x1="{x0:.1}" y1="{:.1}" x2="{x0:.1}" y2="{:.1}" stroke="{trazo}" stroke-width="1.3" marker-end="url(#flecha-sub-{})"/><line x1="{x0:.1}" y1="{:.1}" x2="{:.1}" y2="{:.1}" stroke="{trazo}" stroke-width="1.3" marker-end="url(#flecha-sub-{})"/>"#,
             y0 + h,

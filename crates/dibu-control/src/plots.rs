@@ -792,8 +792,9 @@ fn dibujar_x(c: &mut Lienzo, x: f64, y: f64, r: f64) {
 
 fn dibujar_o(c: &mut Lienzo, x: f64, y: f64, r: f64) {
     c.add(format!(
-        r##"<circle cx="{x:.1}" cy="{y:.1}" r="{}" fill="#ffffff" stroke="{}" stroke-width="2"/>"##,
+        r#"<circle cx="{x:.1}" cy="{y:.1}" r="{}" fill="{}" stroke="{}" stroke-width="2"/>"#,
         dibu_core::fmt_num_clean(r),
+        c.pal.background,
         c.pal.stroke_main
     ));
 }

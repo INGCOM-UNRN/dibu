@@ -632,8 +632,8 @@ fn dibujar_molecula(c: &mut Lienzo, b: &Bloque, donde: &str) -> Result<Punto, Er
             "{donde}: coordenadas escaladas fuera de rango"
         )));
     }
-    let mut sub = Lienzo::new(c.pal, c.sufijo.clone());
-    let trazo = c.pal.stroke_main;
+    let mut sub = c.sub_lienzo();
+    let trazo = c.pal.stroke_main.clone();
 
     let mut centros_anillo: HashMap<(usize, usize), Punto> = HashMap::new();
     for an in &m.anillos {
@@ -1002,7 +1002,7 @@ fn dibujar_molecula(c: &mut Lienzo, b: &Bloque, donde: &str) -> Result<Punto, Er
                 )));
             }
             puntos_extra.push((kx, ky));
-            let acento = c.pal.accent_primary;
+            let acento = c.pal.accent_primary.clone();
             if booleano(f_map, "half", false) {
                 let (mut tx, mut ty) = (ex - kx, ey - ky);
                 let nt = {
@@ -1075,7 +1075,7 @@ fn dibujar_molecula(c: &mut Lienzo, b: &Bloque, donde: &str) -> Result<Punto, Er
 
 fn render_molecule(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
     let top = encabezado_q(c, b);
-    let mut sub = Lienzo::new(c.pal, c.sufijo.clone());
+    let mut sub = c.sub_lienzo();
     let (w, h) = dibujar_molecula(&mut sub, b, "molecule")?;
     let mut alto = top + h;
     let cap = opt_texto(b, "caption");
@@ -1122,7 +1122,7 @@ fn pieza_reaccion(
     dato: &Value,
     i: usize,
 ) -> Result<(Lienzo, f64, f64), ErrorDiagrama> {
-    let mut sub = Lienzo::new(c.pal, c.sufijo.clone());
+    let mut sub = c.sub_lienzo();
     let texto_opt = match dato {
         Value::Number(n) => Some(n.to_string()),
         Value::String(s) => Some(s.clone()),
@@ -1164,7 +1164,7 @@ fn pieza_reaccion(
         let largo = 64.0_f64
             .max(ancho_formula(arriba.as_deref().unwrap_or(""), 10.0) + 16.0)
             .max(ancho_formula(abajo.as_deref().unwrap_or(""), 10.0) + 16.0);
-        let (trazo, acento) = (c.pal.stroke_main, c.pal.accent_primary);
+        let (trazo, acento) = (c.pal.stroke_main.clone(), c.pal.accent_primary.clone());
         match tipo {
             "forward" => {
                 sub.add(format!(
@@ -1268,7 +1268,7 @@ fn pieza_reaccion(
         );
         return Ok((sub, w, 0.0));
     }
-    let mut interior = Lienzo::new(c.pal, c.sufijo.clone());
+    let mut interior = c.sub_lienzo();
     let (w, h) = dibujar_molecula(&mut interior, map, &format!("reaction.steps[{i}]"))?;
     incrustar(&mut sub, &interior, 0.0, -h / 2.0);
     Ok((sub, w, h))
@@ -1412,7 +1412,7 @@ fn render_vsepr(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
     let top = encabezado_q(c, b);
     let largo = 56.0_f64;
     let (cx, cy) = (130.0_f64, top + 84.0);
-    let trazo = c.pal.stroke_main;
+    let trazo = c.pal.stroke_main.clone();
     let central = b
         .get("central")
         .filter(|v| !v.is_null())
@@ -1899,9 +1899,11 @@ fn orbitales_moleculares(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagr
         c.sufijo
     ));
     c.add(format!(
-        r#"<text x="{:.1}" y="{:.1}" text-anchor="middle" font-family="{SANS}" font-size="10" fill="{}" transform="rotate(-90 {:.1} {:.1})">Energía</text>"#,
+        r#"<text x="{:.1}" y="{:.1}" text-anchor="middle" font-family="{}" font-size="{}" fill="{}" transform="rotate(-90 {:.1} {:.1})">Energía</text>"#,
         xa - 24.0,
         (base + top) / 2.0,
+        c.font_sans(),
+        fmt_num_clean(c.font_size(10.0)),
         c.pal.text_sub,
         xa - 24.0,
         (base + top) / 2.0
@@ -2033,7 +2035,7 @@ fn render_energy_profile(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagr
     }
     let py = |v: f64| -> f64 { y0 + h - (v - lo + margen) / span * h };
 
-    let trazo = c.pal.stroke_main;
+    let trazo = c.pal.stroke_main.clone();
     c.add(format!(
         r#"<line x1="{x0:.1}" y1="{:.1}" x2="{x0:.1}" y2="{:.1}" stroke="{trazo}" stroke-width="1.3" marker-end="url(#flecha-sub-{})"/><line x1="{x0:.1}" y1="{:.1}" x2="{:.1}" y2="{:.1}" stroke="{trazo}" stroke-width="1.3" marker-end="url(#flecha-sub-{})"/>"#,
         y0 + h,
@@ -2052,9 +2054,11 @@ fn render_energy_profile(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagr
     let y_label = opt_texto(b, "yLabel").unwrap_or_else(|| format!("Energía ({unidad})"));
     let x_label = opt_texto(b, "xLabel").unwrap_or_else(|| "Coordenada de reacción".to_string());
     c.add(format!(
-        r#"<text x="{:.1}" y="{:.1}" text-anchor="middle" font-family="{SANS}" font-size="10" font-weight="600" fill="{}" transform="rotate(-90 {:.1} {:.1})">{}</text>"#,
+        r#"<text x="{:.1}" y="{:.1}" text-anchor="middle" font-family="{}" font-size="{}" font-weight="600" fill="{}" transform="rotate(-90 {:.1} {:.1})">{}</text>"#,
         x0 - 14.0,
         y0 + h / 2.0,
+        c.font_sans(),
+        fmt_num_clean(c.font_size(10.0)),
         c.pal.text_main,
         x0 - 14.0,
         y0 + h / 2.0,
@@ -2351,7 +2355,7 @@ fn render_galvanic_cell(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagra
         ));
     }
     let top = encabezado_q(c, b);
-    let trazo = c.pal.stroke_main;
+    let trazo = c.pal.stroke_main.clone();
     let (y_cable, y_boca, y_fondo, y_liq) = (top + 34.0, top + 110.0, top + 240.0, top + 140.0);
     let vasos = [(50.0_f64, 200.0_f64, &p.anodo), (350.0_f64, 500.0_f64, &p.catodo)];
     for &(xa, xb, _) in &vasos {
@@ -2723,9 +2727,9 @@ fn render_unit_cell(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> 
     for &(sx, sy, sz, especie) in &sitios {
         let (px, py) = proy(sx, sy, sz);
         let relleno = if especie == "A" {
-            c.pal.fill_highlight
+            c.pal.fill_highlight.clone()
         } else {
-            c.pal.stroke_sub
+            c.pal.stroke_sub.clone()
         };
         let r = if especie == "A" { r_a } else { r_b };
         let opacidad = if sz == 1.0 && (sx, sy) != (1.0, 1.0) {

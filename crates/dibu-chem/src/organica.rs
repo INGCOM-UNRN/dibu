@@ -67,7 +67,7 @@ fn render_newman(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
     let cy = top + 110.0;
     let r = 30.0_f64;
     let largo = 70.0_f64;
-    let trazo = c.pal.stroke_main;
+    let trazo = c.pal.stroke_main.clone();
 
     let rem = diedro.rem_euclid(120.0);
     let correccion = if rem < 1e-9 || (120.0 - rem) < 1e-9 {
@@ -201,7 +201,7 @@ fn dibujar_silla(
     sustituyentes: &[SustituyenteSilla],
     invertida: bool,
 ) {
-    let trazo = c.pal.stroke_main;
+    let trazo = c.pal.stroke_main.clone();
     let tres_d: Vec<(f64, f64, f64)> = (1..=6).map(|i| carbono_silla(i, invertida)).collect();
     let puntos: Vec<Punto> = tres_d
         .iter()
@@ -330,7 +330,7 @@ fn render_chair(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
 
     let flip = booleano(b, "flip", false);
     if flip {
-        let acento = c.pal.accent_primary;
+        let acento = c.pal.accent_primary.clone();
         c.add(format!(
             r#"<path d="M 236 {:.1} L 276 {:.1} L 269 {:.1}" fill="none" stroke="{acento}" stroke-width="1.5"/><path d="M 276 {:.1} L 236 {:.1} L 243 {:.1}" fill="none" stroke="{acento}" stroke-width="1.5"/>"#,
             top - 3.0,
@@ -411,7 +411,7 @@ fn render_fischer(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
     let cx = 120.0_f64;
     let paso = 52.0_f64;
     let brazo = 46.0_f64;
-    let trazo = c.pal.stroke_main;
+    let trazo = c.pal.stroke_main.clone();
 
     let mut y = top + 14.0;
     tq(
