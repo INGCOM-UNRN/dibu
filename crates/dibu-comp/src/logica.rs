@@ -455,7 +455,7 @@ fn escribir_en(e: &Expr, vars: &[String], n: Notacion, out: &mut Escrito) -> usi
 
 /// Ancho de carácter de la fuente monoespaciada (DejaVu Sans Mono ≈ 0,602 em).
 pub fn ancho_car(size: f64) -> f64 {
-    size * 0.602
+    dibu_core::avance_mono(1.0, size)
 }
 
 /// Dibuja un `Escrito` con sus barras superiores. Devuelve el ancho.
@@ -479,7 +479,8 @@ pub fn dibujar_escrito(
     c.t(x0, y, &e.texto, size, peso, color, "start", MONO);
     let cw = ancho_car(size);
     for &(a, b, nivel) in &e.barras {
-        let yb = y - size * 0.82 - nivel as f64 * 2.6;
+        let escala = dibu_core::tipografia_activa().0;
+        let yb = y - size * escala * 0.82 - nivel as f64 * 2.6 * escala;
         c.linea(
             x0 + a as f64 * cw + 0.8,
             yb,

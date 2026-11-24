@@ -438,7 +438,7 @@ pub fn codigo(c: &mut Lienzo, x: f64, y: f64, texto_linea: &str, size: f64, colo
     let resto = texto_linea.trim_start_matches(' ');
     let sangria = texto_linea.chars().count() - resto.chars().count();
     c.t(
-        x + sangria as f64 * size * 0.602,
+        x + dibu_core::avance_mono(sangria as f64, size),
         y,
         resto,
         size,

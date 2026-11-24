@@ -48,8 +48,45 @@ pub fn esc(texto: &str) -> String {
     out
 }
 
+thread_local! {
+    /// Escala tipográfica y factor de ancho del theme con el que se está renderizando.
+    static TIPOGRAFIA_ACTIVA: std::cell::Cell<(f64, f64)> = const { std::cell::Cell::new((1.0, 0.62)) };
+}
+
+/// (escala, factor de ancho por carácter) del theme del render en curso.
+pub fn tipografia_activa() -> (f64, f64) {
+    TIPOGRAFIA_ACTIVA.with(std::cell::Cell::get)
+}
+
+/// Fija la tipografía activa mientras vive el guardián (la restaura al salir, aun con `?`).
+pub struct GuardiaTipografia((f64, f64));
+
+impl GuardiaTipografia {
+    pub fn activar(t: &Tipografia) -> Self {
+        let previa = tipografia_activa();
+        TIPOGRAFIA_ACTIVA.with(|c| c.set((t.scale, t.char_width_factor)));
+        Self(previa)
+    }
+}
+
+impl Drop for GuardiaTipografia {
+    fn drop(&mut self) {
+        TIPOGRAFIA_ACTIVA.with(|c| c.set(self.0));
+    }
+}
+
+/// Ancho estimado de un texto. Respeta `typography.scale` y `charWidthFactor` del theme activo,
+/// así los renderizadores dimensionan celdas y cajas acordes al tamaño real de la letra.
 pub fn ancho_texto(texto: &str, size: f64) -> f64 {
-    texto.chars().count() as f64 * size * 0.62
+    let (escala, factor) = tipografia_activa();
+    texto.chars().count() as f64 * size * escala * factor
+}
+
+/// Avance de `n` caracteres en la fuente monoespaciada (DejaVu Sans Mono ≈ 0,602 em), para
+/// posicionar caracteres sueltos (sangrías, subrayados) dentro de un texto ya dibujado.
+pub fn avance_mono(n: f64, size: f64) -> f64 {
+    let (escala, factor) = tipografia_activa();
+    n * size * escala * 0.602 * (factor / 0.62)
 }
 
 pub fn sha1_hex(datos: &[u8]) -> String {
@@ -279,7 +316,7 @@ pub fn encabezado(c: &mut Lienzo, bloque: &Bloque, extra: &str) -> f64 {
     }
     if let Some(t) = titulo {
         c.t(0.0, 16.0, t, 14.0, 700, "textMain", "start", SANS);
-        c.ancho_min = c.ancho_min.max(t.chars().count() as f64 * 8.6);
+        c.ancho_min = c.ancho_min.max(t.chars().count() as f64 * 8.6 * tipografia_activa().0);
     }
     let mut partes = Vec::new();
     if let Some(s) = subtitulo {
@@ -292,7 +329,7 @@ pub fn encabezado(c: &mut Lienzo, bloque: &Bloque, extra: &str) -> f64 {
         let texto = partes.join(" | ");
         let y = if titulo.is_some() { 32.0 } else { 14.0 };
         c.t(0.0, y, &texto, 10.5, 400, "textMuted", "start", MONO);
-        c.ancho_min = c.ancho_min.max(texto.chars().count() as f64 * 6.4);
+        c.ancho_min = c.ancho_min.max(texto.chars().count() as f64 * 6.4 * tipografia_activa().0);
     }
     if titulo.is_some() { 40.0 } else { 22.0 }
 }
@@ -387,7 +424,10 @@ impl Registro {
             sha1_hex(entrada.as_bytes())[..8].to_string()
         };
         let mut lienzo = Lienzo::con_tema(&tema, sufijo.clone());
-        let (ancho_raw, alto) = render_fn(&mut lienzo, bloque)?;
+        let (ancho_raw, alto) = {
+            let _tipografia = GuardiaTipografia::activar(&tema.typography);
+            render_fn(&mut lienzo, bloque)?
+        };
         if !ancho_raw.is_finite() || !alto.is_finite() || ancho_raw < 0.0 || alto < 0.0 {
             return Err(ErrorDiagrama::new(format!(
                 "{tipo}: dimensiones de SVG inválidas ({ancho_raw}×{alto})"

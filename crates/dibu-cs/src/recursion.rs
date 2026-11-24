@@ -380,7 +380,7 @@ fn pila_llamadas(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
         for m in ms {
             let tw = titulo_marco(m).chars().count() as f64 * 7.6
                 + 24.0
-                + nota_marco(m).chars().count() as f64 * 6.4;
+                + nota_marco(m).chars().count() as f64 * 6.4 * dibu_core::tipografia_activa().0;
             marco_w = marco_w.max(tw);
         }
     }
