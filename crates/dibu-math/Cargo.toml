@@ -1,0 +1,18 @@
+[package]
+name = "dibu-math"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Diagramas de señales y sistemas, probabilidad y circuitos eléctricos"
+
+[dependencies]
+dibu-core.workspace = true
+dibu-plot.workspace = true
+dibu-comp.workspace = true
+serde_json.workspace = true
+
+[dev-dependencies]
+serde_yaml.workspace = true
+dibu-cs.workspace = true
+dibu-control.workspace = true
+dibu-chem.workspace = true
