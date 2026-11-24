@@ -8,6 +8,8 @@ use thiserror::Error;
 
 pub const MONO: &str = "DejaVu Sans Mono, Menlo, Consolas, Courier New, monospace";
 pub const SANS: &str = "DejaVu Sans, Inter, Segoe UI, Roboto, Helvetica, Arial, sans-serif";
+pub const MAX_SVG_DIM: f64 = 1_000_000.0;
+const MAX_SVG_DIM_I64: i64 = 1_000_000;
 
 pub type Punto = (f64, f64);
 pub type Bloque = serde_json::Map<String, Value>;
@@ -106,6 +108,8 @@ pub fn esc(texto: &str) -> String {
             '>' => out.push_str("&gt;"),
             '"' => out.push_str("&quot;"),
             '\'' => out.push_str("&#x27;"),
+            '\x00'..='\x08' | '\x0b' | '\x0c' | '\x0e'..='\x1f' => {}
+            _ if (ch as u32 & 0xFFFE) == 0xFFFE => {}
             _ => out.push(ch),
         }
     }
@@ -311,6 +315,7 @@ pub fn encabezado(c: &mut Lienzo, bloque: &Bloque, extra: &str) -> f64 {
 
 /// Parsea YAML o JSON en una lista de bloques (admite bloque único, lista o `{blocks: [...]}`).
 pub fn leer_bloques(texto: &str) -> Result<Vec<Bloque>, ErrorDiagrama> {
+    let texto = texto.strip_prefix('\u{feff}').unwrap_or(texto);
     let yaml_val: serde_yaml::Value = serde_yaml::from_str(texto)
         .map_err(|e| ErrorDiagrama::new(format!("el bloque no es YAML/JSON válido: {e}")))?;
     let json_val: Value = serde_json::to_value(yaml_val)
@@ -377,10 +382,33 @@ impl Registro {
         let sufijo = sha1_hex(canon.as_bytes())[..8].to_string();
         let mut lienzo = Lienzo::new(pal, sufijo.clone());
         let (ancho_raw, alto) = render_fn(&mut lienzo, bloque)?;
+        if !ancho_raw.is_finite() || !alto.is_finite() || ancho_raw < 0.0 || alto < 0.0 {
+            return Err(ErrorDiagrama::new(format!(
+                "{tipo}: dimensiones de SVG inválidas ({ancho_raw}×{alto})"
+            )));
+        }
         let ancho = ancho_raw.max(lienzo.ancho_min);
+        if !ancho.is_finite() || ancho < 0.0 {
+            return Err(ErrorDiagrama::new(format!(
+                "{tipo}: dimensiones de SVG inválidas ({ancho}×{alto})"
+            )));
+        }
         let m = 8.0_f64;
-        let w = (ancho + 2.0 * m).ceil() as i64;
-        let h = (alto + 2.0 * m).ceil() as i64;
+        let w_f = (ancho + 2.0 * m).ceil();
+        let h_f = (alto + 2.0 * m).ceil();
+        if !w_f.is_finite()
+            || !h_f.is_finite()
+            || w_f <= 0.0
+            || h_f <= 0.0
+            || w_f > MAX_SVG_DIM
+            || h_f > MAX_SVG_DIM
+        {
+            return Err(ErrorDiagrama::new(format!(
+                "{tipo}: dimensiones de SVG fuera de rango ({w_f}×{h_f})"
+            )));
+        }
+        let w = w_f as i64;
+        let h = h_f as i64;
         let mi = m as i64;
         let aria = bloque
             .get("title")
@@ -435,6 +463,13 @@ pub fn apilar_svgs(svgs: &[String]) -> Result<String, ErrorDiagrama> {
         return Err(ErrorDiagrama::new("no hay bloques para renderizar"));
     }
     if svgs.len() == 1 {
+        let w = extraer_attr_int(&svgs[0], "width")?;
+        let h = extraer_attr_int(&svgs[0], "height")?;
+        if w <= 0 || h <= 0 || w > MAX_SVG_DIM_I64 || h > MAX_SVG_DIM_I64 {
+            return Err(ErrorDiagrama::new(format!(
+                "dimensiones de SVG inválidas ({w}×{h})"
+            )));
+        }
         return Ok(svgs[0].clone());
     }
     let mut ancho: i64 = 0;
@@ -443,11 +478,22 @@ pub fn apilar_svgs(svgs: &[String]) -> Result<String, ErrorDiagrama> {
     for svg in svgs {
         let w = extraer_attr_int(svg, "width")?;
         let h = extraer_attr_int(svg, "height")?;
+        if w <= 0 || h <= 0 || w > MAX_SVG_DIM_I64 || h > MAX_SVG_DIM_I64 {
+            return Err(ErrorDiagrama::new(format!(
+                "dimensiones de SVG inválidas al apilar ({w}×{h})"
+            )));
+        }
         partes.push(svg.replacen("<svg ", &format!(r#"<svg x="0" y="{y}" "#), 1));
         ancho = ancho.max(w);
-        y += h + 8;
+        y = y
+            .checked_add(h)
+            .and_then(|v| v.checked_add(8))
+            .ok_or_else(|| ErrorDiagrama::new("desbordamiento de altura al apilar SVGs"))?;
     }
-    let alto = (y - 8).max(0);
+    let alto = y.checked_sub(8).unwrap_or(0).max(0);
+    if alto > MAX_SVG_DIM_I64 {
+        return Err(ErrorDiagrama::new("altura total apilada fuera de rango"));
+    }
     Ok(format!(
         r#"<svg xmlns="http://www.w3.org/2000/svg" width="{ancho}" height="{alto}" viewBox="0 0 {ancho} {alto}">{}</svg>"#,
         partes.concat()
@@ -486,5 +532,40 @@ mod tests {
     #[test]
     fn escape_xml_basico() {
         assert_eq!(esc("a < b & c > \"d\""), "a &lt; b &amp; c &gt; &quot;d&quot;");
+    }
+
+    #[test]
+    fn escape_xml_filtra_c0_y_nonchars() {
+        let entrada = "a\x00\x01\x08\x0b\x0c\x0e\x1fb\u{fffe}c\u{ffff}d\t\n\re";
+        assert_eq!(esc(entrada), "abcd\t\n\re");
+    }
+
+    #[test]
+    fn leer_bloques_acepta_bom_utf8() {
+        let bloques = leer_bloques("\u{feff}type: array\nvalues: [1, 2]\n").unwrap();
+        assert_eq!(bloques.len(), 1);
+        assert_eq!(bloques[0]["type"], "array");
+    }
+
+    #[test]
+    fn renderizar_rechaza_dimensiones_invalidas_o_desbordantes() {
+        let mut reg = Registro::new();
+        reg.registrar("nan_w", |_, _| Ok((f64::NAN, 10.0)));
+        reg.registrar("inf_h", |_, _| Ok((10.0, f64::INFINITY)));
+        reg.registrar("neg_h", |_, _| Ok((100.0, -50.0)));
+        reg.registrar("huge_h", |_, _| Ok((100.0, 1e30)));
+        for t in ["nan_w", "inf_h", "neg_h", "huge_h"] {
+            let mut b = Bloque::new();
+            b.insert("type".into(), Value::String(t.into()));
+            assert!(reg.renderizar(&b, true).is_err(), "{t} debía fallar");
+        }
+    }
+
+    #[test]
+    fn apilar_svgs_rechaza_overflow_i64_sin_panic() {
+        let s1 = format!(r#"<svg width="100" height="{}"></svg>"#, i64::MAX);
+        let s2 = r#"<svg width="100" height="20"></svg>"#.to_string();
+        assert!(apilar_svgs(&[s1.clone(), s2]).is_err());
+        assert!(apilar_svgs(&[s1]).is_err());
     }
 }

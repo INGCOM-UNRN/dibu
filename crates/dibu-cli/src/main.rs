@@ -52,6 +52,17 @@ fn default_true() -> bool {
     true
 }
 
+fn id_archivo_seguro(id: &str) -> bool {
+    if id.is_empty() || id.contains('/') || id.contains('\\') || id.contains('\0') {
+        return false;
+    }
+    let mut comps = Path::new(id).components();
+    matches!(
+        (comps.next(), comps.next()),
+        (Some(std::path::Component::Normal(_)), None)
+    )
+}
+
 #[derive(Serialize)]
 struct BatchResp {
     id: String,
@@ -74,6 +85,7 @@ fn construir_registro() -> Registro {
 
 fn extraer_cuerpos_markdown(texto: &str) -> Vec<String> {
     // Verificamos que la valla de cierre coincida con la de apertura.
+    let texto = texto.strip_prefix('\u{feff}').unwrap_or(texto);
     let mut cuerpos = Vec::new();
     let lineas: Vec<&str> = texto.lines().collect();
     let mut i = 0;
@@ -140,9 +152,12 @@ fn sincronizar_dir(reg: &Registro, dir: &Path, tinta: bool, escribir: bool) -> (
         if !igual {
             cambios += 1;
             if escribir {
-                let _ = fs::create_dir_all(&destino);
-                let _ = fs::write(&ruta, svg);
-                println!("✓ Escrito: {}", ruta.display());
+                if let Err(e) = fs::create_dir_all(&destino).and_then(|_| fs::write(&ruta, svg)) {
+                    eprintln!("Error: no se pudo escribir {}: {e}", ruta.display());
+                    errores += 1;
+                } else {
+                    println!("✓ Escrito: {}", ruta.display());
+                }
             } else {
                 println!("Desactualizado: {}", ruta.display());
             }
@@ -167,15 +182,22 @@ fn sincronizar_dir(reg: &Registro, dir: &Path, tinta: bool, escribir: bool) -> (
             if !esperados.contains_key(nombre.as_ref()) {
                 cambios += 1;
                 if escribir {
-                    let _ = fs::remove_file(&ruta);
-                    println!("✓ Borrado: {}", ruta.display());
+                    if let Err(e) = fs::remove_file(&ruta) {
+                        eprintln!("Error: no se pudo borrar {}: {e}", ruta.display());
+                        errores += 1;
+                    } else {
+                        println!("✓ Borrado: {}", ruta.display());
+                    }
                 } else {
                     println!("Sobra: {}", ruta.display());
                 }
             }
         }
         if escribir && fs::read_dir(&destino).map(|mut it| it.next().is_none()).unwrap_or(false) {
-            let _ = fs::remove_dir(&destino);
+            if let Err(e) = fs::remove_dir(&destino) {
+                eprintln!("Error: no se pudo borrar directorio {}: {e}", destino.display());
+                errores += 1;
+            }
         }
     }
 
@@ -218,6 +240,7 @@ fn main() -> ExitCode {
             }
             let stem = archivo.file_stem().and_then(|s| s.to_str()).unwrap_or("bloque");
             let mut escritos = 0usize;
+            let mut error_seguridad = false;
             for (idx, bloque) in bloques.iter().enumerate() {
                 let n = idx + 1;
                 let tipo = bloque.get("type").and_then(|v| v.as_str()).unwrap_or("");
@@ -225,12 +248,23 @@ fn main() -> ExitCode {
                     eprintln!("Aviso: bloque {n} ({tipo:?}) no soportado; se saltea.");
                     continue;
                 }
-                let id = bloque
+                let id = match bloque
                     .get("id")
                     .and_then(|v| v.as_str())
                     .filter(|s| !s.is_empty())
-                    .map(str::to_string)
-                    .unwrap_or_else(|| format!("{stem}_{n}"));
+                {
+                    Some(raw_id) => {
+                        if !id_archivo_seguro(raw_id) {
+                            eprintln!(
+                                "Error: bloque {n}: id inválido {raw_id:?} (no puede contener rutas ni '..')"
+                            );
+                            error_seguridad = true;
+                            continue;
+                        }
+                        raw_id.to_string()
+                    }
+                    None => format!("{stem}_{n}"),
+                };
                 let destino = output_dir.join(format!("{id}.svg"));
                 match reg.renderizar(bloque, !color) {
                     Ok(svg) => {
@@ -244,7 +278,7 @@ fn main() -> ExitCode {
                     Err(e) => eprintln!("Error: bloque {n}: {e}"),
                 }
             }
-            if escritos > 0 {
+            if escritos > 0 && !error_seguridad {
                 ExitCode::SUCCESS
             } else {
                 ExitCode::FAILURE
@@ -252,31 +286,50 @@ fn main() -> ExitCode {
         }
         Cmd::Batch => {
             let stdin = io::stdin();
+            let mut reader = io::BufReader::new(stdin.lock());
             let stdout = io::stdout();
             let mut out = io::BufWriter::new(stdout.lock());
-            for linea in stdin.lock().lines() {
-                let Ok(linea) = linea else { break };
-                let trimmed = linea.trim();
-                if trimmed.is_empty() {
-                    continue;
+            let mut buf = Vec::new();
+            loop {
+                buf.clear();
+                match reader.read_until(b'\n', &mut buf) {
+                    Ok(0) => break,
+                    Ok(_) => {}
+                    Err(e) => {
+                        eprintln!("Error leyendo stdin: {e}");
+                        break;
+                    }
                 }
-                let resp = match serde_json::from_str::<BatchReq>(trimmed) {
-                    Ok(req) => match reg.renderizar(&req.block, req.tinta) {
-                        Ok(svg) => BatchResp {
-                            id: req.id,
-                            svg: Some(svg),
-                            error: None,
-                        },
-                        Err(e) => BatchResp {
-                            id: req.id,
-                            svg: None,
-                            error: Some(e.to_string()),
-                        },
-                    },
+                let resp = match std::str::from_utf8(&buf) {
+                    Ok(linea) => {
+                        let trimmed = linea.trim();
+                        if trimmed.is_empty() {
+                            continue;
+                        }
+                        match serde_json::from_str::<BatchReq>(trimmed) {
+                            Ok(req) => match reg.renderizar(&req.block, req.tinta) {
+                                Ok(svg) => BatchResp {
+                                    id: req.id,
+                                    svg: Some(svg),
+                                    error: None,
+                                },
+                                Err(e) => BatchResp {
+                                    id: req.id,
+                                    svg: None,
+                                    error: Some(e.to_string()),
+                                },
+                            },
+                            Err(e) => BatchResp {
+                                id: String::new(),
+                                svg: None,
+                                error: Some(format!("JSON inválido: {e}")),
+                            },
+                        }
+                    }
                     Err(e) => BatchResp {
                         id: String::new(),
                         svg: None,
-                        error: Some(format!("JSON inválido: {e}")),
+                        error: Some(format!("UTF-8 inválido: {e}")),
                     },
                 };
                 if writeln!(out, "{}", serde_json::to_string(&resp).unwrap()).is_err() {
@@ -327,6 +380,11 @@ fn main() -> ExitCode {
                             errores += 1;
                         }
                     }
+                } else {
+                    eprintln!(
+                        "Aviso: {} no es un directorio ni un archivo .md; se ignora.",
+                        r.display()
+                    );
                 }
             }
             let mut cambios = 0usize;

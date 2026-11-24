@@ -9,6 +9,9 @@ use std::f64::consts::PI;
 
 pub type C64 = Complex64;
 
+pub const MAX_GRADO_SISTEMA: usize = 24;
+const MAX_COEFICIENTES_RAW: usize = 128;
+
 pub fn err(msg: impl Into<String>) -> ErrorDiagrama {
     ErrorDiagrama::new(msg)
 }
@@ -69,6 +72,9 @@ pub fn de_raices(rs: &[C64], k: C64) -> Vec<C64> {
 
 pub fn raices(p_in: &[C64]) -> Vec<C64> {
     let mut p = recortar(p_in);
+    if p.iter().any(|c| !c.re.is_finite() || !c.im.is_finite()) {
+        return Vec::new();
+    }
     let mut n = p.len().saturating_sub(1);
     if n < 1 {
         return Vec::new();
@@ -84,12 +90,46 @@ pub fn raices(p_in: &[C64]) -> Vec<C64> {
         return salida;
     }
     let p0 = p[0];
-    let monico: Vec<C64> = p.iter().map(|&c| c / p0).collect();
+    let monico_orig: Vec<C64> = p.iter().map(|&c| c / p0).collect();
+    if monico_orig.iter().any(|c| !c.re.is_finite() || !c.im.is_finite()) {
+        return salida;
+    }
+    let max_coef = monico_orig[1..]
+        .iter()
+        .map(|c| c.norm())
+        .fold(0.0_f64, f64::max);
+    let scale = if max_coef > 1e50 {
+        let mut s = 1.0_f64;
+        for (k, c) in monico_orig.iter().enumerate().skip(1) {
+            let ck = c.norm();
+            if ck > 0.0 {
+                s = s.max(ck.powf(1.0 / k as f64));
+            }
+        }
+        if s.is_finite() && s > 1.0 { s } else { 1.0 }
+    } else {
+        1.0
+    };
+    let mut monico = Vec::with_capacity(monico_orig.len());
+    let mut factor = 1.0_f64;
+    for (k, &c) in monico_orig.iter().enumerate() {
+        if k > 0 {
+            factor *= scale;
+        }
+        if factor.is_finite() && factor > 0.0 {
+            monico.push(c / factor);
+        } else {
+            monico.push(C64::new(0.0, 0.0));
+        }
+    }
     let radio = 1.0
         + monico[1..]
             .iter()
             .map(|c| c.norm())
             .fold(0.0_f64, f64::max);
+    if !radio.is_finite() {
+        return salida;
+    }
     let mut z: Vec<C64> = (0..n)
         .map(|k| {
             let ang = 2.0 * PI * (k as f64 + 0.25) / (n as f64);
@@ -106,14 +146,17 @@ pub fn raices(p_in: &[C64]) -> Vec<C64> {
                     den *= z[i] - z[j];
                 }
             }
-            if den.norm() == 0.0 {
+            if den.norm() == 0.0 || !den.re.is_finite() || !den.im.is_finite() {
                 den = C64::new(1e-12, 0.0);
             }
             let delta = evaluar(&monico, z[i]) / den;
+            if !delta.re.is_finite() || !delta.im.is_finite() {
+                break;
+            }
             z[i] -= delta;
             maximo = maximo.max(delta.norm());
         }
-        if maximo < 1e-13 * radio {
+        if !maximo.is_finite() || maximo < 1e-13 * radio {
             break;
         }
     }
@@ -126,13 +169,20 @@ pub fn raices(p_in: &[C64]) -> Vec<C64> {
     for zi in &mut z {
         for _ in 0..3 {
             let d = evaluar(&derivada, *zi);
-            if d.norm() > 1e-14 {
-                *zi -= evaluar(&monico, *zi) / d;
+            if d.norm() > 1e-14 && d.re.is_finite() && d.im.is_finite() {
+                let paso = evaluar(&monico, *zi) / d;
+                if paso.re.is_finite() && paso.im.is_finite() {
+                    *zi -= paso;
+                }
             }
         }
+        *zi *= scale;
     }
 
     for r in z {
+        if !r.re.is_finite() || !r.im.is_finite() {
+            continue;
+        }
         if r.im.abs() < 1e-7 * r.norm().max(1.0) {
             salida.push(C64::new(r.re, 0.0));
         } else {
@@ -222,6 +272,11 @@ fn coeficientes(val: Option<&Value>, donde: &str) -> Result<Vec<C64>, ErrorDiagr
                 "{donde}: tiene que ser una lista de coeficientes, como [1, 3, 2]"
             )));
         }
+        if arr.len() > MAX_COEFICIENTES_RAW {
+            return Err(err(format!(
+                "{donde}: el polinomio tiene demasiados coeficientes (máximo {MAX_COEFICIENTES_RAW})"
+            )));
+        }
         let mut out = Vec::with_capacity(arr.len());
         for item in arr {
             out.push(numero(item, donde)?);
@@ -235,6 +290,12 @@ fn coeficientes(val: Option<&Value>, donde: &str) -> Result<Vec<C64>, ErrorDiagr
     let p = recortar(&lista.into_iter().map(|x| C64::new(x, 0.0)).collect::<Vec<_>>());
     if p.iter().all(|c| c.norm() < 1e-14) {
         return Err(err(format!("{donde}: es el polinomio nulo")));
+    }
+    if p.len().saturating_sub(1) > MAX_GRADO_SISTEMA {
+        return Err(err(format!(
+            "{donde}: el grado del polinomio ({}) supera el máximo permitido ({MAX_GRADO_SISTEMA})",
+            p.len() - 1
+        )));
     }
     Ok(p)
 }
@@ -251,6 +312,11 @@ fn raices_de(val: Option<&Value>, donde: &str) -> Result<Vec<C64>, ErrorDiagrama
             "{donde}: tiene que ser una lista, como [-1, [-2, 3]]"
         )));
     };
+    if arr.len() > MAX_GRADO_SISTEMA {
+        return Err(err(format!(
+            "{donde}: la cantidad de raíces supera el máximo permitido ({MAX_GRADO_SISTEMA})"
+        )));
+    }
     let mut salida = Vec::new();
     for r in arr {
         if let Some(par) = r.as_array() {
@@ -270,8 +336,20 @@ fn raices_de(val: Option<&Value>, donde: &str) -> Result<Vec<C64>, ErrorDiagrama
         } else {
             salida.push(C64::new(numero(r, donde)?, 0.0));
         }
+        if salida.len() > MAX_GRADO_SISTEMA {
+            return Err(err(format!(
+                "{donde}: la cantidad de raíces supera el máximo permitido ({MAX_GRADO_SISTEMA})"
+            )));
+        }
     }
     Ok(salida)
+}
+
+pub fn grado_sistema(s: &Sistema) -> usize {
+    s.num
+        .len()
+        .saturating_sub(1)
+        .max(s.den.len().saturating_sub(1))
 }
 
 pub fn sistema(dato: &Value, donde: &str) -> Result<Sistema, ErrorDiagrama> {
@@ -355,10 +433,14 @@ pub fn sistema(dato: &Value, donde: &str) -> Result<Sistema, ErrorDiagrama> {
             de_raices(&poles, C64::new(1.0, 0.0)),
         );
         for c in &mut s.num {
-            *c = C64::new((c.re * 1e12).round() / 1e12, 0.0);
+            if c.re.abs() < 1e15 {
+                *c = C64::new((c.re * 1e12).round() / 1e12, 0.0);
+            }
         }
         for c in &mut s.den {
-            *c = C64::new((c.re * 1e12).round() / 1e12, 0.0);
+            if c.re.abs() < 1e15 {
+                *c = C64::new((c.re * 1e12).round() / 1e12, 0.0);
+            }
         }
         s
     } else if obj.contains_key("kp") || obj.contains_key("ki") || obj.contains_key("kd") {
@@ -393,6 +475,15 @@ pub fn sistema(dato: &Value, donde: &str) -> Result<Sistema, ErrorDiagrama> {
             "{donde}: falta num/den, gain/tau, gain/zeta/wn, k/poles/zeros o kp/ki/kd"
         )));
     };
+    if s.num
+        .iter()
+        .chain(s.den.iter())
+        .any(|c| !c.re.is_finite() || !c.im.is_finite())
+    {
+        return Err(err(format!(
+            "{donde}: los coeficientes del sistema exceden el rango finito"
+        )));
+    }
     s.delay = delay;
     s.etiqueta = etiqueta;
     Ok(s)
@@ -463,13 +554,21 @@ pub fn lazo(dato: &Value, donde: &str) -> Result<Lazo, ErrorDiagrama> {
 }
 
 pub fn abierto_de(b: &Bloque, donde: &str) -> Result<Sistema, ErrorDiagrama> {
-    if let Some(cl) = b.get("closedLoop") {
-        return Ok(lazo(cl, "closedLoop")?.abierto());
-    }
-    let Some(sys) = b.get("system") else {
-        return Err(err(format!("falta {donde} (o closedLoop)")));
+    let s = if let Some(cl) = b.get("closedLoop") {
+        lazo(cl, "closedLoop")?.abierto()
+    } else {
+        let Some(sys) = b.get("system") else {
+            return Err(err(format!("falta {donde} (o closedLoop)")));
+        };
+        sistema(sys, donde)?
     };
-    sistema(sys, donde)
+    if grado_sistema(&s) > MAX_GRADO_SISTEMA {
+        return Err(err(format!(
+            "{donde}: el grado del sistema ({}) supera el máximo permitido ({MAX_GRADO_SISTEMA})",
+            grado_sistema(&s)
+        )));
+    }
+    Ok(s)
 }
 
 struct Estado {
@@ -603,6 +702,9 @@ pub fn simular_abierto(
     amplitud: f64,
     pasos: usize,
 ) -> Result<(Vec<f64>, Vec<f64>, Vec<f64>), ErrorDiagrama> {
+    if !t_fin.is_finite() || t_fin <= 0.0 {
+        return Err(err("tEnd tiene que ser finito y positivo"));
+    }
     let dt = t_fin / pasos as f64;
     let mut estado = Estado::new(s, dt)?;
     let mut ts = Vec::with_capacity(pasos + 1);
@@ -611,9 +713,13 @@ pub fn simular_abierto(
     for i in 0..=pasos {
         let t = i as f64 * dt;
         let u = entrada(tipo, amplitud, t, dt)?;
+        let y = estado.paso(u);
+        if !t.is_finite() || !u.is_finite() || !y.is_finite() || estado.x.iter().any(|x| !x.is_finite()) {
+            return Err(err("la simulación diverge fuera del rango finito"));
+        }
         ts.push(t);
         us.push(if tipo != "impulse" { u } else { 0.0 });
-        ys.push(estado.paso(u));
+        ys.push(y);
     }
     Ok((ts, us, ys))
 }
@@ -633,6 +739,9 @@ pub fn simular_lazo(
     perturbacion: Option<Perturbacion<'_>>,
     pasos: usize,
 ) -> Result<(Vec<f64>, Vec<f64>, Vec<f64>, Vec<f64>), ErrorDiagrama> {
+    if !t_fin.is_finite() || t_fin <= 0.0 {
+        return Err(err("tEnd tiene que ser finito y positivo"));
+    }
     let dt = t_fin / pasos as f64;
     let mut planta = Estado::new(&lz.planta, dt)?;
     let mut sensor = Estado::new(&lz.sensor, dt)?;
@@ -685,6 +794,14 @@ pub fn simular_lazo(
             _ => (0.0, 0.0),
         };
         y = planta.paso(u + d_in) + d_out;
+        if !t.is_finite()
+            || !r.is_finite()
+            || !u.is_finite()
+            || !y.is_finite()
+            || planta.x.iter().any(|x| !x.is_finite())
+        {
+            return Err(err("la simulación diverge fuera del rango finito"));
+        }
         ts.push(t);
         rs.push(if tipo != "impulse" { r } else { 0.0 });
         ys.push(y);
@@ -712,12 +829,15 @@ pub fn caracteristicas(
     inicial: f64,
 ) -> Caracteristicas {
     let final_v = final_opt.unwrap_or_else(|| *ys.last().unwrap_or(&0.0));
+    if !final_v.is_finite() || !inicial.is_finite() {
+        return Caracteristicas::default();
+    }
     let cambio = final_v - inicial;
     let mut salida = Caracteristicas {
         final_val: Some(final_v),
         ..Default::default()
     };
-    if cambio.abs() < 1e-12 || ys.is_empty() {
+    if !cambio.is_finite() || cambio.abs() < 1e-12 || ys.is_empty() {
         return salida;
     }
     let signo = if cambio > 0.0 { 1.0 } else { -1.0 };
@@ -954,12 +1074,13 @@ pub fn lugar_raices(s: &Sistema, k_max: f64, muestras: usize) -> (Vec<f64>, Vec<
                 if libres.is_empty() {
                     break;
                 }
-                let (j, _) = libres
+                if let Some((j, _)) = libres
                     .iter()
                     .enumerate()
                     .min_by(|(_, a), (_, b)| (*a - r).norm().total_cmp(&(*b - r).norm()))
-                    .unwrap();
-                ord.push(libres.remove(j));
+                {
+                    ord.push(libres.remove(j));
+                }
             }
             ord
         } else {
@@ -998,6 +1119,32 @@ pub fn asintotas(s: &Sistema) -> (Option<f64>, Vec<f64>) {
     (Some(centro), angulos)
 }
 
+fn refinar_cruce_imaginario(s: &Sistema, mut lo: f64, mut hi: f64) -> Option<(f64, f64)> {
+    let mayor_real = |k: f64| -> f64 {
+        let kn: Vec<C64> = s.num.iter().map(|&c| c * k).collect();
+        raices(&suma(&s.den, &kn))
+            .into_iter()
+            .map(|r| r.re)
+            .fold(f64::NEG_INFINITY, f64::max)
+    };
+    for _ in 0..60 {
+        let mid = 0.5 * (lo + hi);
+        if mayor_real(mid) < 0.0 {
+            lo = mid;
+        } else {
+            hi = mid;
+        }
+    }
+    let kn: Vec<C64> = s.num.iter().map(|&c| c * hi).collect();
+    let rs = raices(&suma(&s.den, &kn));
+    let w = rs
+        .iter()
+        .filter(|r| r.re.abs() < 1e-3 * r.norm().max(1.0) + 1e-6)
+        .map(|r| r.im.abs())
+        .fold(0.0_f64, f64::max);
+    Some((hi, w))
+}
+
 pub fn cruce_imaginario(s: &Sistema, k_max: f64) -> Option<(f64, f64)> {
     let mayor_real = |k: f64| -> f64 {
         let kn: Vec<C64> = s.num.iter().map(|&c| c * k).collect();
@@ -1006,29 +1153,14 @@ pub fn cruce_imaginario(s: &Sistema, k_max: f64) -> Option<(f64, f64)> {
             .map(|r| r.re)
             .fold(f64::NEG_INFINITY, f64::max)
     };
+    let pasos = 2000;
     let mut previo = mayor_real(0.0);
-    for i in 1..=2000 {
-        let a = k_max * (i - 1) as f64 / 2000.0;
-        let b = k_max * i as f64 / 2000.0;
+    for i in 1..=pasos {
+        let a = k_max * (i - 1) as f64 / pasos as f64;
+        let b = k_max * i as f64 / pasos as f64;
         let actual = mayor_real(b);
         if previo < 0.0 && actual >= 0.0 {
-            let (mut lo, mut hi) = (a, b);
-            for _ in 0..60 {
-                let mid = 0.5 * (lo + hi);
-                if mayor_real(mid) < 0.0 {
-                    lo = mid;
-                } else {
-                    hi = mid;
-                }
-            }
-            let kn: Vec<C64> = s.num.iter().map(|&c| c * hi).collect();
-            let rs = raices(&suma(&s.den, &kn));
-            let w = rs
-                .iter()
-                .filter(|r| r.re.abs() < 1e-3 * r.norm().max(1.0) + 1e-6)
-                .map(|r| r.im.abs())
-                .fold(0.0_f64, f64::max);
-            return Some((hi, w));
+            return refinar_cruce_imaginario(s, a, b);
         }
         previo = actual;
     }

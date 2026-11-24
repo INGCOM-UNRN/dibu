@@ -2,8 +2,9 @@
 
 use crate::math::{
     self, abierto_de, asintota_db, asintotas, caracteristicas, cruce_imaginario, fase_continua,
-    lazo, lugar_raices, magnitud_db, margenes, numero, raices, rango_frecuencias, simular_abierto,
-    simular_lazo, sistema, suma, tangente_inflexion, Lazo, Perturbacion, Sistema, C64,
+    grado_sistema, lazo, lugar_raices, magnitud_db, margenes, numero, raices, rango_frecuencias,
+    simular_abierto, simular_lazo, sistema, suma, tangente_inflexion, Lazo, Perturbacion, Sistema,
+    C64, MAX_GRADO_SISTEMA,
 };
 use dibu_core::{
     ancho_texto, bool_opt, encabezado, str_opt, Bloque, ErrorDiagrama, Lienzo, Punto, MONO,
@@ -121,13 +122,25 @@ pub fn render_time_response(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDi
     } else {
         10.0
     };
-    let mut t_fin = f64_opt(b, "tEnd")?.filter(|&t| t > 0.0).unwrap_or(t_fin_calc);
+    let mut t_fin = match f64_opt(b, "tEnd")? {
+        Some(t) if t > 0.0 => t,
+        Some(_) => return Err(ErrorDiagrama::new("time_response: tEnd tiene que ser positivo")),
+        None => t_fin_calc,
+    };
 
     let pert_obj = b.get("disturbance").and_then(Value::as_object);
     let perturbacion = if let Some(p) = pert_obj {
+        let at = match p.get("at") {
+            None | Some(Value::Null) => 0.0,
+            Some(v) => numero(v, "disturbance.at")?,
+        };
+        let amplitude = match p.get("amplitude") {
+            None | Some(Value::Null) => 0.0,
+            Some(v) => numero(v, "disturbance.amplitude")?,
+        };
         Some(Perturbacion {
-            at: p.get("at").and_then(Value::as_f64).unwrap_or(0.0),
-            amplitude: p.get("amplitude").and_then(Value::as_f64).unwrap_or(0.0),
+            at,
+            amplitude,
             where_at: p.get("where").and_then(Value::as_str).unwrap_or("output"),
         })
     } else {
@@ -235,10 +248,19 @@ pub fn render_time_response(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDi
     if let Some(ym) = f64_opt(b, "yMin")? {
         y_min = ym;
     }
+    if y_min > y_max {
+        std::mem::swap(&mut y_min, &mut y_max);
+    }
     let margen = {
         let m = (y_max - y_min) * 0.12;
+        if !m.is_finite() {
+            return Err(ErrorDiagrama::new("time_response: rango vertical fuera de límites finitos"));
+        }
         if m == 0.0 { 1.0 } else { m }
     };
+    if !(t_fin.is_finite() && y_min.is_finite() && (y_max + margen).is_finite()) {
+        return Err(ErrorDiagrama::new("time_response: rango de ejes fuera de límites finitos"));
+    }
     let xlabel = str_opt(b, "xLabel").unwrap_or("t (s)");
     let ylabel = str_opt(b, "yLabel").unwrap_or("y(t)");
     let ejes = Ejes::dibujar(
@@ -272,10 +294,18 @@ pub fn render_time_response(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDi
     let pedidas: Vec<String> = match b.get("annotations") {
         None | Some(Value::Null) => Vec::new(),
         Some(Value::String(s)) if s == "all" => ANOTACIONES.iter().map(|s| s.to_string()).collect(),
-        Some(Value::Array(arr)) => arr
-            .iter()
-            .filter_map(|v| v.as_str().map(str::to_string))
-            .collect(),
+        Some(Value::Array(arr)) => {
+            let mut out = Vec::with_capacity(arr.len());
+            for v in arr {
+                let Some(s) = v.as_str() else {
+                    return Err(ErrorDiagrama::new(format!(
+                        "time_response: anotación inválida {v}"
+                    )));
+                };
+                out.push(s.to_string());
+            }
+            out
+        }
         Some(otro) => {
             return Err(ErrorDiagrama::new(format!(
                 "time_response: anotaciones inválidas {otro}"
@@ -312,6 +342,9 @@ pub fn render_time_response(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDi
         let ts = &ts_full[..corte];
         let ys = &ys_full[..corte];
         let banda = f64_opt(b, "settlingBand")?.unwrap_or(0.02);
+        if !(banda > 0.0 && banda.is_finite()) {
+            return Err(ErrorDiagrama::new("time_response: settlingBand tiene que ser positivo"));
+        }
         let car = caracteristicas(ts, ys, finales[0], banda, 0.0);
         if let Some(fin) = car.final_val {
             if tiene("final") {
@@ -422,13 +455,25 @@ pub fn render_bode(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
         return Err(ErrorDiagrama::new("bode: falta system, systems o closedLoop"));
     }
     let rangos: Vec<(f64, f64)> = sistemas.iter().map(|(_, s)| rango_frecuencias(s)).collect();
-    let w_min = f64_opt(b, "wMin")?
-        .filter(|&x| x > 0.0)
-        .unwrap_or_else(|| rangos.iter().map(|r| r.0).fold(f64::INFINITY, f64::min));
-    let w_max = f64_opt(b, "wMax")?
-        .filter(|&x| x > 0.0)
-        .unwrap_or_else(|| rangos.iter().map(|r| r.1).fold(0.0_f64, f64::max));
-    if !(w_min > 0.0 && w_min < w_max) {
+    let w_min = match f64_opt(b, "wMin")? {
+        Some(x) if x > 0.0 => x,
+        Some(_) => {
+            return Err(ErrorDiagrama::new(
+                "bode: wMin y wMax son positivas y wMin < wMax",
+            ))
+        }
+        None => rangos.iter().map(|r| r.0).fold(f64::INFINITY, f64::min),
+    };
+    let w_max = match f64_opt(b, "wMax")? {
+        Some(x) if x > 0.0 => x,
+        Some(_) => {
+            return Err(ErrorDiagrama::new(
+                "bode: wMin y wMax son positivas y wMin < wMax",
+            ))
+        }
+        None => rangos.iter().map(|r| r.1).fold(0.0_f64, f64::max),
+    };
+    if !(w_min > 0.0 && w_min < w_max && w_min.is_finite() && w_max.is_finite() && (w_max / w_min).is_finite()) {
         return Err(ErrorDiagrama::new("bode: wMin y wMax son positivas y wMin < wMax"));
     }
     let ws: Vec<f64> = (0..=400)
@@ -458,9 +503,15 @@ pub fn render_bode(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
             .collect();
         let lo_raw = mags.iter().flatten().copied().fold(f64::INFINITY, f64::min);
         let hi_raw = mags.iter().flatten().copied().fold(f64::NEG_INFINITY, f64::max);
+        if !(lo_raw.is_finite() && hi_raw.is_finite()) {
+            return Err(ErrorDiagrama::new("bode: magnitud fuera de rango finito"));
+        }
         let hi = (hi_raw.max(0.0) / 20.0).ceil() * 20.0
             + if (hi_raw % 20.0).abs() < 1e-12 { 20.0 } else { 0.0 };
         let lo = ((lo_raw.min(-20.0) / 20.0).floor() * 20.0).max(hi - 200.0);
+        if !(lo.is_finite() && hi.is_finite() && lo < hi && (hi - lo).is_finite()) {
+            return Err(ErrorDiagrama::new("bode: rango de magnitud fuera de límites finitos"));
+        }
         let em = Ejes::dibujar(
             c,
             EjesConfig {
@@ -498,8 +549,14 @@ pub fn render_bode(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
             .collect();
         let lo_raw = fases.iter().flatten().copied().fold(f64::INFINITY, f64::min);
         let hi_raw = fases.iter().flatten().copied().fold(f64::NEG_INFINITY, f64::max);
+        if !(lo_raw.is_finite() && hi_raw.is_finite()) {
+            return Err(ErrorDiagrama::new("bode: fase fuera de rango finito"));
+        }
         let hi = (hi_raw.max(0.0) / 45.0).ceil() * 45.0;
         let lo = ((lo_raw.min(-180.0) / 45.0).floor() * 45.0).max(-720.0);
+        if !(lo.is_finite() && hi.is_finite() && lo < hi && (hi - lo).is_finite()) {
+            return Err(ErrorDiagrama::new("bode: rango de fase fuera de límites finitos"));
+        }
         let ef = Ejes::dibujar(
             c,
             EjesConfig {
@@ -541,14 +598,18 @@ pub fn render_bode(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
     }
     if let Some(m) = mg {
         if let (Some(w180), Some(gm), Some(em)) = (m.w180, m.gm, &ejes_mag) {
-            em.guia(c, w180, 0.0, w180, -gm, "4 3", "strokeSub");
-            c.punto(em.px(w180), em.py(-gm), "accentPrimary", 3.0);
-            c.t(em.px(w180) + 4.0, em.py(-gm / 2.0), "MG", 9.0, 700, "textMain", "start", MONO);
+            if w180.is_finite() && gm.is_finite() {
+                em.guia(c, w180, 0.0, w180, -gm, "4 3", "strokeSub");
+                c.punto(em.px(w180), em.py(-gm), "accentPrimary", 3.0);
+                c.t(em.px(w180) + 4.0, em.py(-gm / 2.0), "MG", 9.0, 700, "textMain", "start", MONO);
+            }
         }
         if let (Some(wc), Some(pm), Some(ef)) = (m.wc, m.pm, &ejes_fase) {
-            ef.guia(c, wc, -180.0, wc, pm - 180.0, "4 3", "strokeSub");
-            c.punto(ef.px(wc), ef.py(pm - 180.0), "accentPrimary", 3.0);
-            c.t(ef.px(wc) + 4.0, ef.py(pm / 2.0 - 180.0), "MF", 9.0, 700, "textMain", "start", MONO);
+            if wc.is_finite() && pm.is_finite() {
+                ef.guia(c, wc, -180.0, wc, pm - 180.0, "4 3", "strokeSub");
+                c.punto(ef.px(wc), ef.py(pm - 180.0), "accentPrimary", 3.0);
+                c.t(ef.px(wc) + 4.0, ef.py(pm / 2.0 - 180.0), "MF", 9.0, 700, "textMain", "start", MONO);
+            }
         }
         let filas = [
             ("MG", m.gm.map_or_else(|| "∞".into(), |v| format!("{} dB", fmt_g(Some(v), 3)))),
@@ -579,12 +640,25 @@ pub fn render_nyquist(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama
         return Err(ErrorDiagrama::new("nyquist: falta system, systems o closedLoop"));
     }
     let rangos: Vec<(f64, f64)> = sistemas.iter().map(|(_, s)| rango_frecuencias(s)).collect();
-    let w_min = f64_opt(b, "wMin")?
-        .filter(|&x| x > 0.0)
-        .unwrap_or_else(|| rangos.iter().map(|r| r.0).fold(f64::INFINITY, f64::min) / 10.0);
-    let w_max = f64_opt(b, "wMax")?
-        .filter(|&x| x > 0.0)
-        .unwrap_or_else(|| rangos.iter().map(|r| r.1).fold(0.0_f64, f64::max) * 10.0);
+    let w_min = match f64_opt(b, "wMin")? {
+        Some(x) if x > 0.0 => x,
+        Some(_) => return Err(ErrorDiagrama::new("nyquist: wMin tiene que ser positiva")),
+        None => rangos.iter().map(|r| r.0).fold(f64::INFINITY, f64::min) / 10.0,
+    };
+    let w_max = match f64_opt(b, "wMax")? {
+        Some(x) if x > 0.0 => x,
+        Some(_) => return Err(ErrorDiagrama::new("nyquist: wMax tiene que ser positiva")),
+        None => rangos.iter().map(|r| r.1).fold(0.0_f64, f64::max) * 10.0,
+    };
+    if !(w_min > 0.0
+        && w_max > 0.0
+        && w_min.is_finite()
+        && w_max.is_finite()
+        && (w_max / w_min).is_finite()
+        && (w_min / w_max).is_finite())
+    {
+        return Err(ErrorDiagrama::new("nyquist: rango de frecuencias fuera de límites finitos"));
+    }
     let ws: Vec<f64> = (0..=1200)
         .map(|k| w_min * (w_max / w_min).powf(k as f64 / 1200.0))
         .collect();
@@ -604,15 +678,18 @@ pub fn render_nyquist(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama
     } else {
         modulos[(modulos.len() * 9 / 10).min(modulos.len() - 1)]
     };
-    let limite = f64_opt(b, "limit")?
-        .filter(|&x| x > 0.0)
-        .unwrap_or_else(|| (p90 * 1.1).max(1.5).min(50.0));
+    let limite = match f64_opt(b, "limit")? {
+        Some(x) if x > 0.0 => x,
+        Some(_) => return Err(ErrorDiagrama::new("nyquist: limit tiene que ser positivo")),
+        None => (p90 * 1.1).max(1.5).min(50.0),
+    };
     let mut re_lo = -1.3_f64;
     let mut re_hi = 0.5_f64;
     let mut im_lim = 1.0_f64;
     for curva in &curvas {
         for z in curva {
-            if z.norm() <= limite {
+            let n = z.norm();
+            if z.re.is_finite() && z.im.is_finite() && n.is_finite() && n <= limite {
                 re_lo = re_lo.min(z.re);
                 re_hi = re_hi.max(z.re);
                 im_lim = im_lim.max(z.im.abs());
@@ -626,6 +703,24 @@ pub fn render_nyquist(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama
     let top = encabezado(c, b, "");
     let (x0, y0) = (58.0, top + 16.0);
     let margen_re = (re_hi - re_lo) * 0.075;
+    let xr_lo = re_lo - margen_re;
+    let xr_hi = re_hi + margen_re;
+    if !(alto_r.is_finite()
+        && ancho_r.is_finite()
+        && escala.is_finite()
+        && escala > 0.0
+        && w.is_finite()
+        && h.is_finite()
+        && w >= 1.0
+        && h >= 1.0
+        && xr_lo.is_finite()
+        && xr_hi.is_finite()
+        && (xr_hi - xr_lo).is_finite())
+    {
+        return Err(ErrorDiagrama::new(
+            "nyquist: rango de respuesta fuera de escala finita",
+        ));
+    }
     let ejes = Ejes::dibujar(
         c,
         EjesConfig {
@@ -704,6 +799,9 @@ fn dibujar_o(c: &mut Lienzo, x: f64, y: f64, r: f64) {
 }
 
 fn plano(c: &mut Lienzo, b: &Bloque, puntos: &[C64], minimo: f64) -> Result<Ejes, ErrorDiagrama> {
+    if puntos.iter().any(|p| !p.re.is_finite() || !p.im.is_finite()) {
+        return Err(ErrorDiagrama::new("plano s: polos o ceros fuera de rango finito"));
+    }
     let mut escala = minimo;
     for p in puntos {
         escala = escala.max(p.re.abs()).max(p.im.abs());
@@ -712,10 +810,11 @@ fn plano(c: &mut Lienzo, b: &Bloque, puntos: &[C64], minimo: f64) -> Result<Ejes
     let mut re_hi = (escala * 0.3_f64).max(puntos.iter().map(|p| p.re).fold(f64::NEG_INFINITY, f64::max)) + escala * 0.3;
     let mut im = (escala * 0.5_f64).max(puntos.iter().map(|p| p.im.abs()).fold(0.0_f64, f64::max)) * 1.3;
     if let Some(arr) = b.get("xRange").and_then(Value::as_array) {
-        if arr.len() == 2 {
-            re_lo = numero(&arr[0], "xRange")?;
-            re_hi = numero(&arr[1], "xRange")?;
+        if arr.len() != 2 {
+            return Err(ErrorDiagrama::new("xRange: tiene que ser [min, max]"));
         }
+        re_lo = numero(&arr[0], "xRange")?;
+        re_hi = numero(&arr[1], "xRange")?;
     }
     if let Some(arr) = b.get("yRange").and_then(Value::as_array) {
         if !arr.is_empty() {
@@ -727,15 +826,34 @@ fn plano(c: &mut Lienzo, b: &Bloque, puntos: &[C64], minimo: f64) -> Result<Ejes
                 .fold(0.0_f64, f64::max);
         }
     }
-    let px_por = (440.0 / (re_hi - re_lo)).min(340.0 / (2.0 * im));
+    let span_re = re_hi - re_lo;
+    let span_im = 2.0 * im;
+    if !(re_lo.is_finite()
+        && re_hi.is_finite()
+        && re_lo < re_hi
+        && span_re.is_finite()
+        && im.is_finite()
+        && im > 0.0
+        && span_im.is_finite())
+    {
+        return Err(ErrorDiagrama::new(
+            "plano s: rango de ejes inválido (xRange[0] < xRange[1] y yRange > 0)",
+        ));
+    }
+    let px_por = (440.0 / span_re).min(340.0 / span_im);
+    let w = span_re * px_por;
+    let h = span_im * px_por;
+    if !(px_por.is_finite() && px_por > 0.0 && w.is_finite() && h.is_finite() && w >= 1.0 && h >= 1.0) {
+        return Err(ErrorDiagrama::new("plano s: escala de ejes fuera de rango finito"));
+    }
     let top = encabezado(c, b, "");
     Ok(Ejes::dibujar(
         c,
         EjesConfig {
             x0: 58.0,
             y0: top + 16.0,
-            w: (re_hi - re_lo) * px_por,
-            h: 2.0 * im * px_por,
+            w,
+            h,
             xr: (re_lo, re_hi),
             yr: (-im, im),
             xlabel: "σ (Re s)",
@@ -749,7 +867,12 @@ fn plano(c: &mut Lienzo, b: &Bloque, puntos: &[C64], minimo: f64) -> Result<Ejes
 }
 
 fn amortiguamiento(c: &mut Lienzo, ejes: &Ejes, b: &Bloque) -> Result<(), ErrorDiagrama> {
-    let lejos = ejes.xr.0.abs().max(ejes.yr.1) * 2.0;
+    let max_r = ejes.xr.0.abs().max(ejes.yr.1);
+    let lejos = if (max_r * 2.0).is_finite() {
+        max_r * 2.0
+    } else {
+        max_r
+    };
     if let Some(arr) = b.get("dampingLines").and_then(Value::as_array) {
         for v in arr {
             let zeta = numero(v, "dampingLines")?;
@@ -769,12 +892,17 @@ fn amortiguamiento(c: &mut Lienzo, ejes: &Ejes, b: &Bloque) -> Result<(), ErrorD
             let t = (ejes.yr.1 * 0.9 / ang.sin().max(1e-9)).min(ejes.xr.0.abs() * 0.9 / ang.cos().max(1e-9));
             let x = ejes.px(-t * ang.cos());
             let y = ejes.py(t * ang.sin());
-            c.t(x - 6.0, y + 4.0, &format!("ζ = {}", fmt_g(Some(zeta), 3)), 9.0, 400, "textSub", "end", MONO);
+            if x.is_finite() && y.is_finite() && ejes.adentro(x, y) {
+                c.t(x - 6.0, y + 4.0, &format!("ζ = {}", fmt_g(Some(zeta), 3)), 9.0, 400, "textSub", "end", MONO);
+            }
         }
     }
     if let Some(arr) = b.get("wnCircles").and_then(Value::as_array) {
         for v in arr {
             let wn = numero(v, "wnCircles")?;
+            if !(wn > 0.0 && wn.is_finite()) {
+                return Err(ErrorDiagrama::new("wnCircles: cada ωn tiene que ser positiva"));
+            }
             let pts: Vec<Punto> = (30..=90)
                 .map(|a| {
                     let t = a as f64 / 60.0 * PI;
@@ -782,16 +910,20 @@ fn amortiguamiento(c: &mut Lienzo, ejes: &Ejes, b: &Bloque) -> Result<(), ErrorD
                 })
                 .collect();
             ejes.curva(c, &pts, 2, 0.9, "strokeMuted");
-            c.t(
-                ejes.px(-wn),
-                ejes.py(0.0) + 12.0,
-                &format!("ωn = {}", fmt_g(Some(wn), 3)),
-                9.0,
-                400,
-                "textSub",
-                "middle",
-                MONO,
-            );
+            let tx = ejes.px(-wn);
+            let ty = ejes.py(0.0);
+            if tx.is_finite() && ty.is_finite() && ejes.adentro(tx, ty) {
+                c.t(
+                    tx,
+                    ty + 12.0,
+                    &format!("ωn = {}", fmt_g(Some(wn), 3)),
+                    9.0,
+                    400,
+                    "textSub",
+                    "middle",
+                    MONO,
+                );
+            }
         }
     }
     Ok(())
@@ -803,6 +935,12 @@ pub fn render_pole_zero(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagra
         (s.polos(), s.ceros())
     } else if let Some(cl) = b.get("closedLoop") {
         let s = lazo(cl, "closedLoop")?.cerrado();
+        if grado_sistema(&s) > MAX_GRADO_SISTEMA {
+            return Err(ErrorDiagrama::new(format!(
+                "closedLoop: el grado del sistema ({}) supera el máximo permitido ({MAX_GRADO_SISTEMA})",
+                grado_sistema(&s)
+            )));
+        }
         (s.polos(), s.ceros())
     } else {
         // Reutilizamos sistema con poles/zeros
@@ -818,19 +956,29 @@ pub fn render_pole_zero(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagra
     amortiguamiento(c, &ejes, b)?;
     if !bool_opt(b, "blank", false) {
         for z in &ceros {
-            dibujar_o(c, ejes.px(z.re), ejes.py(z.im), 5.0);
+            let (px, py) = (ejes.px(z.re), ejes.py(z.im));
+            if px.is_finite() && py.is_finite() && ejes.adentro(px, py) {
+                dibujar_o(c, px, py, 5.0);
+            }
         }
         for p in &polos {
-            dibujar_x(c, ejes.px(p.re), ejes.py(p.im), 5.0);
+            let (px, py) = (ejes.px(p.re), ejes.py(p.im));
+            if px.is_finite() && py.is_finite() && ejes.adentro(px, py) {
+                dibujar_x(c, px, py, 5.0);
+            }
         }
         if bool_opt(b, "showValues", false) {
             for r in polos.iter().chain(ceros.iter()) {
+                let (px, py) = (ejes.px(r.re), ejes.py(r.im));
+                if !(px.is_finite() && py.is_finite() && ejes.adentro(px, py)) {
+                    continue;
+                }
                 let mut texto = fmt_g(Some(r.re), 3);
                 if r.im.abs() > 1e-9 {
                     let sig = if r.im >= 0.0 { "+" } else { "−" };
                     texto.push_str(&format!(" {sig} j{}", fmt_g(Some(r.im.abs()), 3)));
                 }
-                c.t(ejes.px(r.re) + 8.0, ejes.py(r.im) - 7.0, &texto, 9.0, 400, "textSub", "start", MONO);
+                c.t(px + 8.0, py - 7.0, &texto, 9.0, 400, "textSub", "start", MONO);
             }
         }
     }
@@ -893,17 +1041,20 @@ pub fn render_root_locus(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagr
                         "strokeMuted",
                     );
                 }
-                c.punto(ejes.px(centro), ejes.py(0.0), "strokeSub", 2.5);
-                rotulo(
-                    c,
-                    ejes.px(centro),
-                    ejes.py(0.0) + 16.0,
-                    "σa",
-                    &fmt_g(Some(centro), 3),
-                    blanco,
-                    "middle",
-                    9.0,
-                );
+                let (cx, cy) = (ejes.px(centro), ejes.py(0.0));
+                if cx.is_finite() && cy.is_finite() && ejes.adentro(cx, cy) {
+                    c.punto(cx, cy, "strokeSub", 2.5);
+                    rotulo(
+                        c,
+                        cx,
+                        cy + 16.0,
+                        "σa",
+                        &fmt_g(Some(centro), 3),
+                        blanco,
+                        "middle",
+                        9.0,
+                    );
+                }
             }
         }
     }
@@ -921,10 +1072,16 @@ pub fn render_root_locus(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagr
         }
     }
     for z in &ceros {
-        dibujar_o(c, ejes.px(z.re), ejes.py(z.im), 5.0);
+        let (px, py) = (ejes.px(z.re), ejes.py(z.im));
+        if px.is_finite() && py.is_finite() && ejes.adentro(px, py) {
+            dibujar_o(c, px, py, 5.0);
+        }
     }
     for p in &polos {
-        dibujar_x(c, ejes.px(p.re), ejes.py(p.im), 5.0);
+        let (px, py) = (ejes.px(p.re), ejes.py(p.im));
+        if px.is_finite() && py.is_finite() && ejes.adentro(px, py) {
+            dibujar_x(c, px, py, 5.0);
+        }
     }
     let mut rotulos: Vec<(String, Option<String>)> = Vec::new();
     if let Some(arr) = b.get("marks").and_then(Value::as_array) {
@@ -948,7 +1105,10 @@ pub fn render_root_locus(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagr
     }
     if let Some((k_c, w_c)) = cruce {
         for signo in [1.0, -1.0] {
-            c.punto(ejes.px(0.0), ejes.py(signo * w_c), "accentPrimary", 3.5);
+            let (px, py) = (ejes.px(0.0), ejes.py(signo * w_c));
+            if px.is_finite() && py.is_finite() && ejes.adentro(px, py) {
+                c.punto(px, py, "accentPrimary", 3.5);
+            }
         }
         rotulos.push(("Kcrít".into(), Some(fmt_g(Some(k_c), 3))));
         rotulos.push(("ωcrít".into(), Some(fmt_g(Some(w_c), 3))));

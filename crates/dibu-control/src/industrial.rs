@@ -57,7 +57,14 @@ fn par_coords(val: &Value, g: f64, donde: &str) -> Result<Punto, ErrorDiagrama> 
     if arr.len() != 2 {
         return Err(ErrorDiagrama::new(format!("{donde}: se espera [x, y]")));
     }
-    Ok((numero(&arr[0], donde)? * g, numero(&arr[1], donde)? * g))
+    let x = numero(&arr[0], donde)? * g;
+    let y = numero(&arr[1], donde)? * g;
+    if !x.is_finite() || !y.is_finite() || x.abs() > 1_000_000.0 || y.abs() > 1_000_000.0 {
+        return Err(ErrorDiagrama::new(format!(
+            "{donde}: coordenadas fuera de rango finito"
+        )));
+    }
+    Ok((x, y))
 }
 
 fn dibujar_equipo(c: &mut Lienzo, e: &Bloque, g: f64, donde: &str) -> Result<Pieza, ErrorDiagrama> {
@@ -83,6 +90,11 @@ fn dibujar_equipo(c: &mut Lienzo, e: &Bloque, g: f64, donde: &str) -> Result<Pie
                 Some(v) => par_coords(v, g, &format!("{donde}.size"))?,
                 None => (def.0 * g, def.1 * g),
             };
+            if w < 0.0 || h < 0.0 {
+                return Err(ErrorDiagrama::new(format!(
+                    "{donde}.size: las dimensiones no pueden ser negativas"
+                )));
+            }
             if tipo == "tank" {
                 c.add(format!(
                     r##"<path d="M {:.1} {:.1} L {:.1} {:.1} L {:.1} {:.1} L {:.1} {:.1}" fill="#ffffff" {trazo}/>"##,
@@ -91,8 +103,19 @@ fn dibujar_equipo(c: &mut Lienzo, e: &Bloque, g: f64, donde: &str) -> Result<Pie
                     x + w / 2.0, y + h / 2.0,
                     x + w / 2.0, y - h / 2.0
                 ));
-                if let Some(lv) = e.get("level").and_then(Value::as_f64) {
+                if let Some(lv_val) = e.get("level").filter(|v| !v.is_null()) {
+                    let lv = numero(lv_val, &format!("{donde}.level"))?;
+                    if !(0.0..=1.0).contains(&lv) {
+                        return Err(ErrorDiagrama::new(format!(
+                            "{donde}.level: tiene que estar entre 0 y 1"
+                        )));
+                    }
                     let yl = y + h / 2.0 - lv * h;
+                    if !yl.is_finite() {
+                        return Err(ErrorDiagrama::new(format!(
+                            "{donde}.level: posición de nivel fuera de rango finito"
+                        )));
+                    }
                     c.linea(x - w / 2.0 + 4.0, yl, x + w / 2.0 - 4.0, yl, "strokeSub", 1.0, None, "5 3");
                 }
             } else {
@@ -349,7 +372,15 @@ fn marcas_linea(c: &mut Lienzo, puntos: &[Punto], tipo: &str) {
 }
 
 pub fn render_instrumentation(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
-    let g = b.get("grid").and_then(Value::as_f64).unwrap_or(50.0);
+    let g = match b.get("grid") {
+        None | Some(Value::Null) => 50.0,
+        Some(v) => numero(v, "instrumentation.grid")?,
+    };
+    if g < 0.0 {
+        return Err(ErrorDiagrama::new(
+            "instrumentation: grid no puede ser negativo",
+        ));
+    }
     let top = encabezado(c, b, "") + 10.0;
     c.add(format!(r#"<g transform="translate(0 {top})">"#));
     let equipos = b.get("equipment").and_then(Value::as_array).cloned().unwrap_or_default();
@@ -1005,5 +1036,39 @@ mod tests {
         let mut lienzo = Lienzo::new(Paleta::para(true), "test".to_string());
         let res = render_grafcet(&mut lienzo, bloque);
         assert!(res.is_err());
+    }
+
+    #[test]
+    fn instrumentation_tank_valida_level_finito_y_rango_0_1() {
+        for malo in [
+            json!(1e308),
+            json!(-1e308),
+            json!(1e305),
+            json!(-0.1),
+            json!(1.2),
+            json!("alto"),
+            json!(true),
+        ] {
+            let val = json!({
+                "type": "instrumentation",
+                "equipment": [{"id": "T1", "kind": "tank", "at": [2, 2], "level": malo}]
+            });
+            let mut lienzo = Lienzo::new(Paleta::para(true), "test".to_string());
+            assert!(
+                render_instrumentation(&mut lienzo, val.as_object().unwrap()).is_err(),
+                "level={malo} debía rechazarse"
+            );
+        }
+        for bueno in [0.0, 0.6, 1.0] {
+            let val = json!({
+                "type": "instrumentation",
+                "equipment": [{"id": "T1", "kind": "tank", "at": [2, 2], "level": bueno}]
+            });
+            let mut lienzo = Lienzo::new(Paleta::para(true), "test".to_string());
+            render_instrumentation(&mut lienzo, val.as_object().unwrap())
+                .unwrap_or_else(|e| panic!("level={bueno} falló: {e}"));
+            let svg = lienzo.partes.join("");
+            assert!(!svg.contains("inf") && !svg.contains("NaN"));
+        }
     }
 }

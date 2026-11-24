@@ -776,12 +776,25 @@ pub fn analito(dato: Option<&Value>) -> Result<Analito, ErrorQuimica> {
     )?;
     let mut pkas: Vec<f64> = Vec::new();
     if tipo.starts_with("weak") {
+        const MAX_PKA: usize = 20;
         if tipo == "weak_base" && map.contains_key("pKb") {
-            for p in lista(map.get("pKb")) {
+            let lista_pkb = lista(map.get("pKb"));
+            if lista_pkb.len() > MAX_PKA {
+                return Err(ErrorQuimica(format!(
+                    "analyte: como máximo se admiten {MAX_PKA} valores de pKb"
+                )));
+            }
+            for p in lista_pkb {
                 pkas.push(14.0 - num(p, "analyte.pKb", false, None)?);
             }
         } else {
-            for p in lista(map.get("pKa")) {
+            let lista_pka = lista(map.get("pKa"));
+            if lista_pka.len() > MAX_PKA {
+                return Err(ErrorQuimica(format!(
+                    "analyte: como máximo se admiten {MAX_PKA} valores de pKa"
+                )));
+            }
+            for p in lista_pka {
                 pkas.push(num(p, "analyte.pKa", false, None)?);
             }
         }

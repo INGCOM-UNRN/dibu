@@ -12,6 +12,7 @@ use serde_json::{json, Value};
 use std::fmt::Write as _;
 
 const MAX_VECINOS_NMR: i64 = 20;
+const MAX_PKA: usize = 20;
 
 pub fn registrar(reg: &mut Registro) {
     reg.registrar("titration", render_titration);
@@ -160,38 +161,49 @@ fn render_titration(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> 
             } else {
                 (raw_z, raw_a)
             };
-            let y_top = ejes.py(z);
-            let y_bot = ejes.py(a);
-            if !(y_top.is_finite()
-                && y_bot.is_finite()
-                && (y_bot - y_top).is_finite()
-                && (y_top - 3.0).is_finite())
-            {
-                return Err(ErrorDiagrama::new(
-                    "titration.indicator.range: rango fuera de límites finitos",
+            if z >= 0.0 && a <= 14.0 {
+                let a_vis = a.clamp(0.0, 14.0);
+                let z_vis = z.clamp(0.0, 14.0);
+                let y_top = ejes.py(z_vis).clamp(y0, y0 + h);
+                let y_bot = ejes.py(a_vis).clamp(y0, y0 + h);
+                if !(y_top.is_finite()
+                    && y_bot.is_finite()
+                    && (y_bot - y_top).is_finite()
+                    && (y_top - 3.0).is_finite())
+                {
+                    return Err(ErrorDiagrama::new(
+                        "titration.indicator.range: rango fuera de límites finitos",
+                    ));
+                }
+                let height = (y_bot - y_top).max(0.0);
+                c.add(format!(
+                    r#"<rect x="{x0:.1}" y="{y_top:.1}" width="{w:.1}" height="{height:.1}" fill="{}" opacity="0.7"/>"#,
+                    c.pal.fill_highlight
                 ));
+                let ind_nombre = ind
+                    .get("name")
+                    .filter(|v| !v.is_null())
+                    .map(valor_str)
+                    .filter(|s| !s.is_empty())
+                    .unwrap_or_else(|| "indicador".to_string());
+                let fmt_ph = |v: f64| {
+                    if v.abs() < 1e4 {
+                        coma(v, 1)
+                    } else {
+                        fmt_g(Some(v), 3)
+                    }
+                };
+                c.t(
+                    x0 + w - 4.0,
+                    y_top - 3.0,
+                    &format!("{ind_nombre} ({}–{})", fmt_ph(a), fmt_ph(z)),
+                    9.0,
+                    400,
+                    "textSub",
+                    "end",
+                    SANS,
+                );
             }
-            let height = (y_bot - y_top).max(0.0);
-            c.add(format!(
-                r#"<rect x="{x0:.1}" y="{y_top:.1}" width="{w:.1}" height="{height:.1}" fill="{}" opacity="0.7"/>"#,
-                c.pal.fill_highlight
-            ));
-            let ind_nombre = ind
-                .get("name")
-                .filter(|v| !v.is_null())
-                .map(valor_str)
-                .filter(|s| !s.is_empty())
-                .unwrap_or_else(|| "indicador".to_string());
-            c.t(
-                x0 + w - 4.0,
-                y_top - 3.0,
-                &format!("{ind_nombre} ({}–{})", coma(a, 1), coma(z, 1)),
-                9.0,
-                400,
-                "textSub",
-                "end",
-                SANS,
-            );
         }
     }
 
@@ -208,7 +220,13 @@ fn render_titration(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> 
             let (v, ph) = extraer_rango(item, &format!("titration.data[{i}]"))?;
             let cx = ejes.px(v);
             let cy = ejes.py(ph);
-            if cx.is_finite() && cy.is_finite() {
+            if cx.is_finite()
+                && cy.is_finite()
+                && cx >= x0 - 2.0
+                && cx <= x0 + w + 2.0
+                && cy >= y0 - 2.0
+                && cy <= y0 + h + 2.0
+            {
                 c.add(format!(
                     r#"<circle cx="{cx:.1}" cy="{cy:.1}" r="2.6" fill="none" stroke="{}" stroke-width="1.2"/>"#,
                     c.pal.stroke_sub
@@ -370,9 +388,20 @@ fn render_speciation(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama>
             "speciation: falta pKa (uno o una lista)",
         ));
     }
+    if pka_vals.len() > MAX_PKA {
+        return Err(ErrorDiagrama::new(format!(
+            "speciation: como máximo se admiten {MAX_PKA} valores de pKa"
+        )));
+    }
     let mut pkas = Vec::with_capacity(pka_vals.len());
     for (i, v) in pka_vals.into_iter().enumerate() {
-        pkas.push(num(v, &format!("speciation.pKa[{i}]"))?);
+        let pka = num(v, &format!("speciation.pKa[{i}]"))?;
+        if !(-10.0..=24.0).contains(&pka) {
+            return Err(ErrorDiagrama::new(format!(
+                "speciation.pKa[{i}]: pKa ({pka}) fuera de rango [-10, 24]"
+            )));
+        }
+        pkas.push(pka);
     }
     pkas.sort_by(|a, b| a.total_cmp(b));
 
@@ -1076,6 +1105,74 @@ fn emitir_polilinea(c: &mut Lienzo, puntos: &[Punto], ancho: f64) -> Result<(), 
     Ok(())
 }
 
+fn recortar_y_emitir_polilinea(
+    c: &mut Lienzo,
+    puntos: &[Punto],
+    ancho: f64,
+    x0: f64,
+    y0: f64,
+    w: f64,
+    h: f64,
+) -> Result<(), ErrorDiagrama> {
+    if puntos.is_empty() {
+        return Ok(());
+    }
+    let (x1, y1) = (x0 + w, y0 + h);
+    let recortar = |a: Punto, b: Punto| -> Option<(Punto, Punto)> {
+        let (dx, dy) = (b.0 - a.0, b.1 - a.1);
+        let (mut t0, mut t1) = (0.0_f64, 1.0_f64);
+        for (p, q) in [(-dx, a.0 - x0), (dx, x1 - a.0), (-dy, a.1 - y0), (dy, y1 - a.1)] {
+            if p == 0.0 {
+                if q < 0.0 {
+                    return None;
+                }
+                continue;
+            }
+            let t = q / p;
+            if p < 0.0 {
+                t0 = t0.max(t);
+            } else {
+                t1 = t1.min(t);
+            }
+            if t0 > t1 {
+                return None;
+            }
+        }
+        Some(((a.0 + t0 * dx, a.1 + t0 * dy), (a.0 + t1 * dx, a.1 + t1 * dy)))
+    };
+
+    let mut tramos: Vec<Vec<Punto>> = Vec::new();
+    let mut previo: Option<Punto> = None;
+    for &(x, y) in puntos {
+        if !(x.is_finite() && y.is_finite()) {
+            return Err(ErrorDiagrama::new(
+                "phase_diagram: coordenadas no finitas en curva de equilibrio",
+            ));
+        }
+        let actual = (x, y);
+        if let Some(prev) = previo {
+            if let Some((ini, fin)) = recortar(prev, actual) {
+                let unir = tramos
+                    .last()
+                    .and_then(|t| t.last())
+                    .is_some_and(|&(lx, ly)| (lx - ini.0).hypot(ly - ini.1) < 0.01);
+                if unir {
+                    if let Some(ultimo) = tramos.last_mut() {
+                        ultimo.push(fin);
+                    }
+                } else {
+                    tramos.push(vec![ini, fin]);
+                }
+            }
+        }
+        previo = Some(actual);
+    }
+    for tramo in tramos {
+        emitir_polilinea(c, &tramo, ancho)?;
+    }
+    Ok(())
+}
+
 fn render_phase_diagram(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
     if opt_texto(b, "kind").as_deref() == Some("eutectic") {
         return render_eutectico(c, b);
@@ -1168,7 +1265,7 @@ fn render_phase_diagram(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagra
             (px(t), py(f.p_sublimacion(t)))
         })
         .collect();
-    emitir_polilinea(c, &sub_pts, 2.0)?;
+    recortar_y_emitir_polilinea(c, &sub_pts, 2.0, x0, y0, w, h)?;
 
     let vap_pts: Vec<Punto> = (0..=80)
         .map(|i| {
@@ -1176,7 +1273,7 @@ fn render_phase_diagram(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagra
             (px(t), py(f.p_vapor(t)))
         })
         .collect();
-    emitir_polilinea(c, &vap_pts, 2.0)?;
+    recortar_y_emitir_polilinea(c, &vap_pts, 2.0, x0, y0, w, h)?;
 
     let inclinacion = if f.pendiente_fusion < 0.0 {
         -0.18
@@ -1197,7 +1294,7 @@ fn render_phase_diagram(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagra
             })
             .collect()
     };
-    emitir_polilinea(c, &fusion_pts, 2.0)?;
+    recortar_y_emitir_polilinea(c, &fusion_pts, 2.0, x0, y0, w, h)?;
 
     let x_fusion = |p: f64| -> f64 {
         if esquematico {
@@ -1258,7 +1355,7 @@ fn render_phase_diagram(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagra
         };
         cortes.push((nombre_corte, tb, px(tb)));
         for (nombre, t, x) in cortes {
-            if x.is_finite() && t.is_finite() {
+            if x.is_finite() && t.is_finite() && (x0..=x0 + w).contains(&x) {
                 c.punto(x, y1, "accentPrimary", 2.8);
                 c.linea(x, y1, x, y0 + h, "strokeMuted", 0.7, None, "2 3");
                 rotulo_q(
@@ -1277,10 +1374,12 @@ fn render_phase_diagram(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagra
 
     let p_de_y = |y: f64| -> f64 { 10_f64.powf(lmin + (y0 + h - y) / h * (lmax - lmin)) };
     let y_solido = y0 + h * 0.3;
-    let x_solido = (x0 + 30.0).max((x0 + x_fusion(p_de_y(y_solido))) / 2.0);
+    let x_fusion_solido = x_fusion(p_de_y(y_solido)).clamp(x0, x0 + w);
+    let x_solido = (x0 + 30.0).max((x0 + x_fusion_solido) / 2.0);
+    let x_liq_izq = x_fusion(pc).clamp(x0, x0 + w);
     let mut regiones = vec![
         ("Sólido", x_solido, y_solido),
-        ("Líquido", (x_fusion(pc) + px(tc)) / 2.0 + 14.0, y0 + h * 0.2),
+        ("Líquido", (x_liq_izq + px(tc)) / 2.0 + 14.0, y0 + h * 0.2),
         ("Gas", px(tt + (tc - tt) * 0.7), y0 + h * 0.85),
     ];
     if booleano(b, "supercritical", true) {
@@ -1319,7 +1418,12 @@ fn render_phase_diagram(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagra
                 )));
             }
             let (x, y) = (px(t), py(p));
-            if x.is_finite() && y.is_finite() {
+            if !x.is_finite() || !y.is_finite() || x.abs() > 1e5 || y.abs() > 1e5 {
+                return Err(ErrorDiagrama::new(format!(
+                    "phase_diagram.points[{i}]: punto ({t}, {p}) fuera de rango visible"
+                )));
+            }
+            if x >= x0 - 2.0 && x <= x0 + w + 2.0 && y >= y0 - 2.0 && y <= y0 + h + 2.0 {
                 c.add(format!(
                     r#"<circle cx="{x:.1}" cy="{y:.1}" r="4" fill="{}" stroke="{}" stroke-width="1.6"/>"#,
                     c.pal.fill_cell, c.pal.stroke_main
@@ -1503,6 +1607,11 @@ fn render_eutectico(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> 
     }
 
     if let Some(x) = opt_num(b, "cooling", "phase_diagram.cooling")? {
+        if !(0.0..=100.0).contains(&x) {
+            return Err(ErrorDiagrama::new(
+                "phase_diagram.cooling: la composición tiene que estar entre 0 y 100 %",
+            ));
+        }
         let tl = liquidus(x);
         let px_x = ejes.px(x);
         let py_tl = ejes.py(tl);
@@ -1892,13 +2001,11 @@ fn render_spectrum(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
                 .collect();
             curva_segura(c, &ejes, &pts, 0, 1.5, "strokeMain");
             for p in &picos {
-                rot.rotular(
-                    c,
-                    ejes.px(p.at),
-                    ejes.py(transmitancia(p.at)) + 14.0,
-                    &p.label,
-                    "middle",
-                );
+                let px = ejes.px(p.at);
+                let py = ejes.py(transmitancia(p.at));
+                if px.is_finite() && py.is_finite() && px >= x0 - 2.0 && px <= x0 + w + 2.0 {
+                    rot.rotular(c, px, py + 14.0, &p.label, "middle");
+                }
             }
             Ok((x0 + w + 10.0, y0 + h + 40.0))
         }
@@ -1941,6 +2048,11 @@ fn render_spectrum(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
                     let intensity =
                         opt_num(p, "intensity", &format!("spectrum.signals[{i}].intensity"))?
                             .unwrap_or(0.8);
+                    if intensity < 0.0 {
+                        return Err(ErrorDiagrama::new(format!(
+                            "spectrum.signals[{i}].intensity: no puede ser negativo"
+                        )));
+                    }
                     signals.push(Signal {
                         shift,
                         intensity,
@@ -2065,9 +2177,14 @@ fn render_spectrum(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
                         x = centro + real * separacion / paso_real;
                     }
                 }
-                let y_top = ejes.py(altura);
-                let y_base = ejes.py(0.0);
-                if x.is_finite() && y_top.is_finite() && y_base.is_finite() {
+                let y_top = ejes.py(altura).clamp(y0, y0 + h);
+                let y_base = ejes.py(0.0).clamp(y0, y0 + h);
+                if x.is_finite()
+                    && y_top.is_finite()
+                    && y_base.is_finite()
+                    && x >= x0 - 2.0
+                    && x <= x0 + w + 2.0
+                {
                     c.linea(
                         x,
                         y_base,
@@ -2083,6 +2200,10 @@ fn render_spectrum(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
 
             let mostrar_integ = booleano(b, "showIntegration", true);
             for (idx, sig) in signals.iter().enumerate() {
+                let x_sig = ejes.px(sig.shift);
+                if !x_sig.is_finite() || x_sig < x0 - 2.0 || x_sig > x0 + w + 2.0 {
+                    continue;
+                }
                 let propias_max = lineas
                     .iter()
                     .filter(|l| l.2 == idx)
@@ -2102,8 +2223,8 @@ fn render_spectrum(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
                 }
                 rot.rotular(
                     c,
-                    ejes.px(sig.shift),
-                    ejes.py(altura) - 6.0,
+                    x_sig,
+                    ejes.py(altura).clamp(y0, y0 + h) - 6.0,
                     &texto,
                     "middle",
                 );
@@ -2244,13 +2365,11 @@ fn render_spectrum(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
                 .collect();
             curva_segura(c, &ejes, &pts, 0, 1.8, "strokeMain");
             for p in &bandas {
-                rot.rotular(
-                    c,
-                    ejes.px(p.at),
-                    ejes.py(absorbancia(p.at)) - 6.0,
-                    &p.label,
-                    "middle",
-                );
+                let px = ejes.px(p.at);
+                let py = ejes.py(absorbancia(p.at));
+                if px.is_finite() && py.is_finite() && px >= x0 - 2.0 && px <= x0 + w + 2.0 {
+                    rot.rotular(c, px, py - 6.0, &p.label, "middle");
+                }
             }
             Ok((x0 + w + 10.0, y0 + h + 40.0))
         }
@@ -3120,5 +3239,114 @@ annotations: [equivalence, half, initial]
         )
         .unwrap();
         assert_svg_valido(&ms_grande);
+    }
+
+    #[test]
+    fn regresion_tier5_cotas_y_coordenadas_acotadas() {
+        // H1 + H5.4: speciation y titration acotan cantidad de pKa (MAX_PKA = 20)
+        let mut muchos_pka = String::from("type: speciation\npKa: [");
+        for i in 0..100 {
+            if i > 0 {
+                muchos_pka.push_str(", ");
+            }
+            muchos_pka.push_str("4.0");
+        }
+        muchos_pka.push(']');
+        assert!(render_yaml(&muchos_pka, true).is_err());
+
+        let mut tit_pka = String::from("type: titration\nanalyte:\n  kind: weak_acid\n  pKa: [");
+        for i in 0..30 {
+            if i > 0 {
+                tit_pka.push_str(", ");
+            }
+            tit_pka.push_str("4.0");
+        }
+        tit_pka.push(']');
+        assert!(render_yaml(&tit_pka, true).is_err());
+
+        // H2: speciation con pKa 1e300, spectrum.c13 con intensity < 0 o shift -1e300, phase_diagram points T=1e305
+        assert!(render_yaml("type: speciation\npKa: [1e300]", true).is_err());
+        assert!(render_yaml(
+            "type: spectrum\nkind: c13\nsignals:\n  - {shift: 50, intensity: -1e300}",
+            true
+        )
+        .is_err());
+        let svg_c13_shift = render_yaml(
+            "type: spectrum\nkind: c13\nsignals:\n  - {shift: -1e300, intensity: 0.5}",
+            true,
+        )
+        .unwrap();
+        assert_svg_valido(&svg_c13_shift);
+        assert!(svg_c13_shift.len() < 10_000, "no debía emitir coordenadas gigantes");
+        assert!(render_yaml(
+            "type: phase_diagram\nsubstance: water\npoints:\n  - {T: 1e305, P: 1.0, label: X}",
+            true
+        )
+        .is_err());
+
+        // H2 + H4: titration.data con [1e300, 7] y phase_diagram scale:log meltingSlope:1e-305 no emiten coords gigantes
+        let svg_tit = render_yaml(
+            "type: titration\nanalyte: {kind: weak_acid, pKa: 4.76}\ndata:\n  - [1e300, 7.0]",
+            true,
+        )
+        .unwrap();
+        assert_svg_valido(&svg_tit);
+        assert!(!svg_tit.contains("<circle cx=\"1150000"), "{svg_tit}");
+
+        let svg_pd = render_yaml(
+            "type: phase_diagram\nsubstance: water\nscale: log\nmeltingSlope: 1e-305",
+            true,
+        )
+        .unwrap();
+        assert_svg_valido(&svg_pd);
+        for parte in svg_pd.split(r#"<polyline points=""#).skip(1) {
+            let pts = parte.split('"').next().unwrap_or("");
+            for par in pts.split(' ') {
+                let mut nums = par.split(',');
+                let x = nums.next().unwrap().parse::<f64>().unwrap();
+                let y = nums.next().unwrap().parse::<f64>().unwrap();
+                assert!(x.abs() < 1e4 && y.abs() < 1e4, "coordenada fuera de cota: {x},{y}");
+            }
+        }
+
+        // F3: spectrum.ir at=1e308, titration indicator.range fuera/extremo, phase_diagram.cooling fuera de [0, 100]
+        let svg_ir = render_yaml(
+            "type: spectrum\nkind: ir\npeaks:\n  - {at: 1e308, label: X}",
+            true,
+        )
+        .unwrap();
+        assert_svg_valido(&svg_ir);
+        assert!(!extraer_texto_svg(&svg_ir).contains('X'));
+        assert!(svg_ir.len() < 25_000, "spectrum.ir demasiado largo: {}", svg_ir.len());
+
+        let svg_ind_out = render_yaml(
+            "type: titration\nanalyte: {kind: weak_acid, pKa: 4.76}\nindicator: {name: X, range: [1e305, 1e305]}",
+            true,
+        )
+        .unwrap();
+        assert_svg_valido(&svg_ind_out);
+        assert!(svg_ind_out.len() < 15_000, "indicator fuera de [0,14] emitió coords gigantes");
+
+        let svg_ind_wide = render_yaml(
+            "type: titration\nanalyte: {kind: strong_acid}\nindicator: {name: X, range: [-1e307, 1e307]}",
+            true,
+        )
+        .unwrap();
+        assert_svg_valido(&svg_ind_wide);
+        assert!(svg_ind_wide.len() < 15_000);
+
+        for bad_cool in [-10_000_000_000.0, -0.1, 100.1, 1e155] {
+            let y = format!(
+                "type: phase_diagram\nkind: eutectic\nmeltingA: 800\nmeltingB: 600\neutectic: [40, 300]\ncooling: {bad_cool}"
+            );
+            assert!(render_yaml(&y, true).is_err(), "cooling={bad_cool} debía fallar");
+        }
+        for good_cool in [0.0, 100.0] {
+            let y = format!(
+                "type: phase_diagram\nkind: eutectic\nmeltingA: 800\nmeltingB: 600\neutectic: [40, 300]\ncooling: {good_cool}"
+            );
+            let svg = render_yaml(&y, true).unwrap();
+            assert_svg_valido(&svg);
+        }
     }
 }

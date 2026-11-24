@@ -13,6 +13,7 @@ use std::collections::BTreeMap;
 const MAX_MARCOS: usize = 10;
 const MAX_PASOS: usize = 8;
 const MAX_LLAMADAS: usize = 40;
+const MAX_NODOS_ARBOL: usize = 512;
 
 fn envolver_tipo(tipo: &str, res: Result<Punto, ErrorDiagrama>) -> Result<Punto, ErrorDiagrama> {
     res.map_err(|e| {
@@ -594,7 +595,17 @@ struct Llamada {
     en_blanco: bool,
 }
 
-fn parsear_llamada(dato: &Value, prof: usize) -> Result<Llamada, ErrorDiagrama> {
+fn parsear_llamada(
+    dato: &Value,
+    prof: usize,
+    contador: &mut usize,
+) -> Result<Llamada, ErrorDiagrama> {
+    *contador += 1;
+    if *contador > MAX_LLAMADAS {
+        return Err(ErrorDiagrama::new(format!(
+            "el árbol tiene más de {MAX_LLAMADAS} llamadas; el máximo es {MAX_LLAMADAS}"
+        )));
+    }
     if let Some(obj) = dato.as_object() {
         let Some(call_val) = obj.get("call").filter(|v| es_truthy(v)) else {
             return Err(ErrorDiagrama::new(
@@ -611,9 +622,9 @@ fn parsear_llamada(dato: &Value, prof: usize) -> Result<Llamada, ErrorDiagrama> 
                 ));
             }
         };
-        let mut hijos = Vec::with_capacity(hijos_slice.len());
+        let mut hijos = Vec::with_capacity(hijos_slice.len().min(MAX_LLAMADAS));
         for h in hijos_slice {
-            hijos.push(parsear_llamada(h, prof + 1)?);
+            hijos.push(parsear_llamada(h, prof + 1, contador)?);
         }
         Ok(Llamada {
             texto: texto(call_val),
@@ -797,7 +808,8 @@ fn arbol_llamadas(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
             "el árbol de llamadas no tiene 'root' ({call, returns, children})",
         ));
     };
-    let mut raiz = parsear_llamada(root_val, 0)?;
+    let mut parseados = 0usize;
+    let mut raiz = parsear_llamada(root_val, 0, &mut parseados)?;
     let mut total_nodos = 0usize;
     let mut profundidad = 0usize;
     let mut hay_retorno = false;
@@ -911,20 +923,25 @@ pub struct Nodo {
     pub izq: Option<Box<Nodo>>,
     pub der: Option<Box<Nodo>>,
     pub indice: Option<usize>,
+    pub altura: usize,
 }
 
 impl Nodo {
     pub fn altura(&self) -> usize {
-        1 + self
+        self.altura
+    }
+
+    fn actualizar_altura(&mut self) {
+        self.altura = 1 + self
             .izq
             .as_ref()
-            .map_or(0, |n| n.altura())
-            .max(self.der.as_ref().map_or(0, |n| n.altura()))
+            .map_or(0, |n| n.altura)
+            .max(self.der.as_ref().map_or(0, |n| n.altura));
     }
 
     pub fn balance(&self) -> i32 {
-        let izq_h = self.izq.as_ref().map_or(0, |n| n.altura() as i32);
-        let der_h = self.der.as_ref().map_or(0, |n| n.altura() as i32);
+        let izq_h = self.izq.as_ref().map_or(0, |n| n.altura as i32);
+        let der_h = self.der.as_ref().map_or(0, |n| n.altura as i32);
         izq_h - der_h
     }
 }
@@ -957,7 +974,9 @@ fn rotar_der(mut n: Box<Nodo>) -> Box<Nodo> {
         return n;
     };
     n.izq = raiz.der.take();
+    n.actualizar_altura();
     raiz.der = Some(n);
+    raiz.actualizar_altura();
     raiz
 }
 
@@ -966,7 +985,9 @@ fn rotar_izq(mut n: Box<Nodo>) -> Box<Nodo> {
         return n;
     };
     n.der = raiz.izq.take();
+    n.actualizar_altura();
     raiz.izq = Some(n);
+    raiz.actualizar_altura();
     raiz
 }
 
@@ -977,6 +998,7 @@ fn insertar(raiz: Option<Box<Nodo>>, valor: String, avl: bool) -> Box<Nodo> {
             izq: None,
             der: None,
             indice: None,
+            altura: 1,
         });
     };
     match cmp_clave(&valor, &nodo.valor) {
@@ -984,6 +1006,7 @@ fn insertar(raiz: Option<Box<Nodo>>, valor: String, avl: bool) -> Box<Nodo> {
         Ordering::Less => nodo.izq = Some(insertar(nodo.izq.take(), valor, avl)),
         Ordering::Greater => nodo.der = Some(insertar(nodo.der.take(), valor, avl)),
     }
+    nodo.actualizar_altura();
     if !avl {
         return nodo;
     }
@@ -1007,36 +1030,94 @@ fn insertar(raiz: Option<Box<Nodo>>, valor: String, avl: bool) -> Box<Nodo> {
     nodo
 }
 
-fn desde_niveles(vals: &[String], i: usize) -> Option<Box<Nodo>> {
-    let v = vals.get(i)?;
+fn desde_niveles(
+    vals: &[String],
+    i: usize,
+    contador: &mut usize,
+) -> Result<Option<Box<Nodo>>, ErrorDiagrama> {
+    let Some(v) = vals.get(i) else {
+        return Ok(None);
+    };
     if matches!(v.as_str(), "" | "null" | "None" | "~") {
-        return None;
+        return Ok(None);
+    }
+    *contador += 1;
+    if *contador > MAX_NODOS_ARBOL {
+        return Err(ErrorDiagrama::new(format!(
+            "el árbol tiene más de {MAX_NODOS_ARBOL} nodos; el máximo es {MAX_NODOS_ARBOL}"
+        )));
     }
     let izq_idx = i.checked_mul(2).and_then(|x| x.checked_add(1));
     let der_idx = i.checked_mul(2).and_then(|x| x.checked_add(2));
-    Some(Box::new(Nodo {
+    let izq = match izq_idx {
+        Some(idx) => desde_niveles(vals, idx, contador)?,
+        None => None,
+    };
+    let der = match der_idx {
+        Some(idx) => desde_niveles(vals, idx, contador)?,
+        None => None,
+    };
+    let altura = 1 + izq
+        .as_ref()
+        .map_or(0, |n| n.altura)
+        .max(der.as_ref().map_or(0, |n| n.altura));
+    Ok(Some(Box::new(Nodo {
         valor: v.clone(),
-        izq: izq_idx.and_then(|idx| desde_niveles(vals, idx)),
-        der: der_idx.and_then(|idx| desde_niveles(vals, idx)),
+        izq,
+        der,
         indice: Some(i),
-    }))
+        altura,
+    })))
 }
 
-fn desde_anidado(dato: &Value) -> Option<Box<Nodo>> {
+fn desde_anidado(
+    dato: &Value,
+    contador: &mut usize,
+) -> Result<Option<Box<Nodo>>, ErrorDiagrama> {
     match dato {
-        Value::Null => None,
-        Value::Object(obj) => Some(Box::new(Nodo {
-            valor: obj.get("value").map(texto).unwrap_or_default(),
-            izq: obj.get("left").and_then(desde_anidado),
-            der: obj.get("right").and_then(desde_anidado),
-            indice: None,
-        })),
-        other => Some(Box::new(Nodo {
-            valor: texto(other),
-            izq: None,
-            der: None,
-            indice: None,
-        })),
+        Value::Null => Ok(None),
+        Value::Object(obj) => {
+            *contador += 1;
+            if *contador > MAX_NODOS_ARBOL {
+                return Err(ErrorDiagrama::new(format!(
+                    "el árbol tiene más de {MAX_NODOS_ARBOL} nodos; el máximo es {MAX_NODOS_ARBOL}"
+                )));
+            }
+            let izq = match obj.get("left") {
+                Some(v) => desde_anidado(v, contador)?,
+                None => None,
+            };
+            let der = match obj.get("right") {
+                Some(v) => desde_anidado(v, contador)?,
+                None => None,
+            };
+            let altura = 1 + izq
+                .as_ref()
+                .map_or(0, |n| n.altura)
+                .max(der.as_ref().map_or(0, |n| n.altura));
+            Ok(Some(Box::new(Nodo {
+                valor: obj.get("value").map(texto).unwrap_or_default(),
+                izq,
+                der,
+                indice: None,
+                altura,
+            })))
+        }
+        other => {
+            *contador += 1;
+            if *contador > MAX_NODOS_ARBOL {
+                return Err(ErrorDiagrama::new(format!(
+                    "el árbol tiene más de {MAX_NODOS_ARBOL} nodos; el máximo es {MAX_NODOS_ARBOL}"
+                )));
+            }
+            Ok(Some(Box::new(Nodo {
+                valor: texto(other),
+                izq: None,
+                der: None,
+                indice: None,
+                altura: 1,
+            })))
+        }
     }
 }
 
@@ -1050,6 +1131,12 @@ pub fn construir_arbol(b: &Bloque) -> Result<Option<Box<Nodo>>, ErrorDiagrama> {
         let Some(arr) = ins.as_array() else {
             return Err(ErrorDiagrama::new("'insert' tiene que ser una lista"));
         };
+        if arr.len() > MAX_NODOS_ARBOL {
+            return Err(ErrorDiagrama::new(format!(
+                "el árbol tiene {} nodos en 'insert'; el máximo es {MAX_NODOS_ARBOL}",
+                arr.len()
+            )));
+        }
         let es_avl = variante == "avl";
         let mut raiz: Option<Box<Nodo>> = None;
         for v in arr {
@@ -1057,11 +1144,19 @@ pub fn construir_arbol(b: &Bloque) -> Result<Option<Box<Nodo>>, ErrorDiagrama> {
         }
         return Ok(raiz);
     }
+    let mut contador = 0usize;
     if let Some(root_val) = b.get("root").filter(|v| !v.is_null()) {
-        return Ok(desde_anidado(root_val));
+        return desde_anidado(root_val, &mut contador);
     }
     let vals = valores(b)?;
-    Ok(desde_niveles(&vals, 0))
+    if vals.len() > MAX_NODOS_ARBOL * 4 {
+        return Err(ErrorDiagrama::new(format!(
+            "el árbol tiene {} posiciones en 'values'; el máximo es {}",
+            vals.len(),
+            MAX_NODOS_ARBOL * 4
+        )));
+    }
+    desde_niveles(&vals, 0, &mut contador)
 }
 
 struct NodoPos {
@@ -2095,5 +2190,45 @@ mod tests {
             .unwrap_err()
             .to_string();
         assert_eq!(falso_prefijo, "tree: tree_extra: otro");
+    }
+
+    #[test]
+    fn tree_y_call_tree_acotan_dos_sin_timeout() {
+        let grande: Vec<i64> = (0..15_000).collect();
+        let err = render_val(
+            json!({"type": "tree", "variant": "binary", "insert": grande}),
+            true,
+        )
+        .unwrap_err()
+        .to_string();
+        assert!(err.contains("máximo es 512"), "{err}");
+
+        // 500 nodos (caso usado en stress test) renderizan rápido tanto en BST como en AVL
+        let medio: Vec<i64> = (0..500).collect();
+        let svg_bst = render_val(
+            json!({"type": "tree", "variant": "bst", "insert": medio}),
+            true,
+        )
+        .unwrap();
+        assert!(svg_bst.starts_with("<svg "));
+        let svg_avl = render_val(
+            json!({"type": "tree", "variant": "avl", "insert": (0..500).collect::<Vec<i64>>()}),
+            true,
+        )
+        .unwrap();
+        assert!(svg_avl.starts_with("<svg "));
+
+        // call_tree con > 40 nodos corta en parsear_llamada
+        let mut hijos = Vec::new();
+        for i in 0..45 {
+            hijos.push(json!({"call": format!("f({i})")}) );
+        }
+        let err_ct = render_val(
+            json!({"type": "call_tree", "root": {"call": "root", "children": hijos}}),
+            true,
+        )
+        .unwrap_err()
+        .to_string();
+        assert!(err_ct.contains("el máximo es 40"), "{err_ct}");
     }
 }

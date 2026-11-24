@@ -292,3 +292,94 @@ fn sync_md_deduplica_bloques_identicos_entre_archivos() {
         .collect();
     assert_eq!(entradas.len(), 1);
 }
+
+#[test]
+fn cli_hardening_traversal_io_bom_utf8_batch_y_no_md() {
+    use std::io::Write;
+    use std::process::Stdio;
+
+    // G4: Path traversal en `render` rechazado sin escribir fuera de output_dir
+    let tmp_trav = TempDir::new("traversal");
+    let out_dir = tmp_trav.path().join("sub").join("out");
+    let trav_yaml = tmp_trav.path().join("trav.yaml");
+    fs::write(&trav_yaml, "type: array\nid: \"../escaped_svg\"\nvalues: [1, 2]\n").unwrap();
+    let out_trav = run_dibu(
+        tmp_trav.path(),
+        &["render", trav_yaml.to_str().unwrap(), "-o", out_dir.to_str().unwrap()],
+    );
+    assert_ne!(out_trav.status.code(), Some(0));
+    assert!(!tmp_trav.path().join("sub").join("escaped_svg.svg").exists());
+    assert!(String::from_utf8_lossy(&out_trav.stderr).contains("id inválido"));
+
+    // G5: Error de I/O en `sync-md` (colisión con archivo regular `diagramas`) no miente "✓ Escrito:"
+    let tmp_io = TempDir::new("io_err");
+    fs::write(tmp_io.path().join("doc.md"), format!("```estructura\n{BLOQUE_SIMPLE}```\n")).unwrap();
+    fs::write(tmp_io.path().join("diagramas"), "no soy dir").unwrap();
+    let out_io = run_dibu(tmp_io.path(), &["sync-md", "."]);
+    assert_eq!(out_io.status.code(), Some(1));
+    assert!(!String::from_utf8_lossy(&out_io.stdout).contains("✓ Escrito:"));
+    assert!(String::from_utf8_lossy(&out_io.stderr).contains("Error: no se pudo escribir"));
+
+    // G6: `batch` con bytes UTF-8 inválidos emite error JSON controlado y procesa el resto del stream
+    let mut child = Command::new(env!("CARGO_BIN_EXE_dibu"))
+        .arg("batch")
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .unwrap();
+    {
+        let stdin = child.stdin.as_mut().unwrap();
+        stdin
+            .write_all(b"{\"id\":\"1\",\"block\":{\"type\":\"array\",\"values\":[1]}}\n\xff\xfe\n{\"id\":\"2\",\"block\":{\"type\":\"array\",\"values\":[2]}}\n")
+            .unwrap();
+    }
+    let out_batch = child.wait_with_output().unwrap();
+    assert_eq!(out_batch.status.code(), Some(0));
+    let lineas: Vec<&str> = std::str::from_utf8(&out_batch.stdout)
+        .unwrap()
+        .lines()
+        .collect();
+    assert_eq!(lineas.len(), 3, "lineas: {lineas:?}");
+    assert!(lineas[0].contains("\"id\":\"1\"") && lineas[0].contains("<svg"));
+    assert!(lineas[1].contains("UTF-8 inválido"));
+    assert!(lineas[2].contains("\"id\":\"2\"") && lineas[2].contains("<svg"));
+
+    // G9: BOM UTF-8 en YAML (`render`) y Markdown (`sync-md`)
+    let tmp_bom = TempDir::new("bom");
+    let bom_yaml = tmp_bom.path().join("bom.yaml");
+    fs::write(&bom_yaml, "\u{feff}type: array\nvalues: [1, 2]\n").unwrap();
+    let out_bom_r = run_dibu(
+        tmp_bom.path(),
+        &["render", bom_yaml.to_str().unwrap(), "-o", tmp_bom.path().join("out").to_str().unwrap()],
+    );
+    assert_eq!(out_bom_r.status.code(), Some(0));
+    assert!(tmp_bom.path().join("out").join("bom_1.svg").is_file());
+
+    let bom_md = tmp_bom.path().join("bom.md");
+    fs::write(&bom_md, format!("\u{feff}```estructura\n{BLOQUE_SIMPLE}```\n")).unwrap();
+    let out_bom_s = run_dibu(tmp_bom.path(), &["sync-md", "bom.md"]);
+    assert_eq!(out_bom_s.status.code(), Some(1));
+    assert!(tmp_bom.path().join("diagramas").join(nombre_svg(BLOQUE_SIMPLE)).is_file());
+
+    // G10: archivo existente sin extensión `.md` emite aviso y no falla
+    let tmp_txt = TempDir::new("non_md");
+    fs::write(tmp_txt.path().join("nota.txt"), "hola").unwrap();
+    let out_txt = run_dibu(tmp_txt.path(), &["sync-md", "nota.txt"]);
+    assert_eq!(out_txt.status.code(), Some(0));
+    assert!(String::from_utf8_lossy(&out_txt.stderr).contains("Aviso:"));
+    assert!(!tmp_txt.path().join("diagramas").exists());
+
+    // G1: apilado extremo sin panic ni wraparound
+    let tmp_g1 = TempDir::new("g1_stack");
+    fs::write(
+        tmp_g1.path().join("ext.md"),
+        "```estructura\n- type: instrumentation\n  equipment:\n    - id: T1\n      kind: tank\n      at: [0, 1e30]\n- type: block_diagram\n  forward: [\"G(s)\"]\n```\n",
+    )
+    .unwrap();
+    let out_g1 = run_dibu(tmp_g1.path(), &["sync-md", "ext.md"]);
+    assert_eq!(out_g1.status.code(), Some(1));
+    let stderr_g1 = String::from_utf8_lossy(&out_g1.stderr);
+    assert!(stderr_g1.contains("Error:"), "stderr: {stderr_g1}");
+    assert!(!stderr_g1.contains("panicked"), "stderr: {stderr_g1}");
+}

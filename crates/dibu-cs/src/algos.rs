@@ -42,6 +42,11 @@ pub fn registrar(reg: &mut Registro) {
 // ---------------------------------------------------------------------------
 
 const MAX_CAMPOS: usize = 16;
+const MAX_OPS_TAD: usize = 256;
+const MAX_PASOS_FLUJO: usize = 512;
+const MAX_LINEAS_COSTO: usize = 256;
+const MAX_FILAS_TRAZA: usize = 256;
+const MAX_COLS_TRAZA: usize = 64;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CampoStruct {
@@ -224,7 +229,7 @@ fn parsear_campo_str(raw: &str, donde: &str) -> Result<CampoStruct, ErrorDiagram
     })
 }
 
-fn extraer_dims_y_elementos(texto_dims: &str) -> (String, usize) {
+fn extraer_dims_y_elementos(texto_dims: &str, donde: &str) -> Result<(String, usize), ErrorDiagrama> {
     let mut grupos = Vec::new();
     let mut elementos: usize = 1;
     let bytes = texto_dims.as_bytes();
@@ -237,8 +242,12 @@ fn extraer_dims_y_elementos(texto_dims: &str) -> (String, usize) {
             }
             if j > i + 1 && j < bytes.len() && bytes[j] == b']' {
                 let num_str = &texto_dims[i + 1..j];
-                let d = num_str.parse::<usize>().unwrap_or(1 << 20);
-                elementos = elementos.saturating_mul(d);
+                let d = num_str.parse::<usize>().map_err(|_| {
+                    ErrorDiagrama::new(format!("{donde}: dimensión de arreglo fuera de rango"))
+                })?;
+                elementos = elementos.checked_mul(d).ok_or_else(|| {
+                    ErrorDiagrama::new(format!("{donde}: dimensión de arreglo fuera de rango"))
+                })?;
                 grupos.push(&texto_dims[i..=j]);
                 i = j + 1;
                 continue;
@@ -246,7 +255,7 @@ fn extraer_dims_y_elementos(texto_dims: &str) -> (String, usize) {
         }
         i += 1;
     }
-    (grupos.concat(), elementos)
+    Ok((grupos.concat(), elementos))
 }
 
 fn normalizar_tipo_c(tipo_orig: &str) -> String {
@@ -308,11 +317,13 @@ fn medir_campo(
         }
     };
 
-    let (_, elementos) = extraer_dims_y_elementos(&campo.dims);
+    let (_, elementos) = extraer_dims_y_elementos(&campo.dims, donde)?;
     campo.tamano = if let Some(v) = tamano_val {
         entero(Some(v), 0, 1, 1 << 20) as usize
     } else {
-        base.saturating_mul(elementos)
+        base.checked_mul(elementos).ok_or_else(|| {
+            ErrorDiagrama::new(format!("{donde}: tamaño total del arreglo fuera de rango"))
+        })?
     };
 
     campo.alineacion = if let Some(v) = alineacion_val {
@@ -353,7 +364,7 @@ fn parsear_campos_struct(b: &Bloque) -> Result<Vec<CampoStruct>, ErrorDiagrama> 
                     "{donde}: le falta 'name' o 'type'"
                 )));
             }
-            let (dims, _) = extraer_dims_y_elementos(&nombre_raw);
+            let (dims, _) = extraer_dims_y_elementos(&nombre_raw, &donde)?;
             let nombre = nombre_raw.split('[').next().unwrap_or("").to_string();
             let valor = obj.get("value").map(texto).unwrap_or_default();
             let en_blanco = obj.get("blank").is_some_and(es_truthy);
@@ -659,6 +670,12 @@ fn render_tipo_opaco(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama>
 fn render_adt(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
     let nombre = str_o(b, "name", "TAD");
     let operaciones = lista_de(b, "operations", "un TAD")?;
+    if operaciones.len() > MAX_OPS_TAD {
+        return Err(ErrorDiagrama::new(format!(
+            "el TAD tiene {} operaciones; el máximo es {MAX_OPS_TAD}",
+            operaciones.len()
+        )));
+    }
     let sin_ops = b.get("blankOperations").is_some_and(es_truthy);
     let sin_clases = b.get("blankKinds").is_some_and(es_truthy);
     let top = encabezado(c, b, "");
@@ -1246,7 +1263,7 @@ fn render_complexity(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama>
                 etiqueta_opt = Some(lbl);
             }
             for &(n, v) in &pts {
-                if n <= max_n && v <= max_y {
+                if (0.0..=max_n).contains(&n) && (0.0..=max_y).contains(&v) {
                     let x = px(n);
                     let y = py(v);
                     if x.is_finite() && y.is_finite() {
@@ -1271,59 +1288,91 @@ fn render_complexity(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama>
         };
 
         let etiqueta = etiqueta_opt.unwrap_or_default();
-        let mut trazo: Vec<(f64, f64)> = Vec::new();
-        for (n, v) in puntos {
-            if n > max_n {
-                break;
+        let recortar_seg = |a: (f64, f64), b: (f64, f64)| -> Option<((f64, f64), (f64, f64))> {
+            let (dx, dy) = (b.0 - a.0, b.1 - a.1);
+            let (mut t0, mut t1) = (0.0_f64, 1.0_f64);
+            for (p, q) in [(-dx, a.0), (dx, max_n - a.0), (-dy, a.1), (dy, max_y - a.1)] {
+                if p == 0.0 {
+                    if q < 0.0 {
+                        return None;
+                    }
+                    continue;
+                }
+                let t = q / p;
+                if p < 0.0 {
+                    t0 = t0.max(t);
+                } else {
+                    t1 = t1.min(t);
+                }
+                if t0 > t1 {
+                    return None;
+                }
             }
-            if !px(n).is_finite() {
+            let p0 = (a.0 + t0 * dx, a.1 + t0 * dy);
+            let p1 = (a.0 + t1 * dx, a.1 + t1 * dy);
+            if p0.0.is_finite() && p0.1.is_finite() && p1.0.is_finite() && p1.1.is_finite() {
+                Some((p0, p1))
+            } else {
+                None
+            }
+        };
+
+        let mut tramos: Vec<Vec<(f64, f64)>> = Vec::new();
+        let mut previo: Option<(f64, f64)> = None;
+        for (n, v) in puntos {
+            if !n.is_finite() || !v.is_finite() || !px(n).is_finite() || !py(v).is_finite() {
+                previo = None;
                 continue;
             }
-            if v > max_y {
-                if let Some(&(n0, v0)) = trazo.last() {
-                    let n_corte = if v.is_finite()
-                        && (v - v0).is_finite()
-                        && (max_y - v0).is_finite()
-                        && (v - v0).abs() > 0.0
-                        && (n - n0).is_finite()
-                    {
-                        let cand = n0 + (n - n0) * ((max_y - v0) / (v - v0));
-                        if px(cand).is_finite() {
-                            cand
-                        } else {
-                            n0
+            let actual = (n, v);
+            if let Some(prev) = previo {
+                if prev.0 > max_n && actual.0 > max_n {
+                    break;
+                }
+                if let Some((ini, fin)) = recortar_seg(prev, actual) {
+                    let unir = tramos
+                        .last()
+                        .and_then(|t| t.last())
+                        .is_some_and(|&(ln, lv)| {
+                            (px(ln) - px(ini.0)).hypot(py(lv) - py(ini.1)) < 0.01
+                        });
+                    if unir {
+                        if let Some(ultimo) = tramos.last_mut() {
+                            ultimo.push(fin);
                         }
                     } else {
-                        n0
-                    };
-                    trazo.push((n_corte, max_y));
+                        tramos.push(vec![ini, fin]);
+                    }
                 }
-                break;
+            } else if (0.0..=max_n).contains(&n) && (0.0..=max_y).contains(&v) {
+                tramos.push(vec![actual]);
             }
-            if !v.is_finite() || !py(v).is_finite() {
-                continue;
-            }
-            trazo.push((n, v));
+            previo = Some(actual);
         }
 
-        let Some(&(n_fin, v_fin)) = trazo.last() else {
+        let Some(&(n_fin, v_fin)) = tramos.last().and_then(|t| t.last()) else {
             continue;
         };
-        let camino: String = trazo
-            .iter()
-            .map(|&(n, v)| format!("{:.1},{:.1}", px(n), py(v)))
-            .collect::<Vec<_>>()
-            .join(" ");
         let guiones = GUIONES[i % GUIONES.len()];
         let dash = if guiones.is_empty() {
             String::new()
         } else {
             format!(r#" stroke-dasharray="{guiones}""#)
         };
-        c.add(format!(
-            r#"<polyline points="{camino}" fill="none" stroke="{}" stroke-width="1.8"{dash}/>"#,
-            c.pal.stroke_main
-        ));
+        for tramo in &tramos {
+            if tramo.len() < 2 {
+                continue;
+            }
+            let camino: String = tramo
+                .iter()
+                .map(|&(n, v)| format!("{:.1},{:.1}", px(n), py(v)))
+                .collect::<Vec<_>>()
+                .join(" ");
+            c.add(format!(
+                r#"<polyline points="{camino}" fill="none" stroke="{}" stroke-width="1.8"{dash}/>"#,
+                c.pal.stroke_main
+            ));
+        }
 
         if v_fin >= max_y {
             arriba.push((px(n_fin), etiqueta));
@@ -1538,6 +1587,7 @@ fn parsear_pasos_flujo(
     dato: Option<&Value>,
     donde: &str,
     prof: usize,
+    total: &mut usize,
 ) -> Result<Vec<PasoFlujo>, ErrorDiagrama> {
     if prof > MAX_PROF_FLUJO {
         return Err(ErrorDiagrama::new(
@@ -1555,8 +1605,14 @@ fn parsear_pasos_flujo(
             "{donde}: los pasos van en una lista"
         )));
     };
-    let mut pasos = Vec::with_capacity(lista.len());
+    let mut pasos = Vec::with_capacity(lista.len().min(MAX_PASOS_FLUJO));
     for (n, p) in lista.iter().enumerate() {
+        *total += 1;
+        if *total > MAX_PASOS_FLUJO {
+            return Err(ErrorDiagrama::new(format!(
+                "el diagrama de flujo supera los {MAX_PASOS_FLUJO} pasos máximos"
+            )));
+        }
         let lugar = format!("{donde}, paso {n}");
         let Some(obj) = p.as_object() else {
             pasos.push(PasoFlujo::Proceso {
@@ -1567,8 +1623,8 @@ fn parsear_pasos_flujo(
         };
         let en_blanco = obj.get("blank").is_some_and(es_truthy);
         if let Some(cond) = obj.get("if") {
-            let entonces = parsear_pasos_flujo(obj.get("then"), &lugar, prof + 1)?;
-            let sino = parsear_pasos_flujo(obj.get("else"), &lugar, prof + 1)?;
+            let entonces = parsear_pasos_flujo(obj.get("then"), &lugar, prof + 1, total)?;
+            let sino = parsear_pasos_flujo(obj.get("else"), &lugar, prof + 1, total)?;
             pasos.push(PasoFlujo::Si {
                 texto: texto(cond),
                 a: entonces,
@@ -1576,7 +1632,7 @@ fn parsear_pasos_flujo(
                 en_blanco,
             });
         } else if obj.contains_key("while") || obj.contains_key("for") {
-            let cuerpo = parsear_pasos_flujo(obj.get("do"), &lugar, prof + 1)?;
+            let cuerpo = parsear_pasos_flujo(obj.get("do"), &lugar, prof + 1, total)?;
             if cuerpo.is_empty() {
                 return Err(ErrorDiagrama::new(format!(
                     "{lugar}: la repetición no tiene cuerpo ('do')"
@@ -1972,10 +2028,12 @@ fn etiqueta_terminal(b: &Bloque, clave: &str, defecto: &str) -> Option<String> {
 
 fn render_flowchart(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
     let pasos_val = lista_de(b, "steps", "un diagrama de flujo")?;
+    let mut total_pasos = 0usize;
     let pasos = parsear_pasos_flujo(
         Some(&Value::Array(pasos_val.to_vec())),
         "diagrama de flujo",
         0,
+        &mut total_pasos,
     )?;
     let top = encabezado(c, b, "");
     let sin_valores = b.get("blankValues").is_some_and(es_truthy);
@@ -2031,6 +2089,12 @@ fn render_flowchart(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> 
 
 fn render_cost_table(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
     let lineas = lista_de(b, "lines", "una tabla de costos")?;
+    if lineas.len() > MAX_LINEAS_COSTO {
+        return Err(ErrorDiagrama::new(format!(
+            "la tabla de costos tiene {} líneas; el máximo es {MAX_LINEAS_COSTO}",
+            lineas.len()
+        )));
+    }
     let sin_costos = b.get("blankCosts").is_some_and(es_truthy);
     let sin_veces = b.get("blankTimes").is_some_and(es_truthy);
 
@@ -2102,10 +2166,14 @@ fn render_cost_table(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama>
 // ---------------------------------------------------------------------------
 
 fn render_trace_table(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
-    let operaciones: Vec<String> = lista_o_vacia(b, "operations")?
-        .iter()
-        .map(texto)
-        .collect();
+    let ops_raw = lista_o_vacia(b, "operations")?;
+    if ops_raw.len() > MAX_FILAS_TRAZA {
+        return Err(ErrorDiagrama::new(format!(
+            "la traza tiene {} operaciones; el máximo es {MAX_FILAS_TRAZA}",
+            ops_raw.len()
+        )));
+    }
+    let operaciones: Vec<String> = ops_raw.iter().map(texto).collect();
     let top = encabezado(c, b, "");
 
     if let Some(cols_val) = b.get("columns").filter(|v| !v.is_null()) {
@@ -2114,11 +2182,23 @@ fn render_trace_table(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama
                 "'columns' de una traza tiene que ser una lista con al menos una columna",
             ));
         };
+        if cols_arr.len() > MAX_COLS_TRAZA {
+            return Err(ErrorDiagrama::new(format!(
+                "la traza tiene {} columnas; el máximo es {MAX_COLS_TRAZA}",
+                cols_arr.len()
+            )));
+        }
         let mut encabezados: Vec<String> = cols_arr.iter().map(texto).collect();
         let filas_dato: &[Value] = match b.get("rows") {
             None => &[],
             Some(v) if !es_truthy(v) => &[],
             Some(Value::Array(arr)) => {
+                if arr.len() > MAX_FILAS_TRAZA {
+                    return Err(ErrorDiagrama::new(format!(
+                        "la traza tiene {} filas; el máximo es {MAX_FILAS_TRAZA}",
+                        arr.len()
+                    )));
+                }
                 if !arr.iter().all(Value::is_array) {
                     return Err(ErrorDiagrama::new(
                         "'rows' de una traza tiene que ser una lista de filas",
@@ -2977,5 +3057,60 @@ mod tests {
         assert!(c_txts.contains(&"a = 1;".to_string()));
         assert!(c_txts.contains(&"42".to_string()));
         assert!(c_txts.contains(&"T(n) = ".to_string()));
+    }
+
+    #[test]
+    fn regresion_tier5_cotas_y_recorte_complexity_y_struct() {
+        // H5.2: struct con dimensión > usize::MAX devuelve Err en vez de 1<<20 silencioso
+        assert!(render_val(
+            json!({"type": "struct", "fields": ["char buf[999999999999999999999999]"]}),
+            true
+        )
+        .is_err());
+
+        // H1: cotas en adt, cost_table, trace_table, flowchart
+        assert!(render_val(
+            json!({"type": "adt", "operations": vec!["f()"; 300]}),
+            true
+        )
+        .is_err());
+        assert!(render_val(
+            json!({"type": "cost_table", "lines": vec!["x = 1;"; 300]}),
+            true
+        )
+        .is_err());
+        assert!(render_val(
+            json!({"type": "trace_table", "operations": vec!["push(1)"; 300]}),
+            true
+        )
+        .is_err());
+        assert!(render_val(
+            json!({"type": "flowchart", "steps": vec!["a = 1;"; 600]}),
+            true
+        )
+        .is_err());
+
+        // H2 + H4: complexity con puntos negativos extremos [-1e305, -1e305] y tramo que arranca > maxY
+        let svg_neg = render_val(
+            json!({"type": "complexity", "curves": [{"label": "neg", "points": [[-1e305, -1e305], [5, 5]]}]}),
+            true,
+        )
+        .unwrap();
+        for parte in svg_neg.split(r#"<polyline points=""#).skip(1) {
+            let pts = parte.split('"').next().unwrap_or("");
+            for par in pts.split(' ') {
+                let mut nums = par.split(',');
+                let x = nums.next().unwrap().parse::<f64>().unwrap();
+                let y = nums.next().unwrap().parse::<f64>().unwrap();
+                assert!(x.abs() < 1e4 && y.abs() < 1e4, "coordenada fuera de cota: {x},{y}");
+            }
+        }
+
+        let svg_above = render_val(
+            json!({"type": "complexity", "curves": [{"label": "above", "points": [[0, 200], [5, 50]]}]}),
+            true,
+        )
+        .unwrap();
+        assert!(svg_above.contains("<polyline "), "debía recortar y dibujar el tramo visible: {svg_above}");
     }
 }

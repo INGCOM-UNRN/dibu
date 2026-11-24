@@ -15,6 +15,7 @@ use std::f64::consts::PI;
 use std::fmt::Write as _;
 
 const MAX_PUNTOS_LEWIS: i64 = 24;
+const MAX_FONT_SIZE_MOL: f64 = 200.0;
 
 pub fn registrar(reg: &mut Registro) {
     reg.registrar("molecule", render_molecule);
@@ -144,6 +145,11 @@ fn carga_texto(carga: &Option<Value>) -> String {
     }
 }
 
+const MAX_ATOMOS_MOL: usize = 256;
+const MAX_ANILLOS_MOL: usize = 64;
+const MAX_ENLACES_MOL: usize = 512;
+const MAX_COORD_MOL: f64 = 100_000.0;
+
 struct Molecula {
     donde: String,
     atomos: Vec<Atomo>,
@@ -164,16 +170,39 @@ impl Molecula {
             anillos: Vec::new(),
         };
         if let Some(rings) = opt_lista(b, "rings", &format!("{donde}.rings"))? {
+            if rings.len() > MAX_ANILLOS_MOL {
+                return Err(ErrorDiagrama::new(format!(
+                    "{donde}: demasiados anillos ({}; el máximo es {MAX_ANILLOS_MOL})",
+                    rings.len()
+                )));
+            }
             for (i, anillo) in rings.iter().enumerate() {
                 m.agregar_anillo(anillo, i)?;
+                if m.atomos.len() > MAX_ATOMOS_MOL {
+                    return Err(ErrorDiagrama::new(format!(
+                        "{donde}: demasiados átomos (máximo {MAX_ATOMOS_MOL})"
+                    )));
+                }
             }
         }
         if let Some(atoms) = opt_lista(b, "atoms", &format!("{donde}.atoms"))? {
+            if m.atomos.len() + atoms.len() > MAX_ATOMOS_MOL {
+                return Err(ErrorDiagrama::new(format!(
+                    "{donde}: demasiados átomos ({}; el máximo es {MAX_ATOMOS_MOL})",
+                    m.atomos.len() + atoms.len()
+                )));
+            }
             for (i, dato) in atoms.iter().enumerate() {
                 m.agregar_atomo(dato, i)?;
             }
         }
         if let Some(bonds) = opt_lista(b, "bonds", &format!("{donde}.bonds"))? {
+            if m.enlaces.len() + bonds.len() > MAX_ENLACES_MOL {
+                return Err(ErrorDiagrama::new(format!(
+                    "{donde}: demasiados enlaces ({}; el máximo es {MAX_ENLACES_MOL})",
+                    m.enlaces.len() + bonds.len()
+                )));
+            }
             for (i, dato) in bonds.iter().enumerate() {
                 m.agregar_enlace(dato, &i.to_string())?;
             }
@@ -250,6 +279,15 @@ impl Molecula {
                 "{}.rings[{i}].ids: tienen que ser {n}",
                 self.donde
             )));
+        }
+        let mut vistos = std::collections::HashSet::with_capacity(n);
+        for id in &ids {
+            if !vistos.insert(id.as_str()) {
+                return Err(ErrorDiagrama::new(format!(
+                    "{}.rings[{i}].ids: identificador duplicado {id:?}",
+                    self.donde
+                )));
+            }
         }
         let radio = 1.0 / (2.0 * (PI / n as f64).sin());
         let elementos = map.get("el").and_then(Value::as_array);
@@ -581,13 +619,15 @@ fn dibujar_molecula(c: &mut Lienzo, b: &Bloque, donde: &str) -> Result<Punto, Er
     }
     let esqueletal = booleano(b, "skeletal", false);
     let size = opt_num(b, "fontSize", &format!("{donde}.fontSize"))?.unwrap_or(12.0);
-    if !(size > 0.0 && size.is_finite()) {
+    if !(size > 0.0 && size <= MAX_FONT_SIZE_MOL && size.is_finite()) {
         return Err(ErrorDiagrama::new(format!(
-            "{donde}.fontSize: tiene que ser positivo"
+            "{donde}.fontSize: tiene que ser positivo y como máximo {MAX_FONT_SIZE_MOL}"
         )));
     }
     let pos: Vec<Punto> = m.atomos.iter().map(|a| (a.x * largo, -a.y * largo)).collect();
-    if pos.iter().any(|&(x, y)| !x.is_finite() || !y.is_finite()) {
+    if pos.iter().any(|&(x, y)| {
+        !x.is_finite() || !y.is_finite() || x.abs() > MAX_COORD_MOL || y.abs() > MAX_COORD_MOL
+    }) {
         return Err(ErrorDiagrama::new(format!(
             "{donde}: coordenadas escaladas fuera de rango"
         )));
@@ -1016,7 +1056,15 @@ fn dibujar_molecula(c: &mut Lienzo, b: &Bloque, donde: &str) -> Result<Punto, Er
     let margen = 14.0;
     let (x0, y0) = (min_x - margen, min_y - margen);
     let (w, h) = (max_x - x0 + margen, max_y - y0 + margen);
-    if !x0.is_finite() || !y0.is_finite() || !w.is_finite() || !h.is_finite() {
+    if !x0.is_finite()
+        || !y0.is_finite()
+        || !w.is_finite()
+        || !h.is_finite()
+        || x0.abs() > MAX_COORD_MOL
+        || y0.abs() > MAX_COORD_MOL
+        || w > MAX_COORD_MOL
+        || h > MAX_COORD_MOL
+    {
         return Err(ErrorDiagrama::new(format!(
             "{donde}: dimensiones del diagrama fuera de rango"
         )));
@@ -3967,5 +4015,67 @@ cathode: {couple: "Fe^3+/Fe^2+", E0: 0.77, n: 1, electrode: Pt, solution: "Fe^3+
                 "{nombre} debería rechazarse con ErrorDiagrama, devolvió: {res:?}"
             );
         }
+
+        // Tier 5 (H1, H2, H3): cota de átomos, coordenadas 1e305, y rings con ids duplicados
+        let muchos_atomos: Vec<serde_json::Value> = (0..300)
+            .map(|i| serde_json::json!({"id": format!("a{i}"), "el": "C", "at": [i, 0]}))
+            .collect();
+        let err_atoms = reg
+            .renderizar(
+                serde_json::json!({"type": "molecule", "atoms": muchos_atomos})
+                    .as_object()
+                    .unwrap(),
+                true,
+            )
+            .unwrap_err()
+            .to_string();
+        assert!(err_atoms.contains("256"), "{err_atoms}");
+
+        let err_1e305 = reg
+            .renderizar(
+                serde_json::json!({
+                    "type": "molecule",
+                    "atoms": [
+                        {"id": "a", "el": "C", "at": [1e305, 0]},
+                        {"id": "b", "el": "O", "at": [1.01e305, 0]}
+                    ],
+                    "bonds": [["a", "b"]]
+                })
+                .as_object()
+                .unwrap(),
+                true,
+            )
+            .unwrap_err()
+            .to_string();
+        assert!(err_1e305.contains("fuera de rango"), "{err_1e305}");
+
+        let err_dup = reg
+            .renderizar(
+                serde_json::json!({"type": "molecule", "rings": [{"size": 4, "ids": ["a", "a", "b", "c"]}]}).as_object().unwrap(),
+                true,
+            )
+            .unwrap_err()
+            .to_string();
+        assert!(err_dup.contains("duplicado"), "{err_dup}");
+
+        // F3: fontSize extremo o fuera de (0, 200]
+        for bad_fs in [1e305, 200.1, 0.0, -5.0] {
+            let res = reg.renderizar(
+                serde_json::json!({"type": "molecule", "fontSize": bad_fs, "atoms": [{"id": "a", "el": "C", "at": [1, 0]}]})
+                    .as_object()
+                    .unwrap(),
+                true,
+            );
+            assert!(res.is_err(), "fontSize={bad_fs} debía rechazarse");
+        }
+        let svg_fs_max = reg
+            .renderizar(
+                serde_json::json!({"type": "molecule", "fontSize": 200.0, "atoms": [{"id": "a", "el": "C", "at": [1, 0]}]})
+                    .as_object()
+                    .unwrap(),
+                true,
+            )
+            .unwrap();
+        assert_svg_valido(&svg_fs_max);
     }
 }
