@@ -13,6 +13,14 @@ Motor en Rust para generar diagramas educativos SVG a partir de bloques YAML/JSO
 - `dibu-math`: 8 tipos de señales y sistemas, probabilidad y circuitos eléctricos.
 - `dibu-cli`: binario unificado `dibu` (`render`, `batch`, `sync-md`, `list-types`) con `--features` por familia (`cs`, `control`, `chem`).
 
+## Manual
+
+El [manual](docs/manual/README.md) tiene una página por cada tipo de diagrama, agrupadas por área
+(estructuras de datos y algoritmos, sistemas de computación, control de procesos, química y
+matemática aplicada), con todos sus campos, lo que calcula, el modo ejercicio y ejemplos dibujados.
+Se genera con `python3 docs/manual/generar.py` a partir de `docs/manual/datos/`, del código y del
+kitchen sink; `--verificar` falla si falta documentar un tipo o un campo, y corre en CI.
+
 ## Uso rápido
 
 ```bash

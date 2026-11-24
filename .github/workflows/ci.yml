@@ -76,6 +76,10 @@ jobs:
           echo "SVG generados: $(find "$RUNNER_TEMP/tinta" "$RUNNER_TEMP/color" -name '*.svg' | wc -l)"
       - name: sync-md --verificar (SVG versionados al día)
         run: ./target/release/dibu sync-md --verificar fixtures/kitchen_sink/kitchen_sink.md
+      - name: Manual al día (docs/manual)
+        run: |
+          python3 -c "import yaml" 2>/dev/null || sudo apt-get install -y -q python3-yaml
+          DIBU_BIN=./target/release/dibu python3 docs/manual/generar.py --verificar
 
   # Estilo y lints: por ahora sólo informan (el código todavía no pasa `cargo fmt --check`
   # ni `clippy -D warnings`). Los avisos aparecen como anotaciones y en el resumen del run.
