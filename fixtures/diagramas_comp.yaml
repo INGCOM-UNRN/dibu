@@ -1,0 +1,286 @@
+# Diagramas de ingeniería en computación (dibu-comp).
+
+# === D. SISTEMAS DIGITALES ===
+- type: truth_table
+  id: tt-mayoria
+  title: Función mayoría de tres entradas
+  expr: "A·B + A·C + B·C"
+  name: M
+  canonical: true
+
+- type: truth_table
+  id: tt-pasos
+  title: Tabla con columnas intermedias
+  outputs:
+    - { name: F, expr: "!(A + B) · C" }
+    - { name: G, expr: "A XOR C" }
+  steps: true
+
+- type: truth_table
+  id: tt-ejercicio
+  title: "Ejercicio: completar la salida"
+  vars: [A, B, C, D]
+  minterms: [1, 3, 7, 11, 15]
+  dontcares: [0, 2, 5]
+  blank: true
+  canonical: true
+
+- type: karnaugh
+  id: kmap-4
+  title: Mapa de Karnaugh de 4 variables
+  vars: [A, B, C, D]
+  minterms: [0, 1, 2, 5, 6, 7, 8, 9, 10, 14]
+  implicants: true
+
+- type: karnaugh
+  id: kmap-dc
+  title: Con condiciones indiferentes (forma POS)
+  vars: [A, B, C, D]
+  minterms: [1, 3, 7, 11, 15]
+  dontcares: [0, 2, 5]
+  form: pos
+
+- type: karnaugh
+  id: kmap-3
+  title: "Ejercicio: agrupar y simplificar"
+  expr: "A'B'C + A'BC + AB'C + ABC'"
+  blank: true
+
+- type: logic_circuit
+  id: circuito-mayoria
+  title: Circuito de la función mayoría
+  expr: "A·B + A·C + B·C"
+  output: M
+
+- type: logic_circuit
+  id: circuito-mixto
+  title: Compuertas negadas y XOR
+  expr: "!(A·B) ⊕ (C + !D)"
+  output: Y
+
+# === E. ARQUITECTURA DE COMPUTADORAS ===
+- type: pipeline
+  id: pipeline-fwd
+  title: Pipeline MIPS de 5 etapas con forwarding
+  instructions:
+    - "lw $t0, 0($s0)"
+    - "add $t1, $t0, $t2"
+    - "sub $t3, $t1, $t4"
+    - "sw $t3, 4($s0)"
+    - "and $t5, $t6, $t7"
+
+- type: pipeline
+  id: pipeline-sin-fwd
+  title: El mismo código sin forwarding
+  forwarding: false
+  instructions:
+    - "lw $t0, 0($s0)"
+    - "add $t1, $t0, $t2"
+    - "sub $t3, $t1, $t4"
+    - "sw $t3, 4($s0)"
+    - "and $t5, $t6, $t7"
+
+- type: ieee754
+  id: ieee-simple
+  title: "−6,75 en precisión simple"
+  value: -6.75
+
+- type: ieee754
+  id: ieee-redondeo
+  title: "0,1 no es representable exactamente"
+  value: 0.1
+  format: single
+
+- type: ieee754
+  id: ieee-ejercicio
+  title: "Ejercicio: decodificar"
+  bits: "0x41460000"
+  blank: true
+
+- type: cache
+  id: cache-directa
+  title: Caché de correspondencia directa
+  addressBits: 12
+  cacheSize: 64
+  blockSize: 8
+  associativity: 1
+  accesses: ["0x000", "0x004", "0x010", "0x040", "0x000", "0x048", "0x010", "0x080", "0x044"]
+
+- type: cache
+  id: cache-2vias
+  title: La misma secuencia con 2 vías (LRU)
+  addressBits: 12
+  cacheSize: 64
+  blockSize: 8
+  associativity: 2
+  accesses: ["0x000", "0x004", "0x010", "0x040", "0x000", "0x048", "0x010", "0x080", "0x044"]
+  finalState: false
+
+# === F. SISTEMAS OPERATIVOS ===
+- type: cpu_scheduling
+  id: srtf
+  title: Planificación SRTF
+  algorithm: srtf
+  processes:
+    - { name: P1, arrival: 0, burst: 8 }
+    - { name: P2, arrival: 1, burst: 4 }
+    - { name: P3, arrival: 2, burst: 9 }
+    - { name: P4, arrival: 3, burst: 5 }
+
+- type: cpu_scheduling
+  id: round-robin
+  title: Round Robin
+  algorithm: rr
+  quantum: 3
+  processes:
+    - { name: A, arrival: 0, burst: 5 }
+    - { name: B, arrival: 1, burst: 3 }
+    - { name: C, arrival: 2, burst: 6 }
+    - { name: D, arrival: 9, burst: 2 }
+
+- type: cpu_scheduling
+  id: prioridad-ejercicio
+  title: "Ejercicio: prioridad no expropiativa"
+  algorithm: priority
+  blank: true
+  processes:
+    - { name: P1, arrival: 0, burst: 10, priority: 3 }
+    - { name: P2, arrival: 0, burst: 1, priority: 1 }
+    - { name: P3, arrival: 0, burst: 2, priority: 4 }
+    - { name: P4, arrival: 0, burst: 1, priority: 5 }
+    - { name: P5, arrival: 0, burst: 5, priority: 2 }
+
+- type: page_table
+  id: paginacion
+  title: Traducción de direcciones con paginación
+  pageSize: 1024
+  table: [5, 2, null, 7, 0]
+  addresses: [1500, 3100, 4095, 2100, 6000]
+
+- type: page_replacement
+  id: reemplazo
+  title: Algoritmos de reemplazo de páginas
+  frames: 3
+  references: [7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1]
+  algorithms: [fifo, lru, opt]
+
+- type: page_replacement
+  id: reloj
+  title: Algoritmo del reloj
+  frames: 3
+  references: [1, 2, 3, 2, 4, 1, 5, 2, 1, 2, 3, 5]
+  algorithm: clock
+
+# === G. REDES ===
+- type: subnetting
+  id: vlsm
+  title: Subnetting VLSM
+  network: 192.168.10.0/24
+  subnets:
+    - { name: Ventas, hosts: 50 }
+    - { name: Desarrollo, hosts: 100 }
+    - { name: Admin, hosts: 20 }
+    - { name: Enlace WAN, hosts: 2 }
+
+- type: subnetting
+  id: subredes-iguales
+  title: "Ejercicio: 8 subredes iguales"
+  network: 10.0.0.0/16
+  count: 8
+  blank: true
+
+# === H. BASES DE DATOS ===
+- type: transaction_schedule
+  id: no-serializable
+  title: Planificación no serializable
+  schedule: [R1(A), R2(A), W1(A), R2(B), W2(A), W1(B), C1, C2]
+
+- type: transaction_schedule
+  id: serializable
+  title: Planificación serializable por conflictos
+  schedule: [R1(A), W1(A), R2(A), R1(B), W2(A), W1(B), R3(B), W3(B), C1, C2, C3]
+
+# === I. ESTRUCTURAS DE DATOS Y ALGORITMOS ===
+- type: heap
+  id: heap-min
+  title: Min-heap construido por inserciones
+  values: [15, 10, 20, 8, 25, 3]
+  ops: ["extract", "insert 12"]
+  steps: true
+
+- type: heap
+  id: heapify
+  title: "Ejercicio: heapify de un max-heap"
+  kind: max
+  build: heapify
+  values: [4, 10, 3, 5, 1, 8, 9]
+  blank: true
+
+- type: hash_table
+  id: hash-lineal
+  title: Hashing con sondeo lineal
+  size: 11
+  keys: [22, 1, 13, 11, 24, 33, 18, 42, 31]
+  collision: linear
+
+- type: hash_table
+  id: hash-encadenado
+  title: Hashing con encadenamiento
+  size: 7
+  keys: [50, 700, 76, 85, 92, 73, 101]
+  collision: chaining
+
+- type: avl
+  id: avl
+  title: Árbol AVL con rotaciones
+  keys: [10, 20, 30, 40, 50, 25]
+  steps: rotations
+
+- type: bplus_tree
+  id: bplus
+  title: Árbol B+ de orden 4
+  order: 4
+  keys: [5, 15, 25, 35, 45, 20, 30, 10, 40, 50, 55]
+
+- type: dp_table
+  id: lcs
+  title: Subsecuencia común más larga
+  problem: lcs
+  a: ABCBDAB
+  b: BDCABA
+
+- type: dp_table
+  id: edicion
+  title: Distancia de edición (Levenshtein)
+  problem: edit
+  a: kitten
+  b: sitting
+
+- type: dp_table
+  id: mochila
+  title: "Ejercicio: mochila 0/1"
+  problem: knapsack
+  weights: [1, 3, 4, 5]
+  values: [1, 4, 5, 7]
+  capacity: 7
+  blank: true
+
+- type: dijkstra
+  id: dijkstra
+  title: Caminos mínimos con Dijkstra
+  source: A
+  edges: ["A-B:4", "A-C:2", "C-B:1", "B-D:5", "C-D:8", "C-E:10", "D-E:2"]
+
+- type: turing
+  id: turing
+  title: Máquina de Turing que suma 1 en binario
+  input: "1011"
+  start: q0
+  accept: [qf]
+  transitions:
+    - "q0,0 -> q0,0,R"
+    - "q0,1 -> q0,1,R"
+    - "q0,_ -> q1,_,L"
+    - "q1,1 -> q1,0,L"
+    - "q1,0 -> qf,1,S"
+    - "q1,_ -> qf,1,S"

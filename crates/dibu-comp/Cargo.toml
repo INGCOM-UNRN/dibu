@@ -1,0 +1,13 @@
+[package]
+name = "dibu-comp"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Diagramas de ingeniería en computación: sistemas digitales, arquitectura, sistemas operativos, redes y bases de datos"
+
+[dependencies]
+dibu-core.workspace = true
+serde_json.workspace = true
+
+[dev-dependencies]
+serde_yaml.workspace = true
