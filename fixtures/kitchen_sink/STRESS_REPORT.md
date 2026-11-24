@@ -1,6 +1,6 @@
 # Reporte de Stress Test y Validación Integral — `dibu` (M4 Fase 4)
 
-- **Fecha UTC:** `2026-11-23T21:14:08Z`
+- **Fecha UTC:** `2026-11-24T01:25:55Z`
 - **Binario evaluado:** `/home/mrtin/dev/tools/docente/contenidos/dibu/target/release/dibu`
 - **Entorno:** `3.11.13` / `Linux-7.2.13-200.fc44.x86_64-x86_64-with-glibc2.43` (`seed=42`, `N=1200`)
 
@@ -41,10 +41,10 @@ Se incluyó sobremuestreo intencional de casos pesados (`time_response` con reta
 
 | Motor / Modo | Wall-clock (ms) | ms / bloque | Throughput (blq/s) | p50 / p95 / p99 (ms) | RSS pico (KiB) | Speedup vs Python |
 |---|---:|---:|---:|---|---:|---:|
-| **Python (`alucarD`) in-process** | 22373.54 | 18.645 | 53.6 | 0.373 / 62.035 / 346.871 | 58228 | 1.00× |
-| **`dibu batch`** (1 spawn JSONL) | 1323.29 | 1.103 | 906.8 | — | 6460 | **16.91×** |
-| **`dibu render` multi-bloque** (1 spawn archivo JSON) | 1318.08 | 1.098 | 910.4 | — | 16140 | **16.97×** |
-| **`dibu render` por proceso** (100 spawns estratificados) | 221.34 *(muestra)* | 2.213 *(por spawn)* | 451.8 *(spawns/s)* | 1.527 / 4.369 / 19.761 | 5568 | Proyección `N=1200`: `2656.04` ms |
+| **Python (`alucarD`) in-process** | 22854.97 | 19.046 | 52.5 | 0.389 / 63.613 / 355.828 | 58200 | 1.00× |
+| **`dibu batch`** (1 spawn JSONL) | 1380.30 | 1.150 | 869.4 | — | 6376 | **16.56×** |
+| **`dibu render` multi-bloque** (1 spawn archivo JSON) | 1434.07 | 1.195 | 836.8 | — | 16032 | **15.94×** |
+| **`dibu render` por proceso** (100 spawns estratificados) | 229.29 *(muestra)* | 2.293 *(por spawn)* | 436.1 *(spawns/s)* | 1.570 / 5.146 / 20.901 | 5584 | Proyección `N=1200`: `2751.45` ms |
 
 > Nota: `dibu render` proceso-por-proceso paga el arranque de proceso y escritura a disco por cada bloque individual, mientras que `dibu render` multi-bloque y `dibu batch` amortizan ese costo en un único proceso (`batch` además evita I/O de archivos por bloque al operar sobre JSONL en memoria).
 
@@ -61,5 +61,5 @@ Se incluyó sobremuestreo intencional de casos pesados (`time_response` con reta
 ## 6. Resiliencia ante Entradas Malformadas (`0` Panics)
 
 - **Probes totales ejecutados:** `129` (cubriendo los `44/44` tipos sin exclusiones).
-- **Errores controlados capturados:** `100` (incluye `grafcet` con `or/and: []`, `time_response` con `delay: 1e308` / negativo / `NaN`, YAML/JSON roto, bytes no UTF-8, floats extremos, strings de 10 KB con XML `&<>"'` y emojis, matrices `100×100`, arrays de `1000` y árboles de `500` nodos).
+- **Errores controlados capturados:** `101` (incluye `grafcet` con `or/and: []`, `time_response` con `delay: 1e308` / negativo / `NaN`, YAML/JSON roto, bytes no UTF-8, floats extremos, strings de 10 KB con XML `&<>"'` y emojis, matrices `100×100`, arrays de `1000` y árboles de `500` nodos).
 - **Panics (`rc=101`, `SIGABRT`, `panicked at`, `RUST_BACKTRACE`):** **`0`**.
