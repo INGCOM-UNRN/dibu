@@ -1,6 +1,6 @@
 # Catálogo Kitchen Sink de `dibu`
 
-En este documento reunimos ejemplos válidos de los **44 tipos** de diagramas soportados por `dibu` (`9` de control de procesos, `21` de química y `14` de ciencias de la computación). Vas a encontrar bloques simples y apilados, ambas paletas (`inkSaver: true` e `inkSaver: false`), variantes `blank*`, caracteres UTF-8 con subíndices/superíndices, escape XML (`&`, `<`, `>`) y todas las variantes de fences (` ```estructura `, ` ```statics `, `~~~estructura`, `~~~statics` y ```` ````estructura ````).
+En este documento reunimos ejemplos válidos de los **70 tipos** de diagramas soportados por `dibu` (`9` de control de procesos, `21` de química, `14` de ciencias de la computación, `18` de ingeniería en computación y `8` de señales, probabilidad y circuitos). Vas a encontrar bloques simples y apilados, ambas paletas (`inkSaver: true` e `inkSaver: false`), variantes `blank*`, caracteres UTF-8 con subíndices/superíndices, escape XML (`&`, `<`, `>`) y todas las variantes de fences (` ```estructura `, ` ```statics `, `~~~estructura`, `~~~statics` y ```` ````estructura ````).
 
 ---
 
@@ -486,7 +486,311 @@ Los `14` tipos de `dibu-cs` usando también fences `statics` (tanto con backtick
 
 ---
 
-## 6. Integración Cross-Dominio (Control + Química + CS apilados)
+## 6. Sistemas digitales
+
+Tablas de verdad con columnas intermedias y formas canónicas, mapas de Karnaugh minimizados por Quine-McCluskey y circuitos con compuertas generados a partir de la expresión.
+
+```estructura
+- type: truth_table
+  title: Función mayoría de tres entradas
+  expr: "A·B + A·C + B·C"
+  name: M
+  canonical: true
+```
+
+```estructura
+- type: karnaugh
+  title: Mapa de Karnaugh de 4 variables
+  vars: [A, B, C, D]
+  minterms: [0, 1, 2, 5, 6, 7, 8, 9, 10, 14]
+  implicants: true
+```
+
+~~~estructura
+- type: logic_circuit
+  title: Circuito de la función mayoría
+  expr: "A·B + A·C + B·C"
+  output: M
+~~~
+
+---
+
+## 7. Arquitectura de computadoras
+
+El pipeline de 5 etapas detecta riesgos RAW e inserta burbujas; `ieee754` muestra la codificación paso a paso y `cache` simula aciertos y fallos clasificados (forzosos, de capacidad y de conflicto).
+
+```estructura
+- type: pipeline
+  title: Pipeline MIPS de 5 etapas con forwarding
+  instructions:
+    - "lw $t0, 0($s0)"
+    - "add $t1, $t0, $t2"
+    - "sub $t3, $t1, $t4"
+    - "sw $t3, 4($s0)"
+    - "and $t5, $t6, $t7"
+```
+
+```estructura
+- type: ieee754
+  title: "−6,75 en precisión simple"
+  value: -6.75
+```
+
+~~~estructura
+- type: cache
+  title: Caché de correspondencia directa
+  addressBits: 12
+  cacheSize: 64
+  blockSize: 8
+  associativity: 1
+  accesses: ["0x000", "0x004", "0x010", "0x040", "0x000", "0x048", "0x010", "0x080", "0x044"]
+~~~
+
+---
+
+## 8. Sistemas operativos
+
+Planificación de CPU con diagrama de Gantt y métricas, traducción de direcciones con tabla de páginas y algoritmos de reemplazo comparados sobre la misma cadena de referencias.
+
+```estructura
+- type: cpu_scheduling
+  title: Planificación SRTF
+  algorithm: srtf
+  processes:
+    - { name: P1, arrival: 0, burst: 8 }
+    - { name: P2, arrival: 1, burst: 4 }
+    - { name: P3, arrival: 2, burst: 9 }
+    - { name: P4, arrival: 3, burst: 5 }
+```
+
+```estructura
+- type: page_table
+  title: Traducción de direcciones con paginación
+  pageSize: 1024
+  table: [5, 2, null, 7, 0]
+  addresses: [1500, 3100, 4095, 2100, 6000]
+```
+
+~~~estructura
+- type: page_replacement
+  title: Algoritmos de reemplazo de páginas
+  frames: 3
+  references: [7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1]
+  algorithms: [fifo, lru, opt]
+~~~
+
+---
+
+## 9. Redes
+
+Subnetting con VLSM: `dibu` asigna los bloques en orden decreciente y calcula red, máscara, rango de hosts y broadcast.
+
+```estructura
+- type: subnetting
+  title: Subnetting VLSM
+  network: 192.168.10.0/24
+  subnets:
+    - { name: Ventas, hosts: 50 }
+    - { name: Desarrollo, hosts: 100 }
+    - { name: Admin, hosts: 20 }
+    - { name: Enlace WAN, hosts: 2 }
+```
+
+```estructura
+- type: subnetting
+  title: "Ejercicio: 8 subredes iguales"
+  network: 10.0.0.0/16
+  count: 8
+  blank: true
+```
+
+---
+
+## 10. Bases de datos
+
+Planificaciones de transacciones con sus conflictos, el grafo de precedencia y el veredicto de serializabilidad.
+
+```estructura
+- type: transaction_schedule
+  title: Planificación no serializable
+  schedule: [R1(A), R2(A), W1(A), R2(B), W2(A), W1(B), C1, C2]
+```
+
+```estructura
+- type: transaction_schedule
+  title: Planificación serializable por conflictos
+  schedule: [R1(A), W1(A), R2(A), R1(B), W2(A), W1(B), R3(B), W3(B), C1, C2, C3]
+```
+
+---
+
+## 11. Estructuras de datos y algoritmos
+
+Estructuras construidas operación por operación (heap, hash, AVL, B+), tablas de programación dinámica con su camino de reconstrucción, Dijkstra y una máquina de Turing.
+
+```estructura
+- type: heap
+  title: Min-heap construido por inserciones
+  values: [15, 10, 20, 8, 25, 3]
+  ops: ["extract", "insert 12"]
+  steps: true
+```
+
+```estructura
+- type: hash_table
+  title: Hashing con sondeo lineal
+  size: 11
+  keys: [22, 1, 13, 11, 24, 33, 18, 42, 31]
+  collision: linear
+```
+
+~~~estructura
+- type: avl
+  title: Árbol AVL con rotaciones
+  keys: [10, 20, 30, 40, 50, 25]
+  steps: rotations
+~~~
+
+```estructura
+- type: bplus_tree
+  title: Árbol B+ de orden 4
+  order: 4
+  keys: [5, 15, 25, 35, 45, 20, 30, 10, 40, 50, 55]
+```
+
+```estructura
+- type: dp_table
+  title: Subsecuencia común más larga
+  problem: lcs
+  a: ABCBDAB
+  b: BDCABA
+```
+
+~~~estructura
+- type: dijkstra
+  title: Caminos mínimos con Dijkstra
+  source: A
+  edges: ["A-B:4", "A-C:2", "C-B:1", "B-D:5", "C-D:8", "C-E:10", "D-E:2"]
+~~~
+
+```estructura
+- type: turing
+  title: Máquina de Turing que suma 1 en binario
+  input: "1011"
+  start: q0
+  accept: [qf]
+  transitions:
+    - "q0,0 -> q0,0,R"
+    - "q0,1 -> q0,1,R"
+    - "q0,_ -> q1,_,L"
+    - "q1,1 -> q1,0,L"
+    - "q1,0 -> qf,1,S"
+    - "q1,_ -> qf,1,S"
+```
+
+---
+
+## 12. Señales y sistemas
+
+Señales continuas y discretas definidas por expresiones, convolución paso a paso, series de Fourier, DFT y muestreo con aliasing.
+
+```estructura
+- type: signal
+  title: Operaciones sobre señales continuas
+  signals:
+    - { expr: "rect((t-1)/2)", label: "x(t)" }
+    - { expr: "rect((2t-1)/2)", label: "x(2t)" }
+  range: [-1, 4]
+```
+
+```estructura
+- type: convolution
+  title: Convolución discreta paso a paso
+  x: [1, 2, 1]
+  h: [1, 1, 1, 1]
+  step: 2
+```
+
+~~~estructura
+- type: fourier
+  title: Serie de Fourier de una onda cuadrada
+  wave: square
+  harmonics: 9
+~~~
+
+```estructura
+- type: sampling
+  title: Muestreo con aliasing
+  frequency: 9
+  fs: 12
+  periods: 3
+```
+
+---
+
+## 13. Probabilidad
+
+Distribuciones con el área sombreada y la probabilidad exacta, y diagramas de Venn con operaciones de conjuntos.
+
+```estructura
+- type: distribution
+  title: Distribución normal estándar
+  dist: normal
+  mean: 0
+  sd: 1
+  interval: [-1.96, 1.96]
+```
+
+```estructura
+- type: venn
+  title: Operaciones con conjuntos
+  sets: [A, B, C]
+  shade: ["A ∩ B", "(A ∪ B) − C", "A Δ B", "C'"]
+```
+
+---
+
+## 14. Circuitos eléctricos
+
+Redes serie-paralelo con su impedancia equivalente y diagramas fasoriales.
+
+```estructura
+- type: circuit
+  title: Circuito serie-paralelo
+  source: "V1 = 12V"
+  network:
+    series:
+      - "R1 = 100Ω"
+      - parallel: ["R2 = 220Ω", "R3 = 330Ω"]
+      - "R4 = 47Ω"
+```
+
+```estructura
+- type: circuit
+  title: RLC en alterna
+  frequency: 50
+  source: "V = 220"
+  network:
+    series:
+      - "R = 10Ω"
+      - "L = 100mH"
+      - parallel: ["C = 100uF", "R2 = 50Ω"]
+```
+
+~~~estructura
+- type: phasor
+  title: Suma de fasores
+  phasors:
+    - { label: V1, magnitude: 10, angle: 30 }
+    - { label: V2, magnitude: 6, angle: -45 }
+    - { label: V3, magnitude: 4, angle: 120 }
+  sum: true
+  unit: V
+~~~
+
+---
+
+## 15. Integración Cross-Dominio (Control + Química + CS apilados)
 
 En este último bloque apilamos los tres dominios dentro de un mismo fence para verificar la composición vertical con `apilar_svgs` y las transiciones de paleta:
 
