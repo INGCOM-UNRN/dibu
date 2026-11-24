@@ -20,6 +20,8 @@ El [manual](docs/manual/README.md) tiene una página por cada tipo de diagrama, 
 matemática aplicada), con todos sus campos, lo que calcula, el modo ejercicio y ejemplos dibujados.
 Se genera con `python3 docs/manual/generar.py` a partir de `docs/manual/datos/`, del código y del
 kitchen sink; `--verificar` falla si falta documentar un tipo o un campo, y corre en CI.
+El workflow `manual.yml` lo publica en GitHub Pages con cada cambio en `docs/manual/` y con cada
+release (hay que activar Pages con origen «GitHub Actions» en Settings → Pages).
 
 ## Uso rápido
 

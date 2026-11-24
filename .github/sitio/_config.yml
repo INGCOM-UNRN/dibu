@@ -1,0 +1,15 @@
+# Sitio del manual de dibu (GitHub Pages con Jekyll). Lo copia .github/sitio/preparar.py.
+title: Manual de dibu
+description: Diagramas educativos SVG a partir de bloques YAML o JSON
+lang: es
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+plugins:
+  - jekyll-relative-links
+  - jekyll-readme-index
+  - jekyll-default-layout
+relative_links:
+  enabled: true
+  collections: false

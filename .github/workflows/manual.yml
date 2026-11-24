@@ -1,0 +1,68 @@
+# Publica el manual (docs/manual) en GitHub Pages, como sitio Jekyll: cada página Markdown pasa a
+# HTML con sus enlaces y sus diagramas. El manual se genera y se versiona en el repositorio
+# (python3 docs/manual/generar.py) y el CI verifica que esté al día; acá sólo se publica.
+#
+# Requiere activar Pages con origen "GitHub Actions" (Settings → Pages).
+name: Publicar manual
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/manual/**"
+      - ".github/sitio/**"
+      - ".github/workflows/manual.yml"
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  construir:
+    name: Construir el sitio
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Preparar las páginas
+        run: python3 .github/sitio/preparar.py sitio
+      - uses: actions/configure-pages@v6
+      - uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./sitio
+          destination: ./_site
+      - name: Comprobar el sitio
+        run: |
+          set -euo pipefail
+          test -f _site/index.html
+          paginas=$(find _site -name '*.html' | wc -l)
+          echo "páginas HTML: $paginas"
+          test "$paginas" -ge 100
+          # Los enlaces a .md tienen que haber pasado a .html.
+          if grep -rl 'href="[^"]*\.md"' _site --include='*.html' | head -5 | grep .; then
+            echo "::error::quedaron enlaces a .md sin convertir"; exit 1
+          fi
+          echo "### Manual" >> "$GITHUB_STEP_SUMMARY"
+          echo "$paginas páginas, $(find _site -name '*.svg' | wc -l) diagramas" >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+
+  desplegar:
+    name: Desplegar en Pages
+    needs: construir
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.despliegue.outputs.page_url }}
+    steps:
+      - id: despliegue
+        uses: actions/deploy-pages@v5
