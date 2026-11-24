@@ -1,0 +1,231 @@
+# Publica un release con binarios del CLI `dibu` para Linux, macOS y Windows,
+# wheels de Python (maturin, bindings = "bin": `uv tool install dibu`) y sumas SHA-256.
+#
+# Disparo: empujar un tag `vX.Y.Z` que coincida con la versión del workspace
+#   git tag v0.2.0 && git push origin v0.2.0
+# o manualmente desde Actions → Release (con el tag ya existente).
+name: Release
+
+on:
+  push:
+    tags: ["v[0-9]+.[0-9]+.[0-9]+*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag existente a publicar (p. ej. v0.2.0)"
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.event.inputs.tag || github.ref_name }}
+
+env:
+  CARGO_TERM_COLOR: always
+  TAG: ${{ github.event.inputs.tag || github.ref_name }}
+
+jobs:
+  preparar:
+    name: Validar versión
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.v.outputs.version }}
+      prerelease: ${{ steps.v.outputs.prerelease }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ env.TAG }}
+      - id: v
+        name: El tag coincide con Cargo.toml y pyproject.toml
+        run: |
+          set -euo pipefail
+          version="${TAG#v}"
+          cargo_v=$(sed -n '/^\[workspace.package\]/,/^\[/{s/^version *= *"\(.*\)"/\1/p}' Cargo.toml)
+          py_v=$(sed -n 's/^version *= *"\(.*\)"/\1/p' pyproject.toml | head -1)
+          echo "tag=$version Cargo.toml=$cargo_v pyproject.toml=$py_v"
+          if [ "$version" != "$cargo_v" ] || [ "$version" != "$py_v" ]; then
+            echo "::error::El tag $TAG no coincide con las versiones declaradas ($cargo_v / $py_v)"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          case "$version" in *-*) echo "prerelease=true" ;; *) echo "prerelease=false" ;; esac >> "$GITHUB_OUTPUT"
+
+  pruebas:
+    name: CI
+    needs: preparar
+    uses: ./.github/workflows/ci.yml
+
+  binarios:
+    name: Binario ${{ matrix.target }}
+    needs: [preparar, pruebas]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { target: x86_64-unknown-linux-gnu, os: ubuntu-22.04 }
+          - { target: x86_64-unknown-linux-musl, os: ubuntu-latest, musl: true }
+          - { target: aarch64-unknown-linux-gnu, os: ubuntu-22.04-arm }
+          - { target: aarch64-unknown-linux-musl, os: ubuntu-24.04-arm, musl: true }
+          - { target: x86_64-apple-darwin, os: macos-latest }
+          - { target: aarch64-apple-darwin, os: macos-latest }
+          - { target: x86_64-pc-windows-msvc, os: windows-latest }
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ env.TAG }}
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: ${{ matrix.target }}
+      - name: Herramientas musl
+        if: matrix.musl
+        run: sudo apt-get update && sudo apt-get install -y musl-tools
+      - name: Compilar
+        run: cargo build --release -p dibu-cli --target ${{ matrix.target }}
+      - name: Empaquetar
+        shell: bash
+        run: |
+          set -euo pipefail
+          nombre="dibu-${{ needs.preparar.outputs.version }}-${{ matrix.target }}"
+          mkdir -p "dist/$nombre"
+          bin=target/${{ matrix.target }}/release/dibu
+          [ -f "$bin.exe" ] && bin="$bin.exe"
+          cp "$bin" README.md LICENSE "dist/$nombre/"
+          cd dist
+          if [[ "${{ matrix.target }}" == *windows* ]]; then
+            7z a -tzip "$nombre.zip" "$nombre" > /dev/null
+          else
+            tar -czf "$nombre.tar.gz" "$nombre"
+          fi
+          rm -rf "$nombre"
+          ls -l
+      - name: Probar el binario
+        if: matrix.target != 'x86_64-apple-darwin'
+        shell: bash
+        run: |
+          bin=target/${{ matrix.target }}/release/dibu
+          "$bin" --version
+          "$bin" list-types | wc -l
+      - uses: actions/upload-artifact@v7
+        with:
+          name: bin-${{ matrix.target }}
+          path: dist/*
+          if-no-files-found: error
+
+  wheels:
+    name: Wheels ${{ matrix.os }} ${{ matrix.target }}
+    needs: [preparar, pruebas]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-latest, target: x86_64, manylinux: auto }
+          - { os: ubuntu-latest, target: aarch64, manylinux: auto }
+          - { os: ubuntu-latest, target: x86_64, manylinux: musllinux_1_2 }
+          - { os: macos-latest, target: universal2-apple-darwin }
+          - { os: windows-latest, target: x64 }
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ env.TAG }}
+      - uses: PyO3/maturin-action@v1
+        with:
+          target: ${{ matrix.target }}
+          manylinux: ${{ matrix.manylinux }}
+          args: --release --out dist
+      - uses: actions/upload-artifact@v7
+        with:
+          name: wheel-${{ matrix.os }}-${{ matrix.target }}-${{ matrix.manylinux || 'std' }}
+          path: dist/*.whl
+          if-no-files-found: error
+
+  sdist:
+    name: sdist
+    needs: [preparar, pruebas]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ env.TAG }}
+      - uses: PyO3/maturin-action@v1
+        with:
+          command: sdist
+          args: --out dist
+      - uses: actions/upload-artifact@v7
+        with:
+          name: sdist
+          path: dist/*.tar.gz
+
+  publicar:
+    name: Publicar release
+    needs: [preparar, binarios, wheels, sdist]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ env.TAG }}
+          fetch-depth: 0
+      - uses: actions/download-artifact@v8
+        with:
+          path: artefactos
+          merge-multiple: true
+      - name: Sumas SHA-256
+        run: |
+          cd artefactos
+          sha256sum * > SHA256SUMS
+          cat SHA256SUMS
+      - name: Notas a partir de los commits semánticos
+        run: |
+          set -euo pipefail
+          previo=$(git describe --tags --abbrev=0 "$TAG^" 2>/dev/null || true)
+          rango=${previo:+$previo..}$TAG
+          seccion() { # $1 = título, $2 = regex de tipos
+            local lineas
+            lineas=$(git log --no-merges --format='%s (%h)' "$rango" | grep -E "^($2)(\(.+\))?!?:" || true)
+            [ -n "$lineas" ] && printf '### %s\n\n%s\n\n' "$1" "$(sed 's/^/- /' <<< "$lineas")"
+            return 0
+          }
+          {
+            seccion "Novedades" "feat"
+            seccion "Correcciones" "fix"
+            seccion "Rendimiento" "perf"
+            seccion "Documentación" "docs"
+            seccion "Mantenimiento" "build|ci|chore|refactor|test|style"
+            [ -n "$previo" ] && echo "**Cambios completos:** https://github.com/${{ github.repository }}/compare/$previo...$TAG"
+            echo
+            echo "### Instalación"
+            echo
+            echo "- Binario: descargar el archivo de la plataforma, descomprimir y copiar \`dibu\` a un directorio del \`PATH\`."
+            echo "- Python / uv: descargar la wheel de la plataforma y \`uv tool install ./dibu-*.whl\`."
+            echo "- Verificar descargas: \`sha256sum -c SHA256SUMS --ignore-missing\`."
+          } > NOTAS.md
+          cat NOTAS.md
+      - name: Crear o actualizar el release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          pre=""; [ "${{ needs.preparar.outputs.prerelease }}" = "true" ] && pre="--prerelease"
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            gh release upload "$TAG" artefactos/* --clobber
+            gh release edit "$TAG" --notes-file NOTAS.md $pre
+          else
+            gh release create "$TAG" artefactos/* --title "dibu $TAG" --notes-file NOTAS.md --verify-tag $pre
+          fi
+      # Avisa a dibu-web para que reconstruya y publique el editor con esta versión del motor.
+      # Requiere el secreto DIBU_WEB_DISPATCH_TOKEN (PAT fine-grained con "Contents: read & write"
+      # sobre INGCOM-UNRN/dibu-web); si no está, el paso se omite.
+      - name: Notificar a dibu-web
+        env:
+          GH_TOKEN: ${{ secrets.DIBU_WEB_DISPATCH_TOKEN }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then echo "Sin DIBU_WEB_DISPATCH_TOKEN: no se notifica a dibu-web."; exit 0; fi
+          gh api repos/${{ github.repository_owner }}/dibu-web/dispatches \
+            -f event_type=dibu-release -f "client_payload[ref]=$TAG"

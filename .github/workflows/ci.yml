@@ -1,0 +1,96 @@
+# Integración continua: compila, prueba y valida el CLI contra los fixtures.
+# También se reutiliza desde release.yml (workflow_call) como compuerta previa a publicar.
+name: CI
+
+on:
+  push:
+    branches: [main]
+    paths-ignore: ["**.md", "LICENSE"]
+  pull_request:
+    paths-ignore: ["**.md", "LICENSE"]
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+
+jobs:
+  test:
+    name: Tests (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Tests unitarios
+        run: cargo test --workspace --lib --bins
+      # Los tests de integración `paridad_*` comparan contra el oráculo Python alucarD,
+      # que sólo existe en la máquina de desarrollo: se omiten en CI.
+      - name: Tests de integración (sin paridad)
+        shell: bash
+        run: |
+          set -euo pipefail
+          for t in crates/*/tests/*.rs; do
+            nombre=$(basename "$t" .rs)
+            case "$nombre" in paridad_*) echo "· omitido $nombre (requiere alucarD)"; continue ;; esac
+            paquete=$(basename "$(dirname "$(dirname "$t")")")
+            echo "::group::$paquete / $nombre"
+            cargo test -p "$paquete" --test "$nombre"
+            echo "::endgroup::"
+          done
+
+  cli:
+    name: CLI contra fixtures
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo build --release -p dibu-cli
+      - name: list-types
+        run: |
+          n=$(./target/release/dibu list-types | wc -l)
+          echo "tipos registrados: $n"
+          test "$n" -ge 44
+      - name: render de cada fixture
+        run: |
+          set -euo pipefail
+          for f in fixtures/*.yaml fixtures/kitchen_sink/*.yaml; do
+            echo "::group::$f"
+            ./target/release/dibu render "$f" -o "$RUNNER_TEMP/tinta"
+            ./target/release/dibu render "$f" -o "$RUNNER_TEMP/color" --color
+            echo "::endgroup::"
+          done
+          echo "SVG generados: $(find "$RUNNER_TEMP/tinta" "$RUNNER_TEMP/color" -name '*.svg' | wc -l)"
+      - name: sync-md --verificar (SVG versionados al día)
+        run: ./target/release/dibu sync-md --verificar fixtures/kitchen_sink/kitchen_sink.md
+
+  # Estilo y lints: por ahora informativos (el código todavía no pasa `cargo fmt --check`
+  # ni `clippy -D warnings`). Quitar `continue-on-error` cuando se normalice.
+  lint:
+    name: Formato y clippy (informativo)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+      - name: cargo fmt
+        run: cargo fmt --all --check
+      - name: cargo clippy
+        if: always()
+        run: cargo clippy --workspace --all-targets -- -D warnings

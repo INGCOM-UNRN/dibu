@@ -1,0 +1,57 @@
+# Tareas periódicas: auditoría de seguridad de dependencias y compatibilidad con la
+# próxima versión de Rust (beta). Corre los lunes y también a mano desde Actions.
+name: Mantenimiento
+
+on:
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["**/Cargo.toml", "Cargo.lock"]
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  auditoria:
+    name: cargo audit (RustSec)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-audit
+      # Cargo.lock no está versionado: se resuelve con las versiones más nuevas permitidas.
+      - name: Generar Cargo.lock
+        run: test -f Cargo.lock || cargo generate-lockfile
+      - run: cargo audit --deny warnings
+
+  beta:
+    name: Rust beta
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@beta
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo test --workspace --lib --bins
+
+  desactualizadas:
+    name: Dependencias desactualizadas
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Resumen de actualizaciones disponibles
+        run: |
+          cargo generate-lockfile 2>/dev/null || true
+          {
+            echo "## cargo update --dry-run"
+            echo '```'
+            cargo update --dry-run --verbose 2>&1 | grep -E "Updating|Unchanged|Locking" | head -100 || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
