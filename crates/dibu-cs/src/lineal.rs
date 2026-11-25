@@ -447,7 +447,7 @@ fn render_matrix_inner(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagram
         Some(Value::String(s)) => s.as_str(),
         Some(otro) => {
             return Err(ErrorDiagrama::new(format!(
-                "variante de matriz no soportada: {} (static, dynamic, jagged o flat)",
+                "variante de matriz no soportada: {} (static, dynamic, jagged, flat o java)",
                 repr_val(otro)
             )));
         }
@@ -458,10 +458,188 @@ fn render_matrix_inner(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagram
         "jagged" => render_matrix_dinamica(c, b, true),
         "flat" => render_matrix_plana(c, b),
         "static" => render_matrix_estatica(c, b),
+        "java" => render_matrix_java(c, b),
         otra => Err(ErrorDiagrama::new(format!(
-            "variante de matriz no soportada: '{otra}' (static, dynamic, jagged o flat)"
+            "variante de matriz no soportada: '{otra}' (static, dynamic, jagged, flat o java)"
         ))),
     }
+}
+
+/// Las filas de una matriz de Java: `None` es una referencia `null`; `Some(vec![])`, un arreglo de
+/// largo cero. Sin `values`, `rows` filas de `cols` celdas vacías.
+fn filas_matriz_java(b: &Bloque) -> Result<Vec<Option<Vec<String>>>, ErrorDiagrama> {
+    let Some(raw) = b.get("values").filter(|v| !v.is_null()) else {
+        let nf = dimension(b, "rows", 3, MAX_FILAS)?;
+        let nc = dimension(b, "cols", 3, MAX_COLUMNAS)?;
+        return Ok(vec![Some(vec![String::new(); nc]); nf]);
+    };
+    let Some(arr) = raw.as_array() else {
+        return Err(ErrorDiagrama::new(
+            "'values' de una matriz de Java tiene que ser una lista de filas (listas o null)",
+        ));
+    };
+    if arr.len() > MAX_FILAS {
+        return Err(ErrorDiagrama::new(format!(
+            "la matriz tiene {} filas; el máximo es {MAX_FILAS}",
+            arr.len()
+        )));
+    }
+    arr.iter()
+        .enumerate()
+        .map(|(i, item)| match item {
+            Value::Null => Ok(None),
+            Value::Array(fila) if fila.len() > MAX_COLUMNAS => Err(ErrorDiagrama::new(format!(
+                "la fila {i} de la matriz tiene {} columnas; el máximo es {MAX_COLUMNAS}",
+                fila.len()
+            ))),
+            Value::Array(fila) => Ok(Some(
+                fila.iter()
+                    .map(|v| if v.is_null() { String::new() } else { texto(v) })
+                    .collect(),
+            )),
+            _ => Err(ErrorDiagrama::new(format!(
+                "la fila {i} de una matriz de Java tiene que ser una lista (o null)"
+            ))),
+        })
+        .collect()
+}
+
+/// `int[][]` de Java: la variable en el stack refiere al arreglo exterior, que guarda una
+/// referencia por fila; cada fila es un objeto aparte, con su propio largo.
+fn render_matrix_java(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
+    let filas = filas_matriz_java(b)?;
+    let nf = filas.len();
+    let nombre = str_o(b, "name", "matriz");
+    let tipo = str_o(b, "elementType", "int");
+    let indices = flag_t(b, "showIndices");
+    let sin_valores = flag_f(b, "blankValues");
+    let sin_largos = flag_f(b, "blankLengths");
+    let resaltadas = pares_highlight(b)?;
+    let zonas = nombres_de_zonas(b);
+
+    let inicio = encabezado(c, b, &format!("{tipo}[][] {nombre}"));
+    let top = inicio + if zonas.is_some() { ALTO_ZONA } else { 0.0 };
+
+    let celda_w = 50.0_f64;
+    let celda_h = 40.0_f64;
+    let paso_fila = 54.0_f64;
+    let vacio_w = 14.0_f64;
+    let y0 = top + 34.0;
+
+    // La variable, en el stack.
+    let var_w = 56.0_f64.max((nombre.chars().count() as f64 * 8.5 + 14.0).ceil());
+    c.t(var_w / 2.0, y0 - 8.0, &nombre, 12.0, 700, "textMain", "middle", MONO);
+    c.r(0.0, y0, var_w, celda_h, "fillPointerBox", 1.75, 3.0);
+    c.punto(var_w / 2.0, y0 + celda_h / 2.0, "accentPrimary", 3.2);
+
+    // El arreglo exterior: una referencia por fila.
+    let x_ext = var_w + if zonas.is_some() { 76.0 } else { 56.0 };
+    let ext_w = 52.0_f64;
+    let ext_rotulo = format!("{tipo}[][] · length {}", if sin_largos { "__".to_string() } else { nf.to_string() });
+    c.t(x_ext, y0 - 8.0, &ext_rotulo, 10.0, 700, "textSub", "start", MONO);
+    let alto_ext = if nf == 0 { celda_h } else { nf as f64 * celda_h };
+    c.linea(
+        var_w / 2.0,
+        y0 + celda_h / 2.0,
+        x_ext - 3.0,
+        y0 + celda_h / 2.0,
+        "accentPrimary",
+        1.6,
+        Some("main"),
+        "",
+    );
+    if nf == 0 {
+        c.r(x_ext, y0, vacio_w, celda_h, "fillCell", 2.0, 0.0);
+    }
+    let ancho_rotulo = ext_rotulo.chars().count() as f64 * 6.2;
+    let x_filas = x_ext + (ext_w + 84.0).max(ancho_rotulo + 28.0);
+    let mut ancho = x_ext + ancho_rotulo + 10.0;
+
+    if indices {
+        let max_l = filas.iter().flatten().map(Vec::len).max().unwrap_or(0);
+        for j in 0..max_l {
+            c.t(
+                x_filas + j as f64 * celda_w + celda_w / 2.0,
+                y0 - 8.0,
+                &format!("[{j}]"),
+                10.5,
+                700,
+                "textSub",
+                "middle",
+                MONO,
+            );
+        }
+    }
+
+    for (i, fila) in filas.iter().enumerate() {
+        let y = y0 + i as f64 * celda_h;
+        let cy = y + celda_h / 2.0;
+        c.r(x_ext, y, ext_w, celda_h, "fillPointerBox", 1.5, 0.0);
+        c.t(x_ext + 6.0, y + 12.0, &format!("[{i}]"), 9.0, 400, "textSub", "start", MONO);
+        let Some(fila) = fila else {
+            c.t(x_ext + ext_w / 2.0, cy + 7.0, "null", 10.5, 700, "textMuted", "middle", MONO);
+            continue;
+        };
+        // Cada fila es un objeto aparte: la posición en el dibujo no es la de la memoria.
+        let yf = y0 + i as f64 * paso_fila;
+        let cyf = yf + celda_h / 2.0;
+        c.punto(x_ext + ext_w / 2.0, cy + 5.0, "accentPrimary", 3.2);
+        c.linea(
+            x_ext + ext_w / 2.0,
+            cy + 5.0,
+            x_filas - 3.0,
+            cyf,
+            "accentPrimary",
+            1.6,
+            Some("main"),
+            "",
+        );
+        let largo = fila.len();
+        if largo == 0 {
+            c.r(x_filas, yf, vacio_w, celda_h, "fillCell", 2.0, 0.0);
+        }
+        for (j, v) in fila.iter().enumerate() {
+            let x = x_filas + j as f64 * celda_w;
+            let marcada = resaltadas.contains(&(i as i64, j as i64));
+            c.r(x, yf, celda_w, celda_h, if marcada { "fillHighlight" } else { "fillCell" }, 1.5, 0.0);
+            if !v.is_empty() && !sin_valores {
+                c.t(x + celda_w / 2.0, cyf + 5.0, v, 14.0, 700, "textMain", "middle", MONO);
+            } else {
+                c.vacio(x + 9.0, x + celda_w - 9.0, yf + celda_h - 9.0);
+            }
+        }
+        let fin = x_filas + if largo == 0 { vacio_w } else { largo as f64 * celda_w };
+        if largo > 0 {
+            c.add(format!(
+                r#"<rect x="{}" y="{yf:.1}" width="{}" height="{}" fill="none" stroke="{}" stroke-width="2"/>"#,
+                fmt_num_clean(x_filas),
+                fmt_num_clean(largo as f64 * celda_w),
+                fmt_num_clean(celda_h),
+                c.pal.stroke_main
+            ));
+        }
+        let rotulo = format!("{tipo}[] · length {}", if sin_largos { "__".to_string() } else { largo.to_string() });
+        c.t(fin + 8.0, cyf + 4.0, &rotulo, 9.5, 400, "textSub", "start", MONO);
+        ancho = ancho.max(fin + 8.0 + rotulo.chars().count() as f64 * 6.0 + 10.0);
+    }
+    if nf > 0 {
+        c.add(format!(
+            r#"<rect x="{}" y="{y0:.1}" width="{}" height="{}" fill="none" stroke="{}" stroke-width="2"/>"#,
+            fmt_num_clean(x_ext),
+            fmt_num_clean(ext_w),
+            fmt_num_clean(alto_ext),
+            c.pal.stroke_main
+        ));
+    }
+
+    let ultima_fila = filas.iter().rposition(Option::is_some).map_or(0.0, |i| i as f64 * paso_fila + celda_h);
+    let mut alto = y0 + alto_ext.max(celda_h).max(ultima_fila) + 10.0;
+    if let Some((z_stack, z_heap)) = zonas {
+        zona(c, -6.0, var_w + 10.0, inicio + 2.0, alto + 4.0, &z_stack);
+        zona(c, x_ext - 16.0, ancho, inicio + 2.0, alto + 4.0, &z_heap);
+        alto += 8.0;
+    }
+    Ok((ancho, alto))
 }
 
 fn render_matrix_estatica(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
@@ -3201,5 +3379,66 @@ mod tests {
             .to_string();
         assert!(err_recursivo.starts_with("matrix: "));
         assert!(!err_recursivo.starts_with("matrix: matrix: "));
+    }
+
+    /// Las flechas (líneas con punta) de un SVG.
+    fn flechas(svg: &str) -> usize {
+        svg.matches("marker-end=\"url(#flecha-main").count()
+    }
+
+    #[test]
+    fn matriz_java_irregular_distingue_null_de_largo_cero() {
+        let svg = render(
+            json!({"type": "matrix", "variant": "java", "name": "matriz",
+                   "values": [[1, 2, 3], [4], null, []], "zones": true}),
+            true,
+        );
+        let textos = textos_svg(&svg);
+        assert!(svg.contains("int[][] matriz"), "declaración con sintaxis de Java");
+        assert!(textos.iter().any(|t| t == "null"), "la tercera fila es null");
+        assert!(textos.iter().any(|t| t == "int[] · length 0"), "la cuarta es un arreglo de largo 0");
+        assert!(textos.iter().any(|t| t == "int[] · length 3") && textos.iter().any(|t| t == "int[] · length 1"));
+        assert!(textos.iter().any(|t| t == "int[][] · length 4"));
+        // La variable y las tres filas no nulas: null no tiene flecha.
+        assert_eq!(flechas(&svg), 4);
+        assert!(textos.iter().any(|t| t == "Stack") && textos.iter().any(|t| t == "Heap"));
+    }
+
+    #[test]
+    fn matriz_java_rectangular_y_exterior_vacio() {
+        let svg = render(json!({"type": "matrix", "variant": "java", "values": [[1, 2], [3, 4], [5, 6]]}), true);
+        assert_eq!(flechas(&svg), 4);
+        assert_eq!(textos_svg(&svg).iter().filter(|t| *t == "int[] · length 2").count(), 3);
+        let vacia = render(json!({"type": "matrix", "variant": "java", "name": "v", "values": []}), true);
+        assert!(textos_svg(&vacia).iter().any(|t| t == "int[][] · length 0"));
+        assert_eq!(flechas(&vacia), 1, "sólo la variable refiere al arreglo vacío");
+        let sin_valores = render(json!({"type": "matrix", "variant": "java", "rows": 2, "cols": 3}), true);
+        assert_eq!(flechas(&sin_valores), 3);
+    }
+
+    #[test]
+    fn matriz_java_enlaces_salen_de_su_indice() {
+        let svg = render(json!({"type": "matrix", "variant": "java", "values": [[1], null, [2]]}), true);
+        // Las flechas de las filas salen de la celda [0] y de la [2] del arreglo exterior.
+        let ys: Vec<f64> = svg
+            .split("<line ")
+            .skip(1)
+            .filter(|l| l.contains("flecha-main"))
+            .map(|l| {
+                let y1 = l.split("y1=\"").nth(1).unwrap();
+                y1[..y1.find('"').unwrap()].parse().unwrap()
+            })
+            .collect();
+        assert_eq!(ys.len(), 3);
+        assert!(ys[2] - ys[1] > 70.0, "la fila 1 es null: no sale nada de su celda");
+    }
+
+    #[test]
+    fn matriz_java_errores_y_ejercicio() {
+        assert!(render_err(json!({"type": "matrix", "variant": "java", "values": [1, 2]})).contains("tiene que ser una lista (o null)"));
+        let svg = render(json!({"type": "matrix", "variant": "java", "values": [[1, 2]], "blankValues": true, "blankLengths": true}), true);
+        let textos = textos_svg(&svg);
+        assert!(!textos.iter().any(|t| t == "1"));
+        assert!(textos.iter().any(|t| t == "int[] · length __"));
     }
 }
