@@ -66,7 +66,7 @@ fn ejemplos_renderizan_con_ambas_paletas() {
         "../../fixtures/diagramas_math.yaml",
     ]
     .iter()
-    .map(|f| std::fs::read_to_string(f).unwrap())
+    .map(|f| std::fs::read_to_string(f).unwrap().replace('\r', ""))
     .collect();
     for t in reg.tipos() {
         assert!(

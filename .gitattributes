@@ -1,0 +1,4 @@
+# Finales de línea LF en todas las plataformas: los fixtures y los SVG versionados se comparan
+# byte a byte (en Windows, core.autocrlf los convertiría a CRLF).
+* text=auto eol=lf
+*.png binary

@@ -517,6 +517,12 @@ def main() -> int:
             print("✗ El manual está desactualizado (correr python3 docs/manual/generar.py):", file=sys.stderr)
             for r in (distintos + sobrantes)[:20]:
                 print(f"  {r}", file=sys.stderr)
+            if distintos and (MANUAL / distintos[0]).is_file():
+                import difflib
+                viejo = (MANUAL / distintos[0]).read_text(encoding="utf-8").replace(">", ">\n").splitlines()
+                nuevo = salida[distintos[0]].replace(">", ">\n").splitlines()
+                diff = list(difflib.unified_diff(viejo, nuevo, "versionado", "generado", n=1, lineterm=""))
+                print(f"Diferencias en {distintos[0]}:", *diff[:30], sep="\n", file=sys.stderr)
             return 1
         print(f"✓ Manual al día: {len(salida)} archivos")
         return 0
