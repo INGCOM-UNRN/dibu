@@ -2,4 +2,5 @@
 Cargo.lock
 *.svg
 !fixtures/**/*.svg
+!docs/manual/**/*.svg
 .DS_Store
