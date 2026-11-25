@@ -2,9 +2,9 @@
 
 # Referencia de los tipos de dibu
 
-Los 70 tipos, con todos sus campos. Los valores admitidos y por defecto salen del código; los ejemplos se dibujan sin errores y pasan `validar.py` sin avisos. Además de los campos de cada tipo, todos aceptan `title`, `subtitle`, `id`, `inkSaver` y `theme`.
+Los 71 tipos, con todos sus campos. Los valores admitidos y por defecto salen del código; los ejemplos se dibujan sin errores y pasan `validar.py` sin avisos. Además de los campos de cada tipo, todos aceptan `title`, `subtitle`, `id`, `inkSaver` y `theme`.
 
-- **Estructuras de datos y algoritmos**: [`array`](#array), [`matrix`](#matrix), [`linked_list`](#linked_list), [`stack`](#stack), [`queue`](#queue), [`call_stack`](#call_stack), [`call_tree`](#call_tree), [`struct`](#struct), [`adt`](#adt), [`tree`](#tree), [`heap`](#heap), [`avl`](#avl), [`bplus_tree`](#bplus_tree), [`hash_table`](#hash_table), [`complexity`](#complexity), [`flowchart`](#flowchart), [`cost_table`](#cost_table), [`trace_table`](#trace_table), [`dp_table`](#dp_table), [`dijkstra`](#dijkstra), [`turing`](#turing)
+- **Estructuras de datos y algoritmos**: [`array`](#array), [`matrix`](#matrix), [`linked_list`](#linked_list), [`stack`](#stack), [`queue`](#queue), [`call_stack`](#call_stack), [`call_tree`](#call_tree), [`struct`](#struct), [`object_heap`](#object_heap), [`adt`](#adt), [`tree`](#tree), [`heap`](#heap), [`avl`](#avl), [`bplus_tree`](#bplus_tree), [`hash_table`](#hash_table), [`complexity`](#complexity), [`flowchart`](#flowchart), [`cost_table`](#cost_table), [`trace_table`](#trace_table), [`dp_table`](#dp_table), [`dijkstra`](#dijkstra), [`turing`](#turing)
 - **Sistemas de computación**: [`truth_table`](#truth_table), [`karnaugh`](#karnaugh), [`logic_circuit`](#logic_circuit), [`pipeline`](#pipeline), [`ieee754`](#ieee754), [`cache`](#cache), [`cpu_scheduling`](#cpu_scheduling), [`page_table`](#page_table), [`page_replacement`](#page_replacement), [`subnetting`](#subnetting), [`transaction_schedule`](#transaction_schedule)
 - **Control de procesos**: [`block_diagram`](#block_diagram), [`time_response`](#time_response), [`bode`](#bode), [`nyquist`](#nyquist), [`pole_zero`](#pole_zero), [`root_locus`](#root_locus), [`instrumentation`](#instrumentation), [`ladder`](#ladder), [`grafcet`](#grafcet)
 - **Química**: [`molecule`](#molecule), [`vsepr`](#vsepr), [`orbitals`](#orbitals), [`unit_cell`](#unit_cell), [`reaction`](#reaction), [`energy_profile`](#energy_profile), [`kinetics`](#kinetics), [`phase_diagram`](#phase_diagram), [`heating_curve`](#heating_curve), [`titration`](#titration), [`speciation`](#speciation), [`spectrum`](#spectrum), [`galvanic_cell`](#galvanic_cell), [`latimer`](#latimer), [`frost`](#frost), [`newman`](#newman), [`chair`](#chair), [`fischer`](#fischer), [`crystal_field`](#crystal_field), [`complex`](#complex), [`born_haber`](#born_haber)
@@ -64,13 +64,13 @@ inkSaver: false
 
 ## `matrix`: Matriz
 
-*Estructuras de datos y algoritmos › Estructuras lineales.* Matrices estáticas, dinámicas, dentadas y planas, como están en memoria.
+*Estructuras de datos y algoritmos › Estructuras lineales.* Matrices estáticas, dinámicas, dentadas, planas y de Java, como están en memoria.
 
 Dibuja una matriz y cómo está guardada en memoria. La estática muestra la declaración
 (`int m[3][4]`) y, con `showAddresses`, la dirección de cada celda en orden de filas; la
 dinámica, el puntero, el arreglo de punteros a filas y cada fila; la dentada, filas de distinto
 largo con el arreglo de largos o un centinela; la plana, un único bloque contiguo con la cuenta
-`m[i * C + j]`.
+`m[i * C + j]`; la de Java, un arreglo de arreglos (`int[][]`) con cada fila como objeto aparte.
 
 **Calcula:** La dirección de cada celda en orden de filas. En la plana, el índice lineal de cada `(i, j)`. En la dentada, el arreglo de largos a partir de las filas.
 
@@ -80,10 +80,11 @@ largo con el arreglo de largos o un centinela; la plana, un único bloque contig
 | `dynamic` | Un `int **`: el puntero, el arreglo de punteros a filas y cada fila por separado; `null` es un puntero a NULL. |
 | `jagged` | Dinámica con filas de distinto largo, con el arreglo de largos (`showLengths`) o un `sentinel` al final de cada fila. |
 | `flat` | Un `int *` con `F * C` elementos contiguos: cada celda con su índice `[k]` y su `(i, j)`. |
+| `java` | Un `int[][]` de Java: la variable refiere al arreglo exterior, que guarda una referencia por fila; cada fila es un objeto con su `length`. `null` es una referencia nula y `[]`, una fila de largo cero; `values: []` es un arreglo exterior vacío. |
 
 | Campo | Tipo | Valores · por defecto | Descripción |
 | :--- | :--- | :--- | :--- |
-| `values` | lista |  | Lista de filas (o lista plana junto con `cols`). En la dinámica, `null` es una fila que es NULL. |
+| `values` | lista |  | Lista de filas (o lista plana junto con `cols`). En la dinámica, `null` es una fila que es NULL; en la de Java, una referencia `null`, y `[]` una fila de largo cero. |
 | `rows` | número |  | Cantidad de filas, si no salen de `values` (de 1 a 10). |
 | `cols` | número |  | Cantidad de columnas (de 1 a 10). |
 | `variant` | texto |  | Variante, ver arriba. |
@@ -106,7 +107,7 @@ largo con el arreglo de largos o un centinela; la plana, un único bloque contig
 | `lengthsName` | texto |  | Nombre del arreglo de largos. |
 | `lengthsType` | texto |  | Tipo de los largos (por omisión `size_t`). |
 | `lengthsAddr` | texto |  | Dirección del arreglo de largos. |
-| `blankLengths` | sí/no |  | Deja los largos en blanco. |
+| `blankLengths` | sí/no |  | Deja los largos en blanco (en la de Java, cada `length`). |
 | `sentinel` | texto |  | En la dentada, un valor centinela al final de cada fila, como `"'\\0'"` o `-1`. |
 | `showCoords` | sí/no |  | En la plana, el `(i, j)` de cada celda (por omisión, sí). |
 | `showFormula` | sí/no |  | En la plana, la fórmula `m[i * C + j]` (por omisión, sí). |
@@ -161,6 +162,33 @@ variant: flat
 values: [[1, 2], [3, 4]]
 showLogical: true
 showAddresses: true
+inkSaver: false
+```
+
+Ejemplo: Arreglo de arreglos en Java
+
+```yaml
+type: matrix
+title: "Arreglo de arreglos en Java"
+variant: java
+name: matriz
+values:
+  - [1, 2, 3]
+  - [4]
+  - null
+  - []
+zones: true
+```
+
+Ejemplo: Arreglo exterior de largo cero (para completar)
+
+```yaml
+type: matrix
+title: Arreglo exterior de largo cero (para completar)
+variant: java
+name: vacia
+values: []
+blankLengths: true
 inkSaver: false
 ```
 
@@ -505,6 +533,133 @@ hidden: true
 inkSaver: false
 ```
 
+<a id="object_heap"></a>
+
+## `object_heap`: Stack y heap (objetos)
+
+*Estructuras de datos y algoritmos › Memoria, tipos y recursión.* Variables, objetos y referencias en el stack y el heap, como en Java, también en varios instantes.
+
+Dibuja los marcos activos en el stack (del tope, arriba, a `main`) y los objetos en el heap,
+con una flecha por cada referencia. Cada objeto tiene un ID: dos referencias al mismo ID llegan
+a la misma caja, y dos objetos con el mismo contenido son cajas distintas. Las referencias
+entre objetos (y a sí mismos) rodean el heap por la derecha. Con `snapshots`, el estado en
+varios instantes, para mostrar copia, mutación y reasignación de referencias.
+
+**Calcula:** Qué objetos son alcanzables desde el stack, siguiendo las referencias; los demás se marcan como inalcanzables.
+
+| Campo | Tipo | Valores · por defecto | Descripción |
+| :--- | :--- | :--- | :--- |
+| `frames` | lista |  | Los marcos, de `main` al tope. Cada uno con `function` y `params` y `vars`: listas de `{name, type, value}` o `{name, type, ref}` (`ref: null` es una referencia nula), o `{x: 3}` para valores. |
+| `objects` | lista |  | Los objetos del heap. Cada uno con `id`, `type` y uno de `fields` (como las variables), `elements` (las celdas de un arreglo: valores sueltos, `{value}` o `{ref}`) o `value` (el contenido, como un `String`). `group` los agrupa, como el String Pool. |
+| `snapshots` | lista |  | Varios instantes (hasta 6), cada uno con `label`, `frames` y `objects`. Un mismo ID en dos instantes es el mismo objeto. |
+| `direction` |  |  | Con `snapshots`, `column` (por omisión) los apila y `row` los pone lado a lado. |
+| `zones` |  |  | Los títulos del stack y del heap (`{stack, heap}`); `false` quita los recuadros. |
+| `markUnreachable` |  |  | Marca los objetos inalcanzables desde el stack (por omisión, sí). |
+| `blankValues` | sí/no |  | Deja los valores en blanco. |
+| `blankRefs` | sí/no |  | Deja las referencias en blanco, sin flechas, para dibujarlas. |
+
+**Modo ejercicio:** Con `blankRefs`, las cajas de las referencias quedan vacías y sin flechas, para que se dibujen;
+con `blankValues`, los valores. Cada variable, campo o celda acepta además `blank: true`. Campos: `blankValues`, `blankRefs`.
+
+Ejemplo: Dos variables comparten un arreglo
+
+```yaml
+type: object_heap
+title: Dos variables comparten un arreglo
+frames:
+  - function: main
+    vars:
+      - {name: a, type: "int[]", ref: A}
+      - {name: b, type: "int[]", ref: A}
+      - {name: copia, type: "int[]", ref: B}
+      - {name: cantidad, type: int, value: 3}
+objects:
+  - id: A
+    type: "int[]"
+    elements: [{value: 1}, {value: 2}, {value: 3}]
+  - id: B
+    type: "int[]"
+    elements: [1, 2, 3]
+```
+
+Ejemplo: Instanciación, this y String Pool
+
+```yaml
+type: object_heap
+title: "Instanciación, this y String Pool"
+frames:
+  - function: main
+    vars:
+      - {name: juan, type: Persona, ref: P1}
+      - {name: maria, type: Persona, ref: P2}
+  - function: saludar
+    params:
+      - {name: this, type: Persona, ref: P1}
+objects:
+  - id: P1
+    type: Persona
+    fields:
+      - {name: nombre, type: String, ref: S1}
+      - {name: edad, type: int, value: 30}
+  - id: P2
+    type: Persona
+    fields:
+      - {name: nombre, type: String, ref: S1}
+      - {name: edad, type: int, value: 25}
+  - {id: S1, type: String, value: "Hola", group: String Pool}
+inkSaver: false
+```
+
+Ejemplo: Reasignación de un parámetro
+
+```yaml
+type: object_heap
+title: Reasignación de un parámetro
+snapshots:
+  - label: "Al entrar a modificar(numeros)"
+    frames:
+      - function: main
+        vars: [{name: numeros, type: "int[]", ref: A}]
+      - function: modificar
+        params: [{name: arr, type: "int[]", ref: A}]
+    objects:
+      - {id: A, type: "int[]", elements: [1, 2, 3]}
+  - label: "Después de arr = new int[] {7, 8}"
+    frames:
+      - function: main
+        vars: [{name: numeros, type: "int[]", ref: A}]
+      - function: modificar
+        params: [{name: arr, type: "int[]", ref: B}]
+    objects:
+      - {id: A, type: "int[]", elements: [1, 2, 3]}
+      - {id: B, type: "int[]", elements: [7, 8]}
+```
+
+Ejemplo: Tras p = null (para completar las referencias)
+
+```yaml
+type: object_heap
+title: "Tras p = null (para completar las referencias)"
+frames:
+  - function: main
+    vars: [{name: p, type: Nodo, ref: null}, {name: lista, type: "Nodo[]", ref: L}]
+objects:
+  - id: L
+    type: "Nodo[]"
+    elements: [{ref: N2}, {ref: null}]
+  - id: N1
+    type: Nodo
+    fields: [{name: dato, type: int, value: 1}, {name: sig, type: Nodo, ref: N2}]
+  - id: N2
+    type: Nodo
+    fields: [{name: dato, type: int, value: 2}, {name: sig, type: Nodo, ref: N2}]
+blankRefs: true
+```
+
+- Hasta 8 marcos, 16 objetos y 12 variables, campos o celdas por marco u objeto.
+- Una referencia a un ID que no está en `objects`, un ID repetido o `value` junto con `ref` son errores.
+- Para la pila de llamadas de C, con direcciones, ver [`call_stack`](#call_stack); para la matriz de Java, [`matrix`](#matrix) con `variant: java`.
+
 <a id="adt"></a>
 
 ## `adt`: Tipo abstracto de datos
@@ -817,7 +972,7 @@ condicionales y ciclos anidados. Cada paso con `blank: true` sale vacío para co
 
 | Campo | Tipo | Valores · por defecto | Descripción |
 | :--- | :--- | :--- | :--- |
-| `steps` | lista |  | Los pasos: un texto, `{io}` (entrada o salida), `{step}`, `{if, then, else}`, `{while, do}` o `{for, do}`; cada uno con `blank`. |
+| `steps` | lista |  | Los pasos: un texto, `{io}` (entrada o salida), `{step}`, `{if, then, else}`, `{while, do}`, `{for, do}` o `{doWhile, do}` (el cuerpo antes de la condición); cada uno con `blank`. |
 | `start` | texto |  | Rótulo del inicio (por omisión `Inicio`); `false` lo quita. |
 | `end` | texto |  | Rótulo del fin (por omisión `Fin`); `false` lo quita. |
 | `blankValues` | sí/no |  | Deja en blanco el texto de todos los pasos. |
@@ -838,6 +993,20 @@ steps:
         then: ["s = s + i"]
         else: ["s = s - i"]
       - "i = i + 1"
+```
+
+Ejemplo: Lazo do-while: el cuerpo se ejecuta al menos una vez
+
+```yaml
+type: flowchart
+title: "Lazo do-while: el cuerpo se ejecuta al menos una vez"
+steps:
+  - "i = 0"
+  - doWhile: "i < 3"
+    do:
+      - "procesar(i)"
+      - "i = i + 1"
+  - {io: "mostrar i"}
 ```
 
 <a id="cost_table"></a>

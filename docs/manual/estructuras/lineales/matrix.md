@@ -6,7 +6,7 @@ Dibuja una matriz y cómo está guardada en memoria. La estática muestra la dec
 (`int m[3][4]`) y, con `showAddresses`, la dirección de cada celda en orden de filas; la
 dinámica, el puntero, el arreglo de punteros a filas y cada fila; la dentada, filas de distinto
 largo con el arreglo de largos o un centinela; la plana, un único bloque contiguo con la cuenta
-`m[i * C + j]`.
+`m[i * C + j]`; la de Java, un arreglo de arreglos (`int[][]`) con cada fila como objeto aparte.
 
 ## Qué calcula
 
@@ -22,13 +22,14 @@ largo con el arreglo de largos o un centinela; la plana, un único bloque contig
 | `dynamic` | Un `int **`: el puntero, el arreglo de punteros a filas y cada fila por separado; `null` es un puntero a NULL. |
 | `jagged` | Dinámica con filas de distinto largo, con el arreglo de largos (`showLengths`) o un `sentinel` al final de cada fila. |
 | `flat` | Un `int *` con `F * C` elementos contiguos: cada celda con su índice `[k]` y su `(i, j)`. |
+| `java` | Un `int[][]` de Java: la variable refiere al arreglo exterior, que guarda una referencia por fila; cada fila es un objeto con su `length`. `null` es una referencia nula y `[]`, una fila de largo cero; `values: []` es un arreglo exterior vacío. |
 
 ## Campos
 
 | Campo | Tipo | Valores y valor por defecto | Descripción |
 | :--- | :--- | :--- | :--- |
 | `type` | texto | `matrix` | Obligatorio. |
-| `values` | lista |  | Lista de filas (o lista plana junto con `cols`). En la dinámica, `null` es una fila que es NULL. |
+| `values` | lista |  | Lista de filas (o lista plana junto con `cols`). En la dinámica, `null` es una fila que es NULL; en la de Java, una referencia `null`, y `[]` una fila de largo cero. |
 | `rows` | número |  | Cantidad de filas, si no salen de `values` (de 1 a 10). |
 | `cols` | número |  | Cantidad de columnas (de 1 a 10). |
 | `variant` | texto |  | Variante, ver arriba. |
@@ -51,7 +52,7 @@ largo con el arreglo de largos o un centinela; la plana, un único bloque contig
 | `lengthsName` | texto |  | Nombre del arreglo de largos. |
 | `lengthsType` | texto |  | Tipo de los largos (por omisión `size_t`). |
 | `lengthsAddr` | texto |  | Dirección del arreglo de largos. |
-| `blankLengths` | sí/no |  | Deja los largos en blanco. |
+| `blankLengths` | sí/no |  | Deja los largos en blanco (en la de Java, cada `length`). |
 | `sentinel` | texto |  | En la dentada, un valor centinela al final de cada fila, como `"'\\0'"` o `-1`. |
 | `showCoords` | sí/no |  | En la plana, el `(i, j)` de cada celda (por omisión, sí). |
 | `showFormula` | sí/no |  | En la plana, la fórmula `m[i * C + j]` (por omisión, sí). |
@@ -120,6 +121,37 @@ inkSaver: false
 ```
 
 ![Matriz plana con vista lógica](img/ks_cs_matrix_flat_color.svg)
+
+### Arreglo de arreglos en Java
+
+```yaml
+type: matrix
+title: "Arreglo de arreglos en Java"
+variant: java
+name: matriz
+values:
+  - [1, 2, 3]
+  - [4]
+  - null
+  - []
+zones: true
+```
+
+![Arreglo de arreglos en Java](img/ks_cs_matrix_java_irregular.svg)
+
+### Arreglo exterior de largo cero (para completar)
+
+```yaml
+type: matrix
+title: Arreglo exterior de largo cero (para completar)
+variant: java
+name: vacia
+values: []
+blankLengths: true
+inkSaver: false
+```
+
+![Arreglo exterior de largo cero (para completar)](img/ks_cs_matrix_java_vacia.svg)
 
 ## Notas
 

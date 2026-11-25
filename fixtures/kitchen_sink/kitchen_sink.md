@@ -1,6 +1,6 @@
 # Catálogo Kitchen Sink de `dibu`
 
-En este documento reunimos ejemplos válidos de los **70 tipos** de diagramas soportados por `dibu` (`9` de control de procesos, `21` de química, `14` de ciencias de la computación, `18` de ingeniería en computación y `8` de señales, probabilidad y circuitos). Vas a encontrar bloques simples y apilados, ambas paletas (`inkSaver: true` e `inkSaver: false`), variantes `blank*`, caracteres UTF-8 con subíndices/superíndices, escape XML (`&`, `<`, `>`) y todas las variantes de fences (` ```estructura `, ` ```statics `, `~~~estructura`, `~~~statics` y ```` ````estructura ````).
+En este documento reunimos ejemplos válidos de los **71 tipos** de diagramas soportados por `dibu` (`9` de control de procesos, `21` de química, `15` de ciencias de la computación, `18` de ingeniería en computación y `8` de señales, probabilidad y circuitos). Vas a encontrar bloques simples y apilados, ambas paletas (`inkSaver: true` e `inkSaver: false`), variantes `blank*`, caracteres UTF-8 con subíndices/superíndices, escape XML (`&`, `<`, `>`) y todas las variantes de fences (` ```estructura `, ` ```statics `, `~~~estructura`, `~~~statics` y ```` ````estructura ````).
 
 ---
 
@@ -442,6 +442,30 @@ Los `14` tipos de `dibu-cs` usando también fences `statics` (tanto con backtick
   representations:
     - Arreglo
     - {name: Lista, fields: ["nodo_t *cabeza"]}
+```
+
+```estructura
+- type: object_heap
+  title: Dos variables comparten un arreglo
+  frames:
+    - function: main
+      vars:
+        - {name: a, type: "int[]", ref: A}
+        - {name: b, type: "int[]", ref: A}
+        - {name: n, type: int, value: 3}
+  objects:
+    - {id: A, type: "int[]", elements: [1, 2, 3]}
+- type: matrix
+  title: Arreglo de arreglos en Java
+  variant: java
+  name: matriz
+  values: [[1, 2, 3], [4], null, []]
+- type: flowchart
+  title: Lazo do-while
+  steps:
+    - "i = 0"
+    - doWhile: "i < 3"
+      do: ["procesar(i)", "i = i + 1"]
 ```
 
 ### Algoritmos, complejidad y seguimiento

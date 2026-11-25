@@ -1,4 +1,4 @@
-# Catálogo Kitchen Sink de `dibu` — 70 tipos con variantes (paleta tinta/color, blank*, UTF-8, XML &<>)
+# Catálogo Kitchen Sink de `dibu` — 71 tipos con variantes (paleta tinta/color, blank*, UTF-8, XML &<>)
 
 # === A. CONTROL DE PROCESOS (9 tipos) ===
 
@@ -603,7 +603,7 @@
   blankLattice: true
   inkSaver: false
 
-# === C. CIENCIAS DE LA COMPUTACIÓN (14 tipos) ===
+# === C. CIENCIAS DE LA COMPUTACIÓN (15 tipos) ===
 
 - id: ks_cs_array_punteros_utf8
   type: array
@@ -657,6 +657,27 @@
   values: [[1, 2], [3, 4]]
   showLogical: true
   showAddresses: true
+  inkSaver: false
+
+- id: ks_cs_matrix_java_irregular
+  type: matrix
+  title: "Arreglo de arreglos en Java"
+  variant: java
+  name: matriz
+  values:
+    - [1, 2, 3]
+    - [4]
+    - null
+    - []
+  zones: true
+
+- id: ks_cs_matrix_java_vacia
+  type: matrix
+  title: Arreglo exterior de largo cero (para completar)
+  variant: java
+  name: vacia
+  values: []
+  blankLengths: true
   inkSaver: false
 
 - id: ks_cs_linked_list_cabecera_zonas
@@ -799,6 +820,89 @@
   hidden: true
   inkSaver: false
 
+- id: ks_cs_object_heap_alias
+  type: object_heap
+  title: Dos variables comparten un arreglo
+  frames:
+    - function: main
+      vars:
+        - {name: a, type: "int[]", ref: A}
+        - {name: b, type: "int[]", ref: A}
+        - {name: copia, type: "int[]", ref: B}
+        - {name: cantidad, type: int, value: 3}
+  objects:
+    - id: A
+      type: "int[]"
+      elements: [{value: 1}, {value: 2}, {value: 3}]
+    - id: B
+      type: "int[]"
+      elements: [1, 2, 3]
+
+- id: ks_cs_object_heap_this_pool
+  type: object_heap
+  title: "Instanciación, this y String Pool"
+  frames:
+    - function: main
+      vars:
+        - {name: juan, type: Persona, ref: P1}
+        - {name: maria, type: Persona, ref: P2}
+    - function: saludar
+      params:
+        - {name: this, type: Persona, ref: P1}
+  objects:
+    - id: P1
+      type: Persona
+      fields:
+        - {name: nombre, type: String, ref: S1}
+        - {name: edad, type: int, value: 30}
+    - id: P2
+      type: Persona
+      fields:
+        - {name: nombre, type: String, ref: S1}
+        - {name: edad, type: int, value: 25}
+    - {id: S1, type: String, value: "Hola", group: String Pool}
+  inkSaver: false
+
+- id: ks_cs_object_heap_instantes
+  type: object_heap
+  title: Reasignación de un parámetro
+  snapshots:
+    - label: "Al entrar a modificar(numeros)"
+      frames:
+        - function: main
+          vars: [{name: numeros, type: "int[]", ref: A}]
+        - function: modificar
+          params: [{name: arr, type: "int[]", ref: A}]
+      objects:
+        - {id: A, type: "int[]", elements: [1, 2, 3]}
+    - label: "Después de arr = new int[] {7, 8}"
+      frames:
+        - function: main
+          vars: [{name: numeros, type: "int[]", ref: A}]
+        - function: modificar
+          params: [{name: arr, type: "int[]", ref: B}]
+      objects:
+        - {id: A, type: "int[]", elements: [1, 2, 3]}
+        - {id: B, type: "int[]", elements: [7, 8]}
+
+- id: ks_cs_object_heap_alcanzable_blank
+  type: object_heap
+  title: "Tras p = null (para completar las referencias)"
+  frames:
+    - function: main
+      vars: [{name: p, type: Nodo, ref: null}, {name: lista, type: "Nodo[]", ref: L}]
+  objects:
+    - id: L
+      type: "Nodo[]"
+      elements: [{ref: N2}, {ref: null}]
+    - id: N1
+      type: Nodo
+      fields: [{name: dato, type: int, value: 1}, {name: sig, type: Nodo, ref: N2}]
+    - id: N2
+      type: Nodo
+      fields: [{name: dato, type: int, value: 2}, {name: sig, type: Nodo, ref: N2}]
+  blankRefs: true
+
 - id: ks_cs_adt_pila
   type: adt
   title: Especificación TAD Pila
@@ -843,6 +947,17 @@
           then: ["s = s + i"]
           else: ["s = s - i"]
         - "i = i + 1"
+
+- id: ks_cs_flowchart_do_while
+  type: flowchart
+  title: "Lazo do-while: el cuerpo se ejecuta al menos una vez"
+  steps:
+    - "i = 0"
+    - doWhile: "i < 3"
+      do:
+        - "procesar(i)"
+        - "i = i + 1"
+    - {io: "mostrar i"}
 
 - id: ks_cs_cost_table_sangria_blank
   type: cost_table

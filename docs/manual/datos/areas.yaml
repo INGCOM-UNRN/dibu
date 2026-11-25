@@ -15,8 +15,8 @@ areas:
         tipos: [array, matrix, linked_list, stack, queue]
       - clave: memoria
         nombre: Memoria, tipos y recursión
-        descripcion: La pila de llamadas, el árbol de llamadas recursivas, la disposición de un struct y los tipos abstractos de datos.
-        tipos: [call_stack, call_tree, struct, adt]
+        descripcion: La pila de llamadas, el árbol de llamadas recursivas, la disposición de un struct, el stack y el heap con objetos y referencias, y los tipos abstractos de datos.
+        tipos: [call_stack, call_tree, struct, object_heap, adt]
       - clave: arboles
         nombre: Árboles y tablas
         descripcion: Árboles binarios y de búsqueda, montículos, AVL con sus rotaciones, árboles B+ y tablas de hash.

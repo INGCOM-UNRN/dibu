@@ -1,6 +1,6 @@
 # Manual de dibu
 
-dibu dibuja **70 tipos** de diagramas educativos como SVG a partir de bloques YAML o JSON. Cada tipo parte de los datos del problema y calcula lo que dibuja, así que el mismo bloque sirve para el apunte, el ejercicio (con los casilleros en blanco) y la clave.
+dibu dibuja **71 tipos** de diagramas educativos como SVG a partir de bloques YAML o JSON. Cada tipo parte de los datos del problema y calcula lo que dibuja, así que el mismo bloque sirve para el apunte, el ejercicio (con los casilleros en blanco) y la clave.
 
 ## Primeros pasos
 
@@ -16,7 +16,7 @@ dibu dibuja **70 tipos** de diagramas educativos como SVG a partir de bloques YA
 ### [Estructuras de datos y algoritmos](estructuras/README.md)
 
 - **[Estructuras lineales](estructuras/lineales/README.md)**: [`array`](estructuras/lineales/array.md), [`matrix`](estructuras/lineales/matrix.md), [`linked_list`](estructuras/lineales/linked_list.md), [`stack`](estructuras/lineales/stack.md), [`queue`](estructuras/lineales/queue.md)
-- **[Memoria, tipos y recursión](estructuras/memoria/README.md)**: [`call_stack`](estructuras/memoria/call_stack.md), [`call_tree`](estructuras/memoria/call_tree.md), [`struct`](estructuras/memoria/struct.md), [`adt`](estructuras/memoria/adt.md)
+- **[Memoria, tipos y recursión](estructuras/memoria/README.md)**: [`call_stack`](estructuras/memoria/call_stack.md), [`call_tree`](estructuras/memoria/call_tree.md), [`struct`](estructuras/memoria/struct.md), [`object_heap`](estructuras/memoria/object_heap.md), [`adt`](estructuras/memoria/adt.md)
 - **[Árboles y tablas](estructuras/arboles/README.md)**: [`tree`](estructuras/arboles/tree.md), [`heap`](estructuras/arboles/heap.md), [`avl`](estructuras/arboles/avl.md), [`bplus_tree`](estructuras/arboles/bplus_tree.md), [`hash_table`](estructuras/arboles/hash_table.md)
 - **[Análisis de algoritmos](estructuras/algoritmos/README.md)**: [`complexity`](estructuras/algoritmos/complexity.md), [`flowchart`](estructuras/algoritmos/flowchart.md), [`cost_table`](estructuras/algoritmos/cost_table.md), [`trace_table`](estructuras/algoritmos/trace_table.md), [`dp_table`](estructuras/algoritmos/dp_table.md), [`dijkstra`](estructuras/algoritmos/dijkstra.md)
 - **[Computabilidad](estructuras/computabilidad/README.md)**: [`turing`](estructuras/computabilidad/turing.md)
@@ -100,6 +100,7 @@ dibu dibuja **70 tipos** de diagramas educativos como SVG a partir de bloques YA
 | [`molecule`](quimica/estructura/molecule.md) | Molécula | Química › Estructura y enlace |
 | [`newman`](quimica/organica/newman.md) | Proyección de Newman | Química › Química orgánica |
 | [`nyquist`](control/frecuencia/nyquist.md) | Diagrama de Nyquist | Control de procesos › Respuesta en frecuencia |
+| [`object_heap`](estructuras/memoria/object_heap.md) | Stack y heap (objetos) | Estructuras de datos y algoritmos › Memoria, tipos y recursión |
 | [`orbitals`](quimica/estructura/orbitals.md) | Orbitales | Química › Estructura y enlace |
 | [`page_replacement`](computacion/sistemas-operativos/page_replacement.md) | Reemplazo de páginas | Sistemas de computación › Sistemas operativos |
 | [`page_table`](computacion/sistemas-operativos/page_table.md) | Tabla de páginas | Sistemas de computación › Sistemas operativos |

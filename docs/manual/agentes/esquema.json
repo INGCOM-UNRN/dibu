@@ -86,14 +86,14 @@
   },
   "matrix": {
    "nombre": "Matriz",
-   "para": "Matrices estáticas, dinámicas, dentadas y planas, como están en memoria.",
+   "para": "Matrices estáticas, dinámicas, dentadas, planas y de Java, como están en memoria.",
    "area": "Estructuras de datos y algoritmos › Estructuras lineales",
    "campos": {
     "values": {
      "tipo": "lista",
      "valores": [],
      "defecto": null,
-     "descripcion": "Lista de filas (o lista plana junto con `cols`). En la dinámica, `null` es una fila que es NULL."
+     "descripcion": "Lista de filas (o lista plana junto con `cols`). En la dinámica, `null` es una fila que es NULL; en la de Java, una referencia `null`, y `[]` una fila de largo cero."
     },
     "rows": {
      "tipo": "número",
@@ -113,7 +113,8 @@
       "static",
       "dynamic",
       "jagged",
-      "flat"
+      "flat",
+      "java"
      ],
      "defecto": null,
      "descripcion": "Variante, ver arriba."
@@ -236,7 +237,7 @@
      "tipo": "sí/no",
      "valores": [],
      "defecto": null,
-     "descripcion": "Deja los largos en blanco."
+     "descripcion": "Deja los largos en blanco (en la de Java, cada `length`)."
     },
     "sentinel": {
      "tipo": "texto",
@@ -280,7 +281,8 @@
     "static": "Por omisión. `int m[F][C]` en un bloque, con `showLinear` también fila por fila en memoria.",
     "dynamic": "Un `int **`: el puntero, el arreglo de punteros a filas y cada fila por separado; `null` es un puntero a NULL.",
     "jagged": "Dinámica con filas de distinto largo, con el arreglo de largos (`showLengths`) o un `sentinel` al final de cada fila.",
-    "flat": "Un `int *` con `F * C` elementos contiguos: cada celda con su índice `[k]` y su `(i, j)`."
+    "flat": "Un `int *` con `F * C` elementos contiguos: cada celda con su índice `[k]` y su `(i, j)`.",
+    "java": "Un `int[][]` de Java: la variable refiere al arreglo exterior, que guarda una referencia por fila; cada fila es un objeto con su `length`. `null` es una referencia nula y `[]`, una fila de largo cero; `values: []` es un arreglo exterior vacío."
    },
    "ejercicio": [
     "blankValues",
@@ -290,7 +292,9 @@
    "ejemplos": [
     "type: matrix\ntitle: Matriz estática row-major\nvalues: [[1, 2, 3], [4, 5, 6]]\nbaseAddr: \"0x1000\"\ntypeSize: 4\nshowAddresses: true\nshowLinear: true\nhighlight: [[0, 0], [1, 2]]",
     "type: matrix\ntitle: Matriz dentada con dueña y zonas\nvariant: jagged\nname: filas\nvalues: [[4, 8], [9]]\nshowAddresses: true\nbaseAddr: \"@F\"\nrowAddresses: [\"@R0\", \"@R1\"]\nlengthsType: int\nlengthsAddr: \"@L\"\nzones: true\nowner:\n  name: d\n  type: dentada_t\n  fields:\n    - \"n = 2\"\n    - \"largos -> lengths\"\n    - \"filas -> rows\"",
-    "type: matrix\ntitle: Matriz plana con vista lógica\nvariant: flat\nvalues: [[1, 2], [3, 4]]\nshowLogical: true\nshowAddresses: true\ninkSaver: false"
+    "type: matrix\ntitle: Matriz plana con vista lógica\nvariant: flat\nvalues: [[1, 2], [3, 4]]\nshowLogical: true\nshowAddresses: true\ninkSaver: false",
+    "type: matrix\ntitle: \"Arreglo de arreglos en Java\"\nvariant: java\nname: matriz\nvalues:\n  - [1, 2, 3]\n  - [4]\n  - null\n  - []\nzones: true",
+    "type: matrix\ntitle: Arreglo exterior de largo cero (para completar)\nvariant: java\nname: vacia\nvalues: []\nblankLengths: true\ninkSaver: false"
    ]
   },
   "linked_list": {
@@ -822,6 +826,73 @@
     "type: struct\ntitle: TAD opaco en C\nvariant: opaque\nname: struct pila\ntypedef: pila_t\noperations: [\"void f(pila_t p)\"]\nfields: [\"int *datos\", \"size_t tope\"]\nhidden: true\ninkSaver: false"
    ]
   },
+  "object_heap": {
+   "nombre": "Stack y heap (objetos)",
+   "para": "Variables, objetos y referencias en el stack y el heap, como en Java, también en varios instantes.",
+   "area": "Estructuras de datos y algoritmos › Memoria, tipos y recursión",
+   "campos": {
+    "frames": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los marcos, de `main` al tope. Cada uno con `function` y `params` y `vars`: listas de `{name, type, value}` o `{name, type, ref}` (`ref: null` es una referencia nula), o `{x: 3}` para valores."
+    },
+    "objects": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los objetos del heap. Cada uno con `id`, `type` y uno de `fields` (como las variables), `elements` (las celdas de un arreglo: valores sueltos, `{value}` o `{ref}`) o `value` (el contenido, como un `String`). `group` los agrupa, como el String Pool."
+    },
+    "snapshots": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Varios instantes (hasta 6), cada uno con `label`, `frames` y `objects`. Un mismo ID en dos instantes es el mismo objeto."
+    },
+    "direction": {
+     "tipo": "",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Con `snapshots`, `column` (por omisión) los apila y `row` los pone lado a lado."
+    },
+    "zones": {
+     "tipo": "",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los títulos del stack y del heap (`{stack, heap}`); `false` quita los recuadros."
+    },
+    "markUnreachable": {
+     "tipo": "",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Marca los objetos inalcanzables desde el stack (por omisión, sí)."
+    },
+    "blankValues": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja los valores en blanco."
+    },
+    "blankRefs": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja las referencias en blanco, sin flechas, para dibujarlas."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blankValues",
+    "blankRefs"
+   ],
+   "ejemplos": [
+    "type: object_heap\ntitle: Dos variables comparten un arreglo\nframes:\n  - function: main\n    vars:\n      - {name: a, type: \"int[]\", ref: A}\n      - {name: b, type: \"int[]\", ref: A}\n      - {name: copia, type: \"int[]\", ref: B}\n      - {name: cantidad, type: int, value: 3}\nobjects:\n  - id: A\n    type: \"int[]\"\n    elements: [{value: 1}, {value: 2}, {value: 3}]\n  - id: B\n    type: \"int[]\"\n    elements: [1, 2, 3]",
+    "type: object_heap\ntitle: \"Instanciación, this y String Pool\"\nframes:\n  - function: main\n    vars:\n      - {name: juan, type: Persona, ref: P1}\n      - {name: maria, type: Persona, ref: P2}\n  - function: saludar\n    params:\n      - {name: this, type: Persona, ref: P1}\nobjects:\n  - id: P1\n    type: Persona\n    fields:\n      - {name: nombre, type: String, ref: S1}\n      - {name: edad, type: int, value: 30}\n  - id: P2\n    type: Persona\n    fields:\n      - {name: nombre, type: String, ref: S1}\n      - {name: edad, type: int, value: 25}\n  - {id: S1, type: String, value: \"Hola\", group: String Pool}\ninkSaver: false",
+    "type: object_heap\ntitle: Reasignación de un parámetro\nsnapshots:\n  - label: \"Al entrar a modificar(numeros)\"\n    frames:\n      - function: main\n        vars: [{name: numeros, type: \"int[]\", ref: A}]\n      - function: modificar\n        params: [{name: arr, type: \"int[]\", ref: A}]\n    objects:\n      - {id: A, type: \"int[]\", elements: [1, 2, 3]}\n  - label: \"Después de arr = new int[] {7, 8}\"\n    frames:\n      - function: main\n        vars: [{name: numeros, type: \"int[]\", ref: A}]\n      - function: modificar\n        params: [{name: arr, type: \"int[]\", ref: B}]\n    objects:\n      - {id: A, type: \"int[]\", elements: [1, 2, 3]}\n      - {id: B, type: \"int[]\", elements: [7, 8]}",
+    "type: object_heap\ntitle: \"Tras p = null (para completar las referencias)\"\nframes:\n  - function: main\n    vars: [{name: p, type: Nodo, ref: null}, {name: lista, type: \"Nodo[]\", ref: L}]\nobjects:\n  - id: L\n    type: \"Nodo[]\"\n    elements: [{ref: N2}, {ref: null}]\n  - id: N1\n    type: Nodo\n    fields: [{name: dato, type: int, value: 1}, {name: sig, type: Nodo, ref: N2}]\n  - id: N2\n    type: Nodo\n    fields: [{name: dato, type: int, value: 2}, {name: sig, type: Nodo, ref: N2}]\nblankRefs: true"
+   ]
+  },
   "adt": {
    "nombre": "Tipo abstracto de datos",
    "para": "Un TAD con sus operaciones, precondiciones, invariante y representaciones posibles.",
@@ -1278,7 +1349,7 @@
      "tipo": "lista",
      "valores": [],
      "defecto": null,
-     "descripcion": "Los pasos: un texto, `{io}` (entrada o salida), `{step}`, `{if, then, else}`, `{while, do}` o `{for, do}`; cada uno con `blank`."
+     "descripcion": "Los pasos: un texto, `{io}` (entrada o salida), `{step}`, `{if, then, else}`, `{while, do}`, `{for, do}` o `{doWhile, do}` (el cuerpo antes de la condición); cada uno con `blank`."
     },
     "start": {
      "tipo": "texto",
@@ -1305,7 +1376,8 @@
     "blankValues"
    ],
    "ejemplos": [
-    "type: flowchart\ntitle: \"Bucle con condición < & >\"\nsteps:\n  - {io: \"leer n\"}\n  - \"i = 0\"\n  - while: \"i < n && n > 0\"\n    do:\n      - if: \"par(i)\"\n        then: [\"s = s + i\"]\n        else: [\"s = s - i\"]\n      - \"i = i + 1\""
+    "type: flowchart\ntitle: \"Bucle con condición < & >\"\nsteps:\n  - {io: \"leer n\"}\n  - \"i = 0\"\n  - while: \"i < n && n > 0\"\n    do:\n      - if: \"par(i)\"\n        then: [\"s = s + i\"]\n        else: [\"s = s - i\"]\n      - \"i = i + 1\"",
+    "type: flowchart\ntitle: \"Lazo do-while: el cuerpo se ejecuta al menos una vez\"\nsteps:\n  - \"i = 0\"\n  - doWhile: \"i < 3\"\n    do:\n      - \"procesar(i)\"\n      - \"i = i + 1\"\n  - {io: \"mostrar i\"}"
    ]
   },
   "cost_table": {

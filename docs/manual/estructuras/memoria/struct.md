@@ -81,4 +81,4 @@ inkSaver: false
 
 ## Ver también
 
-[`call_stack`](call_stack.md), [`call_tree`](call_tree.md), [`adt`](adt.md)
+[`call_stack`](call_stack.md), [`call_tree`](call_tree.md), [`object_heap`](object_heap.md), [`adt`](adt.md)

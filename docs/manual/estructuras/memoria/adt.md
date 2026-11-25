@@ -48,4 +48,4 @@ representations:
 
 ## Ver también
 
-[`call_stack`](call_stack.md), [`call_tree`](call_tree.md), [`struct`](struct.md)
+[`call_stack`](call_stack.md), [`call_tree`](call_tree.md), [`struct`](struct.md), [`object_heap`](object_heap.md)

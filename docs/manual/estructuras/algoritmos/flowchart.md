@@ -10,7 +10,7 @@ condicionales y ciclos anidados. Cada paso con `blank: true` sale vacío para co
 | Campo | Tipo | Valores y valor por defecto | Descripción |
 | :--- | :--- | :--- | :--- |
 | `type` | texto | `flowchart` | Obligatorio. |
-| `steps` | lista |  | Los pasos: un texto, `{io}` (entrada o salida), `{step}`, `{if, then, else}`, `{while, do}` o `{for, do}`; cada uno con `blank`. |
+| `steps` | lista |  | Los pasos: un texto, `{io}` (entrada o salida), `{step}`, `{if, then, else}`, `{while, do}`, `{for, do}` o `{doWhile, do}` (el cuerpo antes de la condición); cada uno con `blank`. |
 | `start` | texto |  | Rótulo del inicio (por omisión `Inicio`); `false` lo quita. |
 | `end` | texto |  | Rótulo del fin (por omisión `Fin`); `false` lo quita. |
 | `blankValues` | sí/no |  | Deja en blanco el texto de todos los pasos. |
@@ -40,6 +40,22 @@ steps:
 ```
 
 ![Bucle con condición < & >](img/ks_cs_flowchart_completo.svg)
+
+### Lazo do-while: el cuerpo se ejecuta al menos una vez
+
+```yaml
+type: flowchart
+title: "Lazo do-while: el cuerpo se ejecuta al menos una vez"
+steps:
+  - "i = 0"
+  - doWhile: "i < 3"
+    do:
+      - "procesar(i)"
+      - "i = i + 1"
+  - {io: "mostrar i"}
+```
+
+![Lazo do-while: el cuerpo se ejecuta al menos una vez](img/ks_cs_flowchart_do_while.svg)
 
 ## Ver también
 

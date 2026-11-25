@@ -26,13 +26,13 @@ array:
 
 matrix:
   nombre: Matriz
-  para: Matrices estáticas, dinámicas, dentadas y planas, como están en memoria.
+  para: Matrices estáticas, dinámicas, dentadas, planas y de Java, como están en memoria.
   resumen: |
     Dibuja una matriz y cómo está guardada en memoria. La estática muestra la declaración
     (`int m[3][4]`) y, con `showAddresses`, la dirección de cada celda en orden de filas; la
     dinámica, el puntero, el arreglo de punteros a filas y cada fila; la dentada, filas de distinto
     largo con el arreglo de largos o un centinela; la plana, un único bloque contiguo con la cuenta
-    `m[i * C + j]`.
+    `m[i * C + j]`; la de Java, un arreglo de arreglos (`int[][]`) con cada fila como objeto aparte.
   calcula:
     - La dirección de cada celda en orden de filas.
     - En la plana, el índice lineal de cada `(i, j)`.
@@ -42,8 +42,9 @@ matrix:
     dynamic: 'Un `int **`: el puntero, el arreglo de punteros a filas y cada fila por separado; `null` es un puntero a NULL.'
     jagged: Dinámica con filas de distinto largo, con el arreglo de largos (`showLengths`) o un `sentinel` al final de cada fila.
     flat: 'Un `int *` con `F * C` elementos contiguos: cada celda con su índice `[k]` y su `(i, j)`.'
+    java: 'Un `int[][]` de Java: la variable refiere al arreglo exterior, que guarda una referencia por fila; cada fila es un objeto con su `length`. `null` es una referencia nula y `[]`, una fila de largo cero; `values: []` es un arreglo exterior vacío.'
   campos:
-    values: Lista de filas (o lista plana junto con `cols`). En la dinámica, `null` es una fila que es NULL.
+    values: Lista de filas (o lista plana junto con `cols`). En la dinámica, `null` es una fila que es NULL; en la de Java, una referencia `null`, y `[]` una fila de largo cero.
     rows: Cantidad de filas, si no salen de `values` (de 1 a 10).
     cols: Cantidad de columnas (de 1 a 10).
     variant: Variante, ver arriba.
@@ -66,7 +67,7 @@ matrix:
     lengthsName: Nombre del arreglo de largos.
     lengthsType: Tipo de los largos (por omisión `size_t`).
     lengthsAddr: Dirección del arreglo de largos.
-    blankLengths: Deja los largos en blanco.
+    blankLengths: Deja los largos en blanco (en la de Java, cada `length`).
     sentinel: 'En la dentada, un valor centinela al final de cada fila, como `"''\\0''"` o `-1`.'
     showCoords: En la plana, el `(i, j)` de cada celda (por omisión, sí).
     showFormula: En la plana, la fórmula `m[i * C + j]` (por omisión, sí).
@@ -218,6 +219,34 @@ struct:
     client: En `opaque`, el código del cliente.
     hidden: En `opaque`, oculta los campos (lo que ve el cliente); no hace falta `fields`.
 
+object_heap:
+  nombre: Stack y heap (objetos)
+  para: Variables, objetos y referencias en el stack y el heap, como en Java, también en varios instantes.
+  resumen: |
+    Dibuja los marcos activos en el stack (del tope, arriba, a `main`) y los objetos en el heap,
+    con una flecha por cada referencia. Cada objeto tiene un ID: dos referencias al mismo ID llegan
+    a la misma caja, y dos objetos con el mismo contenido son cajas distintas. Las referencias
+    entre objetos (y a sí mismos) rodean el heap por la derecha. Con `snapshots`, el estado en
+    varios instantes, para mostrar copia, mutación y reasignación de referencias.
+  calcula:
+    - Qué objetos son alcanzables desde el stack, siguiendo las referencias; los demás se marcan como inalcanzables.
+  campos:
+    frames: 'Los marcos, de `main` al tope. Cada uno con `function` y `params` y `vars`: listas de `{name, type, value}` o `{name, type, ref}` (`ref: null` es una referencia nula), o `{x: 3}` para valores.'
+    objects: 'Los objetos del heap. Cada uno con `id`, `type` y uno de `fields` (como las variables), `elements` (las celdas de un arreglo: valores sueltos, `{value}` o `{ref}`) o `value` (el contenido, como un `String`). `group` los agrupa, como el String Pool.'
+    snapshots: 'Varios instantes (hasta 6), cada uno con `label`, `frames` y `objects`. Un mismo ID en dos instantes es el mismo objeto.'
+    direction: Con `snapshots`, `column` (por omisión) los apila y `row` los pone lado a lado.
+    zones: Los títulos del stack y del heap (`{stack, heap}`); `false` quita los recuadros.
+    markUnreachable: Marca los objetos inalcanzables desde el stack (por omisión, sí).
+    blankValues: Deja los valores en blanco.
+    blankRefs: Deja las referencias en blanco, sin flechas, para dibujarlas.
+  ejercicio: |
+    Con `blankRefs`, las cajas de las referencias quedan vacías y sin flechas, para que se dibujen;
+    con `blankValues`, los valores. Cada variable, campo o celda acepta además `blank: true`.
+  notas:
+    - Hasta 8 marcos, 16 objetos y 12 variables, campos o celdas por marco u objeto.
+    - Una referencia a un ID que no está en `objects`, un ID repetido o `value` junto con `ref` son errores.
+    - 'Para la pila de llamadas de C, con direcciones, ver [`call_stack`](call_stack.md); para la matriz de Java, [`matrix`](../lineales/matrix.md) con `variant: java`.'
+
 adt:
   nombre: Tipo abstracto de datos
   para: Un TAD con sus operaciones, precondiciones, invariante y representaciones posibles.
@@ -364,7 +393,7 @@ flowchart:
     Arma el diagrama de flujo a partir de la estructura del algoritmo: pasos, entradas y salidas,
     condicionales y ciclos anidados. Cada paso con `blank: true` sale vacío para completar.
   campos:
-    steps: 'Los pasos: un texto, `{io}` (entrada o salida), `{step}`, `{if, then, else}`, `{while, do}` o `{for, do}`; cada uno con `blank`.'
+    steps: 'Los pasos: un texto, `{io}` (entrada o salida), `{step}`, `{if, then, else}`, `{while, do}`, `{for, do}` o `{doWhile, do}` (el cuerpo antes de la condición); cada uno con `blank`.'
     start: Rótulo del inicio (por omisión `Inicio`); `false` lo quita.
     end: Rótulo del fin (por omisión `Fin`); `false` lo quita.
     blankValues: Deja en blanco el texto de todos los pasos.
