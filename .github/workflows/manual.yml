@@ -39,7 +39,8 @@ jobs:
       - name: Comprobar el sitio
         run: |
           set -euo pipefail
-          test -f _site/index.html
+          ls _site | head -20
+          test -f _site/index.html || { echo "::error::no se generó _site/index.html"; exit 1; }
           paginas=$(find _site -name '*.html' | wc -l)
           echo "páginas HTML: $paginas"
           test "$paginas" -ge 100

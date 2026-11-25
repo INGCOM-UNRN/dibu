@@ -20,9 +20,15 @@ if destino.exists():
 shutil.copytree(ORIGEN, destino, ignore=shutil.ignore_patterns("datos", "generar.py", "__pycache__"))
 shutil.copy(Path(__file__).with_name("_config.yml"), destino / "_config.yml")
 
+# Cada README.md pasa a index.md, para que Jekyll genere el index.html de su carpeta sin
+# depender de jekyll-readme-index; los enlaces a README.md se reescriben.
+for readme in list(destino.rglob("README.md")):
+    readme.rename(readme.with_name("index.md"))
+ENLACE_README = re.compile(r"\]\(((?:[^()\s]*/)?)README\.md(#[^)]*)?\)")
+
 paginas = 0
 for md in destino.rglob("*.md"):
-    texto = md.read_text(encoding="utf-8")
+    texto = ENLACE_README.sub(lambda m: f"]({m.group(1)}index.md{m.group(2) or ''})", md.read_text(encoding="utf-8"))
     m = re.search(r"^# (.+)$", texto, re.M)
     titulo = re.sub(r"[`*]", "", m.group(1)).strip() if m else "Manual de dibu"
     titulo = titulo.replace('"', '\\"')
