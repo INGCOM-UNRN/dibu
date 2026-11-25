@@ -1554,6 +1554,12 @@ enum PasoFlujo {
         a: Vec<PasoFlujo>,
         en_blanco: bool,
     },
+    /// `do … while`: el cuerpo se ejecuta antes de evaluar la condición.
+    Repetir {
+        texto: String,
+        a: Vec<PasoFlujo>,
+        en_blanco: bool,
+    },
 }
 
 impl PasoFlujo {
@@ -1562,7 +1568,8 @@ impl PasoFlujo {
             Self::Proceso { texto, .. }
             | Self::Io { texto, .. }
             | Self::Si { texto, .. }
-            | Self::Mientras { texto, .. } => texto,
+            | Self::Mientras { texto, .. }
+            | Self::Repetir { texto, .. } => texto,
         }
     }
 
@@ -1571,7 +1578,8 @@ impl PasoFlujo {
             Self::Proceso { en_blanco, .. }
             | Self::Io { en_blanco, .. }
             | Self::Si { en_blanco, .. }
-            | Self::Mientras { en_blanco, .. } => *en_blanco,
+            | Self::Mientras { en_blanco, .. }
+            | Self::Repetir { en_blanco, .. } => *en_blanco,
         }
     }
 }
@@ -1648,6 +1656,18 @@ fn parsear_pasos_flujo(
                 a: cuerpo,
                 en_blanco,
             });
+        } else if let Some(cond) = obj.get("doWhile") {
+            let cuerpo = parsear_pasos_flujo(obj.get("do"), &lugar, prof + 1, total)?;
+            if cuerpo.is_empty() {
+                return Err(ErrorDiagrama::new(format!(
+                    "{lugar}: la repetición no tiene cuerpo ('do')"
+                )));
+            }
+            pasos.push(PasoFlujo::Repetir {
+                texto: texto(cond),
+                a: cuerpo,
+                en_blanco,
+            });
         } else if let Some(io_v) = obj.get("io") {
             pasos.push(PasoFlujo::Io {
                 texto: texto(io_v),
@@ -1660,7 +1680,7 @@ fn parsear_pasos_flujo(
             });
         } else {
             return Err(ErrorDiagrama::new(format!(
-                "{lugar}: se espera un texto o una clave if, while, for, io o step"
+                "{lugar}: se espera un texto o una clave if, while, for, doWhile, io o step"
             )));
         }
     }
@@ -1736,6 +1756,15 @@ fn medir_paso_flujo(p: &PasoFlujo) -> MedidaFlujo {
                 izq: medio.max(m.izq) + 22.0,
                 der: medio.max(m.der) + 34.0,
                 alto: ALTO_ROMBO + SEP_FLUJO + m.alto + 34.0,
+            }
+        }
+        PasoFlujo::Repetir { a, .. } => {
+            let medio = ancho_rombo_flujo(p) / 2.0;
+            let m = medir_lista_flujo(a);
+            MedidaFlujo {
+                izq: medio.max(m.izq) + 22.0,
+                der: medio.max(m.der),
+                alto: m.alto + SEP_FLUJO + ALTO_ROMBO,
             }
         }
         PasoFlujo::Si { a, b, .. } => {
@@ -1918,6 +1947,31 @@ fn dibujar_paso_flujo(
                 false,
             );
             salida
+        }
+        PasoFlujo::Repetir { a, .. } => {
+            // El cuerpo va primero: se entra a él sin pasar por la condición.
+            let medio = ancho_rombo_flujo(p) / 2.0;
+            let m = medir_paso_flujo(p);
+            let fin = dibujar_lista_flujo(c, a, x, y, sin_valores);
+            let rombo_y = fin + SEP_FLUJO;
+            let medio_y = rombo_y + ALTO_ROMBO / 2.0;
+            c.linea(x, fin, x, rombo_y - 3.0, "strokeMain", 1.5, Some("main"), "");
+            rombo_flujo(c, p, x, rombo_y, sin_valores);
+            // Verdadero: vuelve a la entrada del cuerpo, por la izquierda.
+            c.t(x - medio - 4.0, medio_y - 6.0, "Sí", 9.5, 700, "textMain", "end", SANS);
+            camino_flujo(
+                c,
+                &[
+                    (x - medio, medio_y),
+                    (x - m.izq + 4.0, medio_y),
+                    (x - m.izq + 4.0, y - 11.0),
+                    (x - 3.0, y - 11.0),
+                ],
+                true,
+            );
+            // Falso: sale por abajo, hacia el paso siguiente.
+            c.t(x + 6.0, rombo_y + ALTO_ROMBO + 15.0, "No", 9.5, 700, "textMain", "start", SANS);
+            rombo_y + ALTO_ROMBO
         }
         PasoFlujo::Si { a, b, .. } => {
             let medio = ancho_rombo_flujo(p) / 2.0;
@@ -3112,5 +3166,58 @@ mod tests {
         )
         .unwrap();
         assert!(svg_above.contains("<polyline "), "debía recortar y dibujar el tramo visible: {svg_above}");
+    }
+
+    /// La `y` de cada rectángulo y de cada rombo (polygon de 4 puntos) del diagrama, en orden.
+    fn ys_cajas_y_rombos(svg: &str) -> (Vec<f64>, Vec<f64>) {
+        let attr = |trozo: &str, nombre: &str| -> f64 {
+            let v = trozo.split(&format!("{nombre}=\"")).nth(1).unwrap();
+            v[..v.find('"').unwrap()].parse().unwrap()
+        };
+        let cajas = svg.split("<rect ").skip(2).map(|r| attr(r, "y")).collect();
+        let rombos = svg
+            .split("<polygon points=\"")
+            .skip(1)
+            .filter(|p| p[..p.find('"').unwrap()].split(' ').count() == 4)
+            .map(|p| p.split(' ').next().unwrap().split(',').nth(1).unwrap().parse().unwrap())
+            .collect();
+        (cajas, rombos)
+    }
+
+    #[test]
+    fn do_while_el_cuerpo_va_antes_de_la_condicion() {
+        let svg = render_val(
+            json!({"type": "flowchart", "start": false, "end": false, "steps": [
+                {"doWhile": "i < 3", "do": ["procesar(i)", "i = i + 1"]}
+            ]}),
+            true,
+        )
+        .unwrap();
+        let (cajas, rombos) = ys_cajas_y_rombos(&svg);
+        assert_eq!(rombos.len(), 1);
+        assert!(cajas.iter().all(|&y| y < rombos[0]), "el cuerpo se alcanza antes del rombo: {cajas:?} {rombos:?}");
+        // El Sí vuelve arriba del cuerpo; el No sigue hacia abajo.
+        assert!(svg.contains(">Sí<") && svg.contains(">No<"));
+        let dibujo = svg.split("</defs>").nth(1).unwrap();
+        let vuelta = dibujo.split("<path d=\"M ").nth(1).unwrap();
+        let ultimo_y: f64 = vuelta[..vuelta.find('"').unwrap()].rsplit(' ').next().unwrap().parse().unwrap();
+        assert!(ultimo_y < cajas[0], "la rama verdadera vuelve a la entrada del cuerpo");
+    }
+
+    #[test]
+    fn do_while_anidado_y_en_blanco() {
+        let svg = render_val(
+            json!({"type": "flowchart", "steps": [
+                {"while": "j < m", "do": ["i = 0", {"doWhile": "i < n", "blank": true, "do": ["f(i)", "i = i + 1"]}, "j = j + 1"]},
+                "fin()"
+            ]}),
+            true,
+        )
+        .unwrap();
+        assert_eq!(ys_cajas_y_rombos(&svg).1.len(), 2);
+        assert!(!svg.contains(">i &lt; n<"), "la condición del do-while queda en blanco");
+        assert!(svg.contains(">j &lt; m<"));
+        let e = render_val(json!({"type": "flowchart", "steps": [{"doWhile": "x"}]}), true).unwrap_err();
+        assert!(e.0.contains("no tiene cuerpo"), "{}", e.0);
     }
 }
