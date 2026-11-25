@@ -4,7 +4,7 @@
   "subtitle": "Subtítulo, debajo del título, en letra más chica.",
   "id": "Nombre del archivo al exportar (`dibu render` escribe `<id>.svg`).",
   "inkSaver": "`true` usa el theme `ink` y `false` el `color`, sea cual sea el theme global.",
-  "theme": "Theme de este diagrama: un preset (`ink`, `color`, `high-contrast`, `dark`) o un objeto `{extends, colors, typography}`. Ver [Themes](../../themes.md)."
+  "theme": "Theme de este diagrama: un preset (`ink`, `color`, `high-contrast`, `dark`) o un objeto `{extends, colors, typography}`. Ver [Themes](../themes.md)."
  },
  "tipos": {
   "array": {
@@ -1736,7 +1736,7 @@
      "tipo": "texto",
      "valores": [],
      "defecto": null,
-     "descripcion": "La función como expresión (ver [`truth_table`](truth_table.md))."
+     "descripcion": "La función como expresión (ver [`truth_table`](referencia.md#truth_table))."
     },
     "vars": {
      "tipo": "lista",
@@ -1848,7 +1848,7 @@
      "tipo": "texto",
      "valores": [],
      "defecto": null,
-     "descripcion": "La expresión (ver [`truth_table`](truth_table.md))."
+     "descripcion": "La expresión (ver [`truth_table`](referencia.md#truth_table))."
     },
     "output": {
      "tipo": "texto",
@@ -2537,7 +2537,7 @@
      "tipo": "objeto",
      "valores": [],
      "defecto": null,
-     "descripcion": "El sistema (ver la nota de [`time_response`](../respuesta/time_response.md))."
+     "descripcion": "El sistema (ver la nota de [`time_response`](referencia.md#time_response))."
     },
     "systems": {
      "tipo": "lista",
@@ -2610,7 +2610,7 @@
      "tipo": "objeto",
      "valores": [],
      "defecto": null,
-     "descripcion": "El sistema (ver la nota de [`time_response`](../respuesta/time_response.md))."
+     "descripcion": "El sistema (ver la nota de [`time_response`](referencia.md#time_response))."
     },
     "systems": {
      "tipo": "lista",
@@ -2746,7 +2746,7 @@
      "tipo": "objeto",
      "valores": [],
      "defecto": null,
-     "descripcion": "El lazo abierto (ver la nota de [`time_response`](../respuesta/time_response.md))."
+     "descripcion": "El lazo abierto (ver la nota de [`time_response`](referencia.md#time_response))."
     },
     "closedLoop": {
      "tipo": "objeto",

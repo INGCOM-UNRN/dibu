@@ -58,7 +58,7 @@ blankValues: true
 inkSaver: false
 ```
 
-- Para un arreglo de dos dimensiones, ver [`matrix`](matrix.md).
+- Para un arreglo de dos dimensiones, ver [`matrix`](#matrix).
 
 <a id="matrix"></a>
 
@@ -375,7 +375,7 @@ inkSaver: false
 ```
 
 - Hasta 10 marcos.
-- El árbol de las llamadas recursivas es [`call_tree`](call_tree.md).
+- El árbol de las llamadas recursivas es [`call_tree`](#call_tree).
 
 <a id="call_tree"></a>
 
@@ -598,7 +598,7 @@ showArray: true
 inkSaver: false
 ```
 
-- Para seguir las rotaciones de un AVL paso a paso, ver [`avl`](avl.md); para las operaciones de un montículo, [`heap`](heap.md).
+- Para seguir las rotaciones de un AVL paso a paso, ver [`avl`](#avl); para las operaciones de un montículo, [`heap`](#heap).
 
 <a id="heap"></a>
 
@@ -1136,7 +1136,7 @@ productos o el producto de sumas mínimo.
 
 | Campo | Tipo | Valores · por defecto | Descripción |
 | :--- | :--- | :--- | :--- |
-| `expr` | texto |  | La función como expresión (ver [`truth_table`](truth_table.md)). |
+| `expr` | texto |  | La función como expresión (ver [`truth_table`](#truth_table)). |
 | `vars` | lista |  | Las variables (de 2 a 4); las primeras van en las filas. |
 | `minterms` | lista |  | La función por sus mintérminos. |
 | `maxterms` | lista |  | La función por sus maxtérminos. |
@@ -1196,7 +1196,7 @@ profundidad; la negación de una AND, OR o XOR se dibuja como la compuerta negad
 
 | Campo | Tipo | Valores · por defecto | Descripción |
 | :--- | :--- | :--- | :--- |
-| `expr` | texto |  | La expresión (ver [`truth_table`](truth_table.md)). |
+| `expr` | texto |  | La expresión (ver [`truth_table`](#truth_table)). |
 | `output` | texto |  | El nombre de la salida (por omisión `F`). |
 | `vars` | lista |  | El orden de las variables en los rieles. |
 | `rails` | sí/no |  | Rieles verticales para las entradas (por omisión, sí); sin ellos, cada entrada se rotula en su compuerta. |
@@ -1658,7 +1658,7 @@ blankSigns: true
 inkSaver: false
 ```
 
-- Los bloques son rótulos; para calcular la respuesta del lazo se usa `closedLoop` en [`time_response`](../respuesta/time_response.md).
+- Los bloques son rótulos; para calcular la respuesta del lazo se usa `closedLoop` en [`time_response`](#time_response).
 
 <a id="time_response"></a>
 
@@ -1744,7 +1744,7 @@ frecuencias de cruce. Con `closedLoop` dibuja el lazo abierto L(s) = C·G·H.
 
 | Campo | Tipo | Valores · por defecto | Descripción |
 | :--- | :--- | :--- | :--- |
-| `system` | objeto |  | El sistema (ver la nota de [`time_response`](../respuesta/time_response.md)). |
+| `system` | objeto |  | El sistema (ver la nota de [`time_response`](#time_response)). |
 | `systems` | lista |  | Varios sistemas para comparar, cada uno con `label`. |
 | `closedLoop` | objeto |  | Un lazo; se dibuja su lazo abierto. |
 | `wMin` | número |  | La frecuencia mínima, en rad/s. |
@@ -1777,7 +1777,7 @@ Opcionalmente, el círculo unitario y la rama de las frecuencias negativas, punt
 
 | Campo | Tipo | Valores · por defecto | Descripción |
 | :--- | :--- | :--- | :--- |
-| `system` | objeto |  | El sistema (ver la nota de [`time_response`](../respuesta/time_response.md)). |
+| `system` | objeto |  | El sistema (ver la nota de [`time_response`](#time_response)). |
 | `systems` | lista |  | Varios sistemas para comparar. |
 | `closedLoop` | objeto |  | Un lazo; se dibuja su lazo abierto. |
 | `wMin` | número |  | La frecuencia mínima. |
@@ -1848,7 +1848,7 @@ a partir del lazo abierto. Opcionalmente, las asíntotas, el cruce con el eje im
 
 | Campo | Tipo | Valores · por defecto | Descripción |
 | :--- | :--- | :--- | :--- |
-| `system` | objeto |  | El lazo abierto (ver la nota de [`time_response`](../respuesta/time_response.md)). |
+| `system` | objeto |  | El lazo abierto (ver la nota de [`time_response`](#time_response)). |
 | `closedLoop` | objeto |  | Un lazo; se usa su lazo abierto. |
 | `kMax` | número |  | La ganancia máxima. |
 | `asymptotes` | sí/no |  | Dibuja las asíntotas. |
@@ -2248,7 +2248,7 @@ inkSaver: false
 *Química › Reacciones y cinética.* Ecuaciones químicas, equilibrios, resonancia, mecanismos y productos para completar.
 
 Dibuja una ecuación química o un mecanismo: fórmulas, signos más, moléculas dibujadas (como
-las de [`molecule`](../estructura/molecule.md)) y flechas de reacción, equilibrio, resonancia o
+las de [`molecule`](#molecule)) y flechas de reacción, equilibrio, resonancia o
 retrosíntesis con texto arriba y abajo. Un casillero en blanco deja un producto para completar.
 
 | Campo | Tipo | Valores · por defecto | Descripción |

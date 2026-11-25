@@ -467,17 +467,36 @@ def indice(areas, tipos) -> str:
 AGENTES = DATOS / "agentes"
 
 
+RE_ENLACE_MD = re.compile(r"\]\(([^()\s:]+\.md)(#[^)]*)?\)")
+
+
+def enlaces_desde_agentes(texto: str, pagina: str, todos: set[str], en_referencia: bool) -> str:
+    """Reescribe los enlaces relativos de un texto escrito para `pagina` (la del tipo en el manual)
+    para que funcionen en agentes/: un tipo va a su sección de la referencia; lo demás, al manual."""
+    def cambiar(m: re.Match) -> str:
+        destino = os.path.normpath(os.path.join(os.path.dirname(pagina), m.group(1)))
+        nombre = Path(destino).stem
+        if nombre in todos:
+            return f"](#{nombre})" if en_referencia else f"](referencia.md#{nombre})"
+        return f"]({os.path.relpath(destino, 'agentes')}{m.group(2) or ''})"
+    return RE_ENLACE_MD.sub(cambiar, texto)
+
+
 def esquema_agentes(areas, tipos, codigo, ejemplos) -> dict:
     """El esquema de la guía: cada tipo con sus campos, valores, defectos y ejemplos."""
-    salida = {"comunes": dict(COMUNES), "tipos": {}}
+    # Los textos comunes están escritos para la página de un tipo (área/subárea/tipo.md).
+    salida = {"comunes": {c: enlaces_desde_agentes(d, "area/subarea/tipo.md", set(tipos), False) for c, d in COMUNES.items()},
+              "tipos": {}}
     for a in areas:
         for s in a["subareas"]:
             for t in s["tipos"]:
                 d = tipos[t]
                 bloques = [b for _, _, b in ejemplos[t]]
                 campos = {}
+                pagina = f"{a['clave']}/{s['clave']}/{t}.md"
                 for f in filas_campos(t, d, codigo, bloques):
                     campos[f["campo"]] = {k: f[k] for k in ("tipo", "valores", "defecto", "descripcion")}
+                    campos[f["campo"]]["descripcion"] = enlaces_desde_agentes(f["descripcion"], pagina, set(tipos), False)
                 # Las variantes documentadas son los valores de `variant` cuando el código no los expone.
                 if d.get("variantes") and "variant" in campos and not campos["variant"]["valores"]:
                     campos["variant"]["valores"] = list(d["variantes"])
@@ -508,6 +527,7 @@ def referencia_agentes(areas, tipos, codigo, ejemplos) -> str:
             for t in s["tipos"]:
                 d = tipos[t]
                 bloques = [b for _, _, b in ejemplos[t]]
+                inicio = len(p)
                 p += [f'<a id="{t}"></a>', "", f"## `{t}`: {d['nombre']}", "",
                       f"*{a['nombre']} › {s['nombre']}.* {d['para']}", "", d["resumen"].strip(), ""]
                 if d.get("calcula"):
@@ -534,6 +554,8 @@ def referencia_agentes(areas, tipos, codigo, ejemplos) -> str:
                 if d.get("notas"):
                     p += [f"- {n.strip()}" for n in d["notas"]]
                     p.append("")
+                pagina = f"{a['clave']}/{s['clave']}/{t}.md"
+                p[inicio:] = [enlaces_desde_agentes(x, pagina, set(tipos), True) for x in p[inicio:]]
     p += ["---", "", "Generado por `docs/manual/generar.py`; no se edita a mano.", ""]
     return "\n".join(p)
 
