@@ -62,7 +62,6 @@ forward:
       feedback: ["H2(s)"]
   - "Gp1(s)"
 feedback: ["H1(s)"]
-blank: true
 blankSigns: true
 inkSaver: false
 ```

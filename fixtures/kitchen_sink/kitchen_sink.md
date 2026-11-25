@@ -36,7 +36,6 @@ En esta sección cubrimos los `9` tipos de `dibu-control`, combinando diagramas 
         feedback: ["H2(s)"]
     - "Gp1(s)"
   feedback: ["H1(s)"]
-  blank: true
   blankSigns: true
   inkSaver: false
 - type: time_response
