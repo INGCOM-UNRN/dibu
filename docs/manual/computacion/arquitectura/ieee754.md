@@ -10,7 +10,7 @@ los bits.
 ## Qué calcula
 
 - La codificación con redondeo al par más cercano, también para media precisión.
-- {'Los casos especiales': 'cero, subnormales, infinito y NaN.'}
+- Los casos especiales: cero, subnormales, infinito y NaN.
 
 ## Campos
 
