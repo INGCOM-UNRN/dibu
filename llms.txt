@@ -1,0 +1,22 @@
+# dibu
+
+> dibu dibuja diagramas educativos como SVG (estructuras de datos y algoritmos, sistemas digitales y de computación, control de procesos, química, señales, probabilidad y circuitos) a partir de bloques YAML o JSON con un campo `type`. El mismo bloque sirve para el apunte, el ejercicio (con `blank`) y la clave. Se integra en Markdown (`dibu sync-md`), MyST (plugin dibu-myst), Typst (paquete dibu-typst) y bancos de preguntas de alucarD.
+
+Para redactar o revisar diagramas, leer primero la guía para agentes y después la sección del tipo elegido en la referencia. dibu ignora sin avisar los campos mal escritos: validar cada bloque con `validar.py`.
+
+## Guía para agentes
+
+- [Guía para agentes de IA](https://raw.githubusercontent.com/INGCOM-UNRN/dibu/main/docs/manual/agentes/README.md): reglas, catálogo de tipos, integración por destino, validación y errores frecuentes.
+- [Referencia de los tipos](https://raw.githubusercontent.com/INGCOM-UNRN/dibu/main/docs/manual/agentes/referencia.md): cada tipo con sus campos, valores admitidos, valores por defecto y ejemplos probados.
+- [Esquema JSON](https://raw.githubusercontent.com/INGCOM-UNRN/dibu/main/docs/manual/agentes/esquema.json): lo mismo, legible por programas.
+- [validar.py](https://raw.githubusercontent.com/INGCOM-UNRN/dibu/main/docs/manual/agentes/validar.py): valida bloques y documentos contra el esquema y los dibuja con dibu.
+
+## Integraciones
+
+- [dibu-myst](https://github.com/INGCOM-UNRN/dibu-myst): plugin de MyST (mystmd) para bloques ```estructura y la directiva {dibu}.
+- [dibu-typst](https://github.com/INGCOM-UNRN/dibu-typst): paquete de Typst, `#dibu(...)` y `#show: dibu-bloques`.
+- [Editor web](https://ingcom-unrn.github.io/dibu-web/): vista previa en vivo.
+
+## Optional
+
+- [Manual](https://ingcom-unrn.github.io/dibu/): una página por tipo, con los diagramas dibujados.

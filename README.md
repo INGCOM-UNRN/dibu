@@ -40,6 +40,22 @@ kitchen sink; `--verificar` falla si falta documentar un tipo o un campo, y corr
 El workflow `manual.yml` lo publica en GitHub Pages con cada cambio en `docs/manual/` y con cada
 release (hay que activar Pages con origen «GitHub Actions» en Settings → Pages).
 
+### Para agentes de IA
+
+La [guía para agentes](docs/manual/agentes/README.md) reúne lo que necesita un agente (o una
+persona) que redacta apuntes o exámenes con diagramas de dibu: reglas, catálogo, cómo integrar los
+bloques en Markdown, MyST, Typst y bancos de alucarD, y errores frecuentes. La acompañan una
+[referencia compacta](docs/manual/agentes/referencia.md) de todos los tipos, un
+[esquema JSON](docs/manual/agentes/esquema.json) y un validador:
+
+```bash
+python3 docs/manual/agentes/validar.py apunte.md   # avisa campos que dibu ignora, valores fuera de la lista…
+```
+
+Como dibu ignora sin avisar un campo mal escrito, el validador es la forma de detectarlo. Se genera
+junto con el manual, y `--verificar` comprueba que todos los ejemplos lo pasen sin avisos.
+[`llms.txt`](llms.txt) apunta a estos archivos.
+
 ## Uso rápido
 
 ```bash

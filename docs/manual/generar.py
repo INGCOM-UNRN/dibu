@@ -298,11 +298,32 @@ def celda(t: str) -> str:
     return str(t).replace("|", "\\|").replace("\n", " ")
 
 
+def filas_campos(tipo: str, d: dict, codigo: dict, bloques: list[dict]) -> list[dict]:
+    """Los campos documentados de un tipo: campo, tipo de valor, valores admitidos, defecto y descripción."""
+    esq = codigo.get(tipo, {"enums": {}, "defs": {}})
+    filas = []
+    for clave, desc in d["campos"].items():
+        raiz = clave.split(".")[0].split("[")[0]
+        enum = esq["enums"].get(clave) if clave == raiz else None
+        defecto = esq["defs"].get(clave) if clave == raiz else None
+        tv = (d.get("tipos", {}).get(clave) or tipos_valor(clave, bloques) or esq.get("clases", {}).get(clave, "")) if clave == raiz else ""
+        if not tv and clave == raiz:
+            tv = "texto" if enum else tipo_por_nombre(clave)
+        filas.append({"campo": clave, "tipo": tv, "valores": enum or [], "defecto": defecto, "descripcion": desc})
+    return filas
+
+
+def valores_y_defecto(f: dict) -> str:
+    valores = ", ".join(f"`{v}`" for v in f["valores"])
+    if f["defecto"] is not None:
+        valores += (" · " if valores else "") + f"por defecto `{f['defecto']}`"
+    return valores
+
+
 def pagina_tipo(areas, tipo: str, d: dict, codigo: dict, ejemplos: list, svgs: dict, archivos: dict) -> str:
     a, s = ruta_tipo(areas, tipo)
     hermanos = [t for t in s["tipos"] if t != tipo]
     bloques = [b for _, _, b in ejemplos]
-    esq = codigo.get(tipo, {"enums": {}, "defs": {}})
     p = [f"[Manual](../../README.md) › [{a['nombre']}](../README.md) › [{s['nombre']}](README.md)", ""]
     p.append(f"# {d['nombre']} (`{tipo}`)")
     p.append("")
@@ -325,17 +346,8 @@ def pagina_tipo(areas, tipo: str, d: dict, codigo: dict, ejemplos: list, svgs: d
     p.append("| Campo | Tipo | Valores y valor por defecto | Descripción |")
     p.append("| :--- | :--- | :--- | :--- |")
     p.append(f"| `type` | texto | `{tipo}` | Obligatorio. |")
-    for clave, desc in d["campos"].items():
-        raiz = clave.split(".")[0].split("[")[0]
-        enum = esq["enums"].get(clave) if clave == raiz else None
-        defecto = esq["defs"].get(clave) if clave == raiz else None
-        valores = ", ".join(f"`{v}`" for v in enum) if enum else ""
-        if defecto is not None:
-            valores += (" · " if valores else "") + f"por defecto `{defecto}`"
-        tv = (d.get("tipos", {}).get(clave) or tipos_valor(clave, bloques) or esq.get("clases", {}).get(clave, "")) if clave == raiz else ""
-        if not tv and clave == raiz:
-            tv = "texto" if enum else tipo_por_nombre(clave)
-        p.append(f"| `{clave}` | {tv} | {valores} | {celda(desc)} |")
+    for f in filas_campos(tipo, d, codigo, bloques):
+        p.append(f"| `{f['campo']}` | {f['tipo']} | {valores_y_defecto(f)} | {celda(f['descripcion'])} |")
     p.append("")
     p.append("Además, los campos comunes a todos los tipos: `title`, `subtitle`, `id`, `inkSaver` y `theme` "
              "(ver [Campos comunes](../../campos-comunes.md)).")
@@ -418,7 +430,9 @@ def indice(areas, tipos) -> str:
          "- [Campos comunes](campos-comunes.md): `title`, `subtitle`, `id`, `inkSaver` y `theme`.",
          "- [Modo ejercicio](ejercicios.md): `blank` y los campos `blank*`.",
          "- [Themes](themes.md): presets, themes propios y tipografía.",
-         "- [Línea de comandos](cli.md): `render`, `batch`, `sync-md`, `list-types` y `list-themes`.", "",
+         "- [Línea de comandos](cli.md): `render`, `batch`, `sync-md`, `list-types` y `list-themes`.",
+         "- [Guía para agentes de IA](agentes/README.md): reglas, referencia compacta de todos los tipos, "
+         "integración en Markdown, MyST, Typst y alucarD, y un validador de bloques.", "",
          "## Tipos de diagramas", ""]
     for a in areas:
         p.append(f"### [{a['nombre']}]({a['clave']}/README.md)")
@@ -444,6 +458,110 @@ def indice(areas, tipos) -> str:
              "del código y de los ejemplos de `fixtures/kitchen_sink/kitchen_sink.yaml`; no se edita a mano.")
     p.append("")
     return "\n".join(p)
+
+
+# ---------------------------------------------------------------------------
+# Guía para agentes de IA (docs/manual/agentes/)
+# ---------------------------------------------------------------------------
+
+AGENTES = DATOS / "agentes"
+
+
+def esquema_agentes(areas, tipos, codigo, ejemplos) -> dict:
+    """El esquema de la guía: cada tipo con sus campos, valores, defectos y ejemplos."""
+    salida = {"comunes": dict(COMUNES), "tipos": {}}
+    for a in areas:
+        for s in a["subareas"]:
+            for t in s["tipos"]:
+                d = tipos[t]
+                bloques = [b for _, _, b in ejemplos[t]]
+                campos = {}
+                for f in filas_campos(t, d, codigo, bloques):
+                    campos[f["campo"]] = {k: f[k] for k in ("tipo", "valores", "defecto", "descripcion")}
+                # Las variantes documentadas son los valores de `variant` cuando el código no los expone.
+                if d.get("variantes") and "variant" in campos and not campos["variant"]["valores"]:
+                    campos["variant"]["valores"] = list(d["variantes"])
+                salida["tipos"][t] = {
+                    "nombre": d["nombre"],
+                    "para": d["para"],
+                    "area": f"{a['nombre']} › {s['nombre']}",
+                    "campos": campos,
+                    "aceptados": sorted(set(d.get("ignorar", []))),
+                    "variantes": d.get("variantes", {}),
+                    "ejercicio": [c for c in d["campos"] if c == "blank" or c.startswith("blank")],
+                    "ejemplos": [cuerpo for _, cuerpo, _ in ejemplos[t]],
+                }
+    return salida
+
+
+def referencia_agentes(areas, tipos, codigo, ejemplos) -> str:
+    total = sum(len(s["tipos"]) for a in areas for s in a["subareas"])
+    p = ["[Guía para agentes](README.md)", "", "# Referencia de los tipos de dibu", "",
+         f"Los {total} tipos, con todos sus campos. Los valores admitidos y por defecto salen del código; "
+         "los ejemplos se dibujan sin errores y pasan `validar.py` sin avisos. Además de los campos de "
+         "cada tipo, todos aceptan `title`, `subtitle`, `id`, `inkSaver` y `theme`.", ""]
+    for a in areas:
+        p.append(f"- **{a['nombre']}**: " + ", ".join(f"[`{t}`](#{t})" for s in a["subareas"] for t in s["tipos"]))
+    p.append("")
+    for a in areas:
+        for s in a["subareas"]:
+            for t in s["tipos"]:
+                d = tipos[t]
+                bloques = [b for _, _, b in ejemplos[t]]
+                p += [f'<a id="{t}"></a>', "", f"## `{t}`: {d['nombre']}", "",
+                      f"*{a['nombre']} › {s['nombre']}.* {d['para']}", "", d["resumen"].strip(), ""]
+                if d.get("calcula"):
+                    p.append("**Calcula:** " + " ".join(c.strip() for c in d["calcula"]))
+                    p.append("")
+                if d.get("variantes"):
+                    p.append("| `variant` | Qué dibuja |")
+                    p.append("| :--- | :--- |")
+                    p += [f"| `{k}` | {celda(v)} |" for k, v in d["variantes"].items()]
+                    p.append("")
+                p.append("| Campo | Tipo | Valores · por defecto | Descripción |")
+                p.append("| :--- | :--- | :--- | :--- |")
+                for f in filas_campos(t, d, codigo, bloques):
+                    p.append(f"| `{f['campo']}` | {f['tipo']} | {valores_y_defecto(f)} | {celda(f['descripcion'])} |")
+                p.append("")
+                blanks = [c for c in d["campos"] if c == "blank" or c.startswith("blank")]
+                if blanks or d.get("ejercicio"):
+                    texto = d.get("ejercicio", "").strip()
+                    lista = ("Campos: " + ", ".join(f"`{b}`" for b in blanks) + ".") if blanks else ""
+                    p.append("**Modo ejercicio:** " + " ".join(x for x in (texto, lista) if x))
+                    p.append("")
+                for _, cuerpo, bloque in ejemplos[t]:
+                    p += [f"Ejemplo: {bloque.get('title') or t}", "", "```yaml", cuerpo, "```", ""]
+                if d.get("notas"):
+                    p += [f"- {n.strip()}" for n in d["notas"]]
+                    p.append("")
+    p += ["---", "", "Generado por `docs/manual/generar.py`; no se edita a mano.", ""]
+    return "\n".join(p)
+
+
+def guia_agentes(areas, tipos) -> str:
+    plantilla = (AGENTES / "README.md").read_text(encoding="utf-8")
+    total = sum(len(s["tipos"]) for a in areas for s in a["subareas"])
+    catalogo = []
+    for a in areas:
+        catalogo += [f"### {a['nombre']}", ""]
+        for s in a["subareas"]:
+            catalogo.append(f"**{s['nombre']}**")
+            catalogo.append("")
+            catalogo += [f"- [`{t}`](referencia.md#{t}): {tipos[t]['nombre']}. {tipos[t]['para']}" for t in s["tipos"]]
+            catalogo.append("")
+    comunes = "\n".join(f"| `{c}` | {'sí/no' if c == 'inkSaver' else 'texto u objeto' if c == 'theme' else 'texto'} | "
+                         f"{celda(re.sub(r' Ver \[Themes\].*', '', d))} |" for c, d in COMUNES.items())
+    return (plantilla.replace("{{TOTAL}}", str(total)).replace("{{CATALOGO}}", "\n".join(catalogo).rstrip())
+            .replace("{{COMUNES}}", comunes))
+
+
+def validador():
+    """El módulo validar.py de la guía, para comprobar los ejemplos contra el esquema."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("dibu_validar", AGENTES / "validar.py")
+    modulo = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(modulo)
+    return modulo
 
 
 def generar() -> tuple[dict[str, str], list[str]]:
@@ -495,6 +613,17 @@ def generar() -> tuple[dict[str, str], list[str]]:
                     salida[f"{base}/{nombre}"] = svg
     for f in sorted((DATOS / "paginas").glob("*.md")):
         salida[f.name] = f.read_text(encoding="utf-8")
+
+    esquema = esquema_agentes(areas, tipos, codigo, ejemplos)
+    salida["agentes/README.md"] = guia_agentes(areas, tipos)
+    salida["agentes/referencia.md"] = referencia_agentes(areas, tipos, codigo, ejemplos)
+    salida["agentes/esquema.json"] = json.dumps(esquema, ensure_ascii=False, indent=1) + "\n"
+    salida["agentes/validar.py"] = (AGENTES / "validar.py").read_text(encoding="utf-8")
+    # Los ejemplos de la guía tienen que pasar el validador sin avisos.
+    validar = validador()
+    for t in en_areas:
+        for ident, _, bloque in ejemplos[t]:
+            problemas += [f"el ejemplo {ident} no pasa validar.py: {m}" for _, m in validar.validar_bloque(bloque, esquema)]
     return salida, problemas
 
 

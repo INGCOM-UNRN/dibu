@@ -1,0 +1,4972 @@
+{
+ "comunes": {
+  "title": "Título del diagrama, arriba a la izquierda.",
+  "subtitle": "Subtítulo, debajo del título, en letra más chica.",
+  "id": "Nombre del archivo al exportar (`dibu render` escribe `<id>.svg`).",
+  "inkSaver": "`true` usa el theme `ink` y `false` el `color`, sea cual sea el theme global.",
+  "theme": "Theme de este diagrama: un preset (`ink`, `color`, `high-contrast`, `dark`) o un objeto `{extends, colors, typography}`. Ver [Themes](../../themes.md)."
+ },
+ "tipos": {
+  "array": {
+   "nombre": "Arreglo",
+   "para": "Arreglos en memoria, con índices, direcciones, offsets y punteros que los recorren.",
+   "area": "Estructuras de datos y algoritmos › Estructuras lineales",
+   "campos": {
+    "values": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los valores, en orden. Un valor vacío (`\"\"`) deja la celda sin contenido."
+    },
+    "capacity": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Cantidad total de celdas; las que sobran después de `values` se dibujan vacías (el espacio reservado sin usar)."
+    },
+    "pointers": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Punteros o índices sobre el arreglo, como texto `\"p:0, q:3\"` (nombre y posición)."
+    },
+    "showIndices": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Muestra el índice de cada celda (por omisión, sí)."
+    },
+    "showAddresses": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Muestra la dirección de cada celda."
+    },
+    "showOffsets": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Muestra el desplazamiento en bytes de cada celda respecto del comienzo."
+    },
+    "baseAddr": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Dirección de la primera celda, en hexadecimal (`0x1000`) o simbólica (`\"@A\"`)."
+    },
+    "typeSize": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Tamaño de cada elemento en bytes (por omisión 4, un `int`)."
+    },
+    "blankValues": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja los valores en blanco, para completar."
+    },
+    "blankAddrs": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja las direcciones en blanco, para calcularlas."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blankValues",
+    "blankAddrs"
+   ],
+   "ejemplos": [
+    "type: array\ntitle: \"Arreglo v[0..2] con <p & q> → α·β\"\nvalues: [3, 1, 4]\npointers: \"p:0, q:2\"\nshowAddresses: true\nshowOffsets: true",
+    "type: array\ntitle: Arreglo para completar\nvalues: [41, 42]\nblankValues: true\ninkSaver: false"
+   ]
+  },
+  "matrix": {
+   "nombre": "Matriz",
+   "para": "Matrices estáticas, dinámicas, dentadas y planas, como están en memoria.",
+   "area": "Estructuras de datos y algoritmos › Estructuras lineales",
+   "campos": {
+    "values": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Lista de filas (o lista plana junto con `cols`). En la dinámica, `null` es una fila que es NULL."
+    },
+    "rows": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Cantidad de filas, si no salen de `values` (de 1 a 10)."
+    },
+    "cols": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Cantidad de columnas (de 1 a 10)."
+    },
+    "variant": {
+     "tipo": "texto",
+     "valores": [
+      "static",
+      "dynamic",
+      "jagged",
+      "flat"
+     ],
+     "defecto": null,
+     "descripcion": "Variante, ver arriba."
+    },
+    "name": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Nombre de la variable (por omisión `m`)."
+    },
+    "elementType": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Tipo de los elementos, para la declaración (por omisión `int`)."
+    },
+    "typeSize": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Tamaño de cada elemento en bytes."
+    },
+    "showIndices": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Muestra los índices de filas y columnas."
+    },
+    "showAddresses": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Muestra la dirección de cada celda."
+    },
+    "baseAddr": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Dirección de la primera celda (o del bloque, en la plana)."
+    },
+    "rowAddresses": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En la dinámica, la dirección de cada fila."
+    },
+    "rowsBaseAddr": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En la dinámica, la dirección del arreglo de punteros a filas."
+    },
+    "highlight": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Celdas resaltadas, como `\"1,2; 0,0\"` o `[[1, 2]]`."
+    },
+    "highlightRows": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Filas resaltadas."
+    },
+    "highlightCols": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Columnas resaltadas."
+    },
+    "blankValues": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja los valores en blanco."
+    },
+    "blankAddrs": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja las direcciones en blanco."
+    },
+    "showLinear": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En la estática, dibuja además la matriz como está en memoria, una fila detrás de la otra."
+    },
+    "showLengths": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En la dentada, el arreglo de largos (por omisión, sí)."
+    },
+    "lengths": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En la dentada, los largos, si no salen de las filas."
+    },
+    "lengthsName": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Nombre del arreglo de largos."
+    },
+    "lengthsType": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Tipo de los largos (por omisión `size_t`)."
+    },
+    "lengthsAddr": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Dirección del arreglo de largos."
+    },
+    "blankLengths": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja los largos en blanco."
+    },
+    "sentinel": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En la dentada, un valor centinela al final de cada fila, como `\"'\\\\0'\"` o `-1`."
+    },
+    "showCoords": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En la plana, el `(i, j)` de cada celda (por omisión, sí)."
+    },
+    "showFormula": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En la plana, la fórmula `m[i * C + j]` (por omisión, sí)."
+    },
+    "showLogical": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En la plana, agrega la matriz como la piensa el programa."
+    },
+    "zones": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Enmarca el stack y el heap; `true` usa esos títulos, o `{stack, heap}` con títulos propios."
+    },
+    "owner": {
+     "tipo": "objeto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Una estructura dueña de la matriz en lugar del puntero: `name`, `type` y `fields` (`\"filas -> rows\"`, `\"largos -> lengths\"`)."
+    }
+   },
+   "aceptados": [],
+   "variantes": {
+    "static": "Por omisión. `int m[F][C]` en un bloque, con `showLinear` también fila por fila en memoria.",
+    "dynamic": "Un `int **`: el puntero, el arreglo de punteros a filas y cada fila por separado; `null` es un puntero a NULL.",
+    "jagged": "Dinámica con filas de distinto largo, con el arreglo de largos (`showLengths`) o un `sentinel` al final de cada fila.",
+    "flat": "Un `int *` con `F * C` elementos contiguos: cada celda con su índice `[k]` y su `(i, j)`."
+   },
+   "ejercicio": [
+    "blankValues",
+    "blankAddrs",
+    "blankLengths"
+   ],
+   "ejemplos": [
+    "type: matrix\ntitle: Matriz estática row-major\nvalues: [[1, 2, 3], [4, 5, 6]]\nbaseAddr: \"0x1000\"\ntypeSize: 4\nshowAddresses: true\nshowLinear: true\nhighlight: [[0, 0], [1, 2]]",
+    "type: matrix\ntitle: Matriz dentada con dueña y zonas\nvariant: jagged\nname: filas\nvalues: [[4, 8], [9]]\nshowAddresses: true\nbaseAddr: \"@F\"\nrowAddresses: [\"@R0\", \"@R1\"]\nlengthsType: int\nlengthsAddr: \"@L\"\nzones: true\nowner:\n  name: d\n  type: dentada_t\n  fields:\n    - \"n = 2\"\n    - \"largos -> lengths\"\n    - \"filas -> rows\"",
+    "type: matrix\ntitle: Matriz plana con vista lógica\nvariant: flat\nvalues: [[1, 2], [3, 4]]\nshowLogical: true\nshowAddresses: true\ninkSaver: false"
+   ]
+  },
+  "linked_list": {
+   "nombre": "Lista enlazada",
+   "para": "Listas simples, dobles y circulares, con direcciones, cursores y estructura cabecera.",
+   "area": "Estructuras de datos y algoritmos › Estructuras lineales",
+   "campos": {
+    "values": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los valores de los nodos, en orden (hasta 7). `[]` es la lista vacía."
+    },
+    "variant": {
+     "tipo": "texto",
+     "valores": [
+      "singly",
+      "doubly",
+      "circular",
+      "circular_doubly"
+     ],
+     "defecto": null,
+     "descripcion": "Variante, ver arriba."
+    },
+    "addresses": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La dirección de cada nodo (hexadecimal o simbólica, como `\"@N1\"`)."
+    },
+    "headLabel": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El rótulo de la cabeza (por omisión `HEAD`)."
+    },
+    "pointers": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Cursores sobre la lista, como `\"ant:0, actual:1\"`."
+    },
+    "drawArrows": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Dibuja las flechas entre nodos (por omisión, sí)."
+    },
+    "nodeType": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Rotula cada nodo con su tipo, `@N1 (nodo_t)`."
+    },
+    "header": {
+     "tipo": "objeto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Una estructura cabecera en lugar de la cabeza: `name`, `type` y `fields` (`\"primero -> 0\"`, `\"cant = 3\"`)."
+    },
+    "zones": {
+     "tipo": "objeto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Enmarca el stack y el heap; `true` o `{stack, heap}` con títulos propios."
+    },
+    "blankValues": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja los valores en blanco."
+    },
+    "blankNextAddrs": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco las direcciones de los punteros al siguiente."
+    }
+   },
+   "aceptados": [],
+   "variantes": {
+    "singly": "Por omisión. Cada nodo apunta al siguiente; el último, a NULL.",
+    "doubly": "Cada nodo apunta al siguiente y al anterior.",
+    "circular": "El último apunta al primero.",
+    "circular_doubly": "Doble y circular."
+   },
+   "ejercicio": [
+    "blankValues",
+    "blankNextAddrs"
+   ],
+   "ejemplos": [
+    "type: linked_list\ntitle: Lista enlazada con cabecera y zonas\nvalues: [12, 25, 8]\naddresses: [\"@N1\", \"@N2\", \"@N3\"]\nnodeType: nodo_t\nzones:\n  stack: \"Stack: main\"\n  heap: Heap\nheader:\n  name: mi_lista\n  type: lista_t\n  fields:\n    - \"primero -> 0\"\n    - \"ultimo -> 2\"\n    - \"cant = 3\"",
+    "type: linked_list\ntitle: Lista circular doblemente enlazada\nvariant: circular_doubly\nvalues: [\"α\", \"β\", \"γ\"]\npointers: \"actual:1\"\ninkSaver: false"
+   ]
+  },
+  "stack": {
+   "nombre": "Pila",
+   "para": "Pilas en arreglo, con el tope, y su evolución paso a paso.",
+   "area": "Estructuras de datos y algoritmos › Estructuras lineales",
+   "campos": {
+    "values": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los valores desde la base hasta el tope. Con `vertical_multi`, una lista de estados."
+    },
+    "capacity": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Cantidad de lugares de la pila; los libres se dibujan vacíos."
+    },
+    "topIndex": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Índice del tope, si no es el último valor."
+    },
+    "topLabel": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Rótulo del tope (por omisión `tope`)."
+    },
+    "label": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Rótulo de la pila."
+    },
+    "layout": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "`vertical_multi` dibuja varios estados uno al lado del otro."
+    },
+    "traceLabels": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Con `vertical_multi`, el rótulo de cada estado (por ejemplo, la operación)."
+    },
+    "showAddresses": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Muestra la dirección de cada lugar."
+    },
+    "baseAddr": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Dirección de la base."
+    },
+    "typeSize": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Tamaño de cada elemento en bytes."
+    },
+    "blankValues": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja los valores en blanco."
+    },
+    "blankPointers": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja el tope en blanco."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blankValues",
+    "blankPointers"
+   ],
+   "ejemplos": [
+    "type: stack\ntitle: Pila con traza vertical\nlayout: vertical_multi\nvalues: [1]\ntraceLabels: [\"Inicio\", \"push(2)\", \"pop()\"]"
+   ]
+  },
+  "queue": {
+   "nombre": "Cola",
+   "para": "Colas lineales y circulares, con frente y final.",
+   "area": "Estructuras de datos y algoritmos › Estructuras lineales",
+   "campos": {
+    "values": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los valores en la cola, del frente al final."
+    },
+    "variant": {
+     "tipo": "texto",
+     "valores": [
+      "linear",
+      "circular"
+     ],
+     "defecto": null,
+     "descripcion": "Variante, ver arriba."
+    },
+    "capacity": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Cantidad de lugares."
+    },
+    "frontIndex": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Índice del frente."
+    },
+    "rearIndex": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Índice del final."
+    },
+    "showPanel": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En la circular, un panel con frente, final y cantidad."
+    },
+    "blankValues": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja los valores en blanco."
+    },
+    "blankPointers": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja frente y final en blanco."
+    }
+   },
+   "aceptados": [],
+   "variantes": {
+    "linear": "Por omisión. Un arreglo con frente y final.",
+    "circular": "Un anillo de `capacity` lugares."
+   },
+   "ejercicio": [
+    "blankValues",
+    "blankPointers"
+   ],
+   "ejemplos": [
+    "type: queue\ntitle: Cola circular en arreglo de capacidad 8\nvariant: circular\ncapacity: 8\nfrontIndex: 5\nrearIndex: 1\ninkSaver: false"
+   ]
+  },
+  "call_stack": {
+   "nombre": "Pila de llamadas",
+   "para": "Los marcos de activación de una ejecución, con parámetros, variables y punteros entre marcos.",
+   "area": "Estructuras de datos y algoritmos › Memoria, tipos y recursión",
+   "campos": {
+    "frames": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los marcos, de `main` al tope. Cada uno con `function`, `params`, `vars`, `returnTo`, `returns` y `popped`. Las variables van como `{x: 5}`, `\"x = 5\"` o `{name, value, type, addr, size, blank}`."
+    },
+    "steps": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La pila en varios momentos: cada paso con `label` y `frames` (hasta 8 pasos)."
+    },
+    "pointers": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Flechas entre variables, como `\"1.p -> 0.x\"`: el marco por su índice desde `main` o por el nombre de la función."
+    },
+    "showAddresses": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Muestra la dirección de cada variable."
+    },
+    "baseAddr": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Dirección de la primera variable de `main` (por omisión `0x7FFC`); las siguientes bajan."
+    },
+    "typeSize": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Tamaño de una variable que no es puntero (por omisión 4); los punteros ocupan 8."
+    },
+    "showTypes": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Muestra el tipo de cada variable."
+    },
+    "blankValues": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja los valores en blanco."
+    },
+    "blankAddrs": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja las direcciones en blanco."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blankValues",
+    "blankAddrs"
+   ],
+   "ejemplos": [
+    "type: call_stack\ntitle: Marcos de activación con punteros\nshowAddresses: true\nshowTypes: true\nframes:\n  - function: main\n    vars:\n      - {name: a, value: 3, type: int}\n      - {name: b, value: 7, type: int}\n  - function: intercambiar\n    returnTo: main\n    params:\n      - {name: x, value: \"&a\", type: \"int *\"}\n      - {name: y, value: \"&b\", type: \"int *\"}\n    vars: [\"aux = 3\"]\npointers: \"1.x -> 0.a; intercambiar.y -> main.b\"",
+    "type: call_stack\ntitle: Pila de llamadas por pasos\nblankValues: true\nsteps:\n  - label: \"llama a fact(2)\"\n    frames:\n      - {function: main, vars: {r: \"?\"}}\n      - {function: fact, params: {n: 2}}\n  - label: \"fact(1) devuelve 1\"\n    frames:\n      - {function: main, vars: {r: \"?\"}}\n      - {function: fact, params: {n: 2}}\n      - {function: fact, params: {n: 1}, returns: 1, popped: true}\ninkSaver: false"
+   ]
+  },
+  "call_tree": {
+   "nombre": "Árbol de llamadas",
+   "para": "Las llamadas de una función recursiva, su orden, sus resultados y el costo por nivel.",
+   "area": "Estructuras de datos y algoritmos › Memoria, tipos y recursión",
+   "campos": {
+    "root": {
+     "tipo": "objeto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La llamada inicial: `call`, `returns`, `children` (las llamadas que hace) y `blank`. Hasta 40 llamadas."
+    },
+    "showOrder": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Numera las llamadas en el orden en que se hacen."
+    },
+    "highlight": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Llamadas resaltadas, por su texto (por ejemplo `[\"fib(1)\"]`)."
+    },
+    "levelCosts": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El costo de cada nivel, al costado."
+    },
+    "total": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El costo total, debajo."
+    },
+    "blankReturns": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco lo que devuelve cada llamada."
+    },
+    "blankCalls": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco las llamadas."
+    },
+    "blankLevelCosts": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco los costos por nivel."
+    },
+    "blankTotal": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco el total."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blankReturns",
+    "blankCalls",
+    "blankLevelCosts",
+    "blankTotal"
+   ],
+   "ejemplos": [
+    "type: call_tree\ntitle: Árbol de llamadas fib(3)\nshowOrder: true\nlevelCosts: [\"1\", \"2\", \"2\"]\ntotal: \"2^n\"\nroot:\n  call: \"fib(3)\"\n  returns: 2\n  children:\n    - call: \"fib(2)\"\n      returns: 1\n      children:\n        - {call: \"fib(1)\", returns: 1}\n        - {call: \"fib(0)\", returns: 0}\n    - {call: \"fib(1)\", returns: 1}",
+    "type: call_tree\ntitle: Árbol de llamadas (retornos en blanco)\nblankReturns: true\nblankLevelCosts: true\nlevelCosts: [\"n\", \"2n\"]\ntotal: \"n^2\"\nroot:\n  call: \"f(2)\"\n  returns: 2\n  children:\n    - {call: \"f(1)\", returns: 1}\n    - {call: \"f(0)\", returns: 0}\ninkSaver: false"
+   ]
+  },
+  "struct": {
+   "nombre": "Struct",
+   "para": "La disposición de un struct en memoria (offsets, relleno, sizeof) y los tipos opacos.",
+   "area": "Estructuras de datos y algoritmos › Memoria, tipos y recursión",
+   "campos": {
+    "fields": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los campos: `\"char nombre[8]\"`, `\"int edad = 30\"` o `{name, type, value, size, align, blank}` (hasta 16). `size` y `align` sirven para un tipo que dibu no conoce, como un struct anidado."
+    },
+    "name": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Nombre del struct (`struct persona`)."
+    },
+    "typedef": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Nombre del `typedef`."
+    },
+    "variant": {
+     "tipo": "texto",
+     "valores": [
+      "layout",
+      "opaque"
+     ],
+     "defecto": null,
+     "descripcion": "Variante, ver arriba."
+    },
+    "packed": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Sin relleno, como `__attribute__((packed))`."
+    },
+    "showAddresses": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Muestra la dirección de cada campo."
+    },
+    "baseAddr": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Dirección del comienzo del struct."
+    },
+    "variable": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El nombre de la variable de ese tipo."
+    },
+    "blankValues": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja los valores en blanco."
+    },
+    "blankOffsets": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja los offsets en blanco."
+    },
+    "blankSizes": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja los tamaños en blanco."
+    },
+    "blankPadding": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Saca las filas de relleno, para deducirlas de los offsets."
+    },
+    "blankSizeof": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja el `sizeof` en blanco."
+    },
+    "operations": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `opaque`, las operaciones del `.h`."
+    },
+    "header": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `opaque`, el nombre del `.h`."
+    },
+    "source": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `opaque`, el nombre del `.c`."
+    },
+    "client": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `opaque`, el código del cliente."
+    },
+    "hidden": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `opaque`, oculta los campos (lo que ve el cliente); no hace falta `fields`."
+    }
+   },
+   "aceptados": [],
+   "variantes": {
+    "layout": "Por omisión. La disposición en memoria.",
+    "opaque": "Lo que ve cada archivo de un tipo opaco."
+   },
+   "ejercicio": [
+    "blankValues",
+    "blankOffsets",
+    "blankSizes",
+    "blankPadding",
+    "blankSizeof"
+   ],
+   "ejemplos": [
+    "type: struct\ntitle: Layout LP64 con padding\nname: struct outer\nfields:\n  - {name: c, type: char}\n  - {name: pos, type: struct punto, size: 8, align: 4}",
+    "type: struct\ntitle: TAD opaco en C\nvariant: opaque\nname: struct pila\ntypedef: pila_t\noperations: [\"void f(pila_t p)\"]\nfields: [\"int *datos\", \"size_t tope\"]\nhidden: true\ninkSaver: false"
+   ]
+  },
+  "adt": {
+   "nombre": "Tipo abstracto de datos",
+   "para": "Un TAD con sus operaciones, precondiciones, invariante y representaciones posibles.",
+   "area": "Estructuras de datos y algoritmos › Memoria, tipos y recursión",
+   "campos": {
+    "name": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Nombre del TAD."
+    },
+    "operations": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Las operaciones: texto (la firma) o `{signature, kind, pre, post, blank}`."
+    },
+    "invariant": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El invariante de la representación."
+    },
+    "representations": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Las representaciones posibles, cada una `{name, fields}`."
+    },
+    "client": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Código cliente que usa el TAD."
+    },
+    "blankOperations": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja las operaciones en blanco."
+    },
+    "blankKinds": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco la clase de cada operación."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blankOperations",
+    "blankKinds"
+   ],
+   "ejemplos": [
+    "type: adt\ntitle: Especificación TAD Pila\nname: Pila\nblankKinds: true\noperations:\n  - {signature: \"f()\", kind: observador, pre: \"p != NULL\"}\n  - {signature: \"g()\", post: \"tope' > 0\", blank: true}\nclient: [\"crear();\"]\ninvariant: \"tope >= 0\"\nrepresentations:\n  - Arreglo\n  - {name: Lista, fields: [\"nodo_t *cabeza\"]}"
+   ]
+  },
+  "tree": {
+   "nombre": "Árbol binario",
+   "para": "Árboles binarios, de búsqueda, AVL y montículos, por niveles, por inserciones o anidados.",
+   "area": "Estructuras de datos y algoritmos › Árboles y tablas",
+   "campos": {
+    "values": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los nodos por niveles; `\"\"` es una posición sin nodo."
+    },
+    "insert": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Inserciones en un árbol de búsqueda, en orden; con `avl`, rebalancea."
+    },
+    "root": {
+     "tipo": "objeto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Un árbol anidado: `value`, `left`, `right`."
+    },
+    "variant": {
+     "tipo": "texto",
+     "valores": [
+      "binary",
+      "bst",
+      "avl",
+      "heap"
+     ],
+     "defecto": null,
+     "descripcion": "Variante, ver arriba."
+    },
+    "nodeStyle": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "`struct` dibuja cada nodo como un struct con `*izq` y `*der`."
+    },
+    "nullLeaves": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Dibuja los punteros a NULL de las hojas."
+    },
+    "highlight": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Nodos resaltados, por su valor."
+    },
+    "showBalance": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En el AVL, el factor de balance de cada nodo."
+    },
+    "showArray": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En el montículo, el arreglo debajo."
+    },
+    "blankValues": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja los valores en blanco."
+    },
+    "blankBalance": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco los factores de balance."
+    }
+   },
+   "aceptados": [],
+   "variantes": {
+    "binary": "Por omisión. Un árbol binario cualquiera.",
+    "bst": "Un árbol binario de búsqueda.",
+    "avl": "Un AVL, con el factor de balance de cada nodo.",
+    "heap": "Un montículo, con el arreglo que lo representa."
+   },
+   "ejercicio": [
+    "blankValues",
+    "blankBalance"
+   ],
+   "ejemplos": [
+    "type: tree\ntitle: Árbol AVL rebalanceado\nvariant: avl\ninsert: [10, 20, 30, 40, 50, 25]",
+    "type: tree\ntitle: Max-Heap con arreglo subyacente\nvariant: heap\nvalues: [90, 70, 80, 30]\nshowArray: true\ninkSaver: false"
+   ]
+  },
+  "heap": {
+   "nombre": "Montículo (heap)",
+   "para": "Min-heaps y max-heaps construidos por inserciones o con heapify, con sus operaciones.",
+   "area": "Estructuras de datos y algoritmos › Árboles y tablas",
+   "campos": {
+    "values": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los valores iniciales."
+    },
+    "kind": {
+     "tipo": "texto",
+     "valores": [
+      "min",
+      "max"
+     ],
+     "defecto": "min",
+     "descripcion": "`min` (la raíz es el menor) o `max`."
+    },
+    "build": {
+     "tipo": "texto",
+     "valores": [
+      "none",
+      "insert",
+      "heapify"
+     ],
+     "defecto": "insert",
+     "descripcion": "`insert` (de a uno), `heapify` (Floyd) o `none` (el arreglo tal como está)."
+    },
+    "ops": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Operaciones a aplicar después: `\"insert 12\"` y `\"extract\"`."
+    },
+    "steps": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Dibuja el estado después de cada inserción y de cada operación (hasta 16)."
+    },
+    "blank": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco el estado final (árbol y arreglo), para completar."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blank"
+   ],
+   "ejemplos": [
+    "type: heap\ntitle: Min-heap construido por inserciones\nvalues: [15, 10, 20, 8, 25, 3]\nops: [\"extract\", \"insert 12\"]\nsteps: true",
+    "type: heap\ntitle: \"Ejercicio: heapify de un max-heap\"\nkind: max\nbuild: heapify\nvalues: [4, 10, 3, 5, 1, 8, 9]\nblank: true"
+   ]
+  },
+  "avl": {
+   "nombre": "Árbol AVL",
+   "para": "Inserciones y eliminaciones en un AVL, con las rotaciones que hace cada una.",
+   "area": "Estructuras de datos y algoritmos › Árboles y tablas",
+   "campos": {
+    "keys": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Las claves a insertar, en orden (hasta 40). Las repetidas se ignoran."
+    },
+    "delete": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Claves a eliminar después de las inserciones."
+    },
+    "steps": {
+     "tipo": "texto",
+     "valores": [
+      "none",
+      "rotations",
+      "all"
+     ],
+     "defecto": "none",
+     "descripcion": "`none` (sólo el final), `rotations` (los pasos que rotan) o `all` (todos)."
+    },
+    "balance": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Muestra el factor de balance de cada nodo (por omisión, sí)."
+    },
+    "blank": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco el árbol final, para completar."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blank"
+   ],
+   "ejemplos": [
+    "type: avl\ntitle: Árbol AVL con rotaciones\nkeys: [10, 20, 30, 40, 50, 25]\nsteps: rotations"
+   ]
+  },
+  "bplus_tree": {
+   "nombre": "Árbol B+",
+   "para": "Inserciones en un árbol B+, con las divisiones de hojas y nodos internos.",
+   "area": "Estructuras de datos y algoritmos › Árboles y tablas",
+   "campos": {
+    "keys": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Las claves a insertar, en orden (hasta 60)."
+    },
+    "order": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Orden del árbol, la cantidad máxima de hijos (por omisión 4)."
+    },
+    "maxKeys": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Claves máximas por nodo, si no es `order − 1`."
+    },
+    "steps": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Dibuja el árbol después de cada inserción que divide un nodo (hasta 12)."
+    },
+    "blank": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco las claves del árbol final."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blank"
+   ],
+   "ejemplos": [
+    "type: bplus_tree\ntitle: Árbol B+ de orden 4\norder: 4\nkeys: [5, 15, 25, 35, 45, 20, 30, 10, 40, 50, 55]"
+   ]
+  },
+  "hash_table": {
+   "nombre": "Tabla de hash",
+   "para": "Inserciones en una tabla de hash, con encadenamiento o direccionamiento abierto.",
+   "area": "Estructuras de datos y algoritmos › Árboles y tablas",
+   "campos": {
+    "size": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Cantidad de cubetas m (de 1 a 101)."
+    },
+    "keys": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Las claves, enteros o textos, en el orden en que se insertan."
+    },
+    "collision": {
+     "tipo": "texto",
+     "valores": [
+      "chaining",
+      "linear",
+      "quadratic",
+      "double"
+     ],
+     "defecto": "linear",
+     "descripcion": "`chaining`, `linear`, `quadratic` o `double`."
+    },
+    "R": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En doble hashing, el R de h₂(k) = R − (k mod R); por omisión, el primo menor que m."
+    },
+    "stringHash": {
+     "tipo": "texto",
+     "valores": [
+      "sum",
+      "poly"
+     ],
+     "defecto": "sum",
+     "descripcion": "Hash de los textos: `sum` (suma de códigos) o `poly` (base 31)."
+    },
+    "blank": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco la tabla y el registro, para completar."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blank"
+   ],
+   "ejemplos": [
+    "type: hash_table\ntitle: Hashing con sondeo lineal\nsize: 11\nkeys: [22, 1, 13, 11, 24, 33, 18, 42, 31]\ncollision: linear",
+    "type: hash_table\ntitle: Hashing con encadenamiento\nsize: 7\nkeys: [50, 700, 76, 85, 92, 73, 101]\ncollision: chaining"
+   ]
+  },
+  "complexity": {
+   "nombre": "Complejidad",
+   "para": "Curvas de crecimiento para comparar órdenes, y jerarquías de clases de complejidad.",
+   "area": "Estructuras de datos y algoritmos › Análisis de algoritmos",
+   "campos": {
+    "curves": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Las curvas: `1`, `log n`, `sqrt n`, `n`, `n log n`, `n^2`, `n^3`, `2^n`, `n!` (también como `O(n²)`), o `{label, points}` para mediciones."
+    },
+    "variant": {
+     "tipo": "texto",
+     "valores": [
+      "growth",
+      "classes"
+     ],
+     "defecto": null,
+     "descripcion": "Variante, ver arriba."
+    },
+    "maxN": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El n máximo del eje horizontal."
+    },
+    "maxY": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El máximo del eje vertical; las curvas que se salen se cortan."
+    },
+    "xLabel": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Rótulo del eje horizontal."
+    },
+    "yLabel": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Rótulo del eje vertical."
+    },
+    "blankLabels": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Rotula las curvas A, B, C… en el orden de `curves`."
+    },
+    "classes": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `classes`, la jerarquía, de la más chica a la más grande (por omisión los órdenes comunes; también `[P, NP, EXPTIME]`)."
+    },
+    "items": {
+     "tipo": "objeto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `classes`, ejemplos dentro de cada clase: `{\"O(n)\": [búsqueda lineal]}`."
+    },
+    "blankClasses": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco los nombres de las clases."
+    }
+   },
+   "aceptados": [],
+   "variantes": {
+    "growth": "Por omisión. Curvas de crecimiento.",
+    "classes": "Conjuntos anidados de clases."
+   },
+   "ejercicio": [
+    "blankLabels",
+    "blankClasses"
+   ],
+   "ejemplos": [
+    "type: complexity\ntitle: Órdenes de crecimiento Θ(n²)\ncurves:\n  - \"Θ(n²)\"\n  - \"n log n\"\n  - label: medido\n    points: [[2, 5], [10, 90]]",
+    "type: complexity\ntitle: Clases de complejidad P vs NP\nvariant: classes\nclasses: [\"P\", \"NP\"]\nitems:\n  P: [\"ordenar\"]\ninkSaver: false"
+   ]
+  },
+  "flowchart": {
+   "nombre": "Diagrama de flujo",
+   "para": "Diagramas de flujo armados a partir de la estructura del algoritmo.",
+   "area": "Estructuras de datos y algoritmos › Análisis de algoritmos",
+   "campos": {
+    "steps": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los pasos: un texto, `{io}` (entrada o salida), `{step}`, `{if, then, else}`, `{while, do}` o `{for, do}`; cada uno con `blank`."
+    },
+    "start": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Rótulo del inicio (por omisión `Inicio`); `false` lo quita."
+    },
+    "end": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Rótulo del fin (por omisión `Fin`); `false` lo quita."
+    },
+    "blankValues": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco el texto de todos los pasos."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blankValues"
+   ],
+   "ejemplos": [
+    "type: flowchart\ntitle: \"Bucle con condición < & >\"\nsteps:\n  - {io: \"leer n\"}\n  - \"i = 0\"\n  - while: \"i < n && n > 0\"\n    do:\n      - if: \"par(i)\"\n        then: [\"s = s + i\"]\n        else: [\"s = s - i\"]\n      - \"i = i + 1\""
+   ]
+  },
+  "cost_table": {
+   "nombre": "Tabla de costos",
+   "para": "El análisis de un algoritmo línea por línea, con el costo y las veces de cada una.",
+   "area": "Estructuras de datos y algoritmos › Análisis de algoritmos",
+   "campos": {
+    "lines": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Las líneas: `[código, costo, veces]` o `{code, cost, times}`."
+    },
+    "total": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El costo total, debajo."
+    },
+    "blankCosts": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja los costos en blanco."
+    },
+    "blankTimes": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco las veces."
+    },
+    "blankTotal": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja el total en blanco."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blankCosts",
+    "blankTimes",
+    "blankTotal"
+   ],
+   "ejemplos": [
+    "type: cost_table\ntitle: Análisis línea a línea (evaluación)\nlines:\n  - [\"for (;;)\", \"c1\", \"n\"]\n  - [\"    x++;\", \"c2\", \"n - 1\"]\ntotal: 2n\nblankCosts: true\nblankTotal: true"
+   ]
+  },
+  "trace_table": {
+   "nombre": "Tabla de traza",
+   "para": "Pruebas de escritorio de variables y trazas de operaciones sobre una estructura.",
+   "area": "Estructuras de datos y algoritmos › Análisis de algoritmos",
+   "campos": {
+    "columns": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Las columnas (las variables)."
+    },
+    "rows": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Las filas; `null` o una fila corta quedan para completar."
+    },
+    "rowCount": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Cantidad total de filas; las que faltan quedan vacías."
+    },
+    "operations": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Las operaciones de cada fila, en la primera columna (o la traza de statics)."
+    },
+    "operationHeader": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Encabezado de la columna de operaciones."
+    },
+    "capacity": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En la traza de statics, la capacidad de la estructura."
+    },
+    "pointerHeader": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En la traza de statics, el encabezado de la columna del puntero."
+    },
+    "pointerLabel": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En la traza de statics, el nombre del puntero."
+    },
+    "variant": {
+     "tipo": "texto",
+     "valores": [
+      "stack"
+     ],
+     "defecto": null,
+     "descripcion": "Variante, ver arriba."
+    },
+    "blankValues": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja los valores en blanco."
+    }
+   },
+   "aceptados": [],
+   "variantes": {
+    "stack": "Sólo cambia los rótulos por omisión, para trazas de una pila."
+   },
+   "ejercicio": [
+    "blankValues"
+   ],
+   "ejemplos": [
+    "type: trace_table\ntitle: Tabla de seguimiento de variables\ncolumns: [\"i\", \"suma\"]\nrows: [[0, 7], [1, null]]\nrowCount: 4",
+    "type: trace_table\ntitle: Seguimiento de pila (statics)\nvariant: stack\ncapacity: 5\npointerLabel: \"TOPE: ___\"\noperations: [\"1. push(10)\", \"2. pop()\"]\ninkSaver: false"
+   ]
+  },
+  "dp_table": {
+   "nombre": "Tabla de programación dinámica",
+   "para": "LCS, distancia de edición, mochila 0/1 y cambio de monedas, con el camino de reconstrucción.",
+   "area": "Estructuras de datos y algoritmos › Análisis de algoritmos",
+   "campos": {
+    "problem": {
+     "tipo": "texto",
+     "valores": [
+      "lcs",
+      "edit",
+      "knapsack",
+      "coins"
+     ],
+     "defecto": "lcs",
+     "descripcion": "`lcs`, `edit`, `knapsack` o `coins`."
+    },
+    "a": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `lcs` y `edit`, el primer texto (hasta 24 caracteres)."
+    },
+    "b": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `lcs` y `edit`, el segundo texto."
+    },
+    "weights": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `knapsack`, los pesos (de 1 a 15 objetos)."
+    },
+    "values": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `knapsack`, los valores."
+    },
+    "capacity": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `knapsack`, la capacidad de la mochila (de 1 a 40)."
+    },
+    "coins": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `coins`, los valores de las monedas."
+    },
+    "amount": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `coins`, el monto a formar (de 1 a 60)."
+    },
+    "path": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Resalta el camino de reconstrucción (por omisión, sí)."
+    },
+    "blank": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja la tabla en blanco (salvo la primera fila y columna) y el resultado."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blank"
+   ],
+   "ejemplos": [
+    "type: dp_table\ntitle: Subsecuencia común más larga\nproblem: lcs\na: ABCBDAB\nb: BDCABA",
+    "type: dp_table\ntitle: Distancia de edición (Levenshtein)\nproblem: edit\na: kitten\nb: sitting",
+    "type: dp_table\ntitle: \"Ejercicio: mochila 0/1\"\nproblem: knapsack\nweights: [1, 3, 4, 5]\nvalues: [1, 4, 5, 7]\ncapacity: 7\nblank: true"
+   ]
+  },
+  "dijkstra": {
+   "nombre": "Dijkstra",
+   "para": "La tabla de iteraciones del algoritmo de Dijkstra y los caminos mínimos.",
+   "area": "Estructuras de datos y algoritmos › Análisis de algoritmos",
+   "campos": {
+    "edges": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Las aristas: `\"A-B:4\"` (no dirigida), `\"A->B:4\"` (dirigida) o `{from, to, w}`."
+    },
+    "source": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": "",
+     "descripcion": "El vértice de origen (por omisión, el primero)."
+    },
+    "vertices": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El orden de los vértices, si no sale de las aristas."
+    },
+    "directed": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Toma como dirigidas las aristas escritas con `-`."
+    },
+    "paths": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Agrega la tabla de caminos mínimos (por omisión, sí)."
+    },
+    "blank": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco las iteraciones y los caminos."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blank"
+   ],
+   "ejemplos": [
+    "type: dijkstra\ntitle: Caminos mínimos con Dijkstra\nsource: A\nedges: [\"A-B:4\", \"A-C:2\", \"C-B:1\", \"B-D:5\", \"C-D:8\", \"C-E:10\", \"D-E:2\"]"
+   ]
+  },
+  "turing": {
+   "nombre": "Máquina de Turing",
+   "para": "La traza de configuraciones de una máquina de Turing y su tabla de transiciones.",
+   "area": "Estructuras de datos y algoritmos › Computabilidad",
+   "campos": {
+    "transitions": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Las transiciones: `\"q0,1 -> q1,X,R\"` (estado, símbolo leído, estado nuevo, símbolo escrito, movimiento `R`, `L` o `S`), o un mapa `\"q0,1\": \"q1,X,R\"`."
+    },
+    "input": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La entrada (hasta 40 símbolos)."
+    },
+    "start": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El estado inicial (por omisión `q0`)."
+    },
+    "accept": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los estados de aceptación."
+    },
+    "blankSymbol": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El símbolo blanco (por omisión `_`)."
+    },
+    "maxSteps": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Pasos máximos de la simulación (de 1 a 200, por omisión 40)."
+    },
+    "table": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Agrega la tabla de transiciones (por omisión, sí)."
+    },
+    "blank": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Dibuja sólo la configuración inicial, para completar la traza."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blankSymbol",
+    "blank"
+   ],
+   "ejemplos": [
+    "type: turing\ntitle: Máquina de Turing que suma 1 en binario\ninput: \"1011\"\nstart: q0\naccept: [qf]\ntransitions:\n  - \"q0,0 -> q0,0,R\"\n  - \"q0,1 -> q0,1,R\"\n  - \"q0,_ -> q1,_,L\"\n  - \"q1,1 -> q1,0,L\"\n  - \"q1,0 -> qf,1,S\"\n  - \"q1,_ -> qf,1,S\""
+   ]
+  },
+  "truth_table": {
+   "nombre": "Tabla de verdad",
+   "para": "Tablas de verdad de una o varias funciones, con columnas intermedias y formas canónicas.",
+   "area": "Sistemas de computación › Sistemas digitales",
+   "campos": {
+    "expr": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La expresión, como `A·B + !C`. NOT: `!A`, `~A`, `¬A`, `A'`; AND: `&`, `·`, `*` o yuxtaposición (`A B`, `AB'C`); OR: `+`, `|`; XOR: `^`, `⊕`; también `AND`, `OR`, `NOT`, `XOR`, `NAND`, `NOR`, `XNOR`."
+    },
+    "outputs": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Varias salidas que comparten variables: `[{name, expr}]` o una lista de expresiones (hasta 8)."
+    },
+    "name": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El nombre de la salida (por omisión `F`)."
+    },
+    "vars": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Las variables, en orden (por omisión, alfabético). Obligatorias con `minterms`."
+    },
+    "minterms": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La función por sus mintérminos, en lugar de `expr`."
+    },
+    "maxterms": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La función por sus maxtérminos."
+    },
+    "dontcares": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Las combinaciones indiferentes, que salen como X."
+    },
+    "steps": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Agrega una columna por cada subexpresión (hasta 10)."
+    },
+    "canonical": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Escribe las formas canónicas debajo."
+    },
+    "index": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La columna con el número de mintérmino (por omisión, sí)."
+    },
+    "notation": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Cómo se escribe la negación en los encabezados: `overline` (barra), `prime` (A') o `neg` (¬A)."
+    },
+    "multiLetterVars": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Con `true`, `AB` es una variable; por omisión, varias mayúsculas juntas son variables de una letra."
+    },
+    "blank": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco las salidas, las columnas intermedias y las formas canónicas."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blank"
+   ],
+   "ejemplos": [
+    "type: truth_table\ntitle: Función mayoría de tres entradas\nexpr: \"A·B + A·C + B·C\"\nname: M\ncanonical: true",
+    "type: truth_table\ntitle: Tabla con columnas intermedias\noutputs:\n  - { name: F, expr: \"!(A + B) · C\" }\n  - { name: G, expr: \"A XOR C\" }\nsteps: true",
+    "type: truth_table\ntitle: \"Ejercicio: completar la salida\"\nvars: [A, B, C, D]\nminterms: [1, 3, 7, 11, 15]\ndontcares: [0, 2, 5]\nblank: true\ncanonical: true"
+   ]
+  },
+  "karnaugh": {
+   "nombre": "Mapa de Karnaugh",
+   "para": "Mapas de 2 a 4 variables con los agrupamientos mínimos y la expresión simplificada.",
+   "area": "Sistemas de computación › Sistemas digitales",
+   "campos": {
+    "expr": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La función como expresión (ver [`truth_table`](truth_table.md))."
+    },
+    "vars": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Las variables (de 2 a 4); las primeras van en las filas."
+    },
+    "minterms": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La función por sus mintérminos."
+    },
+    "maxterms": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La función por sus maxtérminos."
+    },
+    "dontcares": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Las combinaciones indiferentes, que salen como X."
+    },
+    "name": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El nombre de la función (por omisión `F`)."
+    },
+    "form": {
+     "tipo": "texto",
+     "valores": [
+      "sop",
+      "pos"
+     ],
+     "defecto": "sop",
+     "descripcion": "`sop` (suma de productos) o `pos` (producto de sumas)."
+    },
+    "groups": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Dibuja los agrupamientos (por omisión, sí)."
+    },
+    "implicants": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Lista debajo cada implicante con los mintérminos que cubre."
+    },
+    "result": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Escribe la expresión simplificada (por omisión, sí)."
+    },
+    "notation": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "`overline`, `prime` o `neg`."
+    },
+    "multiLetterVars": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Con `true`, `AB` es una variable."
+    },
+    "blank": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Oculta los grupos y deja la expresión en blanco; las celdas se ven."
+    },
+    "blankGroups": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Oculta sólo los grupos."
+    },
+    "blankCells": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Oculta también los valores de las celdas."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blank",
+    "blankGroups",
+    "blankCells"
+   ],
+   "ejemplos": [
+    "type: karnaugh\ntitle: Mapa de Karnaugh de 4 variables\nvars: [A, B, C, D]\nminterms: [0, 1, 2, 5, 6, 7, 8, 9, 10, 14]\nimplicants: true",
+    "type: karnaugh\ntitle: Con condiciones indiferentes (forma POS)\nvars: [A, B, C, D]\nminterms: [1, 3, 7, 11, 15]\ndontcares: [0, 2, 5]\nform: pos",
+    "type: karnaugh\ntitle: \"Ejercicio: agrupar y simplificar\"\nexpr: \"A'B'C + A'BC + AB'C + ABC'\"\nblank: true"
+   ]
+  },
+  "logic_circuit": {
+   "nombre": "Circuito lógico",
+   "para": "El circuito con compuertas que implementa una expresión booleana.",
+   "area": "Sistemas de computación › Sistemas digitales",
+   "campos": {
+    "expr": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La expresión (ver [`truth_table`](truth_table.md))."
+    },
+    "output": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El nombre de la salida (por omisión `F`)."
+    },
+    "vars": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El orden de las variables en los rieles."
+    },
+    "rails": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Rieles verticales para las entradas (por omisión, sí); sin ellos, cada entrada se rotula en su compuerta."
+    },
+    "basicGates": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Sólo AND, OR, XOR y NOT (una NAND sale como AND y NOT)."
+    },
+    "showExpr": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Escribe la expresión debajo (por omisión, sí)."
+    },
+    "notation": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "`overline`, `prime` o `neg`."
+    },
+    "multiLetterVars": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Con `true`, `AB` es una variable."
+    }
+   },
+   "aceptados": [
+    "dontcares",
+    "maxterms",
+    "minterms",
+    "name"
+   ],
+   "variantes": {},
+   "ejercicio": [],
+   "ejemplos": [
+    "type: logic_circuit\ntitle: Circuito de la función mayoría\nexpr: \"A·B + A·C + B·C\"\noutput: M",
+    "type: logic_circuit\ntitle: Compuertas negadas y XOR\nexpr: \"!(A·B) ⊕ (C + !D)\"\noutput: Y"
+   ]
+  },
+  "pipeline": {
+   "nombre": "Pipeline",
+   "para": "El diagrama de ciclos de un pipeline de 5 etapas, con riesgos, burbujas y forwarding.",
+   "area": "Sistemas de computación › Arquitectura de computadoras",
+   "campos": {
+    "instructions": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Las instrucciones (hasta 40): `\"lw $t0, 0($s0)\"`, `\"add $t1, $t0, $t2\"`. Reconoce cargas, almacenamientos, saltos y operaciones; `$zero` no genera dependencias. También `{text, dest, src, load}` para fijar los registros."
+    },
+    "forwarding": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Con forwarding (por omisión, sí)."
+    },
+    "arrows": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Dibuja las flechas de las dependencias (por omisión, sí)."
+    },
+    "summary": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Escribe los ciclos totales, las burbujas y el CPI (por omisión, sí)."
+    },
+    "hazards": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Lista las dependencias RAW debajo (por omisión, sí)."
+    },
+    "blank": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja la grilla de ciclos vacía y los resultados en blanco."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blank"
+   ],
+   "ejemplos": [
+    "type: pipeline\ntitle: Pipeline MIPS de 5 etapas con forwarding\ninstructions:\n  - \"lw $t0, 0($s0)\"\n  - \"add $t1, $t0, $t2\"\n  - \"sub $t3, $t1, $t4\"\n  - \"sw $t3, 4($s0)\"\n  - \"and $t5, $t6, $t7\"",
+    "type: pipeline\ntitle: El mismo código sin forwarding\nforwarding: false\ninstructions:\n  - \"lw $t0, 0($s0)\"\n  - \"add $t1, $t0, $t2\"\n  - \"sub $t3, $t1, $t4\"\n  - \"sw $t3, 4($s0)\"\n  - \"and $t5, $t6, $t7\""
+   ]
+  },
+  "ieee754": {
+   "nombre": "IEEE 754",
+   "para": "La codificación de un número en punto flotante, en los dos sentidos.",
+   "area": "Sistemas de computación › Arquitectura de computadoras",
+   "campos": {
+    "value": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El número: `-6.75`, `0.1`, o `\"inf\"`, `\"-inf\"`, `\"nan\"`."
+    },
+    "bits": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los bits, en hexadecimal (`\"0x41460000\"`) o en binario con todos sus dígitos."
+    },
+    "hex": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Lo mismo que `bits`."
+    },
+    "format": {
+     "tipo": "texto",
+     "valores": [
+      "half",
+      "single",
+      "double",
+      "16",
+      "32",
+      "64"
+     ],
+     "defecto": "single",
+     "descripcion": "`half` (16 bits), `single` (32) o `double` (64)."
+    },
+    "blank": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Si se dio el valor, oculta los bits y los pasos; si se dieron los bits, oculta los pasos."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blank"
+   ],
+   "ejemplos": [
+    "type: ieee754\ntitle: \"−6,75 en precisión simple\"\nvalue: -6.75",
+    "type: ieee754\ntitle: \"0,1 no es representable exactamente\"\nvalue: 0.1\nformat: single",
+    "type: ieee754\ntitle: \"Ejercicio: decodificar\"\nbits: \"0x41460000\"\nblank: true"
+   ]
+  },
+  "cache": {
+   "nombre": "Memoria caché",
+   "para": "La simulación de una caché directa o asociativa sobre una secuencia de accesos.",
+   "area": "Sistemas de computación › Arquitectura de computadoras",
+   "campos": {
+    "addressBits": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Bits de la dirección (de 4 a 64, por omisión 16)."
+    },
+    "cacheSize": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Tamaño de la caché en bytes, potencia de 2 (`64`, `\"1KB\"`)."
+    },
+    "blockSize": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Tamaño de bloque en bytes, potencia de 2."
+    },
+    "associativity": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "`1` (correspondencia directa), 2, 4… vías o `\"full\"` (totalmente asociativa)."
+    },
+    "policy": {
+     "tipo": "texto",
+     "valores": [
+      "lru",
+      "fifo"
+     ],
+     "defecto": "lru",
+     "descripcion": "`lru` o `fifo`."
+    },
+    "accesses": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Las direcciones accedidas: `\"0x040\"`, `\"0b1010\"` o enteros (hasta 64)."
+    },
+    "missTypes": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La columna con el tipo de fallo (por omisión, sí)."
+    },
+    "finalState": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La tabla con el contenido final (por omisión, sí; hasta 64 bloques)."
+    },
+    "blank": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco tag, índice, offset, resultado y el contenido final."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blank"
+   ],
+   "ejemplos": [
+    "type: cache\ntitle: Caché de correspondencia directa\naddressBits: 12\ncacheSize: 64\nblockSize: 8\nassociativity: 1\naccesses: [\"0x000\", \"0x004\", \"0x010\", \"0x040\", \"0x000\", \"0x048\", \"0x010\", \"0x080\", \"0x044\"]",
+    "type: cache\ntitle: La misma secuencia con 2 vías (LRU)\naddressBits: 12\ncacheSize: 64\nblockSize: 8\nassociativity: 2\naccesses: [\"0x000\", \"0x004\", \"0x010\", \"0x040\", \"0x000\", \"0x048\", \"0x010\", \"0x080\", \"0x044\"]\nfinalState: false"
+   ]
+  },
+  "cpu_scheduling": {
+   "nombre": "Planificación de CPU",
+   "para": "El diagrama de Gantt y los tiempos de FCFS, SJF, SRTF, Round Robin y prioridades.",
+   "area": "Sistemas de computación › Sistemas operativos",
+   "campos": {
+    "processes": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los procesos (hasta 26): `{name, arrival, burst, priority}`. `arrival` es 0 por omisión; la prioridad más alta es el número menor."
+    },
+    "algorithm": {
+     "tipo": "texto",
+     "valores": [
+      "fcfs",
+      "sjf",
+      "srtf",
+      "rr",
+      "priority",
+      "priority_preemptive"
+     ],
+     "defecto": "fcfs",
+     "descripcion": "`fcfs`, `sjf`, `srtf`, `rr`, `priority` o `priority_preemptive`."
+    },
+    "quantum": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El quantum de Round Robin (por omisión 2)."
+    },
+    "blank": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja el Gantt vacío (con la escala de tiempo) y los tiempos en blanco."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blank"
+   ],
+   "ejemplos": [
+    "type: cpu_scheduling\ntitle: Planificación SRTF\nalgorithm: srtf\nprocesses:\n  - { name: P1, arrival: 0, burst: 8 }\n  - { name: P2, arrival: 1, burst: 4 }\n  - { name: P3, arrival: 2, burst: 9 }\n  - { name: P4, arrival: 3, burst: 5 }",
+    "type: cpu_scheduling\ntitle: Round Robin\nalgorithm: rr\nquantum: 3\nprocesses:\n  - { name: A, arrival: 0, burst: 5 }\n  - { name: B, arrival: 1, burst: 3 }\n  - { name: C, arrival: 2, burst: 6 }\n  - { name: D, arrival: 9, burst: 2 }",
+    "type: cpu_scheduling\ntitle: \"Ejercicio: prioridad no expropiativa\"\nalgorithm: priority\nblank: true\nprocesses:\n  - { name: P1, arrival: 0, burst: 10, priority: 3 }\n  - { name: P2, arrival: 0, burst: 1, priority: 1 }\n  - { name: P3, arrival: 0, burst: 2, priority: 4 }\n  - { name: P4, arrival: 0, burst: 1, priority: 5 }\n  - { name: P5, arrival: 0, burst: 5, priority: 2 }"
+   ]
+  },
+  "page_table": {
+   "nombre": "Tabla de páginas",
+   "para": "La traducción de direcciones lógicas a físicas con paginación.",
+   "area": "Sistemas de computación › Sistemas operativos",
+   "campos": {
+    "pageSize": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Tamaño de página en bytes, potencia de 2."
+    },
+    "table": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El marco de cada página; `null` es una página que no está en memoria."
+    },
+    "addresses": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Las direcciones lógicas, en decimal o en hexadecimal."
+    },
+    "base": {
+     "tipo": "texto",
+     "valores": [
+      "dec",
+      "hex"
+     ],
+     "defecto": "dec",
+     "descripcion": "`dec` o `hex`: cómo se escriben las direcciones."
+    },
+    "formula": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Escribe las fórmulas debajo (por omisión, sí)."
+    },
+    "blank": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco la traducción."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blank"
+   ],
+   "ejemplos": [
+    "type: page_table\ntitle: Traducción de direcciones con paginación\npageSize: 1024\ntable: [5, 2, null, 7, 0]\naddresses: [1500, 3100, 4095, 2100, 6000]"
+   ]
+  },
+  "page_replacement": {
+   "nombre": "Reemplazo de páginas",
+   "para": "FIFO, LRU, óptimo y reloj sobre una cadena de referencias, para compararlos.",
+   "area": "Sistemas de computación › Sistemas operativos",
+   "campos": {
+    "frames": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Cantidad de marcos (de 1 a 16, por omisión 3)."
+    },
+    "references": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La cadena de referencias (hasta 60)."
+    },
+    "algorithm": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Un algoritmo, `fifo`, `lru`, `opt` o `clock`."
+    },
+    "algorithms": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Varios algoritmos para comparar."
+    },
+    "blank": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja la grilla y los fallos en blanco."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blank"
+   ],
+   "ejemplos": [
+    "type: page_replacement\ntitle: Algoritmos de reemplazo de páginas\nframes: 3\nreferences: [7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1]\nalgorithms: [fifo, lru, opt]",
+    "type: page_replacement\ntitle: Algoritmo del reloj\nframes: 3\nreferences: [1, 2, 3, 2, 4, 1, 5, 2, 1, 2, 3, 5]\nalgorithm: clock"
+   ]
+  },
+  "subnetting": {
+   "nombre": "Subnetting",
+   "para": "Subredes IPv4 de igual tamaño o con VLSM, con su mapa de direcciones.",
+   "area": "Sistemas de computación › Redes",
+   "campos": {
+    "network": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La red, `A.B.C.D/n` (prefijo de 0 a 30)."
+    },
+    "subnets": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Las subredes con VLSM: `{name, hosts}` o sólo la cantidad de hosts (hasta 64)."
+    },
+    "count": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Cantidad de subredes iguales, en lugar de `subnets`."
+    },
+    "sort": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Con VLSM, asigna de la más grande a la más chica (por omisión, sí)."
+    },
+    "summary": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Escribe cuántas direcciones se usan (por omisión, sí)."
+    },
+    "map": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Dibuja el mapa del espacio de direcciones (por omisión, sí)."
+    },
+    "binary": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Escribe cada red en binario, con los bits de red y de host."
+    },
+    "blank": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco todo salvo el nombre y los hosts pedidos."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blank"
+   ],
+   "ejemplos": [
+    "type: subnetting\ntitle: Subnetting VLSM\nnetwork: 192.168.10.0/24\nsubnets:\n  - { name: Ventas, hosts: 50 }\n  - { name: Desarrollo, hosts: 100 }\n  - { name: Admin, hosts: 20 }\n  - { name: Enlace WAN, hosts: 2 }",
+    "type: subnetting\ntitle: \"Ejercicio: 8 subredes iguales\"\nnetwork: 10.0.0.0/16\ncount: 8\nblank: true"
+   ]
+  },
+  "transaction_schedule": {
+   "nombre": "Planificación de transacciones",
+   "para": "Conflictos, grafo de precedencia y serializabilidad por conflictos.",
+   "area": "Sistemas de computación › Bases de datos",
+   "campos": {
+    "schedule": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Las operaciones en orden: `R1(A)`, `W2(B)`, `C1` (commit), `A3` (abort); también `\"T1: R(A)\"`. Una lista o un texto separado por comas."
+    },
+    "highlight": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Resalta las operaciones en conflicto (por omisión, sí)."
+    },
+    "conflicts": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Lista los conflictos debajo (por omisión, sí)."
+    },
+    "blank": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Oculta las aristas del grafo y el veredicto."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blank"
+   ],
+   "ejemplos": [
+    "type: transaction_schedule\ntitle: Planificación no serializable\nschedule: [R1(A), R2(A), W1(A), R2(B), W2(A), W1(B), C1, C2]",
+    "type: transaction_schedule\ntitle: Planificación serializable por conflictos\nschedule: [R1(A), W1(A), R2(A), R1(B), W2(A), W1(B), R3(B), W3(B), C1, C2, C3]"
+   ]
+  },
+  "block_diagram": {
+   "nombre": "Diagrama de bloques",
+   "para": "Lazos de control con realimentación, perturbaciones y lazos en cascada.",
+   "area": "Control de procesos › Modelado",
+   "campos": {
+    "forward": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los bloques del camino directo: un texto, `{label, out, blank}` (`out` es el nombre de la señal de salida) o `{loop: {forward, feedback}}` para un lazo interno."
+    },
+    "feedback": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los bloques de la realimentación; `[]` es realimentación unitaria. Sin la clave, el lazo queda abierto."
+    },
+    "sign": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El signo de la realimentación en el sumador, `-` (por omisión) o `+`."
+    },
+    "input": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": "R(s)",
+     "descripcion": "El nombre de la entrada, como `R(s)`."
+    },
+    "output": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": "Y(s)",
+     "descripcion": "El nombre de la salida, como `Y(s)`."
+    },
+    "error": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El nombre de la señal de error."
+    },
+    "measured": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El nombre de la señal medida (la salida de la realimentación)."
+    },
+    "disturbance": {
+     "tipo": "objeto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Una perturbación: `at` (antes de qué bloque entra, desde 0), `label`, `block` (un bloque propio) y `sign`."
+    },
+    "blankSigns": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco los signos de los sumadores."
+    }
+   },
+   "aceptados": [
+    "block_diagram"
+   ],
+   "variantes": {},
+   "ejercicio": [
+    "blankSigns"
+   ],
+   "ejemplos": [
+    "type: block_diagram\ntitle: \"Lazo con perturbación <D(s) & H(s)>\"\ninput: \"R(s)\"\noutput: \"Y(s)\"\nerror: \"E(s)\"\nforward:\n  - {label: \"Gc(s)\", out: \"U(s)\"}\n  - {label: \"Gv(s)\", out: \"M(s)\"}\n  - \"Gp(s)\"\ndisturbance: {at: 2, label: \"D(s)\", block: \"Gd(s)\"}\nfeedback: [\"H(s)\"]\nmeasured: \"B(s)\"\ninkSaver: true",
+    "type: block_diagram\ntitle: Control en cascada (evaluación)\nforward:\n  - \"Gc1(s)\"\n  - loop:\n      forward: [\"Gc2(s)\", \"Gp2(s)\"]\n      feedback: [\"H2(s)\"]\n  - \"Gp1(s)\"\nfeedback: [\"H1(s)\"]\nblankSigns: true\ninkSaver: false"
+   ]
+  },
+  "time_response": {
+   "nombre": "Respuesta temporal",
+   "para": "La salida de un sistema ante escalón, rampa o impulso, con sobrepico, tiempos y constantes.",
+   "area": "Control de procesos › Respuesta temporal",
+   "campos": {
+    "system": {
+     "tipo": "objeto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El sistema (ver la nota sobre sistemas)."
+    },
+    "systems": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Varios sistemas para comparar, cada uno con `label`."
+    },
+    "closedLoop": {
+     "tipo": "objeto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Un lazo cerrado: `plant`, `controller` (por omisión 1), `feedback` (por omisión 1) y `sign` (por omisión `-`)."
+    },
+    "input": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": "step",
+     "descripcion": "`step`, `ramp` o `impulse`."
+    },
+    "amplitude": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La amplitud de la entrada (por omisión 1)."
+    },
+    "tEnd": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El tiempo final; por omisión, el que hace falta para que se establezca."
+    },
+    "disturbance": {
+     "tipo": "objeto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Una perturbación en escalón: `at` (el instante), `amplitude` y `where` (`output` o `input`)."
+    },
+    "annotations": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "`final`, `overshoot`, `peak`, `rise`, `settling`, `tau`, `delay`, `tangent`, o `all`."
+    },
+    "settlingBand": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La banda del tiempo de establecimiento, `0.02` o `0.05`."
+    },
+    "showInput": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Dibuja también la entrada."
+    },
+    "data": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Puntos medidos `[t, y]`, que se dibujan como marcas."
+    },
+    "dataLabel": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": "medición",
+     "descripcion": "El rótulo de los puntos medidos."
+    },
+    "yMin": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Mínimo del eje vertical."
+    },
+    "yMax": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Máximo del eje vertical."
+    },
+    "xLabel": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": "t (s)",
+     "descripcion": "Rótulo del eje horizontal."
+    },
+    "yLabel": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": "y(t)",
+     "descripcion": "Rótulo del eje vertical."
+    },
+    "blankAnnotations": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco los valores de las anotaciones."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blankAnnotations"
+   ],
+   "ejemplos": [
+    "type: time_response\ntitle: Segundo orden subamortiguado (ζ = 0,3)\nsystem: {gain: 1, zeta: 0.3, wn: 2}\nannotations: [final, overshoot, peak, rise, settling]",
+    "type: time_response\ntitle: Curva FOPDT con retardo (para completar)\nsystem: {gain: 2, num: [2], den: [15, 8, 1], delay: 1}\nannotations: [final, tangent]\nblankAnnotations: true\ninkSaver: false",
+    "type: time_response\ntitle: Lazo cerrado con PI y perturbación\nclosedLoop:\n  plant: {gain: 2, tau: 5, delay: 1}\n  controller: {kp: 1.2, ki: 0.25}\ndisturbance: {at: 30, amplitude: -0.5}\ntEnd: 60\nannotations: [overshoot, settling]"
+   ]
+  },
+  "bode": {
+   "nombre": "Diagrama de Bode",
+   "para": "Magnitud y fase en frecuencia, con asíntotas y márgenes de estabilidad.",
+   "area": "Control de procesos › Respuesta en frecuencia",
+   "campos": {
+    "system": {
+     "tipo": "objeto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El sistema (ver la nota de [`time_response`](../respuesta/time_response.md))."
+    },
+    "systems": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Varios sistemas para comparar, cada uno con `label`."
+    },
+    "closedLoop": {
+     "tipo": "objeto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Un lazo; se dibuja su lazo abierto."
+    },
+    "wMin": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La frecuencia mínima, en rad/s."
+    },
+    "wMax": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La frecuencia máxima, en rad/s."
+    },
+    "show": {
+     "tipo": "texto",
+     "valores": [
+      "both",
+      "magnitude",
+      "phase"
+     ],
+     "defecto": "both",
+     "descripcion": "`both`, `magnitude` o `phase`."
+    },
+    "asymptotes": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Dibuja las asíntotas de la magnitud."
+    },
+    "margins": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Marca los márgenes de ganancia y de fase."
+    },
+    "blankMargins": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja los márgenes en blanco."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blankMargins"
+   ],
+   "ejemplos": [
+    "type: bode\ntitle: Bode de L(s) = 10 / (s(s+1)(s+10))\nsystem: {k: 10, poles: [0, -1, -10]}\nasymptotes: true\nmargins: true"
+   ]
+  },
+  "nyquist": {
+   "nombre": "Diagrama de Nyquist",
+   "para": "La curva de Nyquist del lazo abierto, con el círculo unitario y las ω negativas.",
+   "area": "Control de procesos › Respuesta en frecuencia",
+   "campos": {
+    "system": {
+     "tipo": "objeto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El sistema (ver la nota de [`time_response`](../respuesta/time_response.md))."
+    },
+    "systems": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Varios sistemas para comparar."
+    },
+    "closedLoop": {
+     "tipo": "objeto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Un lazo; se dibuja su lazo abierto."
+    },
+    "wMin": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La frecuencia mínima."
+    },
+    "wMax": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La frecuencia máxima."
+    },
+    "limit": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El radio máximo que se dibuja (recorta las ramas que se van al infinito)."
+    },
+    "unitCircle": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Dibuja el círculo unitario."
+    },
+    "showNegative": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Dibuja la rama de ω negativas, punteada."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [],
+   "ejemplos": [
+    "type: nyquist\ntitle: Nyquist con círculo unitario\nsystem: {k: 5, poles: [-1, -2, -3]}\nunitCircle: true\ninkSaver: false"
+   ]
+  },
+  "pole_zero": {
+   "nombre": "Polos y ceros",
+   "para": "Los polos y ceros de un sistema en el plano s.",
+   "area": "Control de procesos › Plano s",
+   "campos": {
+    "poles": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los polos; `[re, im]` es un par complejo."
+    },
+    "zeros": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los ceros."
+    },
+    "system": {
+     "tipo": "objeto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Un sistema, del que salen polos y ceros."
+    },
+    "closedLoop": {
+     "tipo": "objeto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Un lazo; se dibujan los polos y ceros del lazo cerrado."
+    },
+    "showValues": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Escribe el valor de cada polo y cero."
+    },
+    "dampingLines": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Rectas de amortiguamiento constante: una lista de valores de ζ (de 0 a 1)."
+    },
+    "wnCircles": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Círculos de frecuencia natural constante: una lista de valores de ωn."
+    },
+    "xRange": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El rango del eje real."
+    },
+    "yRange": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El rango del eje imaginario."
+    },
+    "blank": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Dibuja sólo los ejes, para ubicarlos."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blank"
+   ],
+   "ejemplos": [
+    "type: pole_zero\ntitle: Polos y ceros con ζ y ωn\npoles: [-1, [-2, 3]]\nzeros: [-4]\ndampingLines: [0.5]\nwnCircles: [3]\nshowValues: true\ninkSaver: false"
+   ]
+  },
+  "root_locus": {
+   "nombre": "Lugar de las raíces",
+   "para": "El lugar de las raíces con asíntotas, cruce con el eje imaginario y ganancias marcadas.",
+   "area": "Control de procesos › Plano s",
+   "campos": {
+    "system": {
+     "tipo": "objeto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El lazo abierto (ver la nota de [`time_response`](../respuesta/time_response.md))."
+    },
+    "closedLoop": {
+     "tipo": "objeto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Un lazo; se usa su lazo abierto."
+    },
+    "kMax": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La ganancia máxima."
+    },
+    "asymptotes": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Dibuja las asíntotas."
+    },
+    "showCrossing": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Marca el cruce con el eje imaginario, con Kcrít y ωcrít."
+    },
+    "marks": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Ganancias cuyos polos se marcan con ■."
+    },
+    "dampingLines": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Rectas de amortiguamiento constante: una lista de valores de ζ (de 0 a 1)."
+    },
+    "xRange": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El rango del eje real."
+    },
+    "yRange": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El rango del eje imaginario."
+    },
+    "blankMarks": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco los valores de las marcas."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blankMarks"
+   ],
+   "ejemplos": [
+    "type: root_locus\ntitle: Lugar de las raíces K / (s(s+1)(s+2))\nsystem: {k: 1, poles: [0, -1, -2]}\nmarks: [1]"
+   ]
+  },
+  "instrumentation": {
+   "nombre": "P&ID",
+   "para": "Diagramas de instrumentación con símbolos ISA-5.1.",
+   "area": "Control de procesos › Instrumentación y automatización",
+   "campos": {
+    "equipment": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los equipos: `id`, `kind` (`tank`, `vessel`, `reactor`, `column`, `pump`, `control_valve`, `valve`, `heat_exchanger`), `at: [x, y]` en la grilla, `label`, `size`, `level`, `orientation: v`."
+    },
+    "instruments": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los instrumentos: `id`, `tag` (`\"LIC 101\"`), `at`, `location` (`field`, `panel`, `panel_back`, `dcs`, `plc`) y `blank`."
+    },
+    "lines": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Las líneas: `from` y `to` (un id o `[x, y]`), `kind` (`process`, `electric`, `pneumatic`, `data`, `capillary`), `via`, `route` (`hv` o `vh`), `label`, `arrow`."
+    },
+    "grid": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Píxeles por unidad de la grilla."
+    },
+    "legend": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Agrega la leyenda de los tipos de línea."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [],
+   "ejemplos": [
+    "type: instrumentation\ntitle: Control de nivel TK-101 (ISA-5.1)\nequipment:\n  - {id: TK, kind: tank, at: [3, 3], label: \"TK-101\", level: 0.6}\n  - {id: P1, kind: pump, at: [6, 5.2], label: \"P-101\"}\n  - {id: LV, kind: control_valve, at: [8.5, 4.8], label: \"LV-101\"}\ninstruments:\n  - {id: LT, tag: \"LT 101\", at: [5, 2]}\n  - {id: LIC, tag: \"LIC 101\", at: [7, 1], location: dcs}\nlines:\n  - {from: [0.5, 1.4], to: TK, label: \"entrada\", via: [[3, 1.4]]}\n  - {from: TK, to: P1, via: [[3, 5.2]]}\n  - {from: P1, to: LV, via: [[7, 4.8]]}\n  - {from: LV, to: [11, 4.8], label: \"salida\"}\n  - {from: TK, to: LT, kind: capillary, via: [[4, 2]]}\n  - {from: LT, to: LIC, kind: electric, via: [[5, 1]]}\n  - {from: LIC, to: LV, kind: electric, via: [[8.5, 1]]}\ninkSaver: false",
+    "type: instrumentation\ntitle: Instrumento en blanco\nequipment:\n  - {id: TK, kind: tank, at: [2, 2], label: \"TK-1\"}\ninstruments:\n  - {id: LT, tag: \"LT 1\", at: [5, 1], blank: true}\nlines:\n  - {from: TK, to: LT, kind: capillary}"
+   ]
+  },
+  "ladder": {
+   "nombre": "Diagrama escalera",
+   "para": "Programas de PLC en lenguaje escalera, con contactos, bobinas, temporizadores y contadores.",
+   "area": "Control de procesos › Instrumentación y automatización",
+   "campos": {
+    "rungs": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los escalones, cada uno con `logic` y `comment`. En `logic`: contactos `no` (o `na`), `nc`, `p`, `n`; salidas `coil`, `ncoil`, `set`, `reset`; temporizadores `ton`, `tof`, `tp` y contadores `ctu`, `ctd` con `preset`; `or` (ramas en paralelo, cada una una lista). Cada elemento con `label` y `blank`."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [],
+   "ejemplos": [
+    "type: ladder\ntitle: Arranque y parada con enclavamiento\nrungs:\n  - comment: \"Motor con enclavamiento\"\n    logic:\n      - or:\n          - [{\"no\": \"I0.0\", label: \"Marcha\"}]\n          - [{\"no\": \"Q0.0\"}]\n      - {nc: \"I0.1\", label: \"Parada\"}\n      - {nc: \"I0.2\", label: \"Térmico\"}\n      - {coil: \"Q0.0\", label: \"Motor\"}\n  - comment: \"Temporizador de llenado\"\n    logic:\n      - {\"no\": \"Q0.0\"}\n      - {ton: \"T1\", preset: \"10 s\"}\n  - logic:\n      - {\"no\": \"T1\"}\n      - {set: \"Q0.1\", label: \"Alarma\"}\ninkSaver: true"
+   ]
+  },
+  "grafcet": {
+   "nombre": "GRAFCET",
+   "para": "Etapas, transiciones y divergencias en O y en Y.",
+   "area": "Control de procesos › Instrumentación y automatización",
+   "campos": {
+    "steps": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En orden: `step` (número, `initial`, `actions`, `blank`), `transition` (la receptividad, `blank`), `or` y `and` (divergencias: listas de secuencias)."
+    },
+    "loop": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Vuelve a la etapa inicial al final (por omisión, sí)."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [],
+   "ejemplos": [
+    "type: grafcet\ntitle: Llenado y mezcla en paralelo\nsteps:\n  - {step: 0, initial: true}\n  - {transition: \"Marcha · nivel bajo\"}\n  - {step: 1, actions: [\"Abrir V1\"]}\n  - {transition: \"nivel alto\"}\n  - and:\n      - [{step: 2, actions: [\"Agitador\"]}, {transition: \"t/X2/30 s\"}, {step: 4}]\n      - [{step: 3, actions: [\"Calentar\"]}, {transition: \"T > 60 °C\"}, {step: 5}]\n  - {transition: \"1\"}\n  - {step: 6, actions: [\"Abrir V2\"]}\n  - {transition: \"nivel bajo\"}",
+    "type: grafcet\ntitle: Divergencia OR con campos en blanco\nsteps:\n  - {step: 0, initial: true}\n  - {transition: \"Auto & <Listo>\", blank: true}\n  - or:\n      - [{step: 1, actions: [\"Ciclo A\"], blank: true}]\n      - [{step: 2, actions: [\"Ciclo B\"]}]\n  - {transition: \"Fin\"}\ninkSaver: false"
+   ]
+  },
+  "molecule": {
+   "nombre": "Molécula",
+   "para": "Fórmulas de Lewis y esqueletales, con cargas, pares libres, estereoquímica y flechas de mecanismo.",
+   "area": "Química › Estructura y enlace",
+   "campos": {
+    "atoms": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los átomos: `id`, `el` (el símbolo, también grupos como `OH`), `at: [x, y]` en largos de enlace, o `from` y `angle` (con `length` y `bond`, el orden del enlace con ese átomo); `charge`, `lonePairs`, `radical`, `note` (como δ+), `show`, `blank`."
+    },
+    "rings": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Anillos: `size`, `center`, `start`, `ids` (los ids de sus vértices), `aromatic` (con círculo) o `kekule` (dobles alternados)."
+    },
+    "bonds": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Enlaces extra: `[a, b, orden]` o `{from, to, order, stereo, dashed, blank}`. El orden es 1, 2, 3, 1.5 o 0.5; `stereo` es `wedge` (cuña) o `hash` (rayas)."
+    },
+    "arrows": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Flechas curvas de mecanismo: `from` y `to` (un átomo o un enlace `[a, b]`), `bend` (la curvatura) y `half` (un solo electrón)."
+    },
+    "skeletal": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Fórmula esqueletal."
+    },
+    "bondLength": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El largo de un enlace, en píxeles."
+    },
+    "caption": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Un rótulo debajo de la molécula."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [],
+   "ejemplos": [
+    "type: molecule\ntitle: Ion nitrato (Lewis resonante)\natoms:\n  - {id: n, el: N, at: [0, 0], charge: 1}\n  - {id: o1, el: O, from: n, angle: 90, bond: 2, lonePairs: 2}\n  - {id: o2, el: O, from: n, angle: 210, lonePairs: 3, charge: -1}\n  - {id: o3, el: O, from: n, angle: 330, lonePairs: 3, charge: -1}",
+    "type: molecule\ntitle: Naftaleno (anillos fusionados)\nskeletal: true\nrings:\n  - {size: 6, center: [0, 0], start: 30, kekule: true}\n  - {size: 6, center: [1.732, 0], start: 30}\nbonds:\n  - [r1_1, r1_2, 2]\n  - [r1_5, r1_0, 2]\ninkSaver: false",
+    "type: molecule\ntitle: \"Mecanismo S_N\\\\2 y carbono quiral\"\natoms:\n  - {id: oh, el: HO, at: [-2.2, 0], charge: -1, lonePairs: 2}\n  - {id: c, el: C, at: [0, 0]}\n  - {id: br, el: Br, from: c, angle: 0, lonePairs: 3}\n  - {id: h1, el: H, from: c, angle: 90, bond: {stereo: hash}}\n  - {id: cl, el: Cl, from: c, angle: 225, bond: {stereo: wedge}}\n  - {id: h3, el: H, from: c, angle: 135, length: 0.8}\narrows:\n  - {from: oh, to: c, bend: 1}\n  - {from: [c, br], to: br, bend: -1}"
+   ]
+  },
+  "vsepr": {
+   "nombre": "Geometría molecular (TRePEV)",
+   "para": "La geometría de una molécula por TRePEV, con ángulo e hibridación.",
+   "area": "Química › Estructura y enlace",
+   "campos": {
+    "central": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El átomo central."
+    },
+    "ligands": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los ligandos."
+    },
+    "lonePairs": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los pares libres sobre el átomo central."
+    },
+    "geometry": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La geometría, si no sale de los pares: `linear`, `trigonal_planar`, `bent_trigonal`, `tetrahedral`, `trigonal_pyramidal`, `bent`, `trigonal_bipyramidal`, `seesaw`, `t_shaped`, `linear_tbp`, `octahedral`, `square_pyramidal`, `square_planar`."
+    },
+    "showAngle": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Escribe el ángulo."
+    },
+    "showHybridization": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Escribe la hibridación."
+    },
+    "blank": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "`true` o una lista de `axe`, `name`, `angle` y `hybridization` para dejar en blanco."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blank"
+   ],
+   "ejemplos": [
+    "type: vsepr\ntitle: Geometría de SF4 (balancín)\ncentral: S\nligands: [F, F, F, F]\nlonePairs: 1",
+    "type: vsepr\ntitle: XeF4 (para completar)\ncentral: Xe\nligands: [F, F, F, F]\nlonePairs: 2\nblank: [name, angle, hybridization]\ninkSaver: false"
+   ]
+  },
+  "orbitals": {
+   "nombre": "Orbitales",
+   "para": "Diagramas de casilleros atómicos y de orbitales moleculares.",
+   "area": "Química › Estructura y enlace",
+   "campos": {
+    "kind": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "`atomic` (por omisión) o `molecular`."
+    },
+    "element": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `atomic`, el elemento."
+    },
+    "charge": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La carga del ion."
+    },
+    "core": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `atomic`, abrevia con el gas noble (`[Ar]`) y dibuja sólo la capa de valencia."
+    },
+    "showConfig": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Escribe la configuración."
+    },
+    "showUnpaired": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Escribe los electrones desapareados."
+    },
+    "atoms": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `molecular`, los dos átomos (`[O, O]`, `[C, O]`; de H a Ne)."
+    },
+    "maxWidth": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El ancho máximo, en píxeles."
+    },
+    "blank": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja los casilleros vacíos."
+    },
+    "blankConfig": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja la configuración en blanco."
+    },
+    "blankUnpaired": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco los desapareados."
+    },
+    "blankElectrons": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `molecular`, deja los orbitales vacíos."
+    },
+    "blankBondOrder": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `molecular`, deja el orden de enlace en blanco."
+    },
+    "blankMagnetism": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `molecular`, deja el magnetismo en blanco."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blank",
+    "blankConfig",
+    "blankUnpaired",
+    "blankElectrons",
+    "blankBondOrder",
+    "blankMagnetism"
+   ],
+   "ejemplos": [
+    "type: orbitals\ntitle: Configuración electrónica de Fe\nelement: Fe\ncore: true\nshowUnpaired: true",
+    "type: orbitals\ntitle: Ion Cu²⁺ (para completar)\nelement: Cu\ncharge: 2\ncore: true\nblank: true",
+    "type: orbitals\nkind: molecular\ntitle: Diagrama OM de O2\natoms: [O, O]\ninkSaver: false",
+    "type: orbitals\nkind: molecular\ntitle: Diagrama OM de N2\natoms: [N, N]\nblankBondOrder: true"
+   ]
+  },
+  "unit_cell": {
+   "nombre": "Celda unidad",
+   "para": "Celdas cúbicas y redes iónicas, con átomos por celda, coordinación, empaquetamiento y densidad.",
+   "area": "Química › Estructura y enlace",
+   "campos": {
+    "lattice": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "`sc`, `bcc`, `fcc`, `nacl` o `cscl`."
+    },
+    "element": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El elemento (en las redes de un solo tipo de átomo)."
+    },
+    "species": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Las especies de una red iónica."
+    },
+    "a": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El lado de la celda, en pm."
+    },
+    "molarMass": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La masa molar, en g/mol (para la densidad)."
+    },
+    "blank": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "`true` o una lista de `z`, `coordination`, `packing` y `density`."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blank"
+   ],
+   "ejemplos": [
+    "type: unit_cell\ntitle: Celda unitaria Cu (fcc)\nlattice: fcc\nelement: Cu\na: 361.5\nmolarMass: 63.55",
+    "type: unit_cell\ntitle: Celda bcc Fe (para completar)\nlattice: bcc\nelement: Fe\nblank: true\ninkSaver: false"
+   ]
+  },
+  "reaction": {
+   "nombre": "Reacción",
+   "para": "Ecuaciones químicas, equilibrios, resonancia, mecanismos y productos para completar.",
+   "area": "Química › Reacciones y cinética",
+   "campos": {
+    "steps": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los elementos en orden: fórmulas, `\"+\"`, moléculas (bloques de `molecule`), `{arrow: \"->\", \"<=>\", \"<->\" (resonancia) o \"=>\" (retrosíntesis), above, below, blank}` y `{blank: true, width}` (un producto para completar)."
+    },
+    "maxWidth": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El ancho máximo; más largo, la ecuación sigue en otro renglón."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [],
+   "ejemplos": [
+    "type: reaction\ntitle: Esterificación de Fischer\nsteps:\n  - \"CH3COOH\"\n  - \"+\"\n  - \"CH3CH2OH\"\n  - {arrow: \"<=>\", above: \"H2SO4\", below: \"Δ\"}\n  - \"CH3COOCH2CH3\"\n  - \"+\"\n  - \"H2O\"",
+    "type: reaction\ntitle: Resonancia carboxilato y completar\nsteps:\n  - atoms:\n      - {id: c, el: C, at: [0, 0]}\n      - {id: r, el: R, from: c, angle: 180}\n      - {id: o1, el: O, from: c, angle: 60, bond: 2, lonePairs: 2}\n      - {id: o2, el: O, from: c, angle: 300, lonePairs: 3, charge: -1}\n  - {arrow: \"<->\"}\n  - {blank: true, width: 60}\ninkSaver: false"
+   ]
+  },
+  "energy_profile": {
+   "nombre": "Perfil de energía",
+   "para": "El perfil de energía de una reacción, con energías de activación y ΔH, catalizada o no.",
+   "area": "Química › Reacciones y cinética",
+   "campos": {
+    "states": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los estados en orden: `label`, `energy` y `ts: true` para un estado de transición."
+    },
+    "catalyzed": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Otro camino, punteado (la misma forma que `states`)."
+    },
+    "annotations": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "`Ea` (de cada etapa) y `dH`."
+    },
+    "unit": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La unidad de energía (por omisión kJ/mol)."
+    },
+    "showEnergies": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Escribe la energía de cada estado."
+    },
+    "showRateDetermining": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Marca la etapa determinante."
+    },
+    "xLabel": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Rótulo del eje horizontal."
+    },
+    "yLabel": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Rótulo del eje vertical."
+    },
+    "blankAnnotations": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco las anotaciones."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blankAnnotations"
+   ],
+   "ejemplos": [
+    "type: energy_profile\ntitle: Reacción exotérmica catalizada\nstates:\n  - {label: \"A + B\", energy: 0}\n  - {label: \"ET‡\", energy: 85, ts: true}\n  - {label: \"C + D\", energy: -40}\ncatalyzed:\n  - {energy: 0}\n  - {energy: 45, ts: true}\n  - {energy: -40}",
+    "type: energy_profile\ntitle: Dos etapas con etapa determinante\nstates:\n  - {label: Reactivos, energy: 0}\n  - {label: \"ET1\", energy: 60, ts: true}\n  - {label: Intermediario, energy: 25}\n  - {label: \"ET2\", energy: 90, ts: true}\n  - {label: Productos, energy: 15}\nshowRateDetermining: true\nblankAnnotations: true\ninkSaver: false"
+   ]
+  },
+  "kinetics": {
+   "nombre": "Cinética",
+   "para": "Concentración en el tiempo, linealizaciones, Arrhenius y reacciones consecutivas o reversibles.",
+   "area": "Química › Reacciones y cinética",
+   "campos": {
+    "order": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El orden, 0, 1 o 2."
+    },
+    "k": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La constante de velocidad."
+    },
+    "A0": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La concentración inicial."
+    },
+    "curves": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Varias curvas para comparar, cada una con su `order`, `k`, `A0` y `label`."
+    },
+    "plot": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "`linear` (la recta de cada orden) o `arrhenius`."
+    },
+    "Ea": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En Arrhenius, la energía de activación en kJ/mol."
+    },
+    "A": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En Arrhenius, el factor preexponencial."
+    },
+    "T": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En Arrhenius, las temperaturas `[T1, T2]`."
+    },
+    "model": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "`consecutive` (A → B → C) o `reversible`."
+    },
+    "k1": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En el consecutivo, la constante de A → B."
+    },
+    "k2": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En el consecutivo, la constante de B → C."
+    },
+    "kf": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En el reversible, la constante directa."
+    },
+    "kb": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En el reversible, la constante inversa."
+    },
+    "species": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los nombres de las especies."
+    },
+    "showProduct": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Dibuja también el producto."
+    },
+    "tEnd": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El tiempo final."
+    },
+    "annotations": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "`halfLife` marca la vida media."
+    },
+    "xLabel": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Rótulo del eje horizontal."
+    },
+    "yLabel": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Rótulo del eje vertical."
+    },
+    "blankAnnotations": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco las anotaciones."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blankAnnotations"
+   ],
+   "ejemplos": [
+    "type: kinetics\ntitle: Órdenes 0, 1 y 2\ncurves:\n  - {order: 0, k: 0.05, A0: 1}\n  - {order: 1, k: 0.1, A0: 1}\n  - {order: 2, k: 0.2, A0: 1}\ntEnd: 30",
+    "type: kinetics\ntitle: Cinética consecutiva A → B → C\nmodel: consecutive\nk1: 0.5\nk2: 0.2\ninkSaver: false",
+    "type: kinetics\ntitle: Gráfico de Arrhenius\nplot: arrhenius\nEa: 75\nA: 1.0e+12\nT: [290, 360]"
+   ]
+  },
+  "phase_diagram": {
+   "nombre": "Diagrama de fases",
+   "para": "Diagramas de fases de una sustancia y diagramas eutécticos de dos componentes.",
+   "area": "Química › Termodinámica",
+   "campos": {
+    "kind": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "`substance` (por omisión) o `eutectic`."
+    },
+    "substance": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Una sustancia conocida, `water` o `co2`."
+    },
+    "triple": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El punto triple, `[T en K, P en atm]`."
+    },
+    "critical": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El punto crítico."
+    },
+    "meltingSlope": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La pendiente de la curva de fusión (negativa en el agua)."
+    },
+    "normalMelting": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La temperatura normal de fusión."
+    },
+    "normalBoiling": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La temperatura normal de ebullición."
+    },
+    "normalSublimation": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La temperatura normal de sublimación."
+    },
+    "scale": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "`schematic` (por omisión) o `log` (presión en escala logarítmica)."
+    },
+    "atm": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Dibuja la recta de 1 atm."
+    },
+    "points": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Puntos marcados: `T`, `P` y `label`."
+    },
+    "supercritical": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Marca la región supercrítica."
+    },
+    "blankRegions": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco los nombres de las regiones."
+    },
+    "blankPoints": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco los puntos."
+    },
+    "components": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `eutectic`, los dos componentes."
+    },
+    "meltingA": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `eutectic`, la fusión del componente A."
+    },
+    "meltingB": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `eutectic`, la fusión del componente B."
+    },
+    "eutectic": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `eutectic`, el punto eutéctico `[x %, T]`."
+    },
+    "cooling": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `eutectic`, una composición para dibujar su enfriamiento."
+    },
+    "blankCooling": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `eutectic`, deja en blanco el enfriamiento."
+    },
+    "yLabel": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Rótulo del eje vertical."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blankRegions",
+    "blankPoints",
+    "blankCooling"
+   ],
+   "ejemplos": [
+    "type: phase_diagram\ntitle: CO2 en escala logarítmica\nsubstance: co2\nscale: log\nblankRegions: true\nblankPoints: true",
+    "type: phase_diagram\nkind: eutectic\ntitle: Diagrama eutéctico Pb–Sn\ncomponents: [Pb, Sn]\nmeltingA: 327\nmeltingB: 232\neutectic: [61.9, 183]\ncooling: 30\ninkSaver: false"
+   ]
+  },
+  "heating_curve": {
+   "nombre": "Curva de calentamiento",
+   "para": "La temperatura en función del calor entregado, con los cambios de fase.",
+   "area": "Química › Termodinámica",
+   "campos": {
+    "substance": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Una sustancia conocida, `water`."
+    },
+    "cpSolid": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El calor específico del sólido, en J/g·K."
+    },
+    "cpLiquid": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El calor específico del líquido."
+    },
+    "cpGas": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El calor específico del gas."
+    },
+    "melting": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La temperatura de fusión, en °C."
+    },
+    "boiling": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La temperatura de ebullición."
+    },
+    "hFusion": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El calor de fusión, en J/g."
+    },
+    "hVaporization": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El calor de vaporización."
+    },
+    "mass": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La masa, en g."
+    },
+    "from": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La temperatura inicial."
+    },
+    "to": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La temperatura final."
+    },
+    "showHeat": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Escribe el calor de cada tramo."
+    },
+    "showTotal": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Escribe el calor total."
+    },
+    "blankHeat": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco los calores."
+    },
+    "blankPhases": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco los nombres de las fases."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blankHeat",
+    "blankPhases"
+   ],
+   "ejemplos": [
+    "type: heating_curve\ntitle: 100 g de hielo de −20 °C a 120 °C\nsubstance: water\nmass: 100\nfrom: -20\nto: 120",
+    "type: heating_curve\ntitle: Curva de calentamiento (evaluación)\nsubstance: water\nmass: 50\nfrom: -10\nto: 110\nblankHeat: true\nblankPhases: true\ninkSaver: false"
+   ]
+  },
+  "titration": {
+   "nombre": "Titulación",
+   "para": "Curvas de titulación de ácidos y bases, fuertes, débiles y polipróticos, con indicador.",
+   "area": "Química › Equilibrio y análisis",
+   "campos": {
+    "analyte": {
+     "tipo": "objeto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El analito: `kind` (`strong_acid`, `strong_base`, `weak_acid`, `weak_base`), `conc`, `volume`, `pKa` (uno o una lista) o `pKb`, y `charge` de la forma agregada (`-2` para el carbonato)."
+    },
+    "titrant": {
+     "tipo": "objeto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El titulante: `conc` y `name`."
+    },
+    "vMax": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El volumen máximo de titulante."
+    },
+    "annotations": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "`equivalence`, `half`, `initial`."
+    },
+    "indicator": {
+     "tipo": "objeto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El indicador: `name` y `range` (`[8.2, 10]`)."
+    },
+    "data": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Puntos medidos `[V, pH]`."
+    },
+    "blankAnnotations": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco las anotaciones."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blankAnnotations"
+   ],
+   "ejemplos": [
+    "type: titration\ntitle: CH3COOH 0,1 M con NaOH 0,1 M\nanalyte: {kind: weak_acid, pKa: 4.76, conc: 0.1, volume: 25}\ntitrant: {conc: 0.1, name: NaOH}\nindicator: {name: fenolftaleína, range: [8.2, 10]}\nannotations: [equivalence, half, initial]",
+    "type: titration\ntitle: Ácido poliprótico H3PO4 con NaOH\nanalyte: {kind: weak_acid, pKa: [2.15, 7.2, 12.35], conc: 0.1, volume: 20}\ntitrant: {conc: 0.1}\ninkSaver: false",
+    "type: titration\ntitle: Base débil NH3 con HCl\nanalyte: {kind: weak_base, pKb: 4.75, conc: 0.1, volume: 25}\ntitrant: {conc: 0.1, name: HCl}\nblankAnnotations: true"
+   ]
+  },
+  "speciation": {
+   "nombre": "Especiación",
+   "para": "Las fracciones α de cada especie de un ácido en función del pH.",
+   "area": "Química › Equilibrio y análisis",
+   "campos": {
+    "pKa": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los pKa."
+    },
+    "species": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los nombres de las especies (por omisión H₃A, H₂A⁻…)."
+    },
+    "blankPKa": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja los pKa en blanco."
+    },
+    "blankSpecies": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco los nombres de las especies."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blankPKa",
+    "blankSpecies"
+   ],
+   "ejemplos": [
+    "type: speciation\ntitle: Especiación del ácido fosfórico\npKa: [2.15, 7.2, 12.35]\nspecies: [H3PO4, H2PO4^-, HPO4^2-, PO4^3-]",
+    "type: speciation\ntitle: Sistema carbonato (pKa en blanco)\npKa: [6.35, 10.33]\nspecies: [H2CO3, HCO3^-, CO3^2-]\nblankPKa: true\ninkSaver: false"
+   ]
+  },
+  "spectrum": {
+   "nombre": "Espectro",
+   "para": "Espectros IR, ¹H-RMN, ¹³C-RMN, UV-visible y de masas.",
+   "area": "Química › Equilibrio y análisis",
+   "campos": {
+    "kind": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "`ir`, `nmr`, `c13`, `uv` o `ms`."
+    },
+    "peaks": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `ir`, `at` (cm⁻¹), `depth`, `width`, `broad`, `label`; en `ms`, `mz`, `intensity`, `label`."
+    },
+    "signals": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `nmr`, `shift`, `integration`, `multiplicity` (s, d, t, q…) o `neighbors`, `J`, `label`; en `c13`, `shift` y `label`."
+    },
+    "bands": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `uv`, `at` (nm), `absorbance`, `width`."
+    },
+    "MHz": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En RMN, la frecuencia del equipo (por omisión 400)."
+    },
+    "lineSpacing": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En RMN, la separación entre líneas de un multiplete (por omisión 5)."
+    },
+    "showIntegration": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En RMN, escribe la integración (por omisión, sí)."
+    },
+    "tms": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En RMN, la señal del TMS en 0."
+    },
+    "range": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El rango del eje horizontal."
+    },
+    "blankLabels": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja los rótulos en blanco."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blankLabels"
+   ],
+   "ejemplos": [
+    "type: spectrum\nkind: ir\ntitle: Espectro IR de ácido carboxílico\npeaks:\n  - {at: 3000, depth: 0.75, broad: true, width: 500, label: \"O–H\"}\n  - {at: 1710, depth: 0.85, label: \"C=O\"}\n  - {at: 1280, depth: 0.55, label: \"C–O\"}",
+    "type: spectrum\nkind: nmr\ntitle: ¹H-RMN del etanol\ntms: true\nsignals:\n  - {shift: 1.22, integration: 3, neighbors: 2, J: 7, label: \"a\"}\n  - {shift: 3.69, integration: 2, neighbors: 3, J: 7, label: \"b\"}\n  - {shift: 2.6, integration: 1, multiplicity: s, label: \"c\"}\ninkSaver: false",
+    "type: spectrum\nkind: ms\ntitle: Espectro de masas del etanol\npeaks:\n  - {mz: 46, intensity: 20, label: \"M⁺\"}\n  - {mz: 45, intensity: 45}\n  - {mz: 31, intensity: 100, label: \"pico base\"}\n  - {mz: 29, intensity: 25}"
+   ]
+  },
+  "galvanic_cell": {
+   "nombre": "Pila",
+   "para": "Pilas galvánicas con semirreacciones, flujo de electrones, notación, fem y ΔG.",
+   "area": "Química › Electroquímica",
+   "campos": {
+    "halfCells": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Las dos semiceldas: `{couple: \"Zn^2+/Zn\", E0, n, conc, electrode, solution, reaction}`."
+    },
+    "anode": {
+     "tipo": "objeto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La semicelda del ánodo, en lugar de `halfCells`."
+    },
+    "cathode": {
+     "tipo": "objeto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La semicelda del cátodo."
+    },
+    "saltBridge": {
+     "tipo": "objeto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El puente salino: `name` (por omisión KNO₃), `cation` y `anion`."
+    },
+    "showIons": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Dibuja el movimiento de los iones del puente."
+    },
+    "showNotation": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Escribe la notación de la pila."
+    },
+    "showDeltaG": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Escribe ΔG."
+    },
+    "blankPolarity": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco el signo de los electrodos."
+    },
+    "blankReactions": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco las semirreacciones."
+    },
+    "blankPotential": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja la fem en blanco."
+    },
+    "blankFlow": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco el sentido de los electrones."
+    },
+    "blankNotation": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja la notación en blanco."
+    }
+   },
+   "aceptados": [
+    "anion",
+    "cation",
+    "name"
+   ],
+   "variantes": {},
+   "ejercicio": [
+    "blankPolarity",
+    "blankReactions",
+    "blankPotential",
+    "blankFlow",
+    "blankNotation"
+   ],
+   "ejemplos": [
+    "type: galvanic_cell\ntitle: Pila de Daniell (Nernst + ΔG°)\nhalfCells:\n  - {couple: \"Cu^2+/Cu\", E0: 0.34, n: 2, conc: 1}\n  - {couple: \"Zn^2+/Zn\", E0: -0.76, n: 2, conc: 0.01}\nshowDeltaG: true",
+    "type: galvanic_cell\ntitle: Celda galvánica (para completar)\nhalfCells:\n  - {couple: \"Ag^+/Ag\", E0: 0.80, n: 1}\n  - {couple: \"Cu^2+/Cu\", E0: 0.34, n: 2}\nblankPolarity: true\nblankPotential: true\nblankReactions: true\nblankFlow: true\ninkSaver: false"
+   ]
+  },
+  "latimer": {
+   "nombre": "Diagrama de Latimer",
+   "para": "Potenciales entre estados de oxidación y potenciales entre especies no vecinas.",
+   "area": "Química › Electroquímica",
+   "campos": {
+    "species": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Las especies, de la más oxidada a la más reducida."
+    },
+    "oxidation": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El estado de oxidación de cada especie."
+    },
+    "potentials": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El E° entre cada par de vecinas."
+    },
+    "compute": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Pares de índices `[i, j]` cuyo potencial se calcula."
+    },
+    "showDisproportionation": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Marca las especies que se desproporcionan."
+    },
+    "blankPotentials": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Índices de los potenciales que quedan en blanco."
+    },
+    "blankComputed": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco los potenciales calculados."
+    },
+    "blankDisproportionation": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco la desproporción."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blankPotentials",
+    "blankComputed",
+    "blankDisproportionation"
+   ],
+   "ejemplos": [
+    "type: latimer\ntitle: Diagrama Latimer del Mn (medio ácido)\nspecies: [MnO4^-, MnO4^2-, MnO2, Mn^3+, Mn^2+, Mn]\noxidation: [7, 6, 4, 3, 2, 0]\npotentials: [0.56, 2.26, 0.95, 1.51, -1.18]\ncompute: [[0, 2], [0, 4]]\nshowDisproportionation: true",
+    "type: latimer\ntitle: Latimer Cu (en blanco)\nspecies: [Cu^2+, Cu^+, Cu]\noxidation: [2, 1, 0]\npotentials: [0.16, 0.52]\ncompute: [[0, 2]]\nblankComputed: true\nshowDisproportionation: true\nblankDisproportionation: true\ninkSaver: false"
+   ]
+  },
+  "frost": {
+   "nombre": "Diagrama de Frost",
+   "para": "N·E° en función del estado de oxidación, con las especies que se desproporcionan.",
+   "area": "Química › Electroquímica",
+   "campos": {
+    "species": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Las especies, de la más oxidada a la más reducida."
+    },
+    "oxidation": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El estado de oxidación de cada especie."
+    },
+    "potentials": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El E° entre cada par de vecinas."
+    },
+    "showDisproportionation": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Marca las especies que se desproporcionan."
+    },
+    "blankLabels": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco los rótulos."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blankLabels"
+   ],
+   "ejemplos": [
+    "type: frost\ntitle: Diagrama de Frost del Mn\nspecies: [MnO4^-, MnO4^2-, MnO2, Mn^3+, Mn^2+, Mn]\noxidation: [7, 6, 4, 3, 2, 0]\npotentials: [0.56, 2.26, 0.95, 1.51, -1.18]\nshowDisproportionation: true\ninkSaver: false"
+   ]
+  },
+  "newman": {
+   "nombre": "Proyección de Newman",
+   "para": "Conformaciones alrededor de un enlace C–C, con el diedro y su nombre.",
+   "area": "Química › Química orgánica",
+   "campos": {
+    "front": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los tres sustituyentes del carbono de adelante."
+    },
+    "back": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los tres del de atrás."
+    },
+    "dihedral": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El diedro entre el primero de adelante y el primero de atrás: 180 anti, 60 gauche, 0 eclipsada."
+    },
+    "start": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El ángulo del primer sustituyente de adelante."
+    },
+    "axis": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El rótulo del enlace (`C2–C3`)."
+    },
+    "blank": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja los sustituyentes en blanco."
+    },
+    "blankName": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco el nombre de la conformación."
+    },
+    "blankDihedral": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja el diedro en blanco."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blank",
+    "blankName",
+    "blankDihedral"
+   ],
+   "ejemplos": [
+    "type: newman\ntitle: Butano conformación anti (C2–C3)\naxis: C2–C3\nfront: [CH3, H, H]\nback: [CH3, H, H]\ndihedral: 180",
+    "type: newman\ntitle: Conformación gauche (en blanco)\nfront: [CH3, H, H]\nback: [CH3, H, H]\ndihedral: 60\nblankName: true\ninkSaver: false"
+   ]
+  },
+  "chair": {
+   "nombre": "Silla del ciclohexano",
+   "para": "Conformaciones de silla con sustituyentes axiales y ecuatoriales, cis/trans y estabilidad.",
+   "area": "Química › Química orgánica",
+   "campos": {
+    "substituents": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los sustituyentes: `position` (1 a 6), `group`, `axial` y `blank`."
+    },
+    "flip": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Dibuja también la silla invertida (los axiales pasan a ecuatoriales)."
+    },
+    "showRelation": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Escribe si es cis o trans (por omisión, sí)."
+    },
+    "showStability": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Escribe cuál silla es más estable."
+    },
+    "blank": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja los sustituyentes en blanco."
+    },
+    "blankRelation": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco la relación cis/trans."
+    },
+    "blankStability": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco la estabilidad."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blank",
+    "blankRelation",
+    "blankStability"
+   ],
+   "ejemplos": [
+    "type: chair\ntitle: Metilciclohexano con flip\nsubstituents:\n  - {position: 1, group: CH3, axial: true}\nflip: true",
+    "type: chair\ntitle: Ciclohexano disustituido (blanco)\nsubstituents:\n  - {position: 1, group: tBu, axial: false}\n  - {position: 4, group: CH3, axial: false}\nflip: true\nblank: true\ninkSaver: false"
+   ]
+  },
+  "fischer": {
+   "nombre": "Proyección de Fischer",
+   "para": "Proyecciones de Fischer con R/S por las reglas CIP y la serie D/L.",
+   "area": "Química › Química orgánica",
+   "campos": {
+    "top": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El grupo de arriba."
+    },
+    "bottom": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El grupo de abajo."
+    },
+    "centers": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los centros, de arriba hacia abajo: `left`, `right`, `blank` (`left`, `right` o `true`) y `priorities` (los lugares `top`, `right`, `bottom`, `left` de mayor a menor prioridad)."
+    },
+    "showConfig": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Escribe R o S."
+    },
+    "showSeries": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Escribe la serie D o L (por omisión, sí)."
+    },
+    "blank": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja los grupos en blanco."
+    },
+    "blankConfig": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja R/S en blanco."
+    },
+    "blankSeries": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja la serie en blanco."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blank",
+    "blankConfig",
+    "blankSeries"
+   ],
+   "ejemplos": [
+    "type: fischer\ntitle: D-glucosa (4 centros quirales)\ntop: CHO\nbottom: CH2OH\ncenters:\n  - {left: H, right: OH, priorities: [right, top, bottom, left]}\n  - {left: HO, right: H, priorities: [left, top, bottom, right]}\n  - {left: H, right: OH, priorities: [right, top, bottom, left]}\n  - {left: H, right: OH, priorities: [right, top, bottom, left]}",
+    "type: fischer\ntitle: Alanina (configuración en blanco)\ntop: COOH\nbottom: CH3\ncenters:\n  - {left: NH2, right: H}\nblankConfig: true\nblankSeries: true\ninkSaver: false"
+   ]
+  },
+  "crystal_field": {
+   "nombre": "Campo cristalino",
+   "para": "El desdoblamiento de los orbitales d, alto y bajo espín, desapareados, μ y EECC.",
+   "area": "Química › Química inorgánica",
+   "campos": {
+    "geometry": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "`octahedral`, `tetrahedral` o `square_planar`."
+    },
+    "electrons": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los electrones d, o `metal` y `oxidation`."
+    },
+    "metal": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El metal."
+    },
+    "oxidation": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Su estado de oxidación."
+    },
+    "spin": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "`high` o `low`, o el que dé `ligand`."
+    },
+    "ligand": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El ligando, de la serie espectroquímica."
+    },
+    "complex": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La fórmula del complejo, de título."
+    },
+    "blank": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja los orbitales vacíos."
+    },
+    "blankElectrons": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja los electrones en blanco."
+    },
+    "blankConfig": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja la configuración en blanco."
+    },
+    "blankSpin": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja el espín en blanco."
+    },
+    "blankUnpaired": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja los desapareados en blanco."
+    },
+    "blankMoment": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja μ en blanco."
+    },
+    "blankCFSE": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja la EECC en blanco."
+    }
+   },
+   "aceptados": [
+    "crystal_field"
+   ],
+   "variantes": {},
+   "ejercicio": [
+    "blank",
+    "blankElectrons",
+    "blankConfig",
+    "blankSpin",
+    "blankUnpaired",
+    "blankMoment",
+    "blankCFSE"
+   ],
+   "ejemplos": [
+    "type: crystal_field\ntitle: \"[Co(NH3)6]^3+ (bajo espín)\"\nmetal: Co\noxidation: 3\nligand: NH3\ninkSaver: false",
+    "type: crystal_field\ntitle: \"[Fe(CN)6]^4- (evaluación)\"\nmetal: Fe\noxidation: 2\nligand: CN^-\nblankElectrons: true\nblank: true"
+   ]
+  },
+  "complex": {
+   "nombre": "Complejo de coordinación",
+   "para": "La geometría de un complejo con su fórmula, estado de oxidación e isomería.",
+   "area": "Química › Química inorgánica",
+   "campos": {
+    "geometry": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "`octahedral`, `tetrahedral` o `square_planar`."
+    },
+    "metal": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El metal."
+    },
+    "ligands": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los ligandos, en orden: arriba, abajo, izquierda, derecha, adelante, atrás (en el cuadrado plano: izquierda, derecha, adelante, atrás)."
+    },
+    "charge": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La carga del complejo."
+    },
+    "oxidation": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El estado de oxidación, si un ligando no es de la tabla."
+    },
+    "blank": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "`true` o una lista de `formula`, `oxidation`, `coordination`, `d` e `isomer`."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blank"
+   ],
+   "ejemplos": [
+    "type: complex\ntitle: \"trans-[Co(NH3)4Cl2]^+\"\nmetal: Co\ncharge: 1\nligands: [NH3, NH3, Cl, Cl, NH3, NH3]\ninkSaver: false",
+    "type: complex\ntitle: Complejo fac (para completar)\nmetal: Co\nligands: [Cl, NH3, Cl, NH3, Cl, NH3]\nblank: [isomer, oxidation]"
+   ]
+  },
+  "born_haber": {
+   "nombre": "Ciclo de Born-Haber",
+   "para": "La energía de red de un sólido iónico por la ley de Hess.",
+   "area": "Química › Química inorgánica",
+   "campos": {
+    "start": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El estado inicial (los elementos)."
+    },
+    "steps": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los pasos hasta los iones gaseosos: `to`, `dH`, `label` y `blank`."
+    },
+    "formation": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La entalpía de formación ΔHf."
+    },
+    "product": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El sólido."
+    },
+    "blankLattice": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja la energía de red en blanco."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blankLattice"
+   ],
+   "ejemplos": [
+    "type: born_haber\ntitle: Ciclo de Born-Haber del NaCl\nstart: \"Na(s) + ½ Cl2(g)\"\nproduct: \"NaCl(s)\"\nformation: -411\nsteps:\n  - {to: \"Na(g) + ½ Cl2(g)\", dH: 107, label: \"ΔH_sub\"}\n  - {to: \"Na^+(g) + ½ Cl2(g)\", dH: 496, label: \"EI\"}\n  - {to: \"Na^+(g) + Cl(g)\", dH: 122, label: \"½ D\"}\n  - {to: \"Na^+(g) + Cl^-(g)\", dH: -349, label: \"AE\"}",
+    "type: born_haber\ntitle: Ciclo KBr (energía reticular en blanco)\nstart: \"K(s) + ½ Br2(l)\"\nproduct: \"KBr(s)\"\nformation: -394\nsteps:\n  - {to: \"K(g)\", dH: 89, label: \"ΔH_sub\"}\n  - {to: \"K^+(g)\", dH: 419, label: \"EI\"}\n  - {to: \"K^+(g) + Br(g)\", dH: 112, label: \"½ D + vap\"}\n  - {to: \"K^+(g) + Br^-(g)\", dH: -325, label: \"AE\"}\nblankLattice: true\ninkSaver: false"
+   ]
+  },
+  "signal": {
+   "nombre": "Señal",
+   "para": "Señales continuas y discretas definidas por una expresión.",
+   "area": "Matemática aplicada › Señales y sistemas",
+   "campos": {
+    "expr": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La expresión: `+ − * / ^`, multiplicación implícita (`2t`, `3(t+1)`), `pi` y `e`, y las funciones `sin`, `cos`, `tan`, `exp`, `log` (ln), `log10`, `sqrt`, `abs`, `sgn`, `u` (escalón), `rect`, `tri`, `sinc`, `ramp`, `floor`, `ceil`, `round`, `min`, `max`, `pow`, `mod`, `delta`."
+    },
+    "label": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El nombre de la señal (`x(t)`)."
+    },
+    "signals": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Varias señales: `{expr, label}` o una lista de expresiones (hasta 6)."
+    },
+    "domain": {
+     "tipo": "texto",
+     "valores": [
+      "continuous",
+      "discrete"
+     ],
+     "defecto": "continuous",
+     "descripcion": "`continuous` o `discrete`."
+    },
+    "variable": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La variable (por omisión `t`, o `n` en las discretas)."
+    },
+    "range": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El intervalo de la variable, `[desde, hasta]` (hasta 400 muestras en las discretas)."
+    },
+    "yrange": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El rango del eje vertical, si no se calcula solo."
+    },
+    "stack": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Un gráfico por señal (por omisión, en las discretas)."
+    },
+    "height": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La altura de cada gráfico, en píxeles."
+    },
+    "blank": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Dibuja los ejes sin las curvas, para graficarlas."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blank"
+   ],
+   "ejemplos": [
+    "type: signal\ntitle: Operaciones sobre señales continuas\nsignals:\n  - { expr: \"rect((t-1)/2)\", label: \"x(t)\" }\n  - { expr: \"rect((2t-1)/2)\", label: \"x(2t)\" }\nrange: [-1, 4]",
+    "type: signal\ntitle: Señal discreta exponencial\ndomain: discrete\nexpr: \"0.8^n u(n)\"\nlabel: \"x[n]\"\nrange: [-4, 12]"
+   ]
+  },
+  "convolution": {
+   "nombre": "Convolución",
+   "para": "La convolución discreta, con el paso de voltear y desplazar.",
+   "area": "Matemática aplicada › Señales y sistemas",
+   "campos": {
+    "x": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Las muestras de x (hasta 64)."
+    },
+    "xStart": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El índice de la primera muestra de x (por omisión 0)."
+    },
+    "h": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Las muestras de h."
+    },
+    "hStart": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El índice de la primera muestra de h."
+    },
+    "step": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Un n para mostrar el paso de voltear y desplazar."
+    },
+    "values": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Escribe y[n] como lista debajo (por omisión, sí)."
+    },
+    "blank": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Oculta y[n] y el resultado del paso."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blank"
+   ],
+   "ejemplos": [
+    "type: convolution\ntitle: Convolución discreta paso a paso\nx: [1, 2, 1]\nh: [1, 1, 1, 1]\nstep: 2"
+   ]
+  },
+  "fourier": {
+   "nombre": "Fourier",
+   "para": "La DFT de una secuencia y la serie de Fourier de ondas clásicas.",
+   "area": "Matemática aplicada › Señales y sistemas",
+   "campos": {
+    "sequence": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La secuencia, para la DFT (hasta 128 muestras)."
+    },
+    "phase": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Agrega la fase de X[k]."
+    },
+    "table": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La tabla de X[k] (por omisión, sí, hasta 16 muestras)."
+    },
+    "wave": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "`square`, `sawtooth` o `triangle`."
+    },
+    "harmonics": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La cantidad de armónicos (de 1 a 60, por omisión 7)."
+    },
+    "amplitude": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La amplitud A de la onda."
+    },
+    "period": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El período T."
+    },
+    "blank": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Oculta el espectro (y la suma parcial) y los valores de la tabla."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blank"
+   ],
+   "ejemplos": [
+    "type: fourier\ntitle: Serie de Fourier de una onda cuadrada\nwave: square\nharmonics: 9",
+    "type: fourier\ntitle: DFT de 8 puntos\nsequence: [1, 1, 1, 1, 0, 0, 0, 0]"
+   ]
+  },
+  "sampling": {
+   "nombre": "Muestreo",
+   "para": "El muestreo de un tono, el aliasing y el criterio de Nyquist.",
+   "area": "Matemática aplicada › Señales y sistemas",
+   "campos": {
+    "frequency": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La frecuencia del tono, en Hz."
+    },
+    "fs": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La frecuencia de muestreo, en Hz."
+    },
+    "amplitude": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La amplitud."
+    },
+    "phase": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La fase, en grados."
+    },
+    "periods": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Cuántos períodos del tono se dibujan (por omisión 3)."
+    },
+    "reconstruction": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Dibuja el alias (por omisión, sí)."
+    },
+    "spectrum": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Agrega el espectro con las réplicas."
+    },
+    "blank": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Oculta el alias y deja en blanco las conclusiones."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blank"
+   ],
+   "ejemplos": [
+    "type: sampling\ntitle: Muestreo con aliasing\nfrequency: 9\nfs: 12\nperiods: 3",
+    "type: sampling\ntitle: Muestreo que cumple Nyquist\nfrequency: 2\nfs: 10\nperiods: 2\nspectrum: true"
+   ]
+  },
+  "distribution": {
+   "nombre": "Distribución",
+   "para": "Densidades y funciones de masa con el área de un intervalo y su probabilidad exacta.",
+   "area": "Matemática aplicada › Probabilidad",
+   "campos": {
+    "dist": {
+     "tipo": "texto",
+     "valores": [
+      "normal",
+      "uniform",
+      "exponential",
+      "t",
+      "chi2",
+      "binomial",
+      "poisson",
+      "geometric"
+     ],
+     "defecto": "normal",
+     "descripcion": "`normal`, `uniform`, `exponential`, `t`, `chi2`, `binomial`, `poisson` o `geometric`."
+    },
+    "mean": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En la normal, la media."
+    },
+    "sd": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En la normal, el desvío."
+    },
+    "a": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En la uniforme, el extremo inferior."
+    },
+    "b": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En la uniforme, el extremo superior."
+    },
+    "lambda": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En la exponencial y la Poisson, λ."
+    },
+    "df": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En la t y la χ², los grados de libertad."
+    },
+    "n": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En la binomial, los ensayos."
+    },
+    "p": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En la binomial y la geométrica, la probabilidad de éxito."
+    },
+    "interval": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El intervalo `[a, b]`; `null` es −∞ o +∞. En las discretas, los extremos van incluidos."
+    },
+    "showMean": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Marca la media."
+    },
+    "blank": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Oculta el área sombreada y la probabilidad."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blank"
+   ],
+   "ejemplos": [
+    "type: distribution\ntitle: Distribución normal estándar\ndist: normal\nmean: 0\nsd: 1\ninterval: [-1.96, 1.96]",
+    "type: distribution\ntitle: Distribución binomial\ndist: binomial\nn: 10\np: 0.3\ninterval: [2, 4]",
+    "type: distribution\ntitle: \"Ejercicio: cola derecha de una t\"\ndist: t\ndf: 8\ninterval: [2.306, null]\nblank: true"
+   ]
+  },
+  "venn": {
+   "nombre": "Diagrama de Venn",
+   "para": "Dos o tres conjuntos con las regiones de una expresión sombreadas.",
+   "area": "Matemática aplicada › Probabilidad",
+   "campos": {
+    "sets": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los nombres de los conjuntos (2 o 3)."
+    },
+    "shade": {
+     "tipo": "lista o texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Una expresión o una lista (hasta 8): `∪` (`|`, `+`), `∩` (`&`, `·` o yuxtaposición), `−` (`\\`), `Δ` (`^`) y el complemento con `'` o `¬`. `U` es el universo."
+    },
+    "regions": {
+     "tipo": "objeto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Lo que va en cada región, por los conjuntos que la forman: `\"A\": [1, 3]`, `\"A,B\": [7]`, `U` (afuera de todos)."
+    },
+    "counts": {
+     "tipo": "objeto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Cantidades por región, con las mismas claves que `regions`."
+    },
+    "blank": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Dibuja los conjuntos sin sombrear, para sombrear la expresión."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blank"
+   ],
+   "ejemplos": [
+    "type: venn\ntitle: Operaciones con conjuntos\nsets: [A, B, C]\nshade: [\"A ∩ B\", \"(A ∪ B) − C\", \"A Δ B\", \"C'\"]",
+    "type: venn\ntitle: Elementos por región\nsets: [A, B]\nshade: \"A − B\"\nregions:\n  A: [1, 3, 5]\n  \"A,B\": [7, 9]\n  B: [2, 4]\n  U: [6, 8]"
+   ]
+  },
+  "circuit": {
+   "nombre": "Circuito",
+   "para": "Redes serie y paralelo con su fuente, impedancia equivalente y corriente.",
+   "area": "Matemática aplicada › Circuitos eléctricos",
+   "campos": {
+    "network": {
+     "tipo": "objeto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La red: `{series: […]}` o `{parallel: […]}` anidados; cada elemento es un texto (`\"R1 = 10k\"`, `\"C2: 100uF\"`) o `{type, name, value}`. Tipos: R, L, C, V, I y Z."
+    },
+    "source": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La fuente, como un elemento: `\"V1 = 12V\"` o `{type: I, name, value}`."
+    },
+    "frequency": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La frecuencia, en Hz (para los inductores y capacitores)."
+    },
+    "style": {
+     "tipo": "texto",
+     "valores": [
+      "ansi",
+      "iec"
+     ],
+     "defecto": "ansi",
+     "descripcion": "`ansi` (resistencias en zigzag) o `iec` (rectángulos)."
+    },
+    "results": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Escribe la impedancia equivalente y la corriente (por omisión, sí)."
+    },
+    "blank": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja los resultados en blanco."
+    },
+    "blankValues": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Con `blank`, oculta también los valores de los elementos."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blank",
+    "blankValues"
+   ],
+   "ejemplos": [
+    "type: circuit\ntitle: Circuito serie-paralelo\nsource: \"V1 = 12V\"\nnetwork:\n  series:\n    - \"R1 = 100Ω\"\n    - parallel: [\"R2 = 220Ω\", \"R3 = 330Ω\"]\n    - \"R4 = 47Ω\"",
+    "type: circuit\ntitle: RLC en alterna\nfrequency: 50\nsource: \"V = 220\"\nnetwork:\n  series:\n    - \"R = 10Ω\"\n    - \"L = 100mH\"\n    - parallel: [\"C = 100uF\", \"R2 = 50Ω\"]"
+   ]
+  },
+  "phasor": {
+   "nombre": "Diagrama fasorial",
+   "para": "Fasores en el plano complejo y su suma.",
+   "area": "Matemática aplicada › Circuitos eléctricos",
+   "campos": {
+    "phasors": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los fasores (hasta 12): `{label, magnitude, angle}` (el ángulo en grados) o `{label, re, im}`."
+    },
+    "sum": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Dibuja la suma."
+    },
+    "tipToTail": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Encadena los fasores punta con cola."
+    },
+    "sumLabel": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El rótulo de la suma (por omisión Σ)."
+    },
+    "unit": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La unidad, para la tabla."
+    },
+    "table": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La tabla de fasores (por omisión, sí)."
+    },
+    "blank": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Oculta la suma y sus valores."
+    }
+   },
+   "aceptados": [],
+   "variantes": {},
+   "ejercicio": [
+    "blank"
+   ],
+   "ejemplos": [
+    "type: phasor\ntitle: Suma de fasores\nphasors:\n  - { label: V1, magnitude: 10, angle: 30 }\n  - { label: V2, magnitude: 6, angle: -45 }\n  - { label: V3, magnitude: 4, angle: 120 }\nsum: true\nunit: V"
+   ]
+  }
+ }
+}
