@@ -116,6 +116,33 @@ jobs:
           path: dist/*
           if-no-files-found: error
 
+  wasm:
+    name: Motor WebAssembly
+    needs: [preparar, pruebas]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ env.TAG }}
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - run: sudo apt-get update -q && sudo apt-get install -y -q binaryen
+      - name: Compilar y optimizar
+        run: |
+          set -euo pipefail
+          cargo build --profile wasm -p dibu-wasm --target wasm32-unknown-unknown
+          mkdir -p dist
+          wasm-opt -Os --enable-bulk-memory --enable-nontrapping-float-to-int --enable-sign-ext \
+            --enable-mutable-globals target/wasm32-unknown-unknown/wasm/dibu_wasm.wasm \
+            -o "dist/dibu-${{ needs.preparar.outputs.version }}.wasm"
+          ls -l dist
+      - uses: actions/upload-artifact@v7
+        with:
+          name: wasm
+          path: dist/*
+          if-no-files-found: error
+
   wheels:
     name: Wheels ${{ matrix.os }} ${{ matrix.target }}
     needs: [preparar, pruebas]
@@ -163,7 +190,7 @@ jobs:
 
   publicar:
     name: Publicar release
-    needs: [preparar, binarios, wheels, sdist]
+    needs: [preparar, binarios, wasm, wheels, sdist]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -203,6 +230,7 @@ jobs:
             echo "### Instalación"
             echo
             echo "- Binario: descargar el archivo de la plataforma, descomprimir y copiar \`dibu\` a un directorio del \`PATH\`."
+            echo "- WebAssembly: \`dibu-X.Y.Z.wasm\` es el motor sin imports, con el puente C-ABI de \`crates/dibu-wasm\` (lo usan dibu-web y dibu-myst)."
             echo "- Python / uv: descargar la wheel de la plataforma y \`uv tool install ./dibu-*.whl\`."
             echo "- Verificar descargas: \`sha256sum -c SHA256SUMS --ignore-missing\`."
           } > NOTAS.md

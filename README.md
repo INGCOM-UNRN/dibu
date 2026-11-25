@@ -12,6 +12,23 @@ Motor en Rust para generar diagramas educativos SVG a partir de bloques YAML/JSO
 - `dibu-comp`: 18 tipos de ingeniería en computación: sistemas digitales, arquitectura, sistemas operativos, redes, bases de datos y estructuras de datos y algoritmos.
 - `dibu-math`: 8 tipos de señales y sistemas, probabilidad y circuitos eléctricos.
 - `dibu-cli`: binario unificado `dibu` (`render`, `batch`, `sync-md`, `list-types`) con `--features` por familia (`cs`, `control`, `chem`).
+- `dibu-wasm`: el motor para WebAssembly, con todas las familias. Tiene una API pura (texto → JSON)
+  y, con la feature `abi-c`, el módulo `dibu.wasm` sin imports que usan las integraciones.
+
+## Integraciones
+
+Cada una vive en su propio repositorio y usa el motor de `crates/dibu-wasm`:
+
+- [dibu-web](https://github.com/INGCOM-UNRN/dibu-web): el editor en el navegador.
+- [dibu-myst](https://github.com/INGCOM-UNRN/dibu-myst): plugin de [MyST](https://mystmd.org) que
+  dibuja los bloques ```` ```estructura ```` y la directiva `{dibu}` al construir el sitio o el PDF.
+- [dibu-typst](https://github.com/INGCOM-UNRN/dibu-typst): paquete de [Typst](https://typst.app)
+  con la función `#dibu(...)` y los bloques ```` ```estructura ```` dentro del documento.
+
+```bash
+cargo build --profile wasm -p dibu-wasm --target wasm32-unknown-unknown
+# → target/wasm32-unknown-unknown/wasm/dibu_wasm.wasm
+```
 
 ## Manual
 
@@ -130,7 +147,7 @@ enunciado con los espacios para completar, a partir del mismo bloque.
 Los binarios precompilados de cada versión están en la página de
 [Releases](https://github.com/INGCOM-UNRN/dibu/releases): Linux (glibc y musl estático,
 x86_64 y aarch64), macOS (Intel y Apple Silicon) y Windows x86_64, más wheels de Python
-(`uv tool install ./dibu-*.whl`) y un `SHA256SUMS`.
+(`uv tool install ./dibu-*.whl`), el motor `dibu-X.Y.Z.wasm` y un `SHA256SUMS`.
 
 Para publicar una versión, subir `version` en `Cargo.toml` (`[workspace.package]`) y en
 `pyproject.toml`, y empujar el tag correspondiente:
@@ -144,6 +161,7 @@ Workflows en `.github/workflows/`:
 - `ci.yml`: en cada push y PR. Corre los tests en Linux, macOS y Windows, renderiza todos
   los fixtures con la CLI y verifica con `sync-md --verificar` que los SVG versionados estén
   al día. Los tests `paridad_*` se omiten porque necesitan el oráculo local `alucarD`.
+  Compila el motor WebAssembly y verifica que no tenga imports.
   `cargo fmt` y `clippy` corren en modo informativo hasta que el código pase sin avisos.
 - `release.yml`: al empujar un tag `vX.Y.Z`. Valida que el tag coincida con las versiones
   declaradas, corre el CI, compila los binarios y wheels, y crea el release con notas

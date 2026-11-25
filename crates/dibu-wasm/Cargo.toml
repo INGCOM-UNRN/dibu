@@ -1,0 +1,26 @@
+[package]
+name = "dibu-wasm"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Motor de dibu para WebAssembly: API pura y puente C-ABI (dibu-web, dibu-myst, dibu-typst)"
+
+[lib]
+# cdylib: el módulo `dibu.wasm` con el puente C-ABI. rlib: la API pura, para otros puentes
+# (por ejemplo el plugin de Typst, que usa otro protocolo).
+crate-type = ["cdylib", "rlib"]
+
+[features]
+default = ["abi-c"]
+# Exporta las funciones `dibu_*` con el protocolo de memoria compartida (ver lib.rs).
+abi-c = []
+
+[dependencies]
+dibu-core.workspace = true
+dibu-cs.workspace = true
+dibu-control.workspace = true
+dibu-chem.workspace = true
+dibu-comp.workspace = true
+dibu-math.workspace = true
+serde_json.workspace = true
+serde_yaml.workspace = true

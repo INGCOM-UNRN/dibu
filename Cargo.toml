@@ -9,6 +9,7 @@ members = [
     "crates/dibu-comp",
     "crates/dibu-math",
     "crates/dibu-cli",
+    "crates/dibu-wasm",
 ]
 
 [workspace.package]
@@ -39,3 +40,11 @@ num-complex = "0.4"
 lto = "thin"
 codegen-units = 1
 strip = true
+
+# El módulo WebAssembly (dibu-web, dibu-myst, dibu-typst):
+#   cargo build --profile wasm -p dibu-wasm --target wasm32-unknown-unknown
+[profile.wasm]
+inherits = "release"
+opt-level = "s"
+lto = true
+panic = "abort"
