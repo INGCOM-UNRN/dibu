@@ -45,8 +45,10 @@ jobs:
           echo "páginas HTML: $paginas"
           test "$paginas" -ge 100
           # Los enlaces a .md tienen que haber pasado a .html.
-          if grep -rl 'href="[^"]*\.md"' _site --include='*.html' | head -5 | grep .; then
-            echo "::error::quedaron enlaces a .md sin convertir"; exit 1
+          if grep -rq 'href="[^"]*\.md"' _site --include='*.html'; then
+            grep -roE 'href="[^"]*\.md"' _site --include='*.html' | sort | uniq -c | sort -rn | head -15
+            echo "::error::quedaron $(grep -roE 'href="[^"]*\.md"' _site --include='*.html' | wc -l) enlaces a .md sin convertir"
+            exit 1
           fi
           echo "### Manual" >> "$GITHUB_STEP_SUMMARY"
           echo "$paginas páginas, $(find _site -name '*.svg' | wc -l) diagramas" >> "$GITHUB_STEP_SUMMARY"
