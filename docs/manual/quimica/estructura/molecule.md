@@ -36,7 +36,9 @@ atoms:
   - {id: o3, el: O, from: n, angle: 330, lonePairs: 3, charge: -1}
 ```
 
-![Ion nitrato (Lewis resonante)](img/ks_chem_molecule_nitrato.svg)
+[![Ion nitrato (Lewis resonante)](img/ks_chem_molecule_nitrato.svg)](https://ingcom-unrn.github.io/dibu-web/#z=fY7BCsIwEETv_Yo5KqTQNifzB4Kod_EQ61oD6a4kERHx3416qD3U4yzvzU66X8igF0_t1VORXPI5L4XBLgWbBLMV3VxEoChsOdG8yNc-mgIo8XBHA1Ygb7BWsMlgVylUe4X2bEOXu-rnQEr9RTcKpyD9R7XcvV8usnYQzlCj4IVpa12IOf3qzaTe1NVI08OAcrRAT1Zo_bfiBQ)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=fY7BCsIwEETv_Yo5KqTQNifzB4Kod_EQ61oD6a4kERHx3416qD3U4yzvzU66X8igF0_t1VORXPI5L4XBLgWbBLMV3VxEoChsOdG8yNc-mgIo8XBHA1Ygb7BWsMlgVylUe4X2bEOXu-rnQEr9RTcKpyD9R7XcvV8usnYQzlCj4IVpa12IOf3qzaTe1NVI08OAcrRAT1Zo_bfiBQ) para explorarlo y modificarlo.
 
 ### Naftaleno (anillos fusionados)
 
@@ -53,7 +55,9 @@ bonds:
 inkSaver: false
 ```
 
-![Naftaleno (anillos fusionados)](img/ks_chem_molecule_naftaleno_skeletal.svg)
+[![Naftaleno (anillos fusionados)](img/ks_chem_molecule_naftaleno_skeletal.svg)](https://ingcom-unrn.github.io/dibu-web/#z=dY3LCsIwEEX3-YpZKkTpAxXyEW5cliKxTiV0TCQzEVT676ZFXAhuBu7hnrnyuKGBayDsEqESJ5Tz3vZiCX2AhfWOKDD0iV3w9hx4qXhAwlwwIDGhis5f2CiAFbzYPbO_1dChF4wGmkJD0WpgsVEM1DkOOKRpZZLHf1q53tXVjzqqU_Dnz1QTy2OpId9cq9ov28ysmJnzw8Hep3-9JUb1Bg)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=dY3LCsIwEEX3-YpZKkTpAxXyEW5cliKxTiV0TCQzEVT676ZFXAhuBu7hnrnyuKGBayDsEqESJ5Tz3vZiCX2AhfWOKDD0iV3w9hx4qXhAwlwwIDGhis5f2CiAFbzYPbO_1dChF4wGmkJD0WpgsVEM1DkOOKRpZZLHf1q53tXVjzqqU_Dnz1QTy2OpId9cq9ov28ysmJnzw8Hep3-9JUb1Bg) para explorarlo y modificarlo.
 
 ### Mecanismo S_N\2 y carbono quiral
 
@@ -72,7 +76,9 @@ arrows:
   - {from: [c, br], to: br, bend: -1}
 ```
 
-![Mecanismo S_N\2 y carbono quiral](img/ks_chem_molecule_sn2_estereo.svg)
+[![Mecanismo S_N\2 y carbono quiral](img/ks_chem_molecule_sn2_estereo.svg)](https://ingcom-unrn.github.io/dibu-web/#z=dZBBa8MwDIXv-RWiZ6ckDoPNx-2yy7rBjm0ZTqrFAcfqbJdSiv_77CZjHmEnI7_3SU_ylyMKGEljd9JY-MHrWK9esJNmcCPB-8dmt-NwgU7algzB12mwUq8K6Wl0ogAo4TocBJBigFrA8ysD6QVsS77mDKo9g05J28e2Zc1Ak8E3OVgngIdfupvgp5mtEpjJrZ30x_h-WhpvgDR9Clv9adpklKrnSEvoIVJxnWi6Oo8WKbqlUyGPpOdMeolzfrfgz3joMW-gmn_H103kNZreq7jA-j4U0lo6_9xzsqeLerphLaZRdcjlbfq3-8mTDjSZyjoU3w)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=dZBBa8MwDIXv-RWiZ6ckDoPNx-2yy7rBjm0ZTqrFAcfqbJdSiv_77CZjHmEnI7_3SU_ylyMKGEljd9JY-MHrWK9esJNmcCPB-8dmt-NwgU7algzB12mwUq8K6Wl0ogAo4TocBJBigFrA8ysD6QVsS77mDKo9g05J28e2Zc1Ak8E3OVgngIdfupvgp5mtEpjJrZ30x_h-WhpvgDR9Clv9adpklKrnSEvoIVJxnWi6Oo8WKbqlUyGPpOdMeolzfrfgz3joMW-gmn_H103kNZreq7jA-j4U0lo6_9xzsqeLerphLaZRdcjlbfq3-8mTDjSZyjoU3w) para explorarlo y modificarlo.
 
 ## Ver también
 

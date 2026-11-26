@@ -37,7 +37,9 @@ showDisproportionation: true
 inkSaver: false
 ```
 
-![Diagrama de Frost del Mn](img/ks_chem_frost_manganeso.svg)
+[![Diagrama de Frost del Mn](img/ks_chem_frost_manganeso.svg)](https://ingcom-unrn.github.io/dibu-web/#z=LY87D8IwDIT3_ArvpFGTtjw6V2wVAyNqpQgCRJQkSszr3-MUlruzzv4k4yeYFs7RJ2RocaKhs_oS9V3DycA2FxQm6B1LwRytSS0cererx4LD7OoXVNaxWsymZhuYf9uTRusdHa04LDnUHCoOtFwOLHg0Dq2eMrMUDdVKKNJSbBoOUjSSQyGFXA8sXf2rsylEH3zMxD8W48Mw6257_TSRPiGYYV8)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=LY87D8IwDIT3_ArvpFGTtjw6V2wVAyNqpQgCRJQkSszr3-MUlruzzv4k4yeYFs7RJ2RocaKhs_oS9V3DycA2FxQm6B1LwRytSS0cererx4LD7OoXVNaxWsymZhuYf9uTRusdHa04LDnUHCoOtFwOLHg0Dq2eMrMUDdVKKNJSbBoOUjSSQyGFXA8sXf2rsylEH3zMxD8W48Mw6257_TSRPiGYYV8) para explorarlo y modificarlo.
 
 ## Ver también
 

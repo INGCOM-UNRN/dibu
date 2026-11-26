@@ -35,7 +35,9 @@ steps:
   - {transition: "nivel bajo"}
 ```
 
-![Llenado y mezcla en paralelo](img/ks_control_grafcet_and.svg)
+[![Llenado y mezcla en paralelo](img/ks_control_grafcet_and.svg)](https://ingcom-unrn.github.io/dibu-web/#z=fdCxTsMwEAbgPU_xy3OqJil08ICEurYbQkhVh2t6FCPjRPaBVFDeiY29T4ZNitSUCE-2z_5098uhZY29p8eaJRMjNh6Xlh3tGhzwwu-1JbBDS54s2yYLwm3QGTDBR9prFDmMM2LIaoh_5a4viicX4nXjNNSKfP1EOH7BmTe22NJzo7pzpcxBdXodNNbqduuNx32pNmNab5CVX4PcLrWU1gTrk1gNxb2ROJSPYn7ByfShms4KBJVK_eerbvMHnA3ARczDCY2Bd7jBvMDxc3EmXv-Il6OUwxTmYylU_6VwSvIb)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=fdCxTsMwEAbgPU_xy3OqJil08ICEurYbQkhVh2t6FCPjRPaBVFDeiY29T4ZNitSUCE-2z_5098uhZY29p8eaJRMjNh6Xlh3tGhzwwu-1JbBDS54s2yYLwm3QGTDBR9prFDmMM2LIaoh_5a4viicX4nXjNNSKfP1EOH7BmTe22NJzo7pzpcxBdXodNNbqduuNx32pNmNab5CVX4PcLrWU1gTrk1gNxb2ROJSPYn7ByfShms4KBJVK_eerbvMHnA3ARczDCY2Bd7jBvMDxc3EmXv-Il6OUwxTmYylU_6VwSvIb) para explorarlo y modificarlo.
 
 ### Divergencia OR con campos en blanco
 
@@ -52,7 +54,9 @@ steps:
 inkSaver: false
 ```
 
-![Divergencia OR con campos en blanco](img/ks_control_grafcet_or_blank.svg)
+[![Divergencia OR con campos en blanco](img/ks_control_grafcet_or_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#z=bY8xiwJBDIX7-RWPKaxWUMtBBE-xEgQtZYvcMEpwzCwzURDxv7urFqdequTlvY9EL01w2Gfa-aBGWWM7zvkc8j6IZ8JqDZ8Eno5NKgiC30jikykamuIM0Me16x0GFVhYmaKD5lO4PZeaSUorJ3Gw05Mm9DBectE0sdWDdvjrT7mDdtXH9kUeViDfEYrD1s7Yx4Sprd_T9Vds9E_sx9YP5-dhCxZ7MyyHDbW_O-wolmDu)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=bY8xiwJBDIX7-RWPKaxWUMtBBE-xEgQtZYvcMEpwzCwzURDxv7urFqdequTlvY9EL01w2Gfa-aBGWWM7zvkc8j6IZ8JqDZ8Eno5NKgiC30jikykamuIM0Me16x0GFVhYmaKD5lO4PZeaSUorJ3Gw05Mm9DBectE0sdWDdvjrT7mDdtXH9kUeViDfEYrD1s7Yx4Sprd_T9Vds9E_sx9YP5-dhCxZ7MyyHDbW_O-wolmDu) para explorarlo y modificarlo.
 
 ## Ver también
 

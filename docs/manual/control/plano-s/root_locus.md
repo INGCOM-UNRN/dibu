@@ -44,7 +44,9 @@ system: {k: 1, poles: [0, -1, -2]}
 marks: [1]
 ```
 
-![Lugar de las raíces K / (s(s+1)(s+2))](img/ks_control_root_locus_marcas.svg)
+[![Lugar de las raíces K / (s(s+1)(s+2))](img/ks_control_root_locus_marcas.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKMrPL4nPyU8uLeYqySzJAYr4lKYnFimkpCrkJBYrFCUeXpucWqzgraCvoFGsUaxtqAkkjDQ1uYori0tSc60UqrOtFAx1FAryc1KLrRSiDXQUdIFcXaPYWq7cxKJskJhhLBcA)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKMrPL4nPyU8uLeYqySzJAYr4lKYnFimkpCrkJBYrFCUeXpucWqzgraCvoFGsUaxtqAkkjDQ1uYori0tSc60UqrOtFAx1FAryc1KLrRSiDXQUdIFcXaPYWq7cxKJskJhhLBcA) para explorarlo y modificarlo.
 
 ## Ver también
 

@@ -41,7 +41,9 @@ substituents:
 flip: true
 ```
 
-![Metilciclohexano con flip](img/ks_chem_chair_metil.svg)
+[![Metilciclohexano con flip](img/ks_chem_chair_metil.svg)](https://ingcom-unrn.github.io/dibu-web/#z=JYsxCsMwDEV3neIfIB1KN61duvQQrlESgbCMLUNC6N2T0u09eC_2Koy8Jm0UGnbJW0ItazZfZUvFkb1gNq3Ux6df0ZASnQm44ajeNdQL4z5haT4q4_l6TEibJmNEG_Kl3_1nOgE)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=JYsxCsMwDEV3neIfIB1KN61duvQQrlESgbCMLUNC6N2T0u09eC_2Koy8Jm0UGnbJW0ItazZfZUvFkb1gNq3Ux6df0ZASnQm44ajeNdQL4z5haT4q4_l6TEibJmNEG_Kl3_1nOgE) para explorarlo y modificarlo.
 
 ### Ciclohexano disustituido (blanco)
 
@@ -56,7 +58,9 @@ blank: true
 inkSaver: false
 ```
 
-![Ciclohexano disustituido (blanco)](img/ks_chem_chair_terbutil_blank.svg)
+[![Ciclohexano disustituido (blanco)](img/ks_chem_chair_terbutil_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#z=XY2xDsIwDET3fIVHkMqAYMpIF3a-wG1TatWKo8SuihD_Tosqhm53T093-krBQzsgZaekvJSaWpYhzBgFOipWFm7UCRwaxtjK0RVrfjBELd4BnOCdpJCSRA_nCp5ZLHnQm1WAMyF76JFL-Ozd69-t75e92zOtI9mCW4_HLVMcHziFvHnuCw)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=XY2xDsIwDET3fIVHkMqAYMpIF3a-wG1TatWKo8SuihD_Tosqhm53T093-krBQzsgZaekvJSaWpYhzBgFOipWFm7UCRwaxtjK0RVrfjBELd4BnOCdpJCSRA_nCp5ZLHnQm1WAMyF76JFL-Ozd69-t75e92zOtI9mCW4_HLVMcHziFvHnuCw) para explorarlo y modificarlo.
 
 ## Ver también
 

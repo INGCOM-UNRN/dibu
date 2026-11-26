@@ -46,7 +46,9 @@ sd: 1
 interval: [-1.96, 1.96]
 ```
 
-![Distribución normal estándar](img/ks_prob_normal.svg)
+[![Distribución normal estándar](img/ks_prob_normal.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSMksLinKTCotyczP4yrJLMkBirlAxZIzD2_OU8jLL8pNzFFILS45vDAvJbGIC6TFCirMlZuamGelYMBVnGKlYMiVmVeSWlSWmGOlEK1rqGdppqMAImO5AA)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSMksLinKTCotyczP4yrJLMkBirlAxZIzD2_OU8jLL8pNzFFILS45vDAvJbGIC6TFCirMlZuamGelYMBVnGKlYMiVmVeSWlSWmGOlEK1rqGdppqMAImO5AA) para explorarlo y modificarlo.
 
 ### Distribución binomial
 
@@ -59,7 +61,9 @@ p: 0.3
 interval: [2, 4]
 ```
 
-![Distribución binomial](img/ks_prob_binomial.svg)
+[![Distribución binomial](img/ks_prob_binomial.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSMksLinKTCotyczP4yrJLMkBirlAxZIzD2_OU0jKzMvPzUzM4QIptUJw86wUDA24CqwUDPSMuTLzSlKLyhJzrBSijXQUTGK5AA)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSMksLinKTCotyczP4yrJLMkBirlAxZIzD2_OU0jKzMvPzUzM4QIptUJw86wUDA24CqwUDPSMuTLzSlKLyhJzrBSijXQUTGK5AA) para explorarlo y modificarlo.
 
 ### Ejercicio: cola derecha de una t
 
@@ -72,7 +76,9 @@ interval: [2.306, null]
 blank: true
 ```
 
-![Ejercicio: cola derecha de una t](img/ks_prob_t_student.svg)
+[![Ejercicio: cola derecha de una t](img/ks_prob_t_student.svg)](https://ingcom-unrn.github.io/dibu-web/#z=FYuxCgJBDAX7fMXjahFREEnvV4jF3m7EaMhKzB74995VA8NM_j7CaPrN0HmkdqfUtNVN15dE1aqdUbsVNAmpz40YXpATbRsjqT0YF1JPiaUY43bcnw7nHXyY3Wm24u81iyH0Bw)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=FYuxCgJBDAX7fMXjahFREEnvV4jF3m7EaMhKzB74995VA8NM_j7CaPrN0HmkdqfUtNVN15dE1aqdUbsVNAmpz40YXpATbRsjqT0YF1JPiaUY43bcnw7nHXyY3Wm24u81iyH0Bw) para explorarlo y modificarlo.
 
 ## Ver también
 

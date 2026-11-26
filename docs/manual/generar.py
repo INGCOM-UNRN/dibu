@@ -36,6 +36,20 @@ DATOS = MANUAL / "datos"
 KITCHEN_SINK = RAIZ / "fixtures" / "kitchen_sink" / "kitchen_sink.yaml"
 CRATES = RAIZ / "crates"
 
+# El editor web: abre un diagrama desde la URL (`#z=` + deflate-raw en base64url, como su botón
+# «Compartir»), para explorar cómo está construido y modificarlo.
+EDITOR = "https://ingcom-unrn.github.io/dibu-web/"
+
+
+def enlace_editor(cuerpo: str) -> str:
+    """La URL del editor web con `cuerpo` cargado. Determinista: el manual se puede verificar."""
+    import base64
+    import zlib
+    comp = zlib.compressobj(9, zlib.DEFLATED, -15)
+    datos = comp.compress(cuerpo.encode("utf-8")) + comp.flush()
+    return EDITOR + "#z=" + base64.urlsafe_b64encode(datos).decode("ascii").rstrip("=")
+
+
 COMUNES = OrderedDict([
     ("title", "Título del diagrama, arriba a la izquierda."),
     ("subtitle", "Subtítulo, debajo del título, en letra más chica."),
@@ -374,7 +388,11 @@ def pagina_tipo(areas, tipo: str, d: dict, codigo: dict, ejemplos: list, svgs: d
         p.append("")
         nombre = f"img/{ident}.svg"
         archivos[nombre] = svgs[ident]
-        p.append(f"![{celda(titulo)}]({nombre})")
+        # La imagen y el enlace abren el ejemplo en el editor, para ver cómo está hecho y probar cambios.
+        url = enlace_editor(cuerpo + "\n")
+        p.append(f"[![{celda(titulo)}]({nombre})]({url})")
+        p.append("")
+        p.append(f"[Abrir en el editor]({url}) para explorarlo y modificarlo.")
         p.append("")
     if d.get("notas"):
         p.append("## Notas")
@@ -431,6 +449,8 @@ def indice(areas, tipos) -> str:
          "- [Modo ejercicio](ejercicios.md): `blank` y los campos `blank*`.",
          "- [Themes](themes.md): presets, themes propios y tipografía.",
          "- [Línea de comandos](cli.md): `render`, `batch`, `sync-md`, `list-types` y `list-themes`.",
+         f"- [Editor web]({EDITOR}): el playground, para escribir bloques con vista previa en vivo. Cada "
+         "ejemplo del manual tiene un enlace que lo abre ahí, para ver cómo está construido y modificarlo.",
          "- [Guía para agentes de IA](agentes/README.md): reglas, referencia compacta de todos los tipos, "
          "integración en Markdown, MyST, Typst y alucarD, y un validador de bloques.", "",
          "## Tipos de diagramas", ""]

@@ -48,7 +48,9 @@ measured: "B(s)"
 inkSaver: true
 ```
 
-![Lazo con perturbación <D(s) & H(s)>](img/ks_control_block_diagram_lazo.svg)
+[![Lazo con perturbación <D(s) & H(s)>](img/ks_control_block_diagram_lazo.svg)](https://ingcom-unrn.github.io/dibu-web/#z=XY9BigIxEEX3OUWRhYzgbFzK4EIUZzGzmcGFiEh1UkqwTZrqRFHxVB7Bi1mdRhRXxav6_1M_HisaQFEGs11ZhxvGnYoulrLUP3gKYIKHijgmLtC429XD1_ij7kIHvmUMtXK-SlHUf4JahRRbnGck5sBCk0zrwAdkO1AAn3AusaBSblPTHHsQsm_WwOVNsX9V_D4VelrlYOvq_KA38vcZRdXvwcM9bs25YxNmW_-ayEolWS10U0Uv1Y6wTkxWVKOc6_z2H_ckDSInUnc)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=XY9BigIxEEX3OUWRhYzgbFzK4EIUZzGzmcGFiEh1UkqwTZrqRFHxVB7Bi1mdRhRXxav6_1M_HisaQFEGs11ZhxvGnYoulrLUP3gKYIKHijgmLtC429XD1_ij7kIHvmUMtXK-SlHUf4JahRRbnGck5sBCk0zrwAdkO1AAn3AusaBSblPTHHsQsm_WwOVNsX9V_D4VelrlYOvq_KA38vcZRdXvwcM9bs25YxNmW_-ayEolWS10U0Uv1Y6wTkxWVKOc6_z2H_ckDSInUnc) para explorarlo y modificarlo.
 
 ### Control en cascada (evaluación)
 
@@ -66,7 +68,9 @@ blankSigns: true
 inkSaver: false
 ```
 
-![Control en cascada (evaluación)](img/ks_control_block_diagram_cascada_blank.svg)
+[![Control en cascada (evaluación)](img/ks_control_block_diagram_cascada_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#z=VcwxDsIwDAXQPaewOrUSDGXMygA7I0LITdwqqkmiJC3iXByBi5G0KhKe7O-nn16eJHTs1HjXBoeAD5FM4hwenU3BMZAFhVGhRqhpRp5Qmc_bNqJ34YlBSwGwh-qk2jo21XKwc77EZTYF10wOhewy9st22wyR7lCNBZ1_n1Lq19I_0K6gY7TjxQw2SkhhImHyiTMFCT1yJPEF)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=VcwxDsIwDAXQPaewOrUSDGXMygA7I0LITdwqqkmiJC3iXByBi5G0KhKe7O-nn16eJHTs1HjXBoeAD5FM4hwenU3BMZAFhVGhRqhpRp5Qmc_bNqJ34YlBSwGwh-qk2jo21XKwc77EZTYF10wOhewy9st22wyR7lCNBZ1_n1Lq19I_0K6gY7TjxQw2SkhhImHyiTMFCT1yJPEF) para explorarlo y modificarlo.
 
 ## Notas
 

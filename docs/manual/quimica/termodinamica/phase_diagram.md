@@ -56,7 +56,9 @@ blankRegions: true
 blankPoints: true
 ```
 
-![CO2 en escala logarítmica](img/ks_chem_phase_diagram_co2_blank.svg)
+[![CO2 en escala logarítmica](img/ks_chem_phase_diagram_co2_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#z=NcrBDYMwDEbhe6bwDBxzZQCqLoB-ghUsgoNic2CoTtHFmqrq7enT8_vkSOcG43kV5IYjuHjpOE4DsRJbQgGVmtHeLz8kIdi1mENTv1Idwvfo2ZewFOj-5CxVLZK3i3_0qKL-lw8)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=NcrBDYMwDEbhe6bwDBxzZQCqLoB-ghUsgoNic2CoTtHFmqrq7enT8_vkSOcG43kV5IYjuHjpOE4DsRJbQgGVmtHeLz8kIdi1mENTv1Idwvfo2ZewFOj-5CxVLZK3i3_0qKL-lw8) para explorarlo y modificarlo.
 
 ### Diagrama eutéctico Pb–Sn
 
@@ -72,7 +74,9 @@ cooling: 30
 inkSaver: false
 ```
 
-![Diagrama eutéctico Pb–Sn](img/ks_chem_phase_diagram_eutectico.svg)
+[![Diagrama eutéctico Pb–Sn](img/ks_chem_phase_diagram_eutectico.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKMhILE6NT8lMTC9KzOXKzsxLsVJILS1JTS7JTOYqySzJAapxgcgmgiQOrwTJ5CsEJD1qmBycx5Wcn1uQn5eaV1JspRAdkKSjEJwXy5WbmlOSmZfuaKVgbGQO4zlZKRgZG3HBDAcqNzPUs9RRMLQwjgUak58DVAPUYMCVmZcdnFiWWmSlkJaYU5zKBQA)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKMhILE6NT8lMTC9KzOXKzsxLsVJILS1JTS7JTOYqySzJAapxgcgmgiQOrwTJ5CsEJD1qmBycx5Wcn1uQn5eaV1JspRAdkKSjEJwXy5WbmlOSmZfuaKVgbGQO4zlZKRgZG3HBDAcqNzPUs9RRMLQwjgUak58DVAPUYMCVmZcdnFiWWmSlkJaYU5zKBQA) para explorarlo y modificarlo.
 
 ## Ver también
 

@@ -43,7 +43,9 @@ processes:
   - { name: P4, arrival: 3, burst: 5 }
 ```
 
-![Planificación SRTF](img/ks_so_srtf.svg)
+[![Planificación SRTF](img/ks_so_srtf.svg)](https://ingcom-unrn.github.io/dibu-web/#z=XctLCsIwFEbheVbxL6CCfQiaBTgWdS4xpu2FNA3JjSDSVbkEN6ZOQu308B1-eCOhfbpE3ZtbsuQ6wcT2Ww9WOWpJK03vl8PpeN4LZbsxEPeDRAzcCh9GbWI0UQpghSecGn5rWUCFQHdlJdYFrilElthi-mfVjJWZNUtWz1iV2W7JmhmrM9tgEh8)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=XctLCsIwFEbheVbxL6CCfQiaBTgWdS4xpu2FNA3JjSDSVbkEN6ZOQu308B1-eCOhfbpE3ZtbsuQ6wcT2Ww9WOWpJK03vl8PpeN4LZbsxEPeDRAzcCh9GbWI0UQpghSecGn5rWUCFQHdlJdYFrilElthi-mfVjJWZNUtWz1iV2W7JmhmrM9tgEh8) para explorarlo y modificarlo.
 
 ### Round Robin
 
@@ -59,7 +61,9 @@ processes:
   - { name: D, arrival: 9, burst: 2 }
 ```
 
-![Round Robin](img/ks_so_round_robin.svg)
+[![Round Robin](img/ks_so_round_robin.svg)](https://ingcom-unrn.github.io/dibu-web/#z=XctNCsIwEAXg_ZxiDlBBWxTMzp8TeAFJ09AG0qROZgSR3t2sQuzm8Xh8jz-LVWgWeSYz2UG8CyOwY5_XR5Qw5OxdAO3HSI6nWSERvEQHltw7WCgam5JNChB3-MWg5_y9NKiJ3Ft7hfsGe6HECo-4_qlrpQ5FdRt1q1Rb1Gmj7pU6F9XiCj8)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=XctNCsIwEAXg_ZxiDlBBWxTMzp8TeAFJ09AG0qROZgSR3t2sQuzm8Xh8jz-LVWgWeSYz2UG8CyOwY5_XR5Qw5OxdAO3HSI6nWSERvEQHltw7WCgam5JNChB3-MWg5_y9NKiJ3Ft7hfsGe6HECo-4_qlrpQ5FdRt1q1Rb1Gmj7pU6F9XiCj8) para explorarlo y modificarlo.
 
 ### Ejercicio: prioridad no expropiativa
 
@@ -76,7 +80,9 @@ processes:
   - { name: P5, arrival: 0, burst: 5, priority: 2 }
 ```
 
-![Ejercicio: prioridad no expropiativa](img/ks_so_prioridad_ejercicio.svg)
+[![Ejercicio: prioridad no expropiativa](img/ks_so_prioridad_ejercicio.svg)](https://ingcom-unrn.github.io/dibu-web/#z=hc09CsMwDAXg3acQnVNo_hbv3XuD4jgmUevYRpZLQ8nd6yWQhkA3Ib3viedgJOiQ7lGPpk8W3SAY2ebt6fowpFGjlxAIPWGvenAezDuQD6gYX-oklB3yicdpTfEsOqvcUwJTMiJntYnRRCkAzvABp6bcfisLUES5wkq4FNAliiyhzONaI6GG5RdVx2hryr2pD021Nc3eNP__tHvTHpp2aypYxBc)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=hc09CsMwDAXg3acQnVNo_hbv3XuD4jgmUevYRpZLQ8nd6yWQhkA3Ib3viedgJOiQ7lGPpk8W3SAY2ebt6fowpFGjlxAIPWGvenAezDuQD6gYX-oklB3yicdpTfEsOqvcUwJTMiJntYnRRCkAzvABp6bcfisLUES5wkq4FNAliiyhzONaI6GG5RdVx2hryr2pD021Nc3eNP__tHvTHpp2aypYxBc) para explorarlo y modificarlo.
 
 ## Ver también
 

@@ -46,7 +46,9 @@ rearIndex: 1
 inkSaver: false
 ```
 
-![Cola circular en arreglo de capacidad 8](img/ks_cs_queue_circular.svg)
+[![Cola circular en arreglo de capacidad 8](img/ks_cs_queue_circular.svg)](https://ingcom-unrn.github.io/dibu-web/#z=PcpBCsJADEbhfU6RK7gQSrauXHuCn5lUgkOmjZlib2_B4vLxvdwXFV6HDqW0bEfcegMXizIagtUZEfpsnatywYJiFZUn2hAGT_m_9NPc5dA5uufdq36ErxSKOONC5q8HNg3hGe2t9AU)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=PcpBCsJADEbhfU6RK7gQSrauXHuCn5lUgkOmjZlib2_B4vLxvdwXFV6HDqW0bEfcegMXizIagtUZEfpsnatywYJiFZUn2hAGT_m_9NPc5dA5uufdq36ErxSKOONC5q8HNg3hGe2t9AU) para explorarlo y modificarlo.
 
 ## Ver también
 

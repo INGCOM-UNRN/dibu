@@ -48,7 +48,9 @@ catalyzed:
   - {energy: -40}
 ```
 
-![Reacción exotérmica catalizada](img/ks_chem_energy_profile_catalizada.svg)
+[![Reacción exotérmica catalizada](img/ks_chem_energy_profile_catalizada.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSM1LLUqvjC8oyk_LzEnlKsksyQGKBqUmJidnHt6cp5BakV9yeGVRbmZyokJyYkliTmZVYkoiV3FJYklqsRWXgoKuQnVOYlJqjpWCkqOCtoKTkg7UTCsFg1pUedeQRw0LkeQtTHUUSoqtFEqKSlPRlDoDjXJBUqprAjQMbH9lVWoK1F50e2B8E0xzUcwBAA)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSM1LLUqvjC8oyk_LzEnlKsksyQGKBqUmJidnHt6cp5BakV9yeGVRbmZyokJyYkliTmZVYkoiV3FJYklqsRWXgoKuQnVOYlJqjpWCkqOCtoKTkg7UTCsFg1pUedeQRw0LkeQtTHUUSoqtFEqKSlPRlDoDjXJBUqprAjQMbH9lVWoK1F50e2B8E0xzUcwBAA) para explorarlo y modificarlo.
 
 ### Dos etapas con etapa determinante
 
@@ -66,7 +68,9 @@ blankAnnotations: true
 inkSaver: false
 ```
 
-![Dos etapas con etapa determinante](img/ks_chem_energy_profile_dos_etapas_blank.svg)
+[![Dos etapas con etapa determinante](img/ks_chem_energy_profile_dos_etapas_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#z=dY_BCsJADETv-xXBs4IKCu5N0IM3Ue-StmkNrknZjYqI_27FghXxFpKZlxm71eSBhGJ129dRSw7kjC0024UmIMMaE-Qq7xEKMoonFhQjlwyNkncAA7gHzCh42BDmxhdN_RbrYfj4UvSWu1Hvc50O-2DJg8UzfQtX8vpFBWNk_RjGkx_euMOb_eWtoxbn3LrRRg0rHfS6aYos2mos1dvtsoBynIto05NVWqhjOW7xQtFDiSGRewI)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=dY_BCsJADETv-xXBs4IKCu5N0IM3Ue-StmkNrknZjYqI_27FghXxFpKZlxm71eSBhGJ129dRSw7kjC0024UmIMMaE-Qq7xEKMoonFhQjlwyNkncAA7gHzCh42BDmxhdN_RbrYfj4UvSWu1Hvc50O-2DJg8UzfQtX8vpFBWNk_RjGkx_euMOb_eWtoxbn3LrRRg0rHfS6aYos2mos1dvtsoBynIto05NVWqhjOW7xQtFDiSGRewI) para explorarlo y modificarlo.
 
 ## Ver también
 

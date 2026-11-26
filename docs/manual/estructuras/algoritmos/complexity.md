@@ -50,7 +50,9 @@ curves:
     points: [[2, 5], [10, 90]]
 ```
 
-![Órdenes de crecimiento Θ(n²)](img/ks_cs_complexity_growth.svg)
+[![Órdenes de crecimiento Θ(n²)](img/ks_cs_complexity_growth.svg)](https://ingcom-unrn.github.io/dibu-web/#z=LchBCgIhFAbgvaf4mVWBwRS0yKuIi9JHCPoUfQ3NOdp0jo5Q-87UwLT8PpkrGfiSa6J7lFlJlLTM59ECMXUEgm_kY47EUvB9bvj92ip_axN1o4Adhn8OqxipXMGr0vlCySBTiKEsA9QSWbqBtQeNo9Ow-1HjNDqnfg)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=LchBCgIhFAbgvaf4mVWBwRS0yKuIi9JHCPoUfQ3NOdp0jo5Q-87UwLT8PpkrGfiSa6J7lFlJlLTM59ECMXUEgm_kY47EUvB9bvj92ip_axN1o4Adhn8OqxipXMGr0vlCySBTiKEsA9QSWbqBtQeNo9Ow-1HjNDqnfg) para explorarlo y modificarlo.
 
 ### Clases de complejidad P vs NP
 
@@ -64,7 +66,9 @@ items:
 inkSaver: false
 ```
 
-![Clases de complejidad P vs NP](img/ks_cs_complexity_classes.svg)
+[![Clases de complejidad P vs NP](img/ks_cs_complexity_classes.svg)](https://ingcom-unrn.github.io/dibu-web/#z=LYsxCsMwEAT7e8Wi2i9Qm94IXIYUR3SGS2TZ6A4R_z4yuFqYnfHzkIj3vh1FfuonuXoZ5FHYxJDl_j6aOSOhG-ZEnZty9REObXh0b8QzpDAhzCm8SF02iwSki-8tS-V28fpduEuLWLmY0B8)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=LYsxCsMwEAT7e8Wi2i9Qm94IXIYUR3SGS2TZ6A4R_z4yuFqYnfHzkIj3vh1FfuonuXoZ5FHYxJDl_j6aOSOhG-ZEnZty9REObXh0b8QzpDAhzCm8SF02iwSki-8tS-V28fpduEuLWLmY0B8) para explorarlo y modificarlo.
 
 ## Ver también
 

@@ -61,7 +61,9 @@ fields:
   - {name: pos, type: struct punto, size: 8, align: 4}
 ```
 
-![Layout LP64 con padding](img/ks_cs_struct_layout.svg)
+[![Layout LP64 con padding](img/ks_cs_struct_layout.svg)](https://ingcom-unrn.github.io/dibu-web/#z=TYxBDsIgEEX3c4p_ANw1xnCGLrzCBLBOgkBgWFTTu0vUNi7_fy9P1xIsmtbulFQ0jjXzmrtivp4nuJxQ2HtJCyV-HC6GESrdJETfLAEnvL7cGegn6u5ct39SctvZL1J60mzQ5Dm-iwFHWZLFtNEb)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=TYxBDsIgEEX3c4p_ANw1xnCGLrzCBLBOgkBgWFTTu0vUNi7_fy9P1xIsmtbulFQ0jjXzmrtivp4nuJxQ2HtJCyV-HC6GESrdJETfLAEnvL7cGegn6u5ct39SctvZL1J60mzQ5Dm-iwFHWZLFtNEb) para explorarlo y modificarlo.
 
 ### TAD opaco en C
 
@@ -77,7 +79,9 @@ hidden: true
 inkSaver: false
 ```
 
-![TAD opaco en C](img/ks_cs_struct_opaque.svg)
+[![TAD opaco en C](img/ks_cs_struct_opaque.svg)](https://ingcom-unrn.github.io/dibu-web/#z=PY1BCkIxDET3OUXoSsUTdCd6A92JSPhNMVjT2uYX9PTWL7icmTcz9irssVmdJwMTS0OddgfMhaaMrLiHTlVIzX-958yg9PhXsEgisDESOPpFXQ1y4UomWZvHs-tZAsbVL8OydheIwiksoajhJpDl5rbomrx5MDYGBnWTEFg9jicG0fuROlePkVJj-AA)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=PY1BCkIxDET3OUXoSsUTdCd6A92JSPhNMVjT2uYX9PTWL7icmTcz9irssVmdJwMTS0OddgfMhaaMrLiHTlVIzX-958yg9PhXsEgisDESOPpFXQ1y4UomWZvHs-tZAsbVL8OydheIwiksoajhJpDl5rbomrx5MDYGBnWTEFg9jicG0fuROlePkVJj-AA) para explorarlo y modificarlo.
 
 ## Ver también
 

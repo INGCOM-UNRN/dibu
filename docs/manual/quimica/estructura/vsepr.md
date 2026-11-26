@@ -42,7 +42,9 @@ ligands: [F, F, F, F]
 lonePairs: 1
 ```
 
-![Geometría de SF4 (balancín)](img/ks_chem_vsepr_sf4.svg)
+[![Geometría de SF4 (balancín)](img/ks_chem_vsepr_sf4.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKCtOLSjiKsksyQFy3FPzc1NLig6vTVRISVUIdjNR0EhKzEnMSz68Nk-TKzk1r6QoMcdKIZgrJzM9MS-l2Eoh2k1HAYpiuXLy81IDEjOLgOKGXAA)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKCtOLSjiKsksyQFy3FPzc1NLig6vTVRISVUIdjNR0EhKzEnMSz68Nk-TKzk1r6QoMcdKIZgrJzM9MS-l2Eoh2k1HAYpiuXLy81IDEjOLgOKGXAA) para explorarlo y modificarlo.
 
 ### XeF4 (para completar)
 
@@ -56,7 +58,9 @@ blank: [name, angle, hybridization]
 inkSaver: false
 ```
 
-![XeF4 (para completar)](img/ks_chem_vsepr_xef4_blank.svg)
+[![XeF4 (para completar)](img/ks_chem_vsepr_xef4_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#z=LYrBCsJADETv-YocFXoST_sBPQteBOkhbWMNTbNLNhTq17uCMDC8eRNH4YR75eIQEtrgwf0VT4WccMpbUQ7yM0xs4aQ_DSoL2VwTPvsO_xlAs_GNxNt-gVHJ1nYw2rhDskVbvY_RZZYPhWQbQGy9086e8EVaGb4)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=LYrBCsJADETv-YocFXoST_sBPQteBOkhbWMNTbNLNhTq17uCMDC8eRNH4YR75eIQEtrgwf0VT4WccMpbUQ7yM0xs4aQ_DSoL2VwTPvsO_xlAs_GNxNt-gVHJ1nYw2rhDskVbvY_RZZYPhWQbQGy9086e8EVaGb4) para explorarlo y modificarlo.
 
 ## Ver también
 

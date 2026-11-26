@@ -39,7 +39,9 @@ table: [5, 2, null, 7, 0]
 addresses: [1500, 3100, 4095, 2100, 6000]
 ```
 
-![Traducción de direcciones con paginación](img/ks_so_paginacion.svg)
+[![Traducción de direcciones con paginación](img/ks_so_paginacion.svg)](https://ingcom-unrn.github.io/dibu-web/#z=HYzBDcIwDEXvmcID5OCUFkTXgFtVIRNbyFKUVkl6gLUYgcVIcvmy_fx-ee8yw04veRR6BjFFS6iXeyI-vNffNwILsCap2xYlg99iEzRSx6bJN_1UyeEwml4zwzJZGCzEIwQLFwu4GmJOkrPkSt2EaOHkWo54bc99PiPiav4)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=HYzBDcIwDEXvmcID5OCUFkTXgFtVIRNbyFKUVkl6gLUYgcVIcvmy_fx-ee8yw04veRR6BjFFS6iXeyI-vNffNwILsCap2xYlg99iEzRSx6bJN_1UyeEwml4zwzJZGCzEIwQLFwu4GmJOkrPkSt2EaOHkWo54bc99PiPiav4) para explorarlo y modificarlo.
 
 ## Ver también
 

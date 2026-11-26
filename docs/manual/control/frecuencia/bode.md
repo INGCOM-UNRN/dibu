@@ -44,7 +44,9 @@ asymptotes: true
 margins: true
 ```
 
-![Bode de L(s) = 10 / (s(s+1)(s+10))](img/ks_control_bode_margenes.svg)
+[![Bode de L(s) = 10 / (s(s+1)(s+10))](img/ks_control_bode_margenes.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSMpPSeUqySzJAbKdgGwFIPLRKNZUsFUwNFDQV9Ao1ijWNtQEEQaamlzFlcUlqblWCtXZVkB5HYWC_JzUYiuFaCBT1xCEDWJruRKLK3MLSvJLQDIlRaWpXLmJRemZeTAeAA)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSMpPSeUqySzJAbKdgGwFIPLRKNZUsFUwNFDQV9Ao1ijWNtQEEQaamlzFlcUlqblWCtXZVkB5HYWC_JzUYiuFaCBT1xCEDWJruRKLK3MLSvJLQDIlRaWpXLmJRemZeTAeAA) para explorarlo y modificarlo.
 
 ## Ver también
 

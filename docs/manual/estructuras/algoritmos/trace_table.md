@@ -60,7 +60,9 @@ rows:
   - {stage: output, step: "Mostrar", output: 4}
 ```
 
-![Suma hasta leer 0](img/ks_cs_trace_table_programa.svg)
+[![Suma hasta leer 0](img/ks_cs_trace_table_programa.svg)](https://ingcom-unrn.github.io/dibu-web/#z=jdFBS8NAEAXg-_6KMecIEXoK9ORVQRC8SCnjdmwXN7thdratSP-7LxSq7aF6C5l5X95u7HOUnkzZy9L4LYrbsgZO1tOoea08OAsWsdM814Fpw8WYoohS1zif0ypYyAnjPd3Mj-9iHVLp6XXfUkFm4TTvSu-IbukL6TWwkBDjiAWTEeEnDYPoBHuryk2LjbGixKylLccqk4fnbnE4dwypqcBJeqkS0fAOhN-I_5gOV-Vcmf2pPFz26H4J3X-Ee0kWkkT-KfLOsch1J1fD507IYy74NQriOMB9HNw3)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=jdFBS8NAEAXg-_6KMecIEXoK9ORVQRC8SCnjdmwXN7thdratSP-7LxSq7aF6C5l5X95u7HOUnkzZy9L4LYrbsgZO1tOoea08OAsWsdM814Fpw8WYoohS1zif0ypYyAnjPd3Mj-9iHVLp6XXfUkFm4TTvSu-IbukL6TWwkBDjiAWTEeEnDYPoBHuryk2LjbGixKylLccqk4fnbnE4dwypqcBJeqkS0fAOhN-I_5gOV-Vcmf2pPFz26H4J3X-Ee0kWkkT-KfLOsch1J1fD507IYy74NQriOMB9HNw3) para explorarlo y modificarlo.
 
 ### Cero vueltas (para completar)
 
@@ -78,7 +80,9 @@ rows:
 inkSaver: false
 ```
 
-![Cero vueltas (para completar)](img/ks_cs_trace_table_programa_blank.svg)
+[![Cero vueltas (para completar)](img/ks_cs_trace_table_programa_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#z=XZDNagMxDITvfgrVlySwhT0besq5UOixLEVx1das1jayvEkoeao-Ql-s3v7R5CaG-WYG6TGTAxX09Ki4YzIzSsCoDrKkF8HJaFBuHrslSTBXYsUC64yC4NOUmRRlY41P8SloSLFZD3B1A_2icZ1icfBw6KDUCQcjaV-cAbiGt6KUm_lOwkQtjMlrFbQdhJhrG9B3MCNXWvh298PpjNsuhT58vMeG-Ffyo4Nn5ELnWKzMQwc7xjgu0pfzIuo2lfYCaTmp6m_3H_GtXSBZQtT1arX5B1l7MiGO9ziT_Gwxnw)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=XZDNagMxDITvfgrVlySwhT0besq5UOixLEVx1das1jayvEkoeao-Ql-s3v7R5CaG-WYG6TGTAxX09Ki4YzIzSsCoDrKkF8HJaFBuHrslSTBXYsUC64yC4NOUmRRlY41P8SloSLFZD3B1A_2icZ1icfBw6KDUCQcjaV-cAbiGt6KUm_lOwkQtjMlrFbQdhJhrG9B3MCNXWvh298PpjNsuhT58vMeG-Ffyo4Nn5ELnWKzMQwc7xjgu0pfzIuo2lfYCaTmp6m_3H_GtXSBZQtT1arX5B1l7MiGO9ziT_Gwxnw) para explorarlo y modificarlo.
 
 ### Tabla de seguimiento de variables
 
@@ -90,7 +94,9 @@ rows: [[0, 7], [1, null]]
 rowCount: 4
 ```
 
-![Tabla de seguimiento de variables](img/ks_cs_trace_table_variables.svg)
+[![Tabla de seguimiento de variables](img/ks_cs_trace_table_variables.svg)](https://ingcom-unrn.github.io/dibu-web/#z=HYq9CgMhDIB3nyI4O1yhUHDtK3QTKblrKIGohyYtffs7O34_-tspgnbc6Km4CjlllVM9TkB4EQx6Gxemqm3iBzvPb7itiZU6IiTPPoAfVtBn19t3urQEuOUA6RKgmkj-l3uzqhGu7gA)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=HYq9CgMhDIB3nyI4O1yhUHDtK3QTKblrKIGohyYtffs7O34_-tspgnbc6Km4CjlllVM9TkB4EQx6Gxemqm3iBzvPb7itiZU6IiTPPoAfVtBn19t3urQEuOUA6RKgmkj-l3uzqhGu7gA) para explorarlo y modificarlo.
 
 ### Seguimiento de pila (statics)
 
@@ -104,7 +110,9 @@ operations: ["1. push(10)", "2. pop()"]
 inkSaver: false
 ```
 
-![Seguimiento de pila (statics)](img/ks_cs_trace_table_statics_stack.svg)
+[![Seguimiento de pila (statics)](img/ks_cs_trace_table_statics_stack.svg)](https://ingcom-unrn.github.io/dibu-web/#z=DcuxCsIwEIDh_Z7iyNSCiBVcsrsJCnUTCdd46tGYhORa6Nub8f_g1y2zRS3k2SlNgUFFQ6ORP4v8hKMmfDFmCYRdVVLxtYeVilBUi038DJ4yedHN4glykqhcLjRxsGju19vZonPOQMpc2p9itfgwwx7zUr_dcOjNDs2xZcpdb54gcR5p5WLxTaEy_AE)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=DcuxCsIwEIDh_Z7iyNSCiBVcsrsJCnUTCdd46tGYhORa6Nub8f_g1y2zRS3k2SlNgUFFQ6ORP4v8hKMmfDFmCYRdVVLxtYeVilBUi038DJ4yedHN4glykqhcLjRxsGju19vZonPOQMpc2p9itfgwwx7zUr_dcOjNDs2xZcpdb54gcR5p5WLxTaEy_AE) para explorarlo y modificarlo.
 
 ## Notas
 

@@ -43,7 +43,9 @@ indicator: {name: fenolftaleína, range: [8.2, 10]}
 annotations: [equivalence, half, initial]
 ```
 
-![CH3COOH 0,1 M con NaOH 0,1 M](img/ks_chem_titration_acetico.svg)
+[![CH3COOH 0,1 M con NaOH 0,1 M](img/ks_chem_titration_acetico.svg)](https://ingcom-unrn.github.io/dibu-web/#z=TY9NCsJADIX3c4ocYCit_3TrRhDtAUQkTKcaOma0RkWkR_IUXsy0IrhLXr6Xl8jj5HMQkgaFIhutggrzxXBeFAtIbQYrcJFhjb_WIGN4iFLPmrjM4e6x3qGj0sJpiTmMkunEdiaXQ5pkFm4xXI_KD8at6aNY1PwHMHbjLqI1upIcSmwU-eqV5xgqweDfL0YL6t-rvJklAwtZum31Io7SP3BR3Z-vdFOanbdwwFBZICYhDFvzAQ)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=TY9NCsJADIX3c4ocYCit_3TrRhDtAUQkTKcaOma0RkWkR_IUXsy0IrhLXr6Xl8jj5HMQkgaFIhutggrzxXBeFAtIbQYrcJFhjb_WIGN4iFLPmrjM4e6x3qGj0sJpiTmMkunEdiaXQ5pkFm4xXI_KD8at6aNY1PwHMHbjLqI1upIcSmwU-eqV5xgqweDfL0YL6t-rvJklAwtZum31Io7SP3BR3Z-vdFOanbdwwFBZICYhDFvzAQ) para explorarlo y modificarlo.
 
 ### Ácido poliprótico H3PO4 con NaOH
 
@@ -55,7 +57,9 @@ titrant: {conc: 0.1}
 inkSaver: false
 ```
 
-![Ácido poliprótico H3PO4 con NaOH](img/ks_chem_titration_fosforico_triprotica.svg)
+[![Ácido poliprótico H3PO4 con NaOH](img/ks_chem_titration_fosforico_triprotica.svg)](https://ingcom-unrn.github.io/dibu-web/#z=PY1BCsIwEEX3OcUcIIQ2tQg5QUGwgksRGdIIQ2MS2rFSpAvP5BF6MaMLd5_Pe__znJwBJh6QKQaRk8_F-rLURUjRUxrWN5ON0FSHdgM2Bthj2wgM6GfO7LOn0Bl4OOwvmDUJaYcGTlqVtYSt0hJKrar6LL-yNVCoUsIU_f2WbV0s4ncfOE_9gUVQ6I84ucHAFf3oxAc)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=PY1BCsIwEEX3OcUcIIQ2tQg5QUGwgksRGdIIQ2MS2rFSpAvP5BF6MaMLd5_Pe__znJwBJh6QKQaRk8_F-rLURUjRUxrWN5ON0FSHdgM2Bthj2wgM6GfO7LOn0Bl4OOwvmDUJaYcGTlqVtYSt0hJKrar6LL-yNVCoUsIU_f2WbV0s4ncfOE_9gUVQ6I84ucHAFf3oxAc) para explorarlo y modificarlo.
 
 ### Base débil NH3 con HCl
 
@@ -67,7 +71,9 @@ titrant: {conc: 0.1, name: HCl}
 blankAnnotations: true
 ```
 
-![Base débil NH3 con HCl](img/ks_chem_titration_amoniaco_blank.svg)
+[![Base débil NH3 con HCl](img/ks_chem_titration_amoniaco_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKMksKUosyczP4wKycoACTonFqQoph1cmZeYo-HkYKyTn5yl4OOdwJeYl5lSWABVUZ2fmpVgplKcmZscnARXrKBR4J1kpmOiZm-qAVCdbKRjoGeoolOXnlOYC1RuZ1nKBbckrAWpGUpCXCJIGml3LlZSTmJftmJeXXwJ2SzHQXUWlqVwA)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKMksKUosyczP4wKycoACTonFqQoph1cmZeYo-HkYKyTn5yl4OOdwJeYl5lSWABVUZ2fmpVgplKcmZscnARXrKBR4J1kpmOiZm-qAVCdbKRjoGeoolOXnlOYC1RuZ1nKBbckrAWpGUpCXCJIGml3LlZSTmJftmJeXXwJ2SzHQXUWlqVwA) para explorarlo y modificarlo.
 
 ## Notas
 

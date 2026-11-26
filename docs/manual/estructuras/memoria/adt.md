@@ -44,7 +44,9 @@ representations:
   - {name: Lista, fields: ["nodo_t *cabeza"]}
 ```
 
-![Especificación TAD Pila](img/ks_cs_adt_pila.svg)
+[![Especificación TAD Pila](img/ks_cs_adt_pila.svg)](https://ingcom-unrn.github.io/dibu-web/#z=ZY_BSgNBDIbv8xRxLraygueVFgr11EU86KkUyc5ml9DpzJCZFlT2qXwEX8y4iyB4-5P8H_-f8paoBuyKKVy8yoecyHHPDh1_fQZ43mzhiT2agCc9T7L1GI47Dl2uociZTEwkWDiGXBuAW_jIPAQsZ1HC9oulreCo9hpim0ku2EWpIE3XBFcreHxpGjv-R4cJTTEXHYqmXMMa7nQ1NZjDR-M8U1DH3johlMXy3h4MhwsKY_glYb1S0ghpbFb737obERp8nPPnPxvOBSvomfzPl3sbYhdfC9w4bOkd7WE03w)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=ZY_BSgNBDIbv8xRxLraygueVFgr11EU86KkUyc5ml9DpzJCZFlT2qXwEX8y4iyB4-5P8H_-f8paoBuyKKVy8yoecyHHPDh1_fQZ43mzhiT2agCc9T7L1GI47Dl2uociZTEwkWDiGXBuAW_jIPAQsZ1HC9oulreCo9hpim0ku2EWpIE3XBFcreHxpGjv-R4cJTTEXHYqmXMMa7nQ1NZjDR-M8U1DH3johlMXy3h4MhwsKY_glYb1S0ghpbFb737obERp8nPPnPxvOBSvomfzPl3sbYhdfC9w4bOkd7WE03w) para explorarlo y modificarlo.
 
 ## Ver también
 

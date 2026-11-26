@@ -39,7 +39,9 @@ keys: [10, 20, 30, 40, 50, 25]
 steps: rotations
 ```
 
-![Árbol AVL con rotaciones](img/ks_alg_avl.svg)
+[![Árbol AVL con rotaciones](img/ks_alg_avl.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSCzL4SrJLMkBMg83FiXl5yg4hvkoJOfnKRTllyQmZ-bnpRZzZadWFlspRBsa6CgYAbExEJsAsSmIbxrLVVySWgCUB2koAWoo5gIA)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSCzL4SrJLMkBMg83FiXl5yg4hvkoJOfnKRTllyQmZ-bnpRZzZadWFlspRBsa6CgYAbExEJsAsSmIbxrLVVySWgCUB2koAWoo5gIA) para explorarlo y modificarlo.
 
 ## Ver también
 

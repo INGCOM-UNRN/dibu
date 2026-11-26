@@ -55,7 +55,9 @@ frames:
 pointers: "1.x -> 0.a; intercambiar.y -> main.b"
 ```
 
-![Marcos de activación con punteros](img/ks_cs_call_stack_marcos.svg)
+[![Marcos de activación con punteros](img/ks_cs_call_stack_marcos.svg)](https://ingcom-unrn.github.io/dibu-web/#z=bY9BasMwEEX3PsVHiyxKbFKyKLg00AN0l10pZSwrVNSWjDRKbUpP1SP0Yh0LEtykWmmePn-eeBpMDU1d9xqZ9HvBljshTxS0j2gNSLM9krY_3w7aOwzJsQk-FvHNfzy2bTAxmliDQzKZ7aXyNB8C9TIUQIlDclLlXY2erBMEHCnkx_mU-HQSrkFr4V2S23YNzn7W8ddlrDnH7i5iy1V2ltXUN5ZCbgiGU3B7v7AYSCyvPcbzArUiddqhpBE36kpnWqSb_9P5t3hWlEY8YKteisFnP6HqthpR7rCp6P6PdDXNeHatGlX8Ag)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=bY9BasMwEEX3PsVHiyxKbFKyKLg00AN0l10pZSwrVNSWjDRKbUpP1SP0Yh0LEtykWmmePn-eeBpMDU1d9xqZ9HvBljshTxS0j2gNSLM9krY_3w7aOwzJsQk-FvHNfzy2bTAxmliDQzKZ7aXyNB8C9TIUQIlDclLlXY2erBMEHCnkx_mU-HQSrkFr4V2S23YNzn7W8ddlrDnH7i5iy1V2ltXUN5ZCbgiGU3B7v7AYSCyvPcbzArUiddqhpBE36kpnWqSb_9P5t3hWlEY8YKteisFnP6HqthpR7rCp6P6PdDXNeHatGlX8Ag) para explorarlo y modificarlo.
 
 ### Pila de llamadas por pasos
 
@@ -76,7 +78,9 @@ steps:
 inkSaver: false
 ```
 
-![Pila de llamadas por pasos](img/ks_cs_call_stack_steps_blank.svg)
+[![Pila de llamadas por pasos](img/ks_cs_call_stack_steps_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#z=tZCxisNADET7_YrB1QWcwim3uV8IBK49FFuGxfJ62dUaQvC_n-wrrkmR5lSOnmYG6SOxR08i30Wpn5wGFVOuQQgDQ4RmGqggLRmJylLcXShOXySVi4fmyq4op-IdcIbQncWjOe5AGKnXj8upsSUwZpr5APc54znW2GtYosdMIbZYKZvnM5vBZ7Ntr8DdsLUmZrWjplwO8C_6iOxO1n6tLCuj-__0N8Bua5FZa44mdLZbUuLh94ObC3G60cp5v5TC7gc)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=tZCxisNADET7_YrB1QWcwim3uV8IBK49FFuGxfJ62dUaQvC_n-wrrkmR5lSOnmYG6SOxR08i30Wpn5wGFVOuQQgDQ4RmGqggLRmJylLcXShOXySVi4fmyq4op-IdcIbQncWjOe5AGKnXj8upsSUwZpr5APc54znW2GtYosdMIbZYKZvnM5vBZ7Ntr8DdsLUmZrWjplwO8C_6iOxO1n6tLCuj-__0N8Bua5FZa44mdLZbUuLh94ObC3G60cp5v5TC7gc) para explorarlo y modificarlo.
 
 ## Notas
 

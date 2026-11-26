@@ -50,7 +50,9 @@ from: -20
 to: 120
 ```
 
-![100 g de hielo de −20 °C a 120 °C](img/ks_chem_heating_curve_agua.svg)
+[![100 g de hielo de −20 °C a 120 °C](img/ks_chem_heating_curve_agua.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSyEhNLMnMS49PLi0qS-UqySzJAQoaGhgopCukpCpkZKbm5IMYjzomGRkoHNrgrJCoYAhhcRWXJhWXJOYlAzWUJ5akFnHlJhYXgzVzpRXl51op6BoZcJXkW4E0cAEA)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSyEhNLMnMS49PLi0qS-UqySzJAQoaGhgopCukpCpkZKbm5IMYjzomGRkoHNrgrJCoYAhhcRWXJhWXJOYlAzWUJ5akFnHlJhYXgzVzpRXl51op6BoZcJXkW4E0cAEA) para explorarlo y modificarlo.
 
 ### Curva de calentamiento (evaluación)
 
@@ -66,7 +68,9 @@ blankPhases: true
 inkSaver: false
 ```
 
-![Curva de calentamiento (evaluación)](img/ks_chem_heating_curve_blank.svg)
+[![Curva de calentamiento (evaluación)](img/ks_chem_heating_curve_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#z=LY07DsIwEER7n2JLKJCSgsYtDSUSB0ATsyFW_EHetSPOxRG4GJagmdF7Gmn09WRLC0N9etxcLY2Neg1dnjqA7kwOgZMi-p6ZdtwQKpz_vNPeSJ1EkVzfb1AuJkLE0nEwc8nR0mEcjGZLY-8pIK3nfmVJS-UfXxYIy9_4tF7RuFiaEYTNFw)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=LY07DsIwEER7n2JLKJCSgsYtDSUSB0ATsyFW_EHetSPOxRG4GJagmdF7Gmn09WRLC0N9etxcLY2Neg1dnjqA7kwOgZMi-p6ZdtwQKpz_vNPeSJ1EkVzfb1AuJkLE0nEwc8nR0mEcjGZLY-8pIK3nfmVJS-UfXxYIy9_4tF7RuFiaEYTNFw) para explorarlo y modificarlo.
 
 ## Ver también
 

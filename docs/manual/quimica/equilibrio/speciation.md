@@ -36,7 +36,9 @@ pKa: [2.15, 7.2, 12.35]
 species: [H3PO4, H2PO4^-, HPO4^2-, PO4^3-]
 ```
 
-![Especiación del ácido fosfórico](img/ks_chem_speciation_fosfato.svg)
+[![Especiación del ácido fosfórico](img/ks_chem_speciation_fosfato.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKC5ITc5MLMnMz-MqySzJAYq4QoSSMw9vzlNISc1ROLwwOTMlXyEtvzjt8OaizOR8rgLvRCuFaCM9Q1MdBXM9Ix0FQyM9Y9NYLrDO1GKgnIdxgL-JjoKHEZCK0wUyQLQRkAGijXVjuQA)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKC5ITc5MLMnMz-MqySzJAYq4QoSSMw9vzlNISc1ROLwwOTMlXyEtvzjt8OaizOR8rgLvRCuFaCM9Q1MdBXM9Ix0FQyM9Y9NYLrDO1GKgnIdxgL-JjoKHEZCK0wUyQLQRkAGijXVjuQA) para explorarlo y modificarlo.
 
 ### Sistema carbonato (pKa en blanco)
 
@@ -49,7 +51,9 @@ blankPKa: true
 inkSaver: false
 ```
 
-![Sistema carbonato (pKa en blanco)](img/ks_chem_speciation_carbonico_blank.svg)
+[![Sistema carbonato (pKa en blanco)](img/ks_chem_speciation_carbonico_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#z=HYzBCsIwEETv-xV7VEiLNughVy8FDwo9SoVtWCE0TUKyCv69iZcZ5sEb-SY2WBJbR-JiAHHiK5lcEd4ILeUlBpKIu3Ql5ICLp2DjHuo0-Dj3-qTweOi1nuF_w6XicbjctMKx5rNT2GroZmjuem-i5DeDC-tEH84GX-QLww8)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=HYzBCsIwEETv-xV7VEiLNughVy8FDwo9SoVtWCE0TUKyCv69iZcZ5sEb-SY2WBJbR-JiAHHiK5lcEd4ILeUlBpKIu3Ql5ICLp2DjHuo0-Dj3-qTweOi1nuF_w6XicbjctMKx5rNT2GroZmjuem-i5DeDC-tEH84GX-QLww8) para explorarlo y modificarlo.
 
 ## Ver también
 

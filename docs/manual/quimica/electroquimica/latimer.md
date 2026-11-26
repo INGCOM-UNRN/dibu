@@ -45,7 +45,9 @@ compute: [[0, 2], [0, 4]]
 showDisproportionation: true
 ```
 
-![Diagrama Latimer del Mn (medio ácido)](img/ks_chem_latimer_manganeso.svg)
+[![Diagrama Latimer del Mn (medio ácido)](img/ks_chem_latimer_manganeso.svg)](https://ingcom-unrn.github.io/dibu-web/#z=LU5LDoIwEN33FLPUWBoo4Ic1S4kHICVpoNFJgGlKiXocz-LFLODmvfm8eW_825oCeu1xMI559H1oS9R3pwcN120OnemhGmE3mA4Jvp8WO9qzyZoWzVRAXY23rIk4rCy3Qi7YpIeV5EqK0Qu74EljODpxOHLIOKQcgjhWzJI3o0fdL56xyMNaChkwFpecQyLyhEOUiOSsWEuDnX14tq7jIFMcFs6UYtODniVO1pElt2T9A72bDfsB)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=LU5LDoIwEN33FLPUWBoo4Ic1S4kHICVpoNFJgGlKiXocz-LFLODmvfm8eW_825oCeu1xMI559H1oS9R3pwcN120OnemhGmE3mA4Jvp8WO9qzyZoWzVRAXY23rIk4rCy3Qi7YpIeV5EqK0Qu74EljODpxOHLIOKQcgjhWzJI3o0fdL56xyMNaChkwFpecQyLyhEOUiOSsWEuDnX14tq7jIFMcFs6UYtODniVO1pElt2T9A72bDfsB) para explorarlo y modificarlo.
 
 ### Latimer Cu (en blanco)
 
@@ -62,7 +64,9 @@ blankDisproportionation: true
 inkSaver: false
 ```
 
-![Latimer Cu (en blanco)](img/ks_chem_latimer_cobre_blank.svg)
+[![Latimer Cu (en blanco)](img/ks_chem_latimer_cobre_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#z=dY25DsIwEET7_YotQVhRYgkKt6Gko4wcySSLsOLYlg-Ov8dJaGlWmnmafenjSaBRSc8UIOlkSrxsEduMO7J4M8oObg_R06ApCuza3PMDK7xfrwT31mMZOVsgZ9gwrCV4l8gmrcwyqavmVNrqyCUMbvY5FVHX1Qy5lLAopnarR4EpZIL4cK-zjj4478Ly-ydY4Tr4S7WdrupJQeC92Am-)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=dY25DsIwEET7_YotQVhRYgkKt6Gko4wcySSLsOLYlg-Ov8dJaGlWmnmafenjSaBRSc8UIOlkSrxsEduMO7J4M8oObg_R06ApCuza3PMDK7xfrwT31mMZOVsgZ9gwrCV4l8gmrcwyqavmVNrqyCUMbvY5FVHX1Qy5lLAopnarR4EpZIL4cK-zjj4478Ly-ydY4Tr4S7WdrupJQeC92Am-) para explorarlo y modificarlo.
 
 ## Ver también
 

@@ -27,7 +27,9 @@ coincide con la versión de dibu del repositorio.
 4. **Validar** con `validar.py` y, si se puede, construir el documento (`myst build`, `typst
    compile`, `dibu sync-md --verificar`).
 5. **Mirar el resultado** cuando haya forma de ver el SVG: que el diagrama muestre lo que dice
-   el texto que lo rodea.
+   el texto que lo rodea. Para una persona, el [editor web](https://ingcom-unrn.github.io/dibu-web/)
+   es el playground: abre un bloque con vista previa en vivo, y cada ejemplo del
+   [manual](https://ingcom-unrn.github.io/dibu/) tiene un enlace «Abrir en el editor».
 
 ## Reglas
 

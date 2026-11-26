@@ -50,7 +50,9 @@ variant: avl
 insert: [10, 20, 30, 40, 50, 25]
 ```
 
-![Árbol AVL rebalanceado](img/ks_cs_tree_avl.svg)
+[![Árbol AVL rebalanceado](img/ks_cs_tree_avl.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKClKTeUqySzJAbIPNxYl5ecoOIb5KBSlJiXmJOYlpyam5HOVJRZlJuaVWCkkluVwZeYVpxYB2dGGBjoKRkBsDMQmQGwK4pvGcgEA)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKClKTeUqySzJAbIPNxYl5ecoOIb5KBSlJiXmJOYlpyam5HOVJRZlJuaVWCkkluVwZeYVpxYB2dGGBjoKRkBsDMQmQGwK4pvGcgEA) para explorarlo y modificarlo.
 
 ### Max-Heap con arreglo subyacente
 
@@ -63,7 +65,9 @@ showArray: true
 inkSaver: false
 ```
 
-![Max-Heap con arreglo subyacente](img/ks_cs_tree_heap_array.svg)
+[![Max-Heap con arreglo subyacente](img/ks_cs_tree_heap_array.svg)](https://ingcom-unrn.github.io/dibu-web/#z=FYwxCgIxEEX7OcUcQGHBQjednY2VpViMy9cNhmSZTFZz-x2LB__B51lfENgUIIuWfF_lt79AFp5KZlHFOxWu7dllQjbQKholW-DZT26poQa-j8OOj87JOQwPqnP5nlWl_-sNFPPnJis08EtSBW0)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=FYwxCgIxEEX7OcUcQGHBQjednY2VpViMy9cNhmSZTFZz-x2LB__B51lfENgUIIuWfF_lt79AFp5KZlHFOxWu7dllQjbQKholW-DZT26poQa-j8OOj87JOQwPqnP5nlWl_-sNFPPnJis08EtSBW0) para explorarlo y modificarlo.
 
 ## Notas
 

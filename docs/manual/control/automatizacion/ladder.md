@@ -41,7 +41,9 @@ rungs:
 inkSaver: true
 ```
 
-![Arranque y parada con enclavamiento](img/ks_control_ladder_enclavamiento.svg)
+[![Arranque y parada con enclavamiento](img/ks_control_ladder_enclavamiento.svg)](https://ingcom-unrn.github.io/dibu-web/#z=dZC_TgMxDMb3eworM0VXxmwdGSpRtRtiMIlVIpL48OUqlaoPxHPwYiR3lKZq2fzn58_-nPYdafBoLUmTXPI5W4hg_BgI9tChoEUwHIGi8bjD4CgmbmSI2143ALPcDCHXNKglJ5ZrWGUMwPPWGT2GZYrlFE_580FFVlnksb1v1V0-6ZV80UQxb6iOL7fpVaH_mjM4RDNpzCuNp9GFOl5TDxW1-f6S4AzXnGHnT1uqm4rPEavdbyh0LO4TbX6CJfCeYo5vur88_1xOHItSOb4T6qnozlvof5f9o5L5SmOaWl2-YOFRQnmBi-9r3JFoSDJQ8wM)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=dZC_TgMxDMb3eworM0VXxmwdGSpRtRtiMIlVIpL48OUqlaoPxHPwYiR3lKZq2fzn58_-nPYdafBoLUmTXPI5W4hg_BgI9tChoEUwHIGi8bjD4CgmbmSI2143ALPcDCHXNKglJ5ZrWGUMwPPWGT2GZYrlFE_580FFVlnksb1v1V0-6ZV80UQxb6iOL7fpVaH_mjM4RDNpzCuNp9GFOl5TDxW1-f6S4AzXnGHnT1uqm4rPEavdbyh0LO4TbX6CJfCeYo5vur88_1xOHItSOb4T6qnozlvof5f9o5L5SmOaWl2-YOFRQnmBi-9r3JFoSDJQ8wM) para explorarlo y modificarlo.
 
 ## Notas
 

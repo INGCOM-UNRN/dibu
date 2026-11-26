@@ -37,7 +37,9 @@ blankCosts: true
 blankTotal: true
 ```
 
-![Análisis línea a línea (evaluación)](img/ks_cs_cost_table_sangria_blank.svg)
+[![Análisis línea a línea (evaluación)](img/ks_cs_cost_table_sangria_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#z=Nc4xDsIwDEDRPaewMrUqDO2YTIgrsFUIuVGQIiwHNS6C43AAJo6QixFS8GBZ_y2Wx9UbcDHJSXAiryQIlbLj_KSQQgLKL_YI-D8af0Na0IX85lZRYJ-MAtjCqM9xhsbaVm9Au_67WR9_BmXuXWerDdVK74tLFCQDA6uJkC_78ksyIPPi13BYvYYP)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=Nc4xDsIwDEDRPaewMrUqDO2YTIgrsFUIuVGQIiwHNS6C43AAJo6QixFS8GBZ_y2Wx9UbcDHJSXAiryQIlbLj_KSQQgLKL_YI-D8af0Na0IX85lZRYJ-MAtjCqM9xhsbaVm9Au_67WR9_BmXuXWerDdVK74tLFCQDA6uJkC_78ksyIPPi13BYvYYP) para explorarlo y modificarlo.
 
 ## Ver también
 

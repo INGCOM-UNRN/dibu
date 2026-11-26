@@ -39,7 +39,9 @@ references: [7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1]
 algorithms: [fifo, lru, opt]
 ```
 
-![Algoritmos de reemplazo de páginas](img/ks_so_reemplazo.svg)
+[![Algoritmos de reemplazo de páginas](img/ks_so_reemplazo.svg)](https://ingcom-unrn.github.io/dibu-web/#z=TY1LCgIxEET3OUUfIAudCMLsPIcMEsZKDORHJy7G23gWL2YSFdwU9Yrq6rplzJS1xYWRvV4REKuorvqWn7xN7GpIha4gBkKrPFKH_HpaF3URhnVAmUkJhgEjrp3OR0k7SXtJ0zBq6GGg-iXTX6GZ78ki9OftLfQh40yS5PkuKeW6iDc)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=TY1LCgIxEET3OUUfIAudCMLsPIcMEsZKDORHJy7G23gWL2YSFdwU9Yrq6rplzJS1xYWRvV4REKuorvqWn7xN7GpIha4gBkKrPFKH_HpaF3URhnVAmUkJhgEjrp3OR0k7SXtJ0zBq6GGg-iXTX6GZ78ki9OftLfQh40yS5PkuKeW6iDc) para explorarlo y modificarlo.
 
 ### Algoritmo del reloj
 
@@ -51,7 +53,9 @@ references: [1, 2, 3, 2, 4, 1, 5, 2, 1, 2, 3, 5]
 algorithm: clock
 ```
 
-![Algoritmo del reloj](img/ks_so_reloj.svg)
+[![Algoritmo del reloj](img/ks_so_reloj.svg)](https://ingcom-unrn.github.io/dibu-web/#z=PYwxDoMwEAT7e8U9wA0BN-7yjgghy1kIcMbWcQ2_hxApzWpmirWjInCNEwZFlZiQsRnZbHL1p0xFZ8uF3xBWSFlo1JixB25JMUKxpa-9GscPx-29neNL_c3_7nuKv7tPDpykpJVO)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=PYwxDoMwEAT7e8U9wA0BN-7yjgghy1kIcMbWcQ2_hxApzWpmirWjInCNEwZFlZiQsRnZbHL1p0xFZ8uF3xBWSFlo1JixB25JMUKxpa-9GscPx-29neNL_c3_7nuKv7tPDpykpJVO) para explorarlo y modificarlo.
 
 ## Ver también
 

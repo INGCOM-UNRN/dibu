@@ -42,7 +42,9 @@ values: [1]
 traceLabels: ["Inicio", "push(2)", "pop()"]
 ```
 
-![Pila con traza vertical](img/ks_cs_stack_vertical_multi.svg)
+[![Pila con traza vertical](img/ks_cs_stack_vertical_multi.svg)](https://ingcom-unrn.github.io/dibu-web/#z=PYuxCoNADED3fEW4SaFLO94fCB26FykxBAxNvcPLCfr1Wge39x48X7NELE78BVe3Q15qhJwm9Jk2wkVmVyYDozVVj1f4_Kq5wkJWpUR833s4DpYnDWL_ELpJWVO4Yci1jM2jPTHlpg097A)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=PYuxCoNADED3fEW4SaFLO94fCB26FykxBAxNvcPLCfr1Wge39x48X7NELE78BVe3Q15qhJwm9Jk2wkVmVyYDozVVj1f4_Kq5wkJWpUR833s4DpYnDWL_ELpJWVO4Yci1jM2jPTHlpg097A) para explorarlo y modificarlo.
 
 ## Ver también
 

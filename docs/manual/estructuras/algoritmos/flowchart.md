@@ -46,7 +46,9 @@ steps:
       - "i = i + 1"
 ```
 
-![Bucle con condición < & >](img/ks_cs_flowchart_completo.svg)
+[![Bucle con condición < & >](img/ks_cs_flowchart_completo.svg)](https://ingcom-unrn.github.io/dibu-web/#z=TY5NCsIwEIX3OcVjFkWRgm6DuvAa4qKkUzoQktJEioin8ghezGks6mJ-eN97w-TbwBadj5PrmzGbLNmrQKer8wwXw1ytOHk9A_aocCSTMg_JGqDGXaKaPfOIQI8ikeCALZV96qVcE40GVJW244cBbbRlzj7p1DQ040rWtIhA7jlYnCnpvYQNhC5fxj7xj9V_bHlANLAj8wY)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=TY5NCsIwEIX3OcVjFkWRgm6DuvAa4qKkUzoQktJEioin8ghezGks6mJ-eN97w-TbwBadj5PrmzGbLNmrQKer8wwXw1ytOHk9A_aocCSTMg_JGqDGXaKaPfOIQI8ikeCALZV96qVcE40GVJW244cBbbRlzj7p1DQ040rWtIhA7jlYnCnpvYQNhC5fxj7xj9V_bHlANLAj8wY) para explorarlo y modificarlo.
 
 ### Lazo do-while: el cuerpo se ejecuta al menos una vez
 
@@ -62,7 +64,9 @@ steps:
   - {io: "mostrar i"}
 ```
 
-![Lazo do-while: el cuerpo se ejecuta al menos una vez](img/ks_cs_flowchart_do_while.svg)
+[![Lazo do-while: el cuerpo se ejecuta al menos una vez](img/ks_cs_flowchart_do_while.svg)](https://ingcom-unrn.github.io/dibu-web/#z=RczBCsIwDMbxe5_ioydFBoq3oW_g3XPoIqt0S2lThxPf3W47eEryI_z1HbnFI8jkekpq1GuoYG80Czpppt4vNwe4wikKMoOf7IoSKGDgUTLKSHjxbE1Wjrk1QAPrccXRrnsn9y1T8YLzgqjYrnN9jkkcZ0o7v7d_XRIeB5y2zMdLTQySNVGCt1_zAw)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=RczBCsIwDMbxe5_ioydFBoq3oW_g3XPoIqt0S2lThxPf3W47eEryI_z1HbnFI8jkekpq1GuoYG80Czpppt4vNwe4wikKMoOf7IoSKGDgUTLKSHjxbE1Wjrk1QAPrccXRrnsn9y1T8YLzgqjYrnN9jkkcZ0o7v7d_XRIeB5y2zMdLTQySNVGCt1_zAw) para explorarlo y modificarlo.
 
 ### break en el lazo interno y continue en el externo
 
@@ -84,7 +88,9 @@ steps:
       - "total = total + 1"
 ```
 
-![break en el lazo interno y continue en el externo](img/ks_cs_flowchart_break_continue.svg)
+[![break en el lazo interno y continue en el externo](img/ks_cs_flowchart_break_continue.svg)](https://ingcom-unrn.github.io/dibu-web/#z=ZY9BDoIwEEX3nOKnK426MO6asPAAxgS9QMVBik1LyhDF00sLEoirSee_zpvhriaJwrhXXirPCWs2fePmST1BFmRg1MdBWyZvHTrkzrK2LY0pvWOQNEx1IxNgh8J5CaED4JV90OqwFn0A3J2MNUC6iEyaYi_GJsAlWTm9AvazSbBvafo9KKp_xVIzU1VBpcUs-NcNeLx94RvHuH7M6Xy5ZscMeotKTOsIdqwMUgx1E276Ag)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=ZY9BDoIwEEX3nOKnK426MO6asPAAxgS9QMVBik1LyhDF00sLEoirSee_zpvhriaJwrhXXirPCWs2fePmST1BFmRg1MdBWyZvHTrkzrK2LY0pvWOQNEx1IxNgh8J5CaED4JV90OqwFn0A3J2MNUC6iEyaYi_GJsAlWTm9AvazSbBvafo9KKp_xVIzU1VBpcUs-NcNeLx94RvHuH7M6Xy5ZscMeotKTOsIdqwMUgx1E276Ag) para explorarlo y modificarlo.
 
 ### def buscar(xs, x) (para completar)
 
@@ -101,7 +107,9 @@ steps:
 inkSaver: false
 ```
 
-![def buscar(xs, x) (para completar)](img/ks_cs_flowchart_return_blank.svg)
+[![def buscar(xs, x) (para completar)](img/ks_cs_flowchart_return_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#z=ZY5BCoMwEEX3OcUnKwV7gYDbXqC9wKgTFNNEktGmlN69UUqhdDX8_96HkcfCBtaFez9SFCWTuFLogS26NfUUq5wa5BrVQpHQh9viWCjWWiXhJRkFnGBDLKMN7JGTLhUwBHPcHU_2oG2LrD8lICN780279owsa_TFvcaVdYPOkZ8NpKSX-jXO5NKfMvn5QhuXX-yO1Rs)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=ZY5BCoMwEEX3OcUnKwV7gYDbXqC9wKgTFNNEktGmlN69UUqhdDX8_96HkcfCBtaFez9SFCWTuFLogS26NfUUq5wa5BrVQpHQh9viWCjWWiXhJRkFnGBDLKMN7JGTLhUwBHPcHU_2oG2LrD8lICN780279owsa_TFvcaVdYPOkZ8NpKSX-jXO5NKfMvn5QhuXX-yO1Rs) para explorarlo y modificarlo.
 
 ### try / except / else / finally
 
@@ -123,7 +131,9 @@ steps:
     propagate: true
 ```
 
-![try / except / else / finally](img/ks_cs_flowchart_try.svg)
+[![try / except / else / finally](img/ks_cs_flowchart_try.svg)](https://ingcom-unrn.github.io/dibu-web/#z=ZZDBCsIwDIbvfYqwkx6G94IHD7spwhTvZWZbobYlzXBDfHfbbjjEXBryf0n-lCePElrjnk2viAVrNrHANMEOcGzQc0pMwPi02ipjJhEYfZACoISXdhKKY1XVwDiyK965HPuTnqKEhEfIwh605U3mtkWW5w0r-lDc9Bgk3JQZsCJytGgAdye_eWLz5tP5cq0PNWBCl5nR7Drxh7Izsdzx57DGTgcmRckn2nhNJjw5rzrF-V8GFB8)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=ZZDBCsIwDIbvfYqwkx6G94IHD7spwhTvZWZbobYlzXBDfHfbbjjEXBryf0n-lCePElrjnk2viAVrNrHANMEOcGzQc0pMwPi02ipjJhEYfZACoISXdhKKY1XVwDiyK965HPuTnqKEhEfIwh605U3mtkWW5w0r-lDc9Bgk3JQZsCJytGgAdye_eWLz5tP5cq0PNWBCl5nR7Drxh7Izsdzx57DGTgcmRckn2nhNJjw5rzrF-V8GFB8) para explorarlo y modificarlo.
 
 ### try / finally (para completar)
 
@@ -140,7 +150,9 @@ steps:
     propagate: true
 ```
 
-![try / finally (para completar)](img/ks_cs_flowchart_try_finally_blank.svg)
+[![try / finally (para completar)](img/ks_cs_flowchart_try_finally_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#z=ZU47DsMgDN05hZWJDGl3pF6ju4NMi-oGyxhV3L5BYmrfZL2vrQsFSFw-8YlqzrLxSZh2uELKBzJ38IKKEMtbmAx1dTvj8bojN6rD28hVI6nBAWwjO46BDQYfYElwA9w1q9dmuC6_umiJVFF9mtqc_i-6RC6V_LSdOcEHGs03vg)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=ZU47DsMgDN05hZWJDGl3pF6ju4NMi-oGyxhV3L5BYmrfZL2vrQsFSFw-8YlqzrLxSZh2uELKBzJ38IKKEMtbmAx1dTvj8bojN6rD28hVI6nBAWwjO46BDQYfYElwA9w1q9dmuC6_umiJVFF9mtqc_i-6RC6V_LSdOcEHGs03vg) para explorarlo y modificarlo.
 
 ## Notas
 

@@ -43,7 +43,9 @@ wave: square
 harmonics: 9
 ```
 
-![Serie de Fourier de una onda cuadrada](img/ks_sen_serie_fourier.svg)
+[![Serie de Fourier de una onda cuadrada](img/ks_sen_serie_fourier.svg)](https://ingcom-unrn.github.io/dibu-web/#z=JYrRDYAgDAX_O0XXkAFcwAleaI0kClioxu3F-Hd3uf5UDbwWt6RGPfV96KLDWJTnv3_oGVyygKNDDAK6cY23nQ5T2mBHySm2wBO9)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=JYrRDYAgDAX_O0XXkAFcwAleaI0kClioxu3F-Hd3uf5UDbwWt6RGPfV96KLDWJTnv3_oGVyygKNDDAK6cY23nQ5T2mBHySm2wBO9) para explorarlo y modificarlo.
 
 ### DFT de 8 puntos
 
@@ -53,7 +55,9 @@ title: DFT de 8 puntos
 sequence: [1, 1, 1, 1, 0, 0, 0, 0]
 ```
 
-![DFT de 8 puntos](img/ks_sen_dft.svg)
+[![DFT de 8 puntos](img/ks_sen_dft.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSMsvLcpMLeIqySzJAXJd3EIUUlIVLBQKSvNK8ou5ilMLS1PzkoEy0YY6CnBkAEexXAA)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSMsvLcpMLeIqySzJAXJd3EIUUlIVLBQKSvNK8ou5ilMLS1PzkoEy0YY6CnBkAEexXAA) para explorarlo y modificarlo.
 
 ## Ver también
 

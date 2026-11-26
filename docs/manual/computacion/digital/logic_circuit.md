@@ -33,7 +33,9 @@ expr: "A·B + A·C + B·C"
 output: M
 ```
 
-![Circuito de la función mayoría](img/ks_dig_circuito_mayoria.svg)
+[![Circuito de la función mayoría](img/ks_dig_circuito_mayoria.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSyMlPz0yOT84sSi7NLOEqySzJAQo6Q7j5CimpCjmJCmmlecmZhzfnKeQmVuYXHV6byJVaUVBkpaDkeGi7k4K2ApByBlJOQEqJK7-0pKC0xErBlwsA)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSyMlPz0yOT84sSi7NLOEqySzJAQo6Q7j5CimpCjmJCmmlecmZhzfnKeQmVuYXHV6byJVaUVBkpaDkeGi7k4K2ApByBlJOQEqJK7-0pKC0xErBlwsA) para explorarlo y modificarlo.
 
 ### Compuertas negadas y XOR
 
@@ -44,7 +46,9 @@ expr: "!(A·B) ⊕ (C + !D)"
 output: Y
 ```
 
-![Compuertas negadas y XOR](img/ks_dig_circuito_mixto.svg)
+[![Compuertas negadas y XOR](img/ks_dig_circuito_mixto.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSyMlPz0yOT84sSi7NLOEqySzJAQo65-cWlKYWlSQWK-SlpiemAOlKhQj_IK7UioIiKwUlRQ3HQ9udNBUedU1V0HBW0FZQdNFU4sovLSkoLbFSiOQCAA)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSyMlPz0yOT84sSi7NLOEqySzJAQo65-cWlKYWlSQWK-SlpiemAOlKhQj_IK7UioIiKwUlRQ3HQ9udNBUedU1V0HBW0FZQdNFU4sovLSkoLbFSiOQCAA) para explorarlo y modificarlo.
 
 ## Ver también
 

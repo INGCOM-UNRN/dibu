@@ -41,7 +41,9 @@ h: [1, 1, 1, 1]
 step: 2
 ```
 
-![Convolución discreta paso a paso](img/ks_sen_convolucion.svg)
+[![Convolución discreta paso a paso](img/ks_sen_convolucion.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSM7PK8vPKS3JzM_jKsksyQEKOUOEkjMPb85TSMksTi5KLUlUKEgszleAUFwVVgrRhjoKRjoKhrFcGRAOFMVyFZekFlgpGHEBAA)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSM7PK8vPKS3JzM_jKsksyQEKOUOEkjMPb85TSMksTi5KLUlUKEgszleAUFwVVgrRhjoKRjoKhrFcGRAOFMVyFZekFlgpGHEBAA) para explorarlo y modificarlo.
 
 ## Ver también
 

@@ -45,4 +45,6 @@ transitions:
   - "q1,_ -> qf,1,S"
 ```
 
-![Máquina de Turing que suma 1 en binario](img/ks_alg_turing.svg)
+[![Máquina de Turing que suma 1 en binario](img/ks_alg_turing.svg)](https://ingcom-unrn.github.io/dibu-web/#z=TcwxDsIwDAXQPaf4ypxK8ZqBE8ACbAhVoaQoEqRN4gwch7NwMUIp0Mn2-7b5PjoDLsmHi2DP1zptno9YfLA4O-ynBLE45HKzILiAUw2TH4QPY2EDSZpIisw21SlqYbvOjbU9xP4oONmQPfshZCOABjJqpdGs8K5qK39IM9IS2wlJtWr9RZo3qZ4v8POzr-e7P7ZLfAE)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=TcwxDsIwDAXQPaf4ypxK8ZqBE8ACbAhVoaQoEqRN4gwch7NwMUIp0Mn2-7b5PjoDLsmHi2DP1zptno9YfLA4O-ynBLE45HKzILiAUw2TH4QPY2EDSZpIisw21SlqYbvOjbU9xP4oONmQPfshZCOABjJqpdGs8K5qK39IM9IS2wlJtWr9RZo3qZ4v8POzr-e7P7ZLfAE) para explorarlo y modificarlo.

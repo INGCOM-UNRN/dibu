@@ -47,7 +47,9 @@ halfCells:
 showDeltaG: true
 ```
 
-![Pila de Daniell (Nernst + ΔG°)](img/ks_chem_galvanic_cell_daniell.svg)
+[![Pila de Daniell (Nernst + ΔG°)](img/ks_chem_galvanic_cell_daniell.svg)](https://ingcom-unrn.github.io/dibu-web/#z=Xcs_CsIwGIfhPaf40UnpH2MVhaytdBPnDkqIqS18pKVNFBFv4UE8gwfwTKbgouv78thrpwVOks7SNOqgNBGzjSUfdw1JHDVyf3zGZKt7M1iEeD-K13PKaklV5s8gGBDjplrXjTDI3D4NZ5kLImy4AE8WywhGII2gWqME5vc_UZpRlOYrYp6sV7-EJ9yroW4vuSYrCwHbO80-)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=Xcs_CsIwGIfhPaf40UnpH2MVhaytdBPnDkqIqS18pKVNFBFv4UE8gwfwTKbgouv78thrpwVOks7SNOqgNBGzjSUfdw1JHDVyf3zGZKt7M1iEeD-K13PKaklV5s8gGBDjplrXjTDI3D4NZ5kLImy4AE8WywhGII2gWqME5vc_UZpRlOYrYp6sV7-EJ9yroW4vuSYrCwHbO80-) para explorarlo y modificarlo.
 
 ### Celda galvánica (para completar)
 
@@ -64,7 +66,9 @@ blankFlow: true
 inkSaver: false
 ```
 
-![Celda galvánica (para completar)](img/ks_chem_galvanic_cell_blank.svg)
+[![Celda galvánica (para completar)](img/ks_chem_galvanic_cell_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#z=XYvNDsFAFEb38xQ3VqR-qixkdtKwFvbkGldNXDPN9JaIeBjP4sVUgzSW3znnk2tOGjLkMzprNoaYlVjhCqbEO6zV81E5hHaOAcH4U84kGDrqgLyvKi60AujBzfgyfz9b02wdDaZZqwuzWEPcn8RdcBqG978uLddJNEjLXzga12FyV1tGd1x4xmDlqkFCSV8m5MQiN-GS0Ij1rmjCOfvLZ1t3XOGZgoY9ckHqBQ)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=XYvNDsFAFEb38xQ3VqR-qixkdtKwFvbkGldNXDPN9JaIeBjP4sVUgzSW3znnk2tOGjLkMzprNoaYlVjhCqbEO6zV81E5hHaOAcH4U84kGDrqgLyvKi60AujBzfgyfz9b02wdDaZZqwuzWEPcn8RdcBqG978uLddJNEjLXzga12FyV1tGd1x4xmDlqkFCSV8m5MQiN-GS0Ij1rmjCOfvLZ1t3XOGZgoY9ckHqBQ) para explorarlo y modificarlo.
 
 ## Ver también
 

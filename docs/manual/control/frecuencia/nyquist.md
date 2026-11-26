@@ -33,7 +33,9 @@ unitCircle: true
 inkSaver: false
 ```
 
-![Nyquist con círculo unitario](img/ks_control_nyquist_circulo.svg)
+[![Nyquist con círculo unitario](img/ks_control_nyquist_circulo.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSyKssLM0sLuEqySzJAXL9IFyF5Pw8heTDa4uSS3PyFUrzMksSizLzuYori0tSc60UqrOtFEx1FAryc1KLrRSidQ11FHSNgNg4tpYLpNg5sygZZFpJUWkqV2ZednBiWWqRlUJaYk5xKhcA)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSyKssLM0sLuEqySzJAXL9IFyF5Pw8heTDa4uSS3PyFUrzMksSizLzuYori0tSc60UqrOtFEx1FAryc1KLrRSidQ11FHSNgNg4tpYLpNg5sygZZFpJUWkqV2ZednBiWWqRlUJaYk5xKhcA) para explorarlo y modificarlo.
 
 ## Ver también
 

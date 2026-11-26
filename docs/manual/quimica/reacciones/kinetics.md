@@ -58,7 +58,9 @@ curves:
 tEnd: 30
 ```
 
-![Órdenes 0, 1 y 2](img/ks_chem_kinetics_comparacion.svg)
+[![Órdenes 0, 1 y 2](img/ks_chem_kinetics_comparacion.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSyM7MSy3JTC7mKsksyQHyD08uSknNSy1WMNBRMFSoVDDiSi4tKksttuJSUNBVqM4HyhZZgSSzgaSegamOgqOBlYJhLYq0IVTaEKusEVTWCC5b4pqXYqVgbMAFAA)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSyM7MSy3JTC7mKsksyQHyD08uSknNSy1WMNBRMFSoVDDiSi4tKksttuJSUNBVqM4HyhZZgSSzgaSegamOgqOBlYJhLYq0IVTaEKusEVTWCC5b4pqXYqVgbMAFAA) para explorarlo y modificarlo.
 
 ### Cinética consecutiva A → B → C
 
@@ -71,7 +73,9 @@ k2: 0.2
 inkSaver: false
 ```
 
-![Cinética consecutiva A → B → C](img/ks_chem_kinetics_consecutiva.svg)
+[![Cinética consecutiva A → B → C](img/ks_chem_kinetics_consecutiva.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSyM7MSy3JTC7mKsksyQHynTPzDq8ECiQqJOfnFacml5ZkliUqOCo8apuk4AQmnbly81NSc6yQFKRyZRtaKRjomXJlG4FoI67MvOzgxLLUIiuFtMSc4lQuAA)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSyM7MSy3JTC7mKsksyQHynTPzDq8ECiQqJOfnFacml5ZkliUqOCo8apuk4AQmnbly81NSc6yQFKRyZRtaKRjomXJlG4FoI67MvOzgxLLUIiuFtMSc4lQuAA) para explorarlo y modificarlo.
 
 ### Gráfico de Arrhenius
 
@@ -84,7 +88,9 @@ A: 1.0e+12
 T: [290, 360]
 ```
 
-![Gráfico de Arrhenius](img/ks_chem_kinetics_arrhenius.svg)
+[![Gráfico de Arrhenius](img/ks_chem_kinetics_arrhenius.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSyM7MSy3JTC7mKsksyQHy3YsOL0zLTM5XSElVcCwqykjNyywt5irIyS-xUkiE810TrRTMTbkcrRQM9QxStQ2NuEKsFKKNLA10FIzNDGK5AA)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSyM7MSy3JTC7mKsksyQHy3YsOL0zLTM5XSElVcCwqykjNyywt5irIyS-xUkiE810TrRTMTbkcrRQM9QxStQ2NuEKsFKKNLA10FIzNDGK5AA) para explorarlo y modificarlo.
 
 ## Ver también
 

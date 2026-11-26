@@ -44,7 +44,9 @@ steps:
   - {to: "Na^+(g) + Cl^-(g)", dH: -349, label: "AE"}
 ```
 
-![Ciclo de Born-Haber del NaCl](img/ks_chem_born_haber_nacl.svg)
+[![Ciclo de Born-Haber del NaCl](img/ks_chem_born_haber_nacl.svg)](https://ingcom-unrn.github.io/dibu-web/#z=dc5BDoIwEAXQfU8x6QqCTQSJhu4USXDDESBFEEkqJaUsjOEWXseNB_BMjmHRmOhy-vv-jLn2NYdS6a44i7LWxLRG4kvcHqWCqoYdRiz9RDhJyEQsyWCENhxoJpzBBQ-eD4hl4DQuJb1W1Xicw1hiTMlJ6Yswreo4sND3Udf9wAkAg5tRc03zXbOAKuXgLzcLkLha4qfXPS2GsaTTF8y93zSM1pYmhz8KD7TLgsAKrNv_NTmziq3CyLJtQifyBg)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=dc5BDoIwEAXQfU8x6QqCTQSJhu4USXDDESBFEEkqJaUsjOEWXseNB_BMjmHRmOhy-vv-jLn2NYdS6a44i7LWxLRG4kvcHqWCqoYdRiz9RDhJyEQsyWCENhxoJpzBBQ-eD4hl4DQuJb1W1Xicw1hiTMlJ6Yswreo4sND3Udf9wAkAg5tRc03zXbOAKuXgLzcLkLha4qfXPS2GsaTTF8y93zSM1pYmhz8KD7TLgsAKrNv_NTmziq3CyLJtQifyBg) para explorarlo y modificarlo.
 
 ### Ciclo KBr (energía reticular en blanco)
 
@@ -63,7 +65,9 @@ blankLattice: true
 inkSaver: false
 ```
 
-![Ciclo KBr (energía reticular en blanco)](img/ks_chem_born_haber_kbr_blank.svg)
+[![Ciclo KBr (energía reticular en blanco)](img/ks_chem_born_haber_kbr_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#z=dZAxTsNAEEX7PcVoK1uJCztBItthiBQUOvpEY2cSVll2rdl1JIS4BdfgCDTQcyYmKeIU0M7_b_T000tHBprAfv2EDbFKNjm53NrWBVjWDBl54t33BwJTsm3vkIE8NA59G3IVE3IyoJdZzGEEX59Qc5W5XKuOw6ZvT1nNkmq1DfyMyQZvoJjMpsJSF40CKOA1hdOTXa7HsFkYuJ6NwYmRk_PP-2Id-0a_XVZXo6E8LS_a8_s_iqImEmegLKsBEOc7yQ_Y_QeuigEtJtXVwN7MhTlusX_AJPPIdIl7UtbvH_FAbGCLLpL6BQ)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=dZAxTsNAEEX7PcVoK1uJCztBItthiBQUOvpEY2cSVll2rdl1JIS4BdfgCDTQcyYmKeIU0M7_b_T000tHBprAfv2EDbFKNjm53NrWBVjWDBl54t33BwJTsm3vkIE8NA59G3IVE3IyoJdZzGEEX59Qc5W5XKuOw6ZvT1nNkmq1DfyMyQZvoJjMpsJSF40CKOA1hdOTXa7HsFkYuJ6NwYmRk_PP-2Id-0a_XVZXo6E8LS_a8_s_iqImEmegLKsBEOc7yQ_Y_QeuigEtJtXVwN7MhTlusX_AJPPIdIl7UtbvH_FAbGCLLpL6BQ) para explorarlo y modificarlo.
 
 ## Ver también
 

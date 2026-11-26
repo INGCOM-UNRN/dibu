@@ -46,7 +46,9 @@ subnets:
   - { name: Enlace WAN, hosts: 2 }
 ```
 
-![Subnetting VLSM](img/ks_red_vlsm.svg)
+[![Subnetting VLSM](img/ks_red_vlsm.svg)](https://ingcom-unrn.github.io/dibu-web/#z=XYvBCgIhFEX3fsX9gDKViprdQO2qzcC0tpKScZ6hRkTMvycERrO855ybXndTIT5OZFKydGXJJpdJUwjaXbNneTx96CrIteJyueJScDFTc_a9xooBU7xBus_v1lDScYKbj1lhITD8-Y2JOgTvnC-NFOOovvSWildjvSWnzwbH-vBrMLAP)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=XYvBCgIhFEX3fsX9gDKViprdQO2qzcC0tpKScZ6hRkTMvycERrO855ybXndTIT5OZFKydGXJJpdJUwjaXbNneTx96CrIteJyueJScDFTc_a9xooBU7xBus_v1lDScYKbj1lhITD8-Y2JOgTvnC-NFOOovvSWildjvSWnzwbH-vBrMLAP) para explorarlo y modificarlo.
 
 ### Ejercicio: 8 subredes iguales
 
@@ -58,4 +60,6 @@ count: 8
 blank: true
 ```
 
-![Ejercicio: 8 subredes iguales](img/ks_red_subredes_iguales.svg)
+[![Ejercicio: 8 subredes iguales](img/ks_red_subredes_iguales.svg)](https://ingcom-unrn.github.io/dibu-web/#z=HYpJDoAgDADvfUXDA1wuxnD3IYANqRIw0Mb4e9HMbWbkuchiU59JhHMEYUndmO2gGjhwsbh-vdJODTmqS9QM9P0u9bQ4T8PPOC8QimbpP_jkcm9SleAF)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=HYpJDoAgDADvfUXDA1wuxnD3IYANqRIw0Mb4e9HMbWbkuchiU59JhHMEYUndmO2gGjhwsbh-vdJODTmqS9QM9P0u9bQ4T8PPOC8QimbpP_jkcm9SleAF) para explorarlo y modificarlo.

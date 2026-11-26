@@ -51,7 +51,9 @@ ligand: NH3
 inkSaver: false
 ```
 
-![[Co(NH3)6]^3+ (bajo espín)](img/ks_chem_crystal_field_octa.svg)
+[![[Co(NH3)6]^3+ (bajo espín)](img/ks_chem_crystal_field_octa.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSC6qLC5JzIlPy0zNSeEqySzJAQoqRTvna_h5GGuaxcYZaytoJCVm5SukFhccXpunqcSVmwrUYKXgnM-VX5GZkliSmZ9npWDMlZOZnpiXYqUA1MeVmZcdnFiWWmSlkJaYU5zKBQA)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSC6qLC5JzIlPy0zNSeEqySzJAQoqRTvna_h5GGuaxcYZaytoJCVm5SukFhccXpunqcSVmwrUYKXgnM-VX5GZkliSmZ9npWDMlZOZnpiXYqUA1MeVmZcdnFiWWmSlkJaYU5zKBQA) para explorarlo y modificarlo.
 
 ### [Fe(CN)6]^4- (evaluación)
 
@@ -65,7 +67,9 @@ blankElectrons: true
 blank: true
 ```
 
-![[Fe(CN)6]^4- (evaluación)](img/ks_chem_crystal_field_blanco.svg)
+[![[Fe(CN)6]^4- (evaluación)](img/ks_chem_crystal_field_blanco.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSC6qLC5JzIlPy0zNSeEqySzJAQoqRbulajj7aZrFxpnoKmikliXmlCYmZx7enKepxJWbClRvpeCWypVfkZmSWJKZn2elYMSVk5memJdipeDsF6fLlZSTmJftmpOaXFKUn1dspVBSVJoKEYSyAQ)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSC6qLC5JzIlPy0zNSeEqySzJAQoqRbulajj7aZrFxpnoKmikliXmlCYmZx7enKepxJWbClRvpeCWypVfkZmSWJKZn2elYMSVk5memJdipeDsF6fLlZSTmJftmpOaXFKUn1dspVBSVJoKEYSyAQ) para explorarlo y modificarlo.
 
 ## Ver también
 

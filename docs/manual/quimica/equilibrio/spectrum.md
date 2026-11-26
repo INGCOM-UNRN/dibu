@@ -46,7 +46,9 @@ peaks:
   - {at: 1280, depth: 0.55, label: "C–O"}
 ```
 
-![Espectro IR de ácido carboxílico](img/ks_chem_spectrum_ir.svg)
+[![Espectro IR de ácido carboxílico](img/ks_chem_spectrum_ir.svg)](https://ingcom-unrn.github.io/dibu-web/#z=Vc3BCcIwAIXhe6Z4eK6SKqEl4EkEPRXcIE0ChkYT0oiKCO7gBA7gFN3ESUzx0Hp-H_-LV685Wq9lDKcDacxRcZhAook2Devf4rDdQWl0L2mUgxShdpfubY10xGvRtJwAU9xE5FhQSrOEfdxz0FnBMtTBiZRNDzrD2ah-Yb2yotaWY1J9Hs_N5D5E8iIfR0o22NWy-pPzcizZWKZqb78)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=Vc3BCcIwAIXhe6Z4eK6SKqEl4EkEPRXcIE0ChkYT0oiKCO7gBA7gFN3ESUzx0Hp-H_-LV685Wq9lDKcDacxRcZhAook2Devf4rDdQWl0L2mUgxShdpfubY10xGvRtJwAU9xE5FhQSrOEfdxz0FnBMtTBiZRNDzrD2ah-Yb2yotaWY1J9Hs_N5D5E8iIfR0o22NWy-pPzcizZWKZqb78) para explorarlo y modificarlo.
 
 ### ¹H-RMN del etanol
 
@@ -62,7 +64,9 @@ signals:
 inkSaver: false
 ```
 
-![¹H-RMN del etanol](img/ks_chem_spectrum_nmr.svg)
+[![¹H-RMN del etanol](img/ks_chem_spectrum_nmr.svg)](https://ingcom-unrn.github.io/dibu-web/#z=Xc9BCsIwFATQfU4xdF0LtqD4TyCCLvQEaf3WT9O0JL9CEQ_m1pOZndj1zDwYnUcmxJEbDVNvOvFXgu-DUVGXks97vzofT7iyA6v1gzPaR0Jqs4nSeusiGWCFZ7zLTQnroixziFdug1UZPKHK4Vnaez2ENE3pgbDN4WzNjpDZ7PUnVMVmtxDKP6FaCvVCKIvNAljn6CenMjppROd0-bdu0lp8d7EPDoRbesTmCw)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=Xc9BCsIwFATQfU4xdF0LtqD4TyCCLvQEaf3WT9O0JL9CEQ_m1pOZndj1zDwYnUcmxJEbDVNvOvFXgu-DUVGXks97vzofT7iyA6v1gzPaR0Jqs4nSeusiGWCFZ7zLTQnroixziFdug1UZPKHK4Vnaez2ENE3pgbDN4WzNjpDZ7PUnVMVmtxDKP6FaCvVCKIvNAljn6CenMjppROd0-bdu0lp8d7EPDoRbesTmCw) para explorarlo y modificarlo.
 
 ### Espectro de masas del etanol
 
@@ -77,7 +81,9 @@ peaks:
   - {mz: 29, intensity: 25}
 ```
 
-![Espectro de masas del etanol](img/ks_chem_spectrum_ms.svg)
+[![Espectro de masas del etanol](img/ks_chem_spectrum_ms.svg)](https://ingcom-unrn.github.io/dibu-web/#z=VY0xDoMwEAR7v2JFTSQgOFLcp8wjDFxhYRsrdxQkosi38py8JEhp7G6lGc3KlsiAE43yWIOaXZwMAitx4g9w-5MFEyFYtnwMDxIbF68S2ZmNAk54hadBf6nholBkJ5tB19TwdiBvUN2_70-1Z6ou1F5n7NwWrG2yTnLjgsEy5bHuWv7qXf0A)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=VY0xDoMwEAR7v2JFTSQgOFLcp8wjDFxhYRsrdxQkosi38py8JEhp7G6lGc3KlsiAE43yWIOaXZwMAitx4g9w-5MFEyFYtnwMDxIbF68S2ZmNAk54hadBf6nholBkJ5tB19TwdiBvUN2_70-1Z6ou1F5n7NwWrG2yTnLjgsEy5bHuWv7qXf0A) para explorarlo y modificarlo.
 
 ## Ver también
 

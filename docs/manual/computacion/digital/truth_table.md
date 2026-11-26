@@ -49,7 +49,9 @@ name: M
 canonical: true
 ```
 
-![Función mayoría de tres entradas](img/ks_dig_tt_mayoria.svg)
+[![Función mayoría de tres entradas](img/ks_dig_tt_mayoria.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKCkqLcmIL0lMyknlKsksyQEKuZXmJWce3pynkJtYmV90eG2iQkoqUF1qsUJqXklRYkpiMVdqRUGRlYKS46HtTgraCkDKGUg5ASklrrzEXKAZvlzJiXn5eZnJiTlgO1K5AA)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKCkqLcmIL0lMyknlKsksyQEKuZXmJWce3pynkJtYmV90eG2iQkoqUF1qsUJqXklRYkpiMVdqRUGRlYKS46HtTgraCkDKGUg5ASklrrzEXKAZvlzJiXn5eZnJiTlgO1K5AA) para explorarlo y modificarlo.
 
 ### Tabla con columnas intermedias
 
@@ -62,7 +64,9 @@ outputs:
 steps: true
 ```
 
-![Tabla con columnas intermedias](img/ks_dig_tt_pasos.svg)
+[![Tabla con columnas intermedias](img/ks_dig_tt_pasos.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKCkqLcmIL0lMyknlKsksyQEKhQA5iQrJ-XlAnFOam5dYrJCZV5JalJuakplYzJVfWlJQWlJsxaWgoKtQrZCXmAvU46ajkFpRUGSloKSo4aigreCkqXBou4KzkkItijJ3uDJHhQj_IIiC4pLUgmKwS1K5AA)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKCkqLcmIL0lMyknlKsksyQEKhQA5iQrJ-XlAnFOam5dYrJCZV5JalJuakplYzJVfWlJQWlJsxaWgoKtQrZCXmAvU46ajkFpRUGSloKSo4aigreCkqXBou4KzkkItijJ3uDJHhQj_IIiC4pLUgmKwS1K5AA) para explorarlo y modificarlo.
 
 ### Ejercicio: completar la salida
 
@@ -76,7 +80,9 @@ blank: true
 canonical: true
 ```
 
-![Ejercicio: completar la salida](img/ks_dig_tt_ejercicio.svg)
+[![Ejercicio: completar la salida](img/ks_dig_tt_ejercicio.svg)](https://ingcom-unrn.github.io/dibu-web/#z=Lc3NCsIwEATge55i6HkPVhGhN3_6FFJkmy4Y3SQlXQXf3lS8zXxzGPvM0sHKy-4341HFWTCt1PQPKT74kDv4HGcV4wJlLKxh4sa9uSwdrkfCiXAmXAYXQzIpceWWsCMcCG1N7X5wU07mucg6bghbQsVROT1_9-I8p5yCZ_33Lw)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=Lc3NCsIwEATge55i6HkPVhGhN3_6FFJkmy4Y3SQlXQXf3lS8zXxzGPvM0sHKy-4341HFWTCt1PQPKT74kDv4HGcV4wJlLKxh4sa9uSwdrkfCiXAmXAYXQzIpceWWsCMcCG1N7X5wU07mucg6bghbQsVROT1_9-I8p5yCZ_33Lw) para explorarlo y modificarlo.
 
 ## Ver también
 

@@ -42,7 +42,9 @@ fs: 12
 periods: 3
 ```
 
-![Muestreo con aliasing](img/ks_sen_muestreo_alias.svg)
+[![Muestreo con aliasing](img/ks_sen_muestreo_alias.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKE7MLcjJzEvnKsksyQHyfUtTi0uKUvMVkvPzFBJzMhOLQZJpRamFpal5yZVWCpZcacVWCoZGXAWpRZn5KUC2MRcA)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKE7MLcjJzEvnKsksyQHyfUtTi0uKUvMVkvPzFBJzMhOLQZJpRamFpal5yZVWCpZcacVWCoZGXAWpRZn5KUC2MRcA) para explorarlo y modificarlo.
 
 ### Muestreo que cumple Nyquist
 
@@ -55,7 +57,9 @@ periods: 2
 spectrum: true
 ```
 
-![Muestreo que cumple Nyquist](img/ks_sen_muestreo_ok.svg)
+[![Muestreo que cumple Nyquist](img/ks_sen_muestreo_ok.svg)](https://ingcom-unrn.github.io/dibu-web/#z=FYm7DYAwDAV7T-ERgDI7wA4ovKBI-dsusj2hOenudDY4lju3FMtLGjUtPw2iA5W7gb2tCb5mtyhKYWDV4qfjg4I43jdqGLE-8hdp8DosO14EfQ)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=FYm7DYAwDAV7T-ERgDI7wA4ovKBI-dsusj2hOenudDY4lju3FMtLGjUtPw2iA5W7gb2tCb5mtyhKYWDV4qfjg4I43jdqGLE-8hdp8DosO14EfQ) para explorarlo y modificarlo.
 
 ## Ver también
 

@@ -42,7 +42,9 @@ ligands: [NH3, NH3, Cl, Cl, NH3, NH3]
 inkSaver: false
 ```
 
-![trans-[Co(NH3)4Cl2]^+](img/ks_chem_complex_trans.svg)
+[![trans-[Co(NH3)4Cl2]^+](img/ks_chem_complex_trans.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSM7PLchJreAqySzJAXKVSooS84p1o53zNfw8jDVNnHOMYuO0lbhyU0sSc6wUnPO5kjMSi9KBKg25cjLTE_NSiq0UooFKdRTAhHMOBMNEYrky87KDE8tSi6wU0hJzilO5AA)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSM7PLchJreAqySzJAXKVSooS84p1o53zNfw8jDVNnHOMYuO0lbhyU0sSc6wUnPO5kjMSi9KBKg25cjLTE_NSiq0UooFKdRTAhHMOBMNEYrky87KDE8tSi6wU0hJzilO5AA) para explorarlo y modificarlo.
 
 ### Complejo fac (para completar)
 
@@ -54,7 +56,9 @@ ligands: [Cl, NH3, Cl, NH3, Cl, NH3]
 blank: [isomer, oxidation]
 ```
 
-![Complejo fac (para completar)](img/ks_chem_complex_fac_blank.svg)
+[![Complejo fac (para completar)](img/ks_chem_complex_fac_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSM7PLchJreAqySzJAXKdwdysfIW0xGQFjYLEokSoipLEIk2uXCCVA1LElZOZnpiXUmylEO2co6Pg52Gso4DOiOVKyknMywYqySzOz00t0lHIr8hMSSzJzM-L5QIA)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSM7PLchJreAqySzJAXKdwdysfIW0xGQFjYLEokSoipLEIk2uXCCVA1LElZOZnpiXUmylEO2co6Pg52Gso4DOiOVKyknMywYqySzOz00t0lHIr8hMSSzJzM-L5QIA) para explorarlo y modificarlo.
 
 ## Ver también
 

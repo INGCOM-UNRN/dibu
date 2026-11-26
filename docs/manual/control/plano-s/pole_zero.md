@@ -43,7 +43,9 @@ showValues: true
 inkSaver: false
 ```
 
-![Polos y ceros con ζ y ωn](img/ks_control_pole_zero_completo.svg)
+[![Polos y ceros con ζ y ωn](img/ks_control_pole_zero_completo.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKMjPSY2vSi3K5yrJLMkBCgTk5-QXK1QqJAPFihWS8_MUzm0Dcs935nGB1BZbKUTrGuoACSMdBePYWC6QXrCgSSxXSmJuQWZeuk9mHlidgZ5pLFd5nnNmUTJEo3EsV3FGfnlYYk4piF9SVJrKlZmXHZxYllpkpZCWmFOcygUA)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKMjPSY2vSi3K5yrJLMkBCgTk5-QXK1QqJAPFihWS8_MUzm0Dcs935nGB1BZbKUTrGuoACSMdBePYWC6QXrCgSSxXSmJuQWZeuk9mHlidgZ5pLFd5nnNmUTJEo3EsV3FGfnlYYk4piF9SVJrKlZmXHZxYllpkpZCWmFOcygUA) para explorarlo y modificarlo.
 
 ## Ver también
 

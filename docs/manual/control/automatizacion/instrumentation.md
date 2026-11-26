@@ -44,7 +44,9 @@ lines:
 inkSaver: false
 ```
 
-![Control de nivel TK-101 (ISA-5.1)](img/ks_control_instrumentation_pid.svg)
+[![Control de nivel TK-101 (ISA-5.1)](img/ks_control_instrumentation_pid.svg)](https://ingcom-unrn.github.io/dibu-web/#z=bZHNagIxFIX38xQXVy3EwfhPdsWV1IXg4EakpDOxBGMyzcQBKb57cyczGm13IfnOueeeuEspGEhdOXs-Ce24k0YnTjrlrxdGO2sUFAK0rIWC7L1PBxRelpu3_iSlr4n4PssSdSwB6MOPLJiHCByl9ifH9ZEAdwx2IwKjPQHFP4Vi0AtGPX8harwYpNPr3WFNO4fyfCpbhymBSTqMPNaNRSRbbTtZHoJ_1FzVotXP0wmBcTqPHFbb1uK-fxUtssqIX-ELwQxC3MbJ-wz38dzl4gYuFzE5I0BxnsmbXhkUeXVNlNSim3Ow5uTBAYaj6djDzoQKu5A-lOUF95a15B7FKpHsEgQHVKASq7tzWNgjh-_IYVctNwu1PHL4jtyO0ufWKq6kz_PveKys_QJeSqW4vdzmjLG2pylZK8MGg04okTsr85sMi3mWNYWb-Mf_yJrvboRSHze8FpbBgatKJL8)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=bZHNagIxFIX38xQXVy3EwfhPdsWV1IXg4EakpDOxBGMyzcQBKb57cyczGm13IfnOueeeuEspGEhdOXs-Ce24k0YnTjrlrxdGO2sUFAK0rIWC7L1PBxRelpu3_iSlr4n4PssSdSwB6MOPLJiHCByl9ifH9ZEAdwx2IwKjPQHFP4Vi0AtGPX8harwYpNPr3WFNO4fyfCpbhymBSTqMPNaNRSRbbTtZHoJ_1FzVotXP0wmBcTqPHFbb1uK-fxUtssqIX-ELwQxC3MbJ-wz38dzl4gYuFzE5I0BxnsmbXhkUeXVNlNSim3Ow5uTBAYaj6djDzoQKu5A-lOUF95a15B7FKpHsEgQHVKASq7tzWNgjh-_IYVctNwu1PHL4jtyO0ufWKq6kz_PveKys_QJeSqW4vdzmjLG2pylZK8MGg04okTsr85sMi3mWNYWb-Mf_yJrvboRSHze8FpbBgatKJL8) para explorarlo y modificarlo.
 
 ### Instrumento en blanco
 
@@ -59,7 +61,9 @@ lines:
   - {from: TK, to: LT, kind: capillary}
 ```
 
-![Instrumento en blanco](img/ks_control_instrumentation_blank.svg)
+[![Instrumento en blanco](img/ks_control_instrumentation_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#z=TY47DoMwEER7n2JEbQoipfENIijdRSkMcaIVZk3MUqCIu8eI_LrV08yblWX0BsSTpHnwLE4oshKSkPHpiyM8ow2Ou6j8Y6Zxg0YBJZ50NbC1Rk-cL3HcazgxOB80DheN4FofDApbl1Wxqt_W9CdorM7Ve441FlXxNhw1qmzYhvusTrNfVSD2n-YtxWEfl7g79ic6N1IILi2regE)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=TY47DoMwEER7n2JEbQoipfENIijdRSkMcaIVZk3MUqCIu8eI_LrV08yblWX0BsSTpHnwLE4oshKSkPHpiyM8ow2Ou6j8Y6Zxg0YBJZ50NbC1Rk-cL3HcazgxOB80DheN4FofDApbl1Wxqt_W9CdorM7Ve441FlXxNhw1qmzYhvusTrNfVSD2n-YtxWEfl7g79ic6N1IILi2regE) para explorarlo y modificarlo.
 
 ## Ver también
 

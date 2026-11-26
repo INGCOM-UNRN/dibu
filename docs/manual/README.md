@@ -9,6 +9,7 @@ dibu dibuja **71 tipos** de diagramas educativos como SVG a partir de bloques YA
 - [Modo ejercicio](ejercicios.md): `blank` y los campos `blank*`.
 - [Themes](themes.md): presets, themes propios y tipografía.
 - [Línea de comandos](cli.md): `render`, `batch`, `sync-md`, `list-types` y `list-themes`.
+- [Editor web](https://ingcom-unrn.github.io/dibu-web/): el playground, para escribir bloques con vista previa en vivo. Cada ejemplo del manual tiene un enlace que lo abre ahí, para ver cómo está construido y modificarlo.
 - [Guía para agentes de IA](agentes/README.md): reglas, referencia compacta de todos los tipos, integración en Markdown, MyST, Typst y alucarD, y un validador de bloques.
 
 ## Tipos de diagramas

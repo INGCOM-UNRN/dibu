@@ -33,7 +33,9 @@ steps:
   - "H2O"
 ```
 
-![Esterificación de Fischer](img/ks_chem_reaction_esterificacion.svg)
+[![Esterificación de Fischer](img/ks_chem_reaction_esterificacion.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKEpNTC7JzM_jKsksyQHyXYtLUosy0zKTE5MzD2_OU0hJVXDLLE7OSC3iAsoUFFtxKSjoKig5exg7-_t7KEF42koIUQ8jmHB1YlFRfrmVgpKNrZ2SjkJiUn4Z0AIlD6NgfxMgPyk1Byx7bopSLbKhQBOADDSTgaYqcQEA)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKEpNTC7JzM_jKsksyQHyXYtLUosy0zKTE5MzD2_OU0hJVXDLLE7OSC3iAsoUFFtxKSjoKig5exg7-_t7KEF42koIUQ8jmHB1YlFRfrmVgpKNrZ2SjkJiUn4Z0AIlD6NgfxMgPyk1Byx7bopSLbKhQBOADDSTgaYqcQEA) para explorarlo y modificarlo.
 
 ### Resonancia carboxilato y completar
 
@@ -51,7 +53,9 @@ steps:
 inkSaver: false
 ```
 
-![Resonancia carboxilato y completar](img/ks_chem_reaction_resonancia_blank.svg)
+[![Resonancia carboxilato y completar](img/ks_chem_reaction_resonancia_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#z=dY_BTsMwDIbveYpfO6dSukkIRYgLDzA0joiDm2VbtDSunMCYpr47acdlQ_hk-__82y7nwVuIJ1cCJ1VCibXe-MyJkgsER9Lxd4hUGGc47ofoC4nKxQ_ZKqBBlfo5naLBJWwtnIaPFi-6qhbvRsN8jLeIXJGNxk64n0co7af17aO5Y7m9wuu_8EP17jhVaKkROflXCpJrdW-x_NdiZczN6ErDHUj2VWracf7xQiJ8slg8Nc-L31YXKR0tinx6jVPYlsN0zahCOr7RlxeLHcXs1Q8)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=dY_BTsMwDIbveYpfO6dSukkIRYgLDzA0joiDm2VbtDSunMCYpr47acdlQ_hk-__82y7nwVuIJ1cCJ1VCibXe-MyJkgsER9Lxd4hUGGc47ofoC4nKxQ_ZKqBBlfo5naLBJWwtnIaPFi-6qhbvRsN8jLeIXJGNxk64n0co7af17aO5Y7m9wuu_8EP17jhVaKkROflXCpJrdW-x_NdiZczN6ErDHUj2VWracf7xQiJ8slg8Nc-L31YXKR0tinx6jVPYlsN0zahCOr7RlxeLHcXs1Q8) para explorarlo y modificarlo.
 
 ## Ver también
 

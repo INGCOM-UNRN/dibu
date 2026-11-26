@@ -81,7 +81,9 @@ showLinear: true
 highlight: [[0, 0], [1, 2]]
 ```
 
-![Matriz estática row-major](img/ks_cs_matrix_estatica_lineal.svg)
+[![Matriz estática row-major](img/ks_cs_matrix_estatica_lineal.svg)](https://ingcom-unrn.github.io/dibu-web/#z=LY0xDsIwEAR7v-KU2kgOBAp39FBRWi4MOWEjByPfhYT8hrfwMWxEscXsSjv8eqCGwXEOs-DAsdCx0gJI_HlzuDjIaVoN7payeLo4ImkwppWwlrCxEkwnYSthZ604O8J932cNjZpbpVQjuAhOYSm3nSCfpjojUT3hPOKvO4Q7uvwvfLj6WMLVoiSoqqg2a8UX)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=LY0xDsIwEAR7v-KU2kgOBAp39FBRWi4MOWEjByPfhYT8hrfwMWxEscXsSjv8eqCGwXEOs-DAsdCx0gJI_HlzuDjIaVoN7payeLo4ImkwppWwlrCxEkwnYSthZ604O8J932cNjZpbpVQjuAhOYSm3nSCfpjojUT3hPOKvO4Q7uvwvfLj6WMLVoiSoqqg2a8UX) para explorarlo y modificarlo.
 
 ### Matriz dentada con dueña y zonas
 
@@ -106,7 +108,9 @@ owner:
     - "filas -> rows"
 ```
 
-![Matriz dentada con dueña y zonas](img/ks_cs_matrix_jagged_duena.svg)
+[![Matriz dentada con dueña y zonas](img/ks_cs_matrix_jagged_duena.svg)](https://ingcom-unrn.github.io/dibu-web/#z=VY-xTgMxEET7_YqR64sEiAJOAiUNFTQR3emEFry5GDk2svcIyV_xDfwY9pGLROeZt-Od1cOHtNixJvdF6tQX9VTVEVaCsmW8xQA7ys8344BjDJzpk5PjoC3eeRjEUuBdyW2cn5gfJbfouusGN32D7rbvKW_jfmVtkpwr1DQKvXKW6rUwywdD6d9EZ5brC9MUtL40PXkJg27z81TXBZ2NOf9oqFQ7fx33QVJLwF8zW146RU9HvWhxNk68zXUKWMAE3OHKzMpzGmLG4h6nTWcynVlBKZwN_QI)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=VY-xTgMxEET7_YqR64sEiAJOAiUNFTQR3emEFry5GDk2svcIyV_xDfwY9pGLROeZt-Od1cOHtNixJvdF6tQX9VTVEVaCsmW8xQA7ys8344BjDJzpk5PjoC3eeRjEUuBdyW2cn5gfJbfouusGN32D7rbvKW_jfmVtkpwr1DQKvXKW6rUwywdD6d9EZ5brC9MUtL40PXkJg27z81TXBZ2NOf9oqFQ7fx33QVJLwF8zW146RU9HvWhxNk68zXUKWMAE3OHKzMpzGmLG4h6nTWcynVlBKZwN_QI) para explorarlo y modificarlo.
 
 ### Matriz plana con vista lógica
 
@@ -120,7 +124,9 @@ showAddresses: true
 inkSaver: false
 ```
 
-![Matriz plana con vista lógica](img/ks_cs_matrix_flat_color.svg)
+[![Matriz plana con vista lógica](img/ks_cs_matrix_flat_color.svg)](https://ingcom-unrn.github.io/dibu-web/#z=HYw5EsIwDAB7v0IPcMNRuaOHitLjQpMI0CDsjKWY41s8gY_hpNyd2bX3RAEeaJVfztik02mhD0yCGWEoGRqrIcjve-UBXcPKmC3ARdA6yUwaIMaNh23yEHce9ik5vZXnsSyFBLA602oO41hJdSlWx_l-xka131CU3B8)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=HYw5EsIwDAB7v0IPcMNRuaOHitLjQpMI0CDsjKWY41s8gY_hpNyd2bX3RAEeaJVfztik02mhD0yCGWEoGRqrIcjve-UBXcPKmC3ARdA6yUwaIMaNh23yEHce9ik5vZXnsSyFBLA602oO41hJdSlWx_l-xka131CU3B8) para explorarlo y modificarlo.
 
 ### Arreglo de arreglos en Java
 
@@ -137,7 +143,9 @@ values:
 zones: true
 ```
 
-![Arreglo de arreglos en Java](img/ks_cs_matrix_java_irregular.svg)
+[![Arreglo de arreglos en Java](img/ks_cs_matrix_java_irregular.svg)](https://ingcom-unrn.github.io/dibu-web/#z=NYs7CsNADER7nWJw7RRxUm2X1lcILgQRYYMsG1lrHJ8-C0uqmTef-K6SMHN4PihyaKXu4S5vXfAScLMbxDDyzh3t7JktEj4VyXj-_89aaZEtEXDB89pj6HGbGt2bWlFtwUTnYnWM8CL0Aw)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=NYs7CsNADER7nWJw7RRxUm2X1lcILgQRYYMsG1lrHJ8-C0uqmTef-K6SMHN4PihyaKXu4S5vXfAScLMbxDDyzh3t7JktEj4VyXj-_89aaZEtEXDB89pj6HGbGt2bWlFtwUTnYnWM8CL0Aw) para explorarlo y modificarlo.
 
 ### Arreglo exterior de largo cero (para completar)
 
@@ -151,7 +159,9 @@ blankLengths: true
 inkSaver: false
 ```
 
-![Arreglo exterior de largo cero (para completar)](img/ks_cs_matrix_java_vacia.svg)
+[![Arreglo exterior de largo cero (para completar)](img/ks_cs_matrix_java_vacia.svg)](https://ingcom-unrn.github.io/dibu-web/#z=DYyxDsIwDAV3f4VH-IVs7GyMiOERTDB1ksp1o_L3ZLw76eK3SuKKcD0oNGzSxV2KdZYjxLU7v4QNXjpn8c6nFQ7Ova4mAT_TgCtaJP5igBrqfAxkxSy2y5b4_qCnoS1XaSU-U4TvQtqWG4Z44jdsE_oD)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=DYyxDsIwDAV3f4VH-IVs7GyMiOERTDB1ksp1o_L3ZLw76eK3SuKKcD0oNGzSxV2KdZYjxLU7v4QNXjpn8c6nFQ7Ova4mAT_TgCtaJP5igBrqfAxkxSy2y5b4_qCnoS1XaSU-U4TvQtqWG4Z44jdsE_oD) para explorarlo y modificarlo.
 
 ## Notas
 

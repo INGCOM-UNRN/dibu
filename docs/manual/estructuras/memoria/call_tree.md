@@ -49,7 +49,9 @@ root:
     - {call: "fib(1)", returns: 1}
 ```
 
-![Árbol de llamadas fib(3)](img/ks_cs_call_tree_fib3_costos.svg)
+[![Árbol de llamadas fib(3)](img/ks_cs_call_tree_fib3_costos.svg)](https://ingcom-unrn.github.io/dibu-web/#z=jY5BCsIwEEX3OcWQlQWFtu6y9QAeQFRSM9LC2Mhkqoh04dm8mGkr2i4EZxHCz3s_I7czGjhYor0wopJKKAbPBxeewCEQ2ZN1NsCxKmbLRIXSX9fskA0IN6gIL0grHyQY2OhMz0Hnw7FV4sWSifddrRV7L0ZB_1fMhjodA0ZpuI563r2WFTnGuiMBFmM67-luPkb2DqbWYN5HapbElb5W-wNLJ1jaqj-aXg)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=jY5BCsIwEEX3OcWQlQWFtu6y9QAeQFRSM9LC2Mhkqoh04dm8mGkr2i4EZxHCz3s_I7czGjhYor0wopJKKAbPBxeewCEQ2ZN1NsCxKmbLRIXSX9fskA0IN6gIL0grHyQY2OhMz0Hnw7FV4sWSifddrRV7L0ZB_1fMhjodA0ZpuI563r2WFTnGuiMBFmM67-luPkb2DqbWYN5HapbElb5W-wNLJ1jaqj-aXg) para explorarlo y modificarlo.
 
 ### Árbol de llamadas (retornos en blanco)
 
@@ -69,7 +71,9 @@ root:
 inkSaver: false
 ```
 
-![Árbol de llamadas (retornos en blanco)](img/ks_cs_call_tree_blank.svg)
+[![Árbol de llamadas (retornos en blanco)](img/ks_cs_call_tree_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#z=ZY6xCsJQDEX39xXhTS0otB3f6uqko6i82ojFmEheFEQ6-G3-mK2iKE6XnBwu1y5HDLCJRGtTRGetUQ_uN62FoEEgiofYxASZoomyJECGmiJvJHdD7mdoJ-UUwPSELzTFM9JEkr0pfYGFZz8CX7FfOhOLFMDzqvJORSw4eM7p2Tarct-f-u6vht-upUaRBw9gDNePXOZ968ctuz-h-BGKzrW8n8czaoBtpITuAQ)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=ZY6xCsJQDEX39xXhTS0otB3f6uqko6i82ojFmEheFEQ6-G3-mK2iKE6XnBwu1y5HDLCJRGtTRGetUQ_uN62FoEEgiofYxASZoomyJECGmiJvJHdD7mdoJ-UUwPSELzTFM9JEkr0pfYGFZz8CX7FfOhOLFMDzqvJORSw4eM7p2Tarct-f-u6vht-upUaRBw9gDNePXOZ968ctuz-h-BGKzrW8n8czaoBtpITuAQ) para explorarlo y modificarlo.
 
 ## Ver también
 
