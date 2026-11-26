@@ -1560,6 +1560,75 @@ enum PasoFlujo {
         a: Vec<PasoFlujo>,
         en_blanco: bool,
     },
+    /// `break`, `continue` o `return`: un salto a la salida o a la condición del lazo más interno,
+    /// o al final de la función.
+    Salto {
+        tipo: TipoSalto,
+        texto: String,
+        en_blanco: bool,
+    },
+    /// `try` con sus `except`, `else` y `finally`, y si se propaga una excepción no capturada.
+    Intentar {
+        cuerpo: Vec<PasoFlujo>,
+        manejadores: Vec<(String, Vec<PasoFlujo>)>,
+        sino: Vec<PasoFlujo>,
+        limpieza: Vec<PasoFlujo>,
+        propaga: bool,
+    },
+}
+
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+enum TipoSalto {
+    Break,
+    Continue,
+    Return,
+}
+
+impl PasoFlujo {
+    fn es_salto(&self) -> bool {
+        matches!(self, Self::Salto { .. })
+    }
+}
+
+/// Si la lista termina en un salto: entonces no hay arista hacia lo que sigue.
+fn termina_en_salto(pasos: &[PasoFlujo]) -> bool {
+    pasos.last().is_some_and(PasoFlujo::es_salto)
+}
+
+/// Los `break` y `continue` que salen de este lazo (no de uno anidado): uno por carril.
+fn saltos_del_lazo(pasos: &[PasoFlujo]) -> usize {
+    pasos
+        .iter()
+        .map(|p| match p {
+            PasoFlujo::Salto { tipo, .. } if *tipo != TipoSalto::Return => 1,
+            PasoFlujo::Si { a, b, .. } => saltos_del_lazo(a) + saltos_del_lazo(b),
+            _ => 0,
+        })
+        .sum()
+}
+
+/// Los `return` de todo el diagrama: van al final de la función, por un carril cada uno.
+fn retornos_flujo(pasos: &[PasoFlujo]) -> usize {
+    pasos
+        .iter()
+        .map(|p| match p {
+            PasoFlujo::Salto { tipo: TipoSalto::Return, .. } => 1,
+            PasoFlujo::Si { a, b, .. } => retornos_flujo(a) + retornos_flujo(b),
+            PasoFlujo::Mientras { a, .. } | PasoFlujo::Repetir { a, .. } => retornos_flujo(a),
+            _ => 0,
+        })
+        .sum()
+}
+
+const PASO_CARRIL: f64 = 8.0;
+
+/// El ancho extra, a la derecha de un lazo, para los carriles de sus saltos.
+fn ancho_carriles(n: usize) -> f64 {
+    if n == 0 {
+        0.0
+    } else {
+        8.0 + n as f64 * PASO_CARRIL
+    }
 }
 
 impl PasoFlujo {
@@ -1569,7 +1638,9 @@ impl PasoFlujo {
             | Self::Io { texto, .. }
             | Self::Si { texto, .. }
             | Self::Mientras { texto, .. }
-            | Self::Repetir { texto, .. } => texto,
+            | Self::Repetir { texto, .. }
+            | Self::Salto { texto, .. } => texto,
+            Self::Intentar { .. } => "",
         }
     }
 
@@ -1579,7 +1650,9 @@ impl PasoFlujo {
             | Self::Io { en_blanco, .. }
             | Self::Si { en_blanco, .. }
             | Self::Mientras { en_blanco, .. }
-            | Self::Repetir { en_blanco, .. } => *en_blanco,
+            | Self::Repetir { en_blanco, .. }
+            | Self::Salto { en_blanco, .. } => *en_blanco,
+            Self::Intentar { .. } => false,
         }
     }
 }
@@ -1591,11 +1664,19 @@ struct MedidaFlujo {
     alto: f64,
 }
 
+/// Dónde está la lista que se lee: dentro de un lazo (admite `break` y `continue`) o de un `try`.
+#[derive(Clone, Copy, Default)]
+struct Ambito {
+    en_lazo: bool,
+    en_try: bool,
+}
+
 fn parsear_pasos_flujo(
     dato: Option<&Value>,
     donde: &str,
     prof: usize,
     total: &mut usize,
+    ambito: Ambito,
 ) -> Result<Vec<PasoFlujo>, ErrorDiagrama> {
     if prof > MAX_PROF_FLUJO {
         return Err(ErrorDiagrama::new(
@@ -1631,8 +1712,8 @@ fn parsear_pasos_flujo(
         };
         let en_blanco = obj.get("blank").is_some_and(es_truthy);
         if let Some(cond) = obj.get("if") {
-            let entonces = parsear_pasos_flujo(obj.get("then"), &lugar, prof + 1, total)?;
-            let sino = parsear_pasos_flujo(obj.get("else"), &lugar, prof + 1, total)?;
+            let entonces = parsear_pasos_flujo(obj.get("then"), &lugar, prof + 1, total, ambito)?;
+            let sino = parsear_pasos_flujo(obj.get("else"), &lugar, prof + 1, total, ambito)?;
             pasos.push(PasoFlujo::Si {
                 texto: texto(cond),
                 a: entonces,
@@ -1640,7 +1721,7 @@ fn parsear_pasos_flujo(
                 en_blanco,
             });
         } else if obj.contains_key("while") || obj.contains_key("for") {
-            let cuerpo = parsear_pasos_flujo(obj.get("do"), &lugar, prof + 1, total)?;
+            let cuerpo = parsear_pasos_flujo(obj.get("do"), &lugar, prof + 1, total, Ambito { en_lazo: true, ..ambito })?;
             if cuerpo.is_empty() {
                 return Err(ErrorDiagrama::new(format!(
                     "{lugar}: la repetición no tiene cuerpo ('do')"
@@ -1657,7 +1738,7 @@ fn parsear_pasos_flujo(
                 en_blanco,
             });
         } else if let Some(cond) = obj.get("doWhile") {
-            let cuerpo = parsear_pasos_flujo(obj.get("do"), &lugar, prof + 1, total)?;
+            let cuerpo = parsear_pasos_flujo(obj.get("do"), &lugar, prof + 1, total, Ambito { en_lazo: true, ..ambito })?;
             if cuerpo.is_empty() {
                 return Err(ErrorDiagrama::new(format!(
                     "{lugar}: la repetición no tiene cuerpo ('do')"
@@ -1667,6 +1748,95 @@ fn parsear_pasos_flujo(
                 texto: texto(cond),
                 a: cuerpo,
                 en_blanco,
+            });
+        } else if obj.contains_key("break") || obj.contains_key("continue") {
+            let (tipo, nombre) = if obj.contains_key("break") {
+                (TipoSalto::Break, "break")
+            } else {
+                (TipoSalto::Continue, "continue")
+            };
+            if ambito.en_try {
+                return Err(ErrorDiagrama::new(format!(
+                    "{lugar}: '{nombre}' dentro de un try todavía no se dibuja"
+                )));
+            }
+            if !ambito.en_lazo {
+                return Err(ErrorDiagrama::new(format!("{lugar}: '{nombre}' fuera de un lazo")));
+            }
+            pasos.push(PasoFlujo::Salto { tipo, texto: nombre.to_string(), en_blanco });
+        } else if let Some(r) = obj.get("return") {
+            if ambito.en_try {
+                return Err(ErrorDiagrama::new(format!(
+                    "{lugar}: 'return' dentro de un try todavía no se dibuja"
+                )));
+            }
+            let expr = match r {
+                Value::Null | Value::Bool(true) => String::new(),
+                otro => texto(otro),
+            };
+            pasos.push(PasoFlujo::Salto {
+                tipo: TipoSalto::Return,
+                texto: if expr.is_empty() { "return".to_string() } else { format!("return {expr}") },
+                en_blanco,
+            });
+        } else if obj.contains_key("try") {
+            if ambito.en_try {
+                return Err(ErrorDiagrama::new(format!(
+                    "{lugar}: un try dentro de otro todavía no se dibuja"
+                )));
+            }
+            let dentro = Ambito { en_try: true, ..ambito };
+            let cuerpo = parsear_pasos_flujo(obj.get("try"), &lugar, prof + 1, total, dentro)?;
+            if cuerpo.is_empty() {
+                return Err(ErrorDiagrama::new(format!("{lugar}: el try no tiene pasos")));
+            }
+            let mut manejadores = Vec::new();
+            match obj.get("except") {
+                None | Some(Value::Null) => {}
+                Some(Value::Array(lista)) => {
+                    for (k, m) in lista.iter().enumerate() {
+                        let Some(mo) = m.as_object() else {
+                            return Err(ErrorDiagrama::new(format!(
+                                "{lugar}: cada except es un objeto con 'matches' y 'do'"
+                            )));
+                        };
+                        let rotulo = match mo.get("matches") {
+                            None | Some(Value::Null) => "except".to_string(),
+                            Some(Value::Array(tipos)) => {
+                                format!("except ({})", tipos.iter().map(texto).collect::<Vec<_>>().join(", "))
+                            }
+                            Some(t) => format!("except {}", texto(t)),
+                        };
+                        let pasos_m = parsear_pasos_flujo(
+                            mo.get("do"),
+                            &format!("{lugar}, except {k}"),
+                            prof + 1,
+                            total,
+                            dentro,
+                        )?;
+                        manejadores.push((rotulo, pasos_m));
+                    }
+                }
+                Some(_) => {
+                    return Err(ErrorDiagrama::new(format!(
+                        "{lugar}: 'except' es una lista de {{matches, do}}"
+                    )));
+                }
+            }
+            let sino = parsear_pasos_flujo(obj.get("else"), &lugar, prof + 1, total, dentro)?;
+            let limpieza = parsear_pasos_flujo(obj.get("finally"), &lugar, prof + 1, total, dentro)?;
+            if !sino.is_empty() && manejadores.is_empty() {
+                return Err(ErrorDiagrama::new(format!("{lugar}: un else de try necesita algún except")));
+            }
+            if manejadores.is_empty() && limpieza.is_empty() {
+                return Err(ErrorDiagrama::new(format!("{lugar}: un try necesita except o finally")));
+            }
+            pasos.push(PasoFlujo::Intentar {
+                cuerpo,
+                manejadores,
+                sino,
+                limpieza,
+                propaga: obj.get("propagate").is_some_and(es_truthy),
             });
         } else if let Some(io_v) = obj.get("io") {
             pasos.push(PasoFlujo::Io {
@@ -1680,7 +1850,7 @@ fn parsear_pasos_flujo(
             });
         } else {
             return Err(ErrorDiagrama::new(format!(
-                "{lugar}: se espera un texto o una clave if, while, for, doWhile, io o step"
+                "{lugar}: se espera un texto o una clave if, while, for, doWhile, break, continue, return, try, io o step"
             )));
         }
     }
@@ -1689,6 +1859,130 @@ fn parsear_pasos_flujo(
 
 fn ancho_caja_flujo(p: &PasoFlujo) -> f64 {
     (ancho_texto(p.texto(), 10.5) + 26.0).max(110.0)
+}
+
+fn ancho_salto_flujo(p: &PasoFlujo) -> f64 {
+    (ancho_texto(p.texto(), 10.5) + 30.0).max(90.0)
+}
+
+/// Las medidas de un `try`: su región, la de `finally`, las columnas de los `except` (a la
+/// derecha) y el carril de la propagación.
+struct GeometriaTry {
+    cuerpo: MedidaFlujo,
+    sino: MedidaFlujo,
+    limpieza: MedidaFlujo,
+    region_izq: f64,
+    region_der: f64,
+    final_izq: f64,
+    final_der: f64,
+    alto_try: f64,
+    alto_medio: f64,
+    alto_final: f64,
+    /// El centro de cada `except`, desde el eje, y el ancho de su rótulo.
+    columnas: Vec<(f64, f64)>,
+    carril: f64,
+    ancho_aviso: f64,
+    izq: f64,
+    der: f64,
+    alto: f64,
+}
+
+const ALTO_ROTULO_TRY: f64 = 24.0;
+
+fn geometria_try(p: &PasoFlujo) -> GeometriaTry {
+    let PasoFlujo::Intentar { cuerpo, manejadores, sino, limpieza, propaga } = p else {
+        unreachable!("geometria_try sólo recibe un try")
+    };
+    let cuerpo = medir_lista_flujo(cuerpo);
+    let m_sino = medir_lista_flujo(sino);
+    let m_limpieza = medir_lista_flujo(limpieza);
+    let region_izq = cuerpo.izq.max(50.0) + 14.0;
+    let region_der = cuerpo.der.max(50.0) + 14.0;
+    let (final_izq, final_der) = if limpieza.is_empty() {
+        (0.0, 0.0)
+    } else {
+        (m_limpieza.izq.max(50.0) + 14.0, m_limpieza.der.max(50.0) + 14.0)
+    };
+    let alto_try = 22.0 + cuerpo.alto + 12.0;
+    let alto_final = if limpieza.is_empty() { 0.0 } else { 22.0 + m_limpieza.alto + 12.0 };
+    let mut alto_medio = m_sino.alto;
+    let mut columnas = Vec::new();
+    let mut x = region_der.max(m_sino.der).max(final_der) + 46.0;
+    for (k, (rotulo, pasos)) in manejadores.iter().enumerate() {
+        let m = medir_lista_flujo(pasos);
+        let w_rotulo = ancho_texto(rotulo, 10.0) + 20.0;
+        let medio = m.izq.max(m.der).max(w_rotulo / 2.0);
+        if k > 0 {
+            x += 30.0;
+        }
+        x += medio;
+        columnas.push((x, w_rotulo));
+        x += medio;
+        let alto = ALTO_ROTULO_TRY + if pasos.is_empty() { 0.0 } else { SEP_FLUJO + m.alto };
+        alto_medio = alto_medio.max(alto);
+    }
+    let ancho_aviso = ancho_texto("se propaga", 10.0) + 22.0;
+    let carril = x + 24.0;
+    let der = if *propaga {
+        if limpieza.is_empty() { carril + ancho_aviso / 2.0 + 6.0 } else { carril + 12.0 + ancho_aviso + 6.0 }
+    } else {
+        x + 6.0
+    };
+    let medio = if alto_medio > 0.0 { SEP_FLUJO + alto_medio } else { 0.0 };
+    let alto = alto_try + medio + SEP_FLUJO + alto_final;
+    GeometriaTry {
+        cuerpo,
+        sino: m_sino,
+        limpieza: m_limpieza,
+        region_izq,
+        region_der,
+        final_izq,
+        final_der,
+        alto_try,
+        alto_medio,
+        alto_final,
+        columnas,
+        carril,
+        ancho_aviso,
+        izq: region_izq.max(m_sino.izq).max(final_izq),
+        der,
+        alto,
+    }
+}
+
+/// Un camino con estilo propio (con guiones para las excepciones) y un `data-arista` que
+/// nombra el destino, para las pruebas.
+fn camino_flujo_dato(c: &mut Lienzo, puntos: &[Punto], guiones: bool, arista: &str) {
+    let trazo: String = puntos
+        .iter()
+        .map(|&(x, y)| format!("{x:.1} {y:.1}"))
+        .collect::<Vec<_>>()
+        .join(" L ");
+    let dash = if guiones { r#" stroke-dasharray="5 3""# } else { "" };
+    c.add(format!(
+        r#"<path d="M {trazo}" fill="none" stroke="{}" stroke-width="1.5"{dash} marker-end="url(#flecha-main-{})" data-arista="{}"/>"#,
+        c.pal.stroke_main,
+        c.sufijo,
+        dibu_core::esc(arista)
+    ));
+}
+
+/// A dónde salta un `break` o un `continue` del lazo que se está dibujando, y los carriles a
+/// su derecha.
+struct DestinoLazo {
+    /// La condición: el punto donde entra un `continue`, desde la derecha.
+    continuar: Punto,
+    /// La salida: el punto donde entra un `break`, desde la derecha.
+    salir: Punto,
+    carril: f64,
+    usados: usize,
+}
+
+#[derive(Default)]
+struct CtxFlujo {
+    lazos: Vec<DestinoLazo>,
+    /// Los `return`: el punto de salida de cada uno, para unirlos al final de la función.
+    retornos: Vec<Punto>,
 }
 
 fn ancho_rombo_flujo(p: &PasoFlujo) -> f64 {
@@ -1754,7 +2048,7 @@ fn medir_paso_flujo(p: &PasoFlujo) -> MedidaFlujo {
             let m = medir_lista_flujo(a);
             MedidaFlujo {
                 izq: medio.max(m.izq) + 22.0,
-                der: medio.max(m.der) + 34.0,
+                der: medio.max(m.der) + 34.0 + ancho_carriles(saltos_del_lazo(a)),
                 alto: ALTO_ROMBO + SEP_FLUJO + m.alto + 34.0,
             }
         }
@@ -1763,8 +2057,24 @@ fn medir_paso_flujo(p: &PasoFlujo) -> MedidaFlujo {
             let m = medir_lista_flujo(a);
             MedidaFlujo {
                 izq: medio.max(m.izq) + 22.0,
-                der: medio.max(m.der),
+                der: medio.max(m.der) + ancho_carriles(saltos_del_lazo(a)),
                 alto: m.alto + SEP_FLUJO + ALTO_ROMBO,
+            }
+        }
+        PasoFlujo::Salto { .. } => {
+            let w = ancho_salto_flujo(p);
+            MedidaFlujo {
+                izq: w / 2.0,
+                der: w / 2.0,
+                alto: 30.0,
+            }
+        }
+        PasoFlujo::Intentar { .. } => {
+            let g = geometria_try(p);
+            MedidaFlujo {
+                izq: g.izq,
+                der: g.der,
+                alto: g.alto,
             }
         }
         PasoFlujo::Si { a, b, .. } => {
@@ -1833,9 +2143,13 @@ fn dibujar_lista_flujo(
     x: f64,
     mut y: f64,
     sin_valores: bool,
+    ctx: &mut CtxFlujo,
 ) -> f64 {
     for (i, p) in pasos.iter().enumerate() {
-        if i > 0 {
+        // Después de un salto no hay arista: lo que sigue sólo se alcanza por otro camino.
+        if i > 0 && pasos[i - 1].es_salto() {
+            y += SEP_FLUJO;
+        } else if i > 0 {
             c.linea(
                 x,
                 y,
@@ -1848,7 +2162,7 @@ fn dibujar_lista_flujo(
             );
             y += SEP_FLUJO;
         }
-        y = dibujar_paso_flujo(c, p, x, y, sin_valores);
+        y = dibujar_paso_flujo(c, p, x, y, sin_valores, ctx);
     }
     y
 }
@@ -1859,6 +2173,7 @@ fn dibujar_paso_flujo(
     x: f64,
     y: f64,
     sin_valores: bool,
+    ctx: &mut CtxFlujo,
 ) -> f64 {
     match p {
         PasoFlujo::Proceso { .. } => {
@@ -1890,7 +2205,14 @@ fn dibujar_paso_flujo(
             let medio = ancho_rombo_flujo(p) / 2.0;
             let medio_y = y + ALTO_ROMBO / 2.0;
             let cuerpo_y = y + ALTO_ROMBO + SEP_FLUJO;
-            let m = medir_paso_flujo(p);
+            let mut m = medir_paso_flujo(p);
+            m.der -= ancho_carriles(saltos_del_lazo(a));
+            ctx.lazos.push(DestinoLazo {
+                continuar: (x, y - 11.0),
+                salir: (x + m.der - 6.0, y + m.alto - 10.0),
+                carril: x + m.der + 8.0,
+                usados: 0,
+            });
             rombo_flujo(c, p, x, y, sin_valores);
             c.linea(
                 x,
@@ -1912,20 +2234,23 @@ fn dibujar_paso_flujo(
                 "start",
                 SANS,
             );
-            let fin = dibujar_lista_flujo(c, a, x, cuerpo_y, sin_valores);
+            let fin = dibujar_lista_flujo(c, a, x, cuerpo_y, sin_valores, ctx);
+            ctx.lazos.pop();
             let vuelta = fin + 12.0;
             let salida = fin + 34.0;
-            camino_flujo(
-                c,
-                &[
-                    (x, fin),
-                    (x, vuelta),
-                    (x - m.izq + 4.0, vuelta),
-                    (x - m.izq + 4.0, y - 11.0),
-                    (x - 3.0, y - 11.0),
-                ],
-                true,
-            );
+            if !termina_en_salto(a) {
+                camino_flujo(
+                    c,
+                    &[
+                        (x, fin),
+                        (x, vuelta),
+                        (x - m.izq + 4.0, vuelta),
+                        (x - m.izq + 4.0, y - 11.0),
+                        (x - 3.0, y - 11.0),
+                    ],
+                    true,
+                );
+            }
             c.t(
                 x + medio + 4.0,
                 medio_y - 6.0,
@@ -1951,11 +2276,22 @@ fn dibujar_paso_flujo(
         PasoFlujo::Repetir { a, .. } => {
             // El cuerpo va primero: se entra a él sin pasar por la condición.
             let medio = ancho_rombo_flujo(p) / 2.0;
-            let m = medir_paso_flujo(p);
-            let fin = dibujar_lista_flujo(c, a, x, y, sin_valores);
+            let mut m = medir_paso_flujo(p);
+            m.der -= ancho_carriles(saltos_del_lazo(a));
+            let rombo_previsto = y + medir_lista_flujo(a).alto + SEP_FLUJO;
+            ctx.lazos.push(DestinoLazo {
+                continuar: (x, rombo_previsto - 11.0),
+                salir: (x, rombo_previsto + ALTO_ROMBO + 8.0),
+                carril: x + m.der + 8.0,
+                usados: 0,
+            });
+            let fin = dibujar_lista_flujo(c, a, x, y, sin_valores, ctx);
+            ctx.lazos.pop();
             let rombo_y = fin + SEP_FLUJO;
             let medio_y = rombo_y + ALTO_ROMBO / 2.0;
-            c.linea(x, fin, x, rombo_y - 3.0, "strokeMain", 1.5, Some("main"), "");
+            if !termina_en_salto(a) {
+                c.linea(x, fin, x, rombo_y - 3.0, "strokeMain", 1.5, Some("main"), "");
+            }
             rombo_flujo(c, p, x, rombo_y, sin_valores);
             // Verdadero: vuelve a la entrada del cuerpo, por la izquierda.
             c.t(x - medio - 4.0, medio_y - 6.0, "Sí", 9.5, 700, "textMain", "end", SANS);
@@ -1973,6 +2309,35 @@ fn dibujar_paso_flujo(
             c.t(x + 6.0, rombo_y + ALTO_ROMBO + 15.0, "No", 9.5, 700, "textMain", "start", SANS);
             rombo_y + ALTO_ROMBO
         }
+        PasoFlujo::Salto { tipo, .. } => {
+            let w = ancho_salto_flujo(p);
+            c.r(x - w / 2.0, y, w, 30.0, "fillHeader", 2.0, 10.0);
+            texto_flujo(c, p, x, y + 15.0, sin_valores);
+            let desde = (x + w / 2.0, y + 15.0);
+            match tipo {
+                TipoSalto::Return => ctx.retornos.push(desde),
+                TipoSalto::Break | TipoSalto::Continue => {
+                    let lazo = ctx.lazos.last_mut().expect("validado al leer: break/continue dentro de un lazo");
+                    let carril = lazo.carril + lazo.usados as f64 * PASO_CARRIL;
+                    lazo.usados += 1;
+                    let (destino, nombre) = if *tipo == TipoSalto::Break {
+                        (lazo.salir, "salto:break")
+                    } else {
+                        (lazo.continuar, "salto:continue")
+                    };
+                    camino_flujo_dato(
+                        c,
+                        &[desde, (carril, desde.1), (carril, destino.1), (destino.0 + 3.0, destino.1)],
+                        false,
+                        nombre,
+                    );
+                }
+            }
+            y + 30.0
+        }
+        PasoFlujo::Intentar { cuerpo, manejadores, sino, limpieza, propaga } => {
+            dibujar_try(c, p, (cuerpo, manejadores, sino, limpieza, *propaga), x, y, sin_valores, ctx)
+        }
         PasoFlujo::Si { a, b, .. } => {
             let medio = ancho_rombo_flujo(p) / 2.0;
             let medio_y = y + ALTO_ROMBO / 2.0;
@@ -1982,12 +2347,12 @@ fn dibujar_paso_flujo(
             let fin_a = if a.is_empty() {
                 medio_y
             } else {
-                dibujar_lista_flujo(c, a, x - dx_a, cuerpo_y, sin_valores)
+                dibujar_lista_flujo(c, a, x - dx_a, cuerpo_y, sin_valores, ctx)
             };
             let fin_b = if b.is_empty() {
                 medio_y
             } else {
-                dibujar_lista_flujo(c, b, x + dx_b, cuerpo_y, sin_valores)
+                dibujar_lista_flujo(c, b, x + dx_b, cuerpo_y, sin_valores, ctx)
             };
             let union = fin_a.max(fin_b).max(cuerpo_y) + SEP_FLUJO;
             c.t(
@@ -2032,11 +2397,13 @@ fn dibujar_paso_flujo(
                     ],
                     true,
                 );
-                camino_flujo(
-                    c,
-                    &[(x - dx_a, fin_a), (x - dx_a, union), (x - 3.0, union)],
-                    true,
-                );
+                if !termina_en_salto(a) {
+                    camino_flujo(
+                        c,
+                        &[(x - dx_a, fin_a), (x - dx_a, union), (x - 3.0, union)],
+                        true,
+                    );
+                }
             }
 
             if b.is_empty() {
@@ -2060,16 +2427,124 @@ fn dibujar_paso_flujo(
                     ],
                     true,
                 );
-                camino_flujo(
-                    c,
-                    &[(x + dx_b, fin_b), (x + dx_b, union), (x + 3.0, union)],
-                    true,
-                );
+                if !termina_en_salto(b) {
+                    camino_flujo(
+                        c,
+                        &[(x + dx_b, fin_b), (x + dx_b, union), (x + 3.0, union)],
+                        true,
+                    );
+                }
             }
 
             union
         }
     }
+}
+
+type PartesTry<'a> = (
+    &'a [PasoFlujo],
+    &'a [(String, Vec<PasoFlujo>)],
+    &'a [PasoFlujo],
+    &'a [PasoFlujo],
+    bool,
+);
+
+/// Una región con rótulo (`try`, `finally`) alrededor de sus pasos.
+fn region_try(c: &mut Lienzo, x1: f64, y: f64, w: f64, h: f64, rotulo: &str) {
+    c.add(format!(
+        r#"<rect x="{x1:.1}" y="{y:.1}" width="{w:.1}" height="{h:.1}" rx="6" fill="none" stroke="{}" stroke-width="1.3"/>"#,
+        c.pal.stroke_sub
+    ));
+    c.t(x1 + 8.0, y + 14.0, rotulo, 9.5, 700, "textSub", "start", MONO);
+}
+
+#[allow(clippy::too_many_arguments)]
+fn dibujar_try(
+    c: &mut Lienzo,
+    p: &PasoFlujo,
+    (cuerpo, manejadores, sino, limpieza, propaga): PartesTry<'_>,
+    x: f64,
+    y: f64,
+    sin_valores: bool,
+    ctx: &mut CtxFlujo,
+) -> f64 {
+    let g = geometria_try(p);
+    // try: la región y su cuerpo.
+    region_try(c, x - g.region_izq, y, g.region_izq + g.region_der, g.alto_try, "try");
+    c.linea(x, y, x, y + 19.0, "strokeMain", 1.5, Some("main"), "");
+    let fin_try = dibujar_lista_flujo(c, cuerpo, x, y + 22.0, sin_valores, ctx);
+    let y_medio = y + g.alto_try + SEP_FLUJO;
+    let y_union = if g.alto_medio > 0.0 { y_medio + g.alto_medio + SEP_FLUJO } else { y + g.alto_try + SEP_FLUJO };
+    let hay_final = !limpieza.is_empty();
+    // Donde se juntan los caminos: arriba del finally, o la salida del try.
+    let y_junta = if hay_final { y_union - 11.0 } else { y_union };
+
+    // Sin excepción: por el else (si hay) hacia el finally o la salida.
+    if !manejadores.is_empty() {
+        c.t(x + 6.0, y + g.alto_try + 13.0, "sin excepción", 9.0, 700, "textSub", "start", SANS);
+    }
+    if sino.is_empty() {
+        if hay_final {
+            camino_flujo_dato(c, &[(x, fin_try), (x, y_union - 3.0)], false, "exito:finally");
+        } else {
+            c.linea(x, fin_try, x, y_union, "strokeMain", 1.5, None, "");
+        }
+    } else {
+        camino_flujo_dato(c, &[(x, fin_try), (x, y_medio - 3.0)], false, "exito:else");
+        let fin_sino = dibujar_lista_flujo(c, sino, x, y_medio, sin_valores, ctx);
+        if hay_final {
+            camino_flujo_dato(c, &[(x, fin_sino), (x, y_union - 3.0)], false, "else:finally");
+        } else {
+            c.linea(x, fin_sino, x, y_union, "strokeMain", 1.5, None, "");
+        }
+    }
+
+    // Con excepción: desde el borde derecho del try, con guiones, a cada except.
+    let origen = (x + g.region_der, y + g.alto_try / 2.0);
+    for ((rotulo, pasos), &(cx, w_rotulo)) in manejadores.iter().zip(&g.columnas) {
+        let hx = x + cx;
+        camino_flujo_dato(c, &[origen, (hx, origen.1), (hx, y_medio - 3.0)], true, &format!("excepcion:{rotulo}"));
+        c.r(hx - w_rotulo / 2.0, y_medio, w_rotulo, ALTO_ROTULO_TRY, "fillHeader", 1.5, 4.0);
+        c.t(hx, y_medio + 16.0, rotulo, 10.0, 700, "textMain", "middle", MONO);
+        let mut fin = y_medio + ALTO_ROTULO_TRY;
+        if !pasos.is_empty() {
+            c.linea(hx, fin, hx, fin + SEP_FLUJO - 3.0, "strokeMain", 1.5, Some("main"), "");
+            fin = dibujar_lista_flujo(c, pasos, hx, fin + SEP_FLUJO, sin_valores, ctx);
+        }
+        let destino = if hay_final { "finally" } else { "salida" };
+        camino_flujo_dato(c, &[(hx, fin), (hx, y_junta), (x + 3.0, y_junta)], false, &format!("{rotulo}:{destino}"));
+    }
+
+    // finally: recibe todos los caminos.
+    let mut salida = y_union;
+    if hay_final {
+        region_try(c, x - g.final_izq, y_union, g.final_izq + g.final_der, g.alto_final, "finally");
+        c.linea(x, y_union, x, y_union + 19.0, "strokeMain", 1.5, Some("main"), "");
+        let fin = dibujar_lista_flujo(c, limpieza, x, y_union + 22.0, sin_valores, ctx);
+        salida = y_union + g.alto_final;
+        c.linea(x, fin, x, salida, "strokeMain", 1.5, None, "");
+    }
+
+    // Una excepción que ningún except captura: pasa por el finally y se propaga.
+    if propaga {
+        let carril = x + g.carril;
+        c.t(carril + 4.0, origen.1 - 6.0, "otra excepción", 9.0, 700, "textSub", "start", SANS);
+        if hay_final {
+            let entrada = (x + g.final_der + 3.0, y_union + 14.0);
+            camino_flujo_dato(c, &[origen, (carril, origen.1), (carril, entrada.1), entrada], true, "propagacion:finally");
+            let y_sale = salida - 10.0;
+            let caja_x = carril + 12.0;
+            camino_flujo_dato(c, &[(x + g.final_der, y_sale), (caja_x - 3.0, y_sale)], true, "propagacion:afuera");
+            c.r(caja_x, y_sale - 12.0, g.ancho_aviso, 24.0, "fillCell", 1.5, 12.0);
+            c.t(caja_x + g.ancho_aviso / 2.0, y_sale + 4.0, "se propaga", 10.0, 700, "textMain", "middle", SANS);
+        } else {
+            camino_flujo_dato(c, &[origen, (carril, origen.1), (carril, y_medio - 3.0)], true, "propagacion:afuera");
+            c.r(carril - g.ancho_aviso / 2.0, y_medio, g.ancho_aviso, 24.0, "fillCell", 1.5, 12.0);
+            c.t(carril, y_medio + 16.0, "se propaga", 10.0, 700, "textMain", "middle", SANS);
+        }
+    }
+    let _ = (g.cuerpo, g.sino, g.limpieza);
+    salida
 }
 
 fn etiqueta_terminal(b: &Bloque, clave: &str, defecto: &str) -> Option<String> {
@@ -2088,6 +2563,7 @@ fn render_flowchart(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> 
         "diagrama de flujo",
         0,
         &mut total_pasos,
+        Ambito::default(),
     )?;
     let top = encabezado(c, b, "");
     let sin_valores = b.get("blankValues").is_some_and(es_truthy);
@@ -2096,6 +2572,11 @@ fn render_flowchart(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> 
     let m = medir_lista_flujo(&pasos);
     let x = m.izq.max(60.0) + 4.0;
     let mut y = top + 6.0;
+    let retornos = retornos_flujo(&pasos);
+    if retornos > 0 && fin.is_none() {
+        return Err(ErrorDiagrama::new("un return necesita el fin del diagrama ('end')"));
+    }
+    let mut ctx = CtxFlujo::default();
 
     let terminal = |c: &mut Lienzo, txt: &str, ty: f64| {
         let w = (ancho_texto(txt, 10.5) + 30.0).max(80.0);
@@ -2117,24 +2598,39 @@ fn render_flowchart(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> 
         );
         y += 30.0 + SEP_FLUJO;
     }
-    y = dibujar_lista_flujo(c, &pasos, x, y, sin_valores);
+    y = dibujar_lista_flujo(c, &pasos, x, y, sin_valores, &mut ctx);
+    let mut ancho = x + m.der.max(60.0) + 4.0;
     if let Some(ref txt) = fin {
-        c.linea(
-            x,
-            y,
-            x,
-            y + SEP_FLUJO - 3.0,
-            "strokeMain",
-            1.5,
-            Some("main"),
-            "",
-        );
+        if !termina_en_salto(&pasos) {
+            c.linea(
+                x,
+                y,
+                x,
+                y + SEP_FLUJO - 3.0,
+                "strokeMain",
+                1.5,
+                Some("main"),
+                "",
+            );
+        }
         y += SEP_FLUJO;
         terminal(c, txt, y);
+        // Cada return llega al fin por un carril a la derecha de todo el diagrama.
+        let medio_fin = (ancho_texto(txt, 10.5) + 30.0).max(80.0) / 2.0;
+        for (k, desde) in ctx.retornos.iter().enumerate() {
+            let carril = x + m.der.max(60.0) + 10.0 + k as f64 * PASO_CARRIL;
+            camino_flujo_dato(
+                c,
+                &[*desde, (carril, desde.1), (carril, y + 15.0), (x + medio_fin + 3.0, y + 15.0)],
+                false,
+                "salto:return",
+            );
+            ancho = ancho.max(carril + 6.0);
+        }
         y += 30.0;
     }
 
-    Ok((x + m.der.max(60.0) + 4.0, y + 4.0))
+    Ok((ancho, y + 4.0))
 }
 
 // ---------------------------------------------------------------------------
@@ -2219,7 +2715,172 @@ fn render_cost_table(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama>
 // Tabla de traza: variables o statics (pila / cola)
 // ---------------------------------------------------------------------------
 
+/// Una celda de entrada, condición o salida: `—` si no hubo, `''` si fue una cadena vacía, y en
+/// blanco (para completar) si es `null` o si se oculta.
+fn celda_programa(fila: &serde_json::Map<String, Value>, clave: &str, oculta: bool) -> String {
+    match fila.get(clave) {
+        _ if oculta => String::new(),
+        None => "—".to_string(),
+        Some(Value::Null) => String::new(),
+        Some(Value::String(t)) if t.is_empty() => "''".to_string(),
+        Some(Value::Bool(true)) => "True".to_string(),
+        Some(Value::Bool(false)) => "False".to_string(),
+        Some(Value::Array(a)) => a.iter().map(texto).collect::<Vec<_>>().join(", "),
+        Some(v) => texto(v),
+    }
+}
+
+/// `trace_table` con `variant: program`: la prueba de escritorio de un programa, con la entrada
+/// que consume, la condición que evalúa y la salida que emite, además de las variables.
+fn render_traza_programa(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
+    let columnas: Vec<String> = match b.get("columns") {
+        None | Some(Value::Null) => Vec::new(),
+        Some(Value::Array(a)) => a.iter().map(texto).collect(),
+        Some(_) => return Err(ErrorDiagrama::new("'columns' de una traza tiene que ser una lista")),
+    };
+    let filas_v: &[Value] = match b.get("rows") {
+        Some(Value::Array(a)) if !a.is_empty() => a,
+        _ => return Err(ErrorDiagrama::new("la traza no tiene filas ('rows')")),
+    };
+    if filas_v.len() > MAX_FILAS_TRAZA {
+        return Err(ErrorDiagrama::new(format!(
+            "la traza tiene {} filas; el máximo es {MAX_FILAS_TRAZA}",
+            filas_v.len()
+        )));
+    }
+    let vacia = serde_json::Map::new();
+    let mut filas: Vec<(&serde_json::Map<String, Value>, Vec<Value>)> = Vec::new();
+    for (i, f) in filas_v.iter().enumerate() {
+        match f {
+            Value::Object(o) => {
+                let valores = match o.get("values") {
+                    None | Some(Value::Null) => Vec::new(),
+                    Some(Value::Array(a)) => a.clone(),
+                    Some(_) => return Err(ErrorDiagrama::new(format!("fila {i}: 'values' tiene que ser una lista"))),
+                };
+                filas.push((o, valores));
+            }
+            Value::Array(a) => filas.push((&vacia, a.clone())),
+            _ => {
+                return Err(ErrorDiagrama::new(format!(
+                    "fila {i}: cada fila es un objeto ({{step, input, check, values, output}}) o una lista de valores"
+                )));
+            }
+        }
+        if filas[i].1.len() > columnas.len() {
+            return Err(ErrorDiagrama::new(format!(
+                "la fila {i} de la traza tiene {} valores y hay {} columnas",
+                filas[i].1.len(),
+                columnas.len()
+            )));
+        }
+    }
+    let hay = |clave: &str| filas.iter().any(|(o, _)| o.contains_key(clave));
+    let (con_etapa, con_paso, con_entrada, con_cond, con_salida) =
+        (hay("stage"), hay("step"), hay("input"), hay("check"), hay("output"));
+    if columnas.len() + [con_etapa, con_paso, con_entrada, con_cond, con_salida].iter().filter(|x| **x).count()
+        > MAX_COLS_TRAZA + 3
+    {
+        return Err(ErrorDiagrama::new(format!("la traza tiene demasiadas columnas (máximo {MAX_COLS_TRAZA} variables)")));
+    }
+    let sin_valores = b.get("blankValues").is_some_and(es_truthy);
+
+    let mut encabezados: Vec<String> = Vec::new();
+    let mut izquierda: Vec<usize> = Vec::new();
+    if con_etapa {
+        izquierda.push(encabezados.len());
+        encabezados.push("Etapa".to_string());
+    }
+    if con_paso {
+        izquierda.push(encabezados.len());
+        encabezados.push(str_o(b, "stepHeader", "Paso"));
+    }
+    if con_entrada {
+        encabezados.push(str_o(b, "inputHeader", "Entrada"));
+    }
+    encabezados.extend(columnas.iter().cloned());
+    if con_cond {
+        encabezados.push(str_o(b, "condition", "Condición"));
+    }
+    if con_salida {
+        encabezados.push(str_o(b, "outputHeader", "Salida"));
+    }
+
+    let mut celdas: Vec<Vec<String>> = Vec::with_capacity(filas.len());
+    let mut etapa_anterior: Option<String> = None;
+    for (o, valores) in &filas {
+        let ocultas: Vec<String> = match o.get("blanks") {
+            Some(Value::Array(a)) => a.iter().map(texto).collect(),
+            Some(Value::String(t)) => vec![t.clone()],
+            _ => Vec::new(),
+        };
+        let oculta = |nombre: &str| ocultas.iter().any(|x| x == nombre);
+        let mut fila = Vec::with_capacity(encabezados.len());
+        if con_etapa {
+            let etapa = o.get("stage").filter(|v| !v.is_null()).map(texto).map(|e| match e.as_str() {
+                "initial" => "estado inicial".to_string(),
+                "iteration" => "iteración".to_string(),
+                "output" => "salida".to_string(),
+                _ => e,
+            });
+            // La etapa se escribe en la primera fila de cada tramo; un espacio no es un casillero.
+            let celda = match &etapa {
+                Some(e) if etapa_anterior.as_ref() != Some(e) => e.clone(),
+                _ => " ".to_string(),
+            };
+            if etapa.is_some() {
+                etapa_anterior = etapa;
+            }
+            fila.push(if oculta("stage") { String::new() } else { celda });
+        }
+        if con_paso {
+            fila.push(if oculta("step") { String::new() } else { o.get("step").map(texto).unwrap_or_else(|| " ".to_string()) });
+        }
+        if con_entrada {
+            fila.push(celda_programa(o, "input", oculta("input")));
+        }
+        // Una fila sin `values` no muestra las variables (un espacio no es un casillero); un
+        // `null` o una lista corta quedan para completar, como en las filas posicionales.
+        let sin_variables = !o.is_empty() && !o.contains_key("values");
+        for (j, col) in columnas.iter().enumerate() {
+            let v = valores.get(j);
+            fila.push(match v {
+                _ if oculta(col) => String::new(),
+                _ if sin_variables => " ".to_string(),
+                _ if sin_valores => String::new(),
+                None | Some(Value::Null) => String::new(),
+                Some(v) => texto(v),
+            });
+        }
+        if con_cond {
+            fila.push(celda_programa(o, "check", sin_valores || oculta("check")));
+        }
+        if con_salida {
+            fila.push(celda_programa(o, "output", sin_valores || oculta("output")));
+        }
+        celdas.push(fila);
+    }
+
+    let top = encabezado(c, b, "");
+    let enc_refs: Vec<&str> = encabezados.iter().map(String::as_str).collect();
+    let (ancho, alto) = tabla(
+        c,
+        0.0,
+        top + 6.0,
+        &enc_refs,
+        &celdas,
+        TablaOpts {
+            izquierda: &izquierda,
+            ..TablaOpts::default()
+        },
+    );
+    Ok((ancho, top + 6.0 + alto + 8.0))
+}
+
 fn render_trace_table(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
+    if b.get("variant").and_then(Value::as_str) == Some("program") {
+        return render_traza_programa(c, b);
+    }
     let ops_raw = lista_o_vacia(b, "operations")?;
     if ops_raw.len() > MAX_FILAS_TRAZA {
         return Err(ErrorDiagrama::new(format!(
@@ -3219,5 +3880,154 @@ mod tests {
         assert!(svg.contains(">j &lt; m<"));
         let e = render_val(json!({"type": "flowchart", "steps": [{"doWhile": "x"}]}), true).unwrap_err();
         assert!(e.0.contains("no tiene cuerpo"), "{}", e.0);
+    }
+
+    /// Las aristas con `data-arista` del SVG: nombre y último punto.
+    fn aristas(svg: &str) -> Vec<(String, (f64, f64))> {
+        svg.split("<path d=\"M ")
+            .skip(1)
+            .filter(|p| p.contains("data-arista=\""))
+            .map(|p| {
+                let puntos = &p[..p.find('"').unwrap()];
+                let ultimo: Vec<f64> = puntos.rsplit(" L ").next().unwrap().split(' ').map(|v| v.parse().unwrap()).collect();
+                let nombre = p.split("data-arista=\"").nth(1).unwrap();
+                (nombre[..nombre.find('"').unwrap()].to_string(), (ultimo[0], ultimo[1]))
+            })
+            .collect()
+    }
+
+    fn y_de_texto(svg: &str, texto: &str) -> f64 {
+        let i = svg.find(&format!(">{texto}<")).unwrap_or_else(|| panic!("falta {texto}"));
+        let antes = &svg[..i];
+        let y = antes.rfind(" y=\"").unwrap() + 4;
+        antes[y..y + antes[y..].find('"').unwrap()].parse().unwrap()
+    }
+
+    #[test]
+    fn continue_vuelve_a_la_condicion_y_break_sale_del_lazo_interno() {
+        let con = |salto: &str| {
+            render_val(
+                json!({"type": "flowchart", "steps": [
+                    {"for": "i en range(3)", "do": [
+                        {"for": "j en range(3)", "do": [
+                            {"if": "j == i", "then": [{salto: true}]},
+                            {"io": "MOSTRAR j"}
+                        ]},
+                        "total = total + 1"
+                    ]}
+                ]}),
+                true,
+            )
+            .unwrap()
+        };
+        let s = con("break");
+        let a = aristas(&s);
+        assert_eq!(a.len(), 1);
+        assert_eq!(a[0].0, "salto:break");
+        let y_interno = y_de_texto(&s, "j en range(3)");
+        let y_total = y_de_texto(&s, "total = total + 1");
+        assert!(a[0].1 .1 > y_de_texto(&s, "MOSTRAR j") && a[0].1 .1 < y_total, "break: a la salida del interno, antes del paso del externo");
+        let s = con("continue");
+        let a = aristas(&s);
+        assert_eq!(a[0].0, "salto:continue");
+        assert!(a[0].1 .1 < y_interno && a[0].1 .1 > y_de_texto(&s, "i en range(3)"), "continue: a la condición del interno");
+    }
+
+    #[test]
+    fn sin_arista_despues_de_un_salto_y_validaciones() {
+        let s = render_val(
+            json!({"type": "flowchart", "start": false, "end": false, "steps": [
+                {"while": "c", "do": [{"break": true}, "inalcanzable()"]}
+            ]}),
+            true,
+        )
+        .unwrap();
+        let y_paso = y_de_texto(&s, "inalcanzable()") - 21.0; // la caja empieza 21 px arriba del texto
+        let llega = s.split("<line ").skip(1).any(|l| {
+            let y2 = l.split("y2=\"").nth(1).unwrap();
+            let y2: f64 = y2[..y2.find('"').unwrap()].parse().unwrap();
+            (y2 - (y_paso - 3.0)).abs() < 1.5
+        });
+        assert!(!llega, "el paso después de un break no recibe arista secuencial");
+        for (pasos, msj) in [
+            (json!([{"break": true}]), "fuera de un lazo"),
+            (json!([{"continue": true}]), "fuera de un lazo"),
+            (json!([{"while": "c", "do": [{"try": ["x"], "finally": [{"break": true}]}]}]), "dentro de un try"),
+            (json!([{"try": ["x"]}]), "necesita except o finally"),
+            (json!([{"try": ["x"], "else": ["y"], "finally": ["z"]}]), "necesita algún except"),
+        ] {
+            let e = render_val(json!({"type": "flowchart", "steps": pasos}), true).unwrap_err();
+            assert!(e.0.contains(msj), "{}", e.0);
+        }
+        let e = render_val(json!({"type": "flowchart", "end": false, "steps": [{"return": "x"}]}), true).unwrap_err();
+        assert!(e.0.contains("necesita el fin"), "{}", e.0);
+    }
+
+    #[test]
+    fn return_va_al_fin() {
+        let s = render_val(
+            json!({"type": "flowchart", "steps": [
+                {"for": "v en xs", "do": [{"if": "v == x", "then": [{"return": "True"}]}]},
+                {"return": "False"}
+            ]}),
+            true,
+        )
+        .unwrap();
+        let a = aristas(&s);
+        assert_eq!(a.iter().filter(|(n, _)| n == "salto:return").count(), 2);
+        let y_fin = y_de_texto(&s, "Fin");
+        assert!(a.iter().all(|(_, (_, y))| (y - (y_fin - 4.0)).abs() < 2.0), "los dos return llegan al fin");
+    }
+
+    #[test]
+    fn try_aristas_por_destino() {
+        let s = render_val(
+            json!({"type": "flowchart", "steps": [{"try": [{"step": "int(texto)"}],
+                "except": [{"matches": "ValueError", "do": [{"io": "MOSTRAR error"}]}],
+                "else": [{"io": "MOSTRAR número"}],
+                "finally": [{"step": "Registrar intento"}],
+                "propagate": true}]}),
+            true,
+        )
+        .unwrap();
+        let nombres: Vec<String> = aristas(&s).into_iter().map(|(n, _)| n).collect();
+        for n in ["exito:else", "else:finally", "excepcion:except ValueError", "except ValueError:finally", "propagacion:finally", "propagacion:afuera"] {
+            assert!(nombres.iter().any(|x| x == n), "falta la arista {n}: {nombres:?}");
+        }
+        assert!(s.matches("stroke-dasharray=\"5 3\"").count() >= 3, "las excepcionales van con guiones");
+        let a = aristas(&s);
+        let destino = |n: &str| a.iter().find(|(x, _)| x == n).unwrap().1;
+        let y_cabecera = y_de_texto(&s, "except ValueError");
+        assert!(destino("excepcion:except ValueError").1 < y_cabecera, "la excepción llega al except");
+        assert!(destino("propagacion:finally").1 > y_de_texto(&s, "MOSTRAR error"), "lo que se propaga pasa por finally");
+        let sin_final = render_val(
+            json!({"type": "flowchart", "steps": [{"try": ["x"], "except": [{"do": ["y"]}], "propagate": true}]}),
+            true,
+        )
+        .unwrap();
+        assert!(sin_final.contains(">except<"), "except sin tipo");
+    }
+
+    #[test]
+    fn traza_de_programa() {
+        let s = render_val(
+            json!({"type": "trace_table", "variant": "program", "condition": "x != 0", "columns": ["x", "suma"],
+                "rows": [
+                    {"stage": "initial", "step": "Primera lectura", "input": 4, "values": [4, 0]},
+                    {"stage": "iteration", "step": "Vuelta 1", "check": true, "values": [4, 4]},
+                    {"stage": "iteration", "step": "Centinela", "input": 0, "check": false, "values": [0, 4]},
+                    {"stage": "output", "step": "Mostrar", "output": 99, "blanks": ["output"]},
+                    {"step": "print('')", "output": ""}
+                ]}),
+            true,
+        )
+        .unwrap();
+        for t in ["Entrada", "x != 0", "Salida", "estado inicial", "iteración", "True", "False", "—", "&#x27;&#x27;"] {
+            assert!(s.contains(&format!(">{t}<")), "falta {t}");
+        }
+        assert!(!s.contains(">99<"), "la respuesta enmascarada no queda en el SVG");
+        assert_eq!(s.matches(">iteración<").count(), 1, "la etapa se escribe una vez por tramo");
+        let pos = render_val(json!({"type": "trace_table", "variant": "program", "columns": ["a"], "rows": [[1], [null]]}), true).unwrap();
+        assert!(pos.contains(">1<") && !pos.contains("Salida"));
     }
 }
