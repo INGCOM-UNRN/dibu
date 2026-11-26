@@ -120,7 +120,7 @@ fn leer_ranura(dato: &Value, nombre_por_omision: &str, donde: &str) -> Result<Ra
         return Ok(Ranura {
             nombre: nombre_por_omision.to_string(),
             tipo: None,
-            valor: Valor::Dato(if dato.is_null() { String::new() } else { texto(dato) }),
+            valor: Valor::Dato(if dato.is_null() { dato_nulo() } else { mostrar_celda(dato) }),
             en_blanco: false,
         });
     };
@@ -139,7 +139,7 @@ fn leer_ranura(dato: &Value, nombre_por_omision: &str, donde: &str) -> Result<Ra
             Some(Value::Null) | None => Valor::Ref(None),
             Some(r) => Valor::Ref(Some(texto(r))),
         },
-        (Some(v), false) => Valor::Dato(if v.is_null() { String::new() } else { mostrar_dato(v) }),
+        (Some(v), false) => Valor::Dato(if v.is_null() { dato_nulo() } else { mostrar_dato(v) }),
         (None, false) => Valor::Dato(String::new()),
     };
     Ok(Ranura {
@@ -150,12 +150,46 @@ fn leer_ranura(dato: &Value, nombre_por_omision: &str, donde: &str) -> Result<Ra
     })
 }
 
+thread_local! {
+    /// `variant: python`: los valores se escriben como en Python (`'texto'`, `True`, `None`).
+    static PYTHON: std::cell::Cell<bool> = const { std::cell::Cell::new(false) };
+}
+
+fn es_python() -> bool {
+    PYTHON.with(|p| p.get())
+}
+
 /// Un texto se muestra entre comillas, como en el código; los números y booleanos, tal cual.
 fn mostrar_dato(v: &Value) -> String {
+    if es_python() {
+        return match v {
+            Value::Null => "None".to_string(),
+            Value::Bool(true) => "True".to_string(),
+            Value::Bool(false) => "False".to_string(),
+            Value::String(s) if s.contains('\'') && !s.contains('"') => format!("\"{s}\""),
+            Value::String(s) => format!("'{}'", s.replace('\'', "\\'")),
+            otro => texto(otro),
+        };
+    }
     match v {
         Value::String(s) => format!("\"{s}\""),
         otro => texto(otro),
     }
+}
+
+/// Un valor suelto de una celda (`elements: [1, "a"]`): tal cual en Java, como `repr` en Python.
+fn mostrar_celda(v: &Value) -> String {
+    if es_python() { mostrar_dato(v) } else { texto(v) }
+}
+
+/// Una referencia nula: `null` en Java, `None` en Python.
+fn nulo() -> &'static str {
+    if es_python() { "None" } else { "null" }
+}
+
+/// Un valor `null` declarado como dato: vacío en Java, `None` en Python.
+fn dato_nulo() -> String {
+    if es_python() { "None".to_string() } else { String::new() }
 }
 
 fn leer_ranuras(dato: Option<&Value>, donde: &str, celdas: bool) -> Result<Vec<Ranura>, ErrorDiagrama> {
@@ -175,7 +209,7 @@ fn leer_ranuras(dato: Option<&Value>, donde: &str, celdas: bool) -> Result<Vec<R
                 Ok(Ranura {
                     nombre: k.clone(),
                     tipo: None,
-                    valor: Valor::Dato(if val.is_null() { String::new() } else { mostrar_dato(val) }),
+                    valor: Valor::Dato(if val.is_null() { dato_nulo() } else { mostrar_dato(val) }),
                     en_blanco: false,
                 })
             })
@@ -252,7 +286,7 @@ fn leer_objetos(dato: Option<&Value>, donde: &str) -> Result<Vec<Objeto>, ErrorD
         let contenido = if obj.contains_key("elements") {
             Contenido::Elementos(leer_ranuras(obj.get("elements"), &lugar, true)?)
         } else if let Some(v) = obj.get("value") {
-            Contenido::Texto(if v.is_null() { String::new() } else { mostrar_dato(v) })
+            Contenido::Texto(if v.is_null() { dato_nulo() } else { mostrar_dato(v) })
         } else {
             Contenido::Campos(leer_ranuras(obj.get("fields"), &lugar, false)?)
         };
@@ -341,7 +375,7 @@ struct Opciones {
 fn ancho_valor(r: &Ranura) -> f64 {
     match &r.valor {
         Valor::Dato(d) => ancho_texto(d, 11.5) + 16.0,
-        Valor::Ref(None) => ancho_texto("null", 11.0) + 16.0,
+        Valor::Ref(None) => ancho_texto(nulo(), 11.0) + 16.0,
         Valor::Ref(Some(_)) => 30.0,
     }
 }
@@ -364,7 +398,7 @@ fn dibujar_valor(c: &mut Lienzo, r: &Ranura, x: f64, y: f64, w: f64, h: f64, op:
             None
         }
         Valor::Ref(None) => {
-            c.t(cx, cy + 4.0, "null", 11.0, 700, "textMuted", "middle", MONO);
+            c.t(cx, cy + 4.0, nulo(), 11.0, 700, "textMuted", "middle", MONO);
             None
         }
         Valor::Ref(Some(destino)) => {
@@ -399,7 +433,8 @@ fn medir_marco(m: &Marco) -> (f64, f64) {
 }
 
 fn titulo_marco(funcion: &str) -> String {
-    if funcion.contains('(') {
+    // `main` pasa a `main()`; `<módulo>` y `f(x)` quedan como están.
+    if funcion.contains('(') || funcion.starts_with('<') {
         funcion.to_string()
     } else {
         format!("{funcion}()")
@@ -427,7 +462,7 @@ fn medir_objeto(o: &Objeto) -> (f64, f64) {
 }
 
 /// Los objetos en el orden de dibujo: los de un mismo grupo, juntos, donde aparece el primero.
-fn orden_objetos(objetos: &[Objeto]) -> Vec<usize> {
+fn orden_objetos(objetos: &[&Objeto]) -> Vec<usize> {
     let mut orden = Vec::with_capacity(objetos.len());
     let mut grupos_vistos = HashSet::new();
     for (i, o) in objetos.iter().enumerate() {
@@ -443,14 +478,68 @@ fn orden_objetos(objetos: &[Objeto]) -> Vec<usize> {
     orden
 }
 
-fn dibujar_vista(c: &mut Lienzo, v: &Vista, top: f64, op: &Opciones) -> Punto {
+/// La ubicación de los objetos, común a todos los instantes: un mismo ID queda en el mismo
+/// lugar, así sólo cambian las flechas que cambiaron.
+struct Disposicion {
+    /// Desplazamiento vertical de cada ID desde el comienzo del heap.
+    y: HashMap<String, f64>,
+    grupos: Vec<(String, f64, f64, HashSet<String>)>,
+    ancho_stack: f64,
+    ancho_objetos: f64,
+}
+
+fn disponer(vistas: &[Vista]) -> Disposicion {
+    let mut unicos: Vec<&Objeto> = Vec::new();
+    let mut medida: HashMap<&str, (f64, f64)> = HashMap::new();
+    for o in vistas.iter().flat_map(|v| &v.objetos) {
+        let (w, h) = medir_objeto(o);
+        let m = medida.entry(o.id.as_str()).or_insert((0.0, 0.0));
+        *m = (m.0.max(w), m.1.max(h));
+        if !unicos.iter().any(|u| u.id == o.id) {
+            unicos.push(o);
+        }
+    }
+    let mut y_de = HashMap::new();
+    let mut grupos = Vec::new();
+    let mut y = 0.0_f64;
+    let mut actual: Option<(String, f64, HashSet<String>)> = None;
+    for i in orden_objetos(&unicos) {
+        let o = unicos[i];
+        if actual.as_ref().map(|g| &g.0) != o.grupo.as_ref() {
+            if let Some((g, y0, ids)) = actual.take() {
+                grupos.push((g, y0, y - SEP_OBJETOS + 8.0, ids));
+                y += 6.0;
+            }
+            if let Some(g) = &o.grupo {
+                actual = Some((g.clone(), y, HashSet::new()));
+                y += 20.0;
+            }
+        }
+        if let Some((_, _, ids)) = actual.as_mut() {
+            ids.insert(o.id.clone());
+        }
+        y_de.insert(o.id.clone(), y);
+        y += medida[o.id.as_str()].1 + SEP_OBJETOS;
+    }
+    if let Some((g, y0, ids)) = actual.take() {
+        grupos.push((g, y0, y - SEP_OBJETOS + 8.0, ids));
+    }
+    Disposicion {
+        y: y_de,
+        grupos,
+        ancho_stack: vistas.iter().flat_map(|v| &v.marcos).map(|m| medir_marco(m).0).fold(0.0, f64::max),
+        ancho_objetos: medida.values().map(|m| m.0).fold(0.0, f64::max),
+    }
+}
+
+fn dibujar_vista(c: &mut Lienzo, v: &Vista, top: f64, op: &Opciones, d: &Disposicion) -> Punto {
     let alto_zona = if op.zonas.is_some() { ALTO_ZONA } else { 0.0 };
     let y_inicio = top + alto_zona + 8.0;
     let mut flechas: Vec<Flecha> = Vec::new();
 
     // Stack: del tope (arriba) a main (abajo), como en call_stack.
     let medidas: Vec<(f64, f64)> = v.marcos.iter().map(medir_marco).collect();
-    let ancho_stack = medidas.iter().map(|m| m.0).fold(0.0, f64::max);
+    let ancho_stack = d.ancho_stack;
     let mut y = y_inicio;
     for (i, m) in v.marcos.iter().enumerate().rev() {
         let (_, ancho_valores) = medidas[i];
@@ -474,39 +563,24 @@ fn dibujar_vista(c: &mut Lienzo, v: &Vista, top: f64, op: &Opciones) -> Punto {
 
     // Heap: los objetos en una columna; los de un grupo, dentro de un recuadro.
     let hueco = if op.zonas.is_some() { 110.0 } else { 90.0 };
-    let x_heap = if v.marcos.is_empty() { 14.0 } else { ancho_stack + hueco };
-    let orden = orden_objetos(&v.objetos);
+    let x_heap = if d.ancho_stack == 0.0 { 14.0 } else { ancho_stack + hueco };
     let mut cajas: BTreeMap<String, Caja> = BTreeMap::new();
-    let mut y = y_inicio;
-    let mut grupo_actual: Option<(String, f64)> = None;
-    let mut recuadros: Vec<(String, f64, f64)> = Vec::new();
-    let medidas: Vec<(f64, f64)> = v.objetos.iter().map(medir_objeto).collect();
-    let ancho_objetos = medidas.iter().map(|m| m.0).fold(0.0, f64::max);
-    for &i in &orden {
-        let o = &v.objetos[i];
-        if grupo_actual.as_ref().map(|g| &g.0) != o.grupo.as_ref() {
-            if let Some((g, y0)) = grupo_actual.take() {
-                recuadros.push((g, y0, y - SEP_OBJETOS + 8.0));
-                y += 6.0;
-            }
-            if let Some(g) = &o.grupo {
-                grupo_actual = Some((g.clone(), y));
-                y += 20.0;
-            }
-        }
+    let ancho_objetos = d.ancho_objetos;
+    let mut fin_heap = y_inicio;
+    for o in &v.objetos {
         let x = x_heap + if o.grupo.is_some() { 10.0 } else { 0.0 };
-        let (w, h) = medidas[i];
+        let (w, h) = medir_objeto(o);
+        let y = y_inicio + d.y[&o.id];
+        fin_heap = fin_heap.max(y + h);
         cajas.insert(o.id.clone(), Caja { x, y, w, h });
-        y += h + SEP_OBJETOS;
     }
-    if let Some((g, y0)) = grupo_actual.take() {
-        recuadros.push((g, y0, y - SEP_OBJETOS + 8.0));
-    }
-    let fin_heap = if v.objetos.is_empty() { y_inicio } else { y - SEP_OBJETOS };
-    let hay_grupos = !recuadros.is_empty();
+    let hay_grupos = !d.grupos.is_empty();
     let borde_heap = x_heap + ancho_objetos + if hay_grupos { 20.0 } else { 0.0 };
-    for (g, y0, y1) in &recuadros {
-        zona(c, x_heap - 2.0, borde_heap, *y0, *y1, g);
+    for (g, y0, y1, ids) in &d.grupos {
+        if v.objetos.iter().any(|o| ids.contains(&o.id)) {
+            zona(c, x_heap - 2.0, borde_heap, y_inicio + y0, y_inicio + y1, g);
+            fin_heap = fin_heap.max(y_inicio + y1);
+        }
     }
 
     let vivos = alcanzables(v);
@@ -611,7 +685,7 @@ fn dibujar_vista(c: &mut Lienzo, v: &Vista, top: f64, op: &Opciones) -> Punto {
     let bajos = salidas_bajo.values().copied().max().unwrap_or(0) as f64 * 4.0 + 4.0;
     let mut alto = fin_stack.max(fin_heap + bajos) + 8.0;
     if let Some((z_stack, z_heap)) = &op.zonas {
-        if !v.marcos.is_empty() {
+        if d.ancho_stack > 0.0 {
             zona(c, -6.0, ancho_stack + 10.0, top + 2.0, alto + 4.0, z_stack);
         }
         zona(c, x_heap - 16.0, ancho + 6.0, top + 2.0, alto + 4.0, z_heap);
@@ -632,6 +706,19 @@ fn render_object_heap(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama
 }
 
 fn render(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
+    let python = match b.get("variant") {
+        None | Some(Value::Null) => false,
+        Some(Value::String(v)) if v == "java" => false,
+        Some(Value::String(v)) if v == "python" => true,
+        Some(otro) => return Err(error(format!("variante no soportada: {} (java o python)", texto(otro)))),
+    };
+    PYTHON.with(|p| p.set(python));
+    let resultado = render_con_estilo(c, b);
+    PYTHON.with(|p| p.set(false));
+    resultado
+}
+
+fn render_con_estilo(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
     let op = Opciones {
         sin_valores: b.get("blankValues").is_some_and(es_truthy),
         sin_refs: b.get("blankRefs").is_some_and(es_truthy),
@@ -667,8 +754,9 @@ fn render(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
     };
 
     let top = encabezado(c, b, "");
+    let d = disponer(&vistas);
     if vistas.len() == 1 {
-        return Ok(dibujar_vista(c, &vistas[0], top, &op));
+        return Ok(dibujar_vista(c, &vistas[0], top, &op, &d));
     }
     let en_fila = b.get("direction").map(texto).as_deref() == Some("row");
     let (mut x, mut y) = (0.0_f64, top);
@@ -677,7 +765,7 @@ fn render(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
         let mut sub = sub_lienzo(c);
         let rotulo = v.rotulo.clone().unwrap_or_else(|| format!("Instante {}", i + 1));
         sub.t(0.0, 14.0, &rotulo, 11.5, 700, "textMain", "start", SANS);
-        let (w, h) = dibujar_vista(&mut sub, v, 20.0, &op);
+        let (w, h) = dibujar_vista(&mut sub, v, 20.0, &op, &d);
         agregar_sub_lienzo(c, x, y, sub);
         ancho = ancho.max(x + w);
         alto = alto.max(y + h);
@@ -893,5 +981,76 @@ mod tests {
             assert_ne!(tinta, reg.renderizar(b, false).unwrap(), "tinta y color iguales: {caso}");
             assert!(tinta.starts_with("<svg ") && tinta.ends_with("</svg>") && !tinta.contains("NaN"));
         }
+    }
+
+    #[test]
+    fn python_copia_superficial_converge_en_la_sublista() {
+        let s = svg(json!({
+            "type": "object_heap", "variant": "python",
+            "frames": [{"function": "<módulo>", "vars": [{"name": "original", "ref": "A"}, {"name": "copia", "ref": "B"}, {"name": "x", "value": null}]}],
+            "objects": [
+                {"id": "A", "type": "list", "elements": [{"ref": "I"}]},
+                {"id": "B", "type": "list", "elements": [{"ref": "I"}]},
+                {"id": "I", "type": "list", "elements": [{"value": 4}, "siete"]}
+            ]
+        }))
+        .unwrap();
+        assert!(s.contains("><módulo><") || s.contains(">&lt;módulo&gt;<"), "el ámbito queda sin paréntesis");
+        assert!(s.contains(">None<"), "None como valor rotulado");
+        assert!(s.contains(">&#x27;siete&#x27;<"), "los textos como en Python");
+        assert_eq!(flechas(&s), 4);
+        // Las dos referencias a I entran por su borde derecho, en el mismo x.
+        let dibujo = s.split("</defs>").nth(1).unwrap();
+        let finales: Vec<&str> = dibujo
+            .split("<path d=\"M ")
+            .skip(1)
+            .map(|p| p[..p.find('"').unwrap()].rsplit(" L ").next().unwrap().split(' ').next().unwrap())
+            .collect();
+        assert_eq!(finales.len(), 2);
+        assert_eq!(finales[0], finales[1]);
+    }
+
+    #[test]
+    fn python_parametro_homonimo_e_identidad_estable() {
+        let b = json!({
+            "type": "object_heap", "variant": "python",
+            "snapshots": [
+                {"label": "antes", "frames": [
+                    {"function": "<módulo>", "vars": [{"name": "lista", "ref": "A"}]},
+                    {"function": "agregar", "params": [{"name": "lista", "ref": "A"}]}
+                ], "objects": [{"id": "A", "type": "list", "elements": [1, 2, 9]}]},
+                {"label": "después", "frames": [
+                    {"function": "<módulo>", "vars": [{"name": "lista", "ref": "A"}]},
+                    {"function": "agregar", "params": [{"name": "lista", "ref": "B"}]}
+                ], "objects": [
+                    {"id": "B", "type": "list", "elements": [0]},
+                    {"id": "A", "type": "list", "elements": [1, 2, 9]}
+                ]}
+            ]
+        });
+        let vistas: Vec<Vista> = b["snapshots"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|v| leer_vista(v.as_object().unwrap(), "t").unwrap())
+            .collect();
+        let destino = |v: &Vista, marco: usize| match &v.marcos[marco].ranuras[0].valor {
+            Valor::Ref(Some(d)) => d.clone(),
+            otro => panic!("{otro:?}"),
+        };
+        assert_eq!((destino(&vistas[1], 0), destino(&vistas[1], 1)), ("A".to_string(), "B".to_string()));
+        // A queda en el mismo lugar en los dos instantes, aunque B se declare antes.
+        let s = svg(b).unwrap();
+        let ys: Vec<&str> = s
+            .match_indices(">A : list<")
+            .map(|(i, _)| {
+                let antes = &s[..i];
+                let y = antes.rfind(" y=\"").unwrap() + 4;
+                &s[y..y + antes[y..].find('"').unwrap()]
+            })
+            .collect();
+        assert_eq!(ys.len(), 2);
+        assert_eq!(ys[0], ys[1]);
+        assert!(error_de(json!({"type": "object_heap", "variant": "c", "objects": [{"id": "A"}]})).contains("java o python"));
     }
 }
