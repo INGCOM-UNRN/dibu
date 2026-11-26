@@ -41,9 +41,9 @@ signals:
 range: [-1, 4]
 ```
 
-[![Operaciones sobre señales continuas](img/ks_sen_senal_continua.svg)](https://ingcom-unrn.github.io/dibu-web/#z=bY5BCsMgEEX3nmJwpRAJka68RA9QupjIEARRcaaQUnqonqEXi5Btlu_zHnx5NwrAaSuYlSTJg-6NOsZUCzFwXTsB0_-HeWCsRVJ5Iasz4aAAHHyA9tYD6E5RjBG32NlbPUHGlfLYdyNWw_dK9le2P_WOZRuHHm6Z4PZUBw)
+[![Operaciones sobre señales continuas](img/ks_sen_senal_continua.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogc2lnbmFsCnRpdGxlOiBPcGVyYWNpb25lcyBzb2JyZSBzZcOxYWxlcyBjb250aW51YXMKc2lnbmFsczoKICAtIHsgZXhwcjogInJlY3QoKHQtMSkvMikiLCBsYWJlbDogIngodCkiIH0KICAtIHsgZXhwcjogInJlY3QoKDJ0LTEpLzIpIiwgbGFiZWw6ICJ4KDJ0KSIgfQpyYW5nZTogWy0xLCA0XQo)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=bY5BCsMgEEX3nmJwpRAJka68RA9QupjIEARRcaaQUnqonqEXi5Btlu_zHnx5NwrAaSuYlSTJg-6NOsZUCzFwXTsB0_-HeWCsRVJ5Iasz4aAAHHyA9tYD6E5RjBG32NlbPUHGlfLYdyNWw_dK9le2P_WOZRuHHm6Z4PZUBw) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogc2lnbmFsCnRpdGxlOiBPcGVyYWNpb25lcyBzb2JyZSBzZcOxYWxlcyBjb250aW51YXMKc2lnbmFsczoKICAtIHsgZXhwcjogInJlY3QoKHQtMSkvMikiLCBsYWJlbDogIngodCkiIH0KICAtIHsgZXhwcjogInJlY3QoKDJ0LTEpLzIpIiwgbGFiZWw6ICJ4KDJ0KSIgfQpyYW5nZTogWy0xLCA0XQo) para explorarlo y modificarlo.
 
 ### Señal discreta exponencial
 
@@ -56,9 +56,9 @@ label: "x[n]"
 range: [-4, 12]
 ```
 
-[![Señal discreta exponencial](img/ks_sen_senal_discreta.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKM5Mz0vM4SrJLMkB8oJTD29MzFFIySxOLkotSVRIrSjIz0vNS84EKknJz03MzLOCSaZyASWLrBSUDPQs4vIUSjXyNJW4chKTUnOAYhXRebFKXEWJeelAQ6N1TXQUDI1iuQA)
+[![Señal discreta exponencial](img/ks_sen_senal_discreta.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogc2lnbmFsCnRpdGxlOiBTZcOxYWwgZGlzY3JldGEgZXhwb25lbmNpYWwKZG9tYWluOiBkaXNjcmV0ZQpleHByOiAiMC44Xm4gdShuKSIKbGFiZWw6ICJ4W25dIgpyYW5nZTogWy00LCAxMl0K)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKM5Mz0vM4SrJLMkB8oJTD29MzFFIySxOLkotSVRIrSjIz0vNS84EKknJz03MzLOCSaZyASWLrBSUDPQs4vIUSjXyNJW4chKTUnOAYhXRebFKXEWJeelAQ6N1TXQUDI1iuQA) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogc2lnbmFsCnRpdGxlOiBTZcOxYWwgZGlzY3JldGEgZXhwb25lbmNpYWwKZG9tYWluOiBkaXNjcmV0ZQpleHByOiAiMC44Xm4gdShuKSIKbGFiZWw6ICJ4W25dIgpyYW5nZTogWy00LCAxMl0K) para explorarlo y modificarlo.
 
 ## Ver también
 

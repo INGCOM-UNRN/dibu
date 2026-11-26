@@ -42,9 +42,9 @@ ops: ["extract", "insert 12"]
 steps: true
 ```
 
-[![Min-heap construido por inserciones](img/ks_alg_heap_min.svg)](https://ingcom-unrn.github.io/dibu-web/#z=HYzBCsMwDEPv_gqTcwpLx2D0H_oFo4eQGmYocYjdsf39nB6E9BCS_Rot-KbcwNgOzyvXaTAWqWr95F2wSUeuSr2wVFL45OMkXfCVHhHTLeLsero53jeQNrpAX-u5WIgYrrFhmsMGajR6vyb4Aw)
+[![Min-heap construido por inserciones](img/ks_alg_heap_min.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogaGVhcAp0aXRsZTogTWluLWhlYXAgY29uc3RydWlkbyBwb3IgaW5zZXJjaW9uZXMKdmFsdWVzOiBbMTUsIDEwLCAyMCwgOCwgMjUsIDNdCm9wczogWyJleHRyYWN0IiwgImluc2VydCAxMiJdCnN0ZXBzOiB0cnVlCg)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=HYzBCsMwDEPv_gqTcwpLx2D0H_oFo4eQGmYocYjdsf39nB6E9BCS_Rot-KbcwNgOzyvXaTAWqWr95F2wSUeuSr2wVFL45OMkXfCVHhHTLeLsero53jeQNrpAX-u5WIgYrrFhmsMGajR6vyb4Aw) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogaGVhcAp0aXRsZTogTWluLWhlYXAgY29uc3RydWlkbyBwb3IgaW5zZXJjaW9uZXMKdmFsdWVzOiBbMTUsIDEwLCAyMCwgOCwgMjUsIDNdCm9wczogWyJleHRyYWN0IiwgImluc2VydCAxMiJdCnN0ZXBzOiB0cnVlCg) para explorarlo y modificarlo.
 
 ### Ejercicio: heapify de un max-heap
 
@@ -57,9 +57,9 @@ values: [4, 10, 3, 5, 1, 8, 9]
 blank: true
 ```
 
-[![Ejercicio: heapify de un max-heap](img/ks_alg_heapify.svg)](https://ingcom-unrn.github.io/dibu-web/#z=PYrBDoIwEAXv-xUvnJdEAybYu19hPLR0DQu1EmyJ_XshJtxmJpPKLAaD2JmSprBxdRtl6bXX97_rs8ALcsTLfuu9VDRp9GZ3clmDP0ZabcjyMbi3jPOJ0TAuGzE6xvVBLtg4GaQlC_0A)
+[![Ejercicio: heapify de un max-heap](img/ks_alg_heapify.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogaGVhcAp0aXRsZTogIkVqZXJjaWNpbzogaGVhcGlmeSBkZSB1biBtYXgtaGVhcCIKa2luZDogbWF4CmJ1aWxkOiBoZWFwaWZ5CnZhbHVlczogWzQsIDEwLCAzLCA1LCAxLCA4LCA5XQpibGFuazogdHJ1ZQo)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=PYrBDoIwEAXv-xUvnJdEAybYu19hPLR0DQu1EmyJ_XshJtxmJpPKLAaD2JmSprBxdRtl6bXX97_rs8ALcsTLfuu9VDRp9GZ3clmDP0ZabcjyMbi3jPOJ0TAuGzE6xvVBLtg4GaQlC_0A) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogaGVhcAp0aXRsZTogIkVqZXJjaWNpbzogaGVhcGlmeSBkZSB1biBtYXgtaGVhcCIKa2luZDogbWF4CmJ1aWxkOiBoZWFwaWZ5CnZhbHVlczogWzQsIDEwLCAzLCA1LCAxLCA4LCA5XQpibGFuazogdHJ1ZQo) para explorarlo y modificarlo.
 
 ## Ver también
 

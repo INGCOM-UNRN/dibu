@@ -44,9 +44,9 @@ sum: true
 unit: V
 ```
 
-[![Suma de fasores](img/ks_circ_fasores.svg)](https://ingcom-unrn.github.io/dibu-web/#z=ZcxBCoMwEAXQ_ZziH0DBqO0i1yh0P8WpFRIrZmYhpXdvQkGwXc7_749ui3gsD07PlXTSkK-LRcYguJdQEn3b5Amo8ULgmwSPq6sQeZwntSGPXFOB57HsuwbvH9se7HmndX_6s93B9rt1bfmbLHroakKWSeb0AQ)
+[![Suma de fasores](img/ks_circ_fasores.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogcGhhc29yCnRpdGxlOiBTdW1hIGRlIGZhc29yZXMKcGhhc29yczoKICAtIHsgbGFiZWw6IFYxLCBtYWduaXR1ZGU6IDEwLCBhbmdsZTogMzAgfQogIC0geyBsYWJlbDogVjIsIG1hZ25pdHVkZTogNiwgYW5nbGU6IC00NSB9CiAgLSB7IGxhYmVsOiBWMywgbWFnbml0dWRlOiA0LCBhbmdsZTogMTIwIH0Kc3VtOiB0cnVlCnVuaXQ6IFYK)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=ZcxBCoMwEAXQ_ZziH0DBqO0i1yh0P8WpFRIrZmYhpXdvQkGwXc7_749ui3gsD07PlXTSkK-LRcYguJdQEn3b5Amo8ULgmwSPq6sQeZwntSGPXFOB57HsuwbvH9se7HmndX_6s93B9rt1bfmbLHroakKWSeb0AQ) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogcGhhc29yCnRpdGxlOiBTdW1hIGRlIGZhc29yZXMKcGhhc29yczoKICAtIHsgbGFiZWw6IFYxLCBtYWduaXR1ZGU6IDEwLCBhbmdsZTogMzAgfQogIC0geyBsYWJlbDogVjIsIG1hZ25pdHVkZTogNiwgYW5nbGU6IC00NSB9CiAgLSB7IGxhYmVsOiBWMywgbWFnbml0dWRlOiA0LCBhbmdsZTogMTIwIH0Kc3VtOiB0cnVlCnVuaXQ6IFYK) para explorarlo y modificarlo.
 
 ## Ver también
 

@@ -46,9 +46,9 @@ subnets:
   - { name: Enlace WAN, hosts: 2 }
 ```
 
-[![Subnetting VLSM](img/ks_red_vlsm.svg)](https://ingcom-unrn.github.io/dibu-web/#z=XYvBCgIhFEX3fsX9gDKViprdQO2qzcC0tpKScZ6hRkTMvycERrO855ybXndTIT5OZFKydGXJJpdJUwjaXbNneTx96CrIteJyueJScDFTc_a9xooBU7xBus_v1lDScYKbj1lhITD8-Y2JOgTvnC-NFOOovvSWildjvSWnzwbH-vBrMLAP)
+[![Subnetting VLSM](img/ks_red_vlsm.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogc3VibmV0dGluZwp0aXRsZTogU3VibmV0dGluZyBWTFNNCm5ldHdvcms6IDE5Mi4xNjguMTAuMC8yNApzdWJuZXRzOgogIC0geyBuYW1lOiBWZW50YXMsIGhvc3RzOiA1MCB9CiAgLSB7IG5hbWU6IERlc2Fycm9sbG8sIGhvc3RzOiAxMDAgfQogIC0geyBuYW1lOiBBZG1pbiwgaG9zdHM6IDIwIH0KICAtIHsgbmFtZTogRW5sYWNlIFdBTiwgaG9zdHM6IDIgfQo)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=XYvBCgIhFEX3fsX9gDKViprdQO2qzcC0tpKScZ6hRkTMvycERrO855ybXndTIT5OZFKydGXJJpdJUwjaXbNneTx96CrIteJyueJScDFTc_a9xooBU7xBus_v1lDScYKbj1lhITD8-Y2JOgTvnC-NFOOovvSWildjvSWnzwbH-vBrMLAP) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogc3VibmV0dGluZwp0aXRsZTogU3VibmV0dGluZyBWTFNNCm5ldHdvcms6IDE5Mi4xNjguMTAuMC8yNApzdWJuZXRzOgogIC0geyBuYW1lOiBWZW50YXMsIGhvc3RzOiA1MCB9CiAgLSB7IG5hbWU6IERlc2Fycm9sbG8sIGhvc3RzOiAxMDAgfQogIC0geyBuYW1lOiBBZG1pbiwgaG9zdHM6IDIwIH0KICAtIHsgbmFtZTogRW5sYWNlIFdBTiwgaG9zdHM6IDIgfQo) para explorarlo y modificarlo.
 
 ### Ejercicio: 8 subredes iguales
 
@@ -60,6 +60,6 @@ count: 8
 blank: true
 ```
 
-[![Ejercicio: 8 subredes iguales](img/ks_red_subredes_iguales.svg)](https://ingcom-unrn.github.io/dibu-web/#z=HYpJDoAgDADvfUXDA1wuxnD3IYANqRIw0Mb4e9HMbWbkuchiU59JhHMEYUndmO2gGjhwsbh-vdJODTmqS9QM9P0u9bQ4T8PPOC8QimbpP_jkcm9SleAF)
+[![Ejercicio: 8 subredes iguales](img/ks_red_subredes_iguales.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogc3VibmV0dGluZwp0aXRsZTogIkVqZXJjaWNpbzogOCBzdWJyZWRlcyBpZ3VhbGVzIgpuZXR3b3JrOiAxMC4wLjAuMC8xNgpjb3VudDogOApibGFuazogdHJ1ZQo)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=HYpJDoAgDADvfUXDA1wuxnD3IYANqRIw0Mb4e9HMbWbkuchiU59JhHMEYUndmO2gGjhwsbh-vdJODTmqS9QM9P0u9bQ4T8PPOC8QimbpP_jkcm9SleAF) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogc3VibmV0dGluZwp0aXRsZTogIkVqZXJjaWNpbzogOCBzdWJyZWRlcyBpZ3VhbGVzIgpuZXR3b3JrOiAxMC4wLjAuMC8xNgpjb3VudDogOApibGFuazogdHJ1ZQo) para explorarlo y modificarlo.

@@ -46,9 +46,9 @@ steps:
       - "i = i + 1"
 ```
 
-[![Bucle con condición < & >](img/ks_cs_flowchart_completo.svg)](https://ingcom-unrn.github.io/dibu-web/#z=TY5NCsIwEIX3OcVjFkWRgm6DuvAa4qKkUzoQktJEioin8ghezGks6mJ-eN97w-TbwBadj5PrmzGbLNmrQKer8wwXw1ytOHk9A_aocCSTMg_JGqDGXaKaPfOIQI8ikeCALZV96qVcE40GVJW244cBbbRlzj7p1DQ040rWtIhA7jlYnCnpvYQNhC5fxj7xj9V_bHlANLAj8wY)
+[![Bucle con condición < & >](img/ks_cs_flowchart_completo.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogZmxvd2NoYXJ0CnRpdGxlOiAiQnVjbGUgY29uIGNvbmRpY2nDs24gPCAmID4iCnN0ZXBzOgogIC0ge2lvOiAibGVlciBuIn0KICAtICJpID0gMCIKICAtIHdoaWxlOiAiaSA8IG4gJiYgbiA-IDAiCiAgICBkbzoKICAgICAgLSBpZjogInBhcihpKSIKICAgICAgICB0aGVuOiBbInMgPSBzICsgaSJdCiAgICAgICAgZWxzZTogWyJzID0gcyAtIGkiXQogICAgICAtICJpID0gaSArIDEiCg)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=TY5NCsIwEIX3OcVjFkWRgm6DuvAa4qKkUzoQktJEioin8ghezGks6mJ-eN97w-TbwBadj5PrmzGbLNmrQKer8wwXw1ytOHk9A_aocCSTMg_JGqDGXaKaPfOIQI8ikeCALZV96qVcE40GVJW244cBbbRlzj7p1DQ040rWtIhA7jlYnCnpvYQNhC5fxj7xj9V_bHlANLAj8wY) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogZmxvd2NoYXJ0CnRpdGxlOiAiQnVjbGUgY29uIGNvbmRpY2nDs24gPCAmID4iCnN0ZXBzOgogIC0ge2lvOiAibGVlciBuIn0KICAtICJpID0gMCIKICAtIHdoaWxlOiAiaSA8IG4gJiYgbiA-IDAiCiAgICBkbzoKICAgICAgLSBpZjogInBhcihpKSIKICAgICAgICB0aGVuOiBbInMgPSBzICsgaSJdCiAgICAgICAgZWxzZTogWyJzID0gcyAtIGkiXQogICAgICAtICJpID0gaSArIDEiCg) para explorarlo y modificarlo.
 
 ### Lazo do-while: el cuerpo se ejecuta al menos una vez
 
@@ -64,9 +64,9 @@ steps:
   - {io: "mostrar i"}
 ```
 
-[![Lazo do-while: el cuerpo se ejecuta al menos una vez](img/ks_cs_flowchart_do_while.svg)](https://ingcom-unrn.github.io/dibu-web/#z=RczBCsIwDMbxe5_ioydFBoq3oW_g3XPoIqt0S2lThxPf3W47eEryI_z1HbnFI8jkekpq1GuoYG80Czpppt4vNwe4wikKMoOf7IoSKGDgUTLKSHjxbE1Wjrk1QAPrccXRrnsn9y1T8YLzgqjYrnN9jkkcZ0o7v7d_XRIeB5y2zMdLTQySNVGCt1_zAw)
+[![Lazo do-while: el cuerpo se ejecuta al menos una vez](img/ks_cs_flowchart_do_while.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogZmxvd2NoYXJ0CnRpdGxlOiAiTGF6byBkby13aGlsZTogZWwgY3VlcnBvIHNlIGVqZWN1dGEgYWwgbWVub3MgdW5hIHZleiIKc3RlcHM6CiAgLSAiaSA9IDAiCiAgLSBkb1doaWxlOiAiaSA8IDMiCiAgICBkbzoKICAgICAgLSAicHJvY2VzYXIoaSkiCiAgICAgIC0gImkgPSBpICsgMSIKICAtIHtpbzogIm1vc3RyYXIgaSJ9Cg)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=RczBCsIwDMbxe5_ioydFBoq3oW_g3XPoIqt0S2lThxPf3W47eEryI_z1HbnFI8jkekpq1GuoYG80Czpppt4vNwe4wikKMoOf7IoSKGDgUTLKSHjxbE1Wjrk1QAPrccXRrnsn9y1T8YLzgqjYrnN9jkkcZ0o7v7d_XRIeB5y2zMdLTQySNVGCt1_zAw) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogZmxvd2NoYXJ0CnRpdGxlOiAiTGF6byBkby13aGlsZTogZWwgY3VlcnBvIHNlIGVqZWN1dGEgYWwgbWVub3MgdW5hIHZleiIKc3RlcHM6CiAgLSAiaSA9IDAiCiAgLSBkb1doaWxlOiAiaSA8IDMiCiAgICBkbzoKICAgICAgLSAicHJvY2VzYXIoaSkiCiAgICAgIC0gImkgPSBpICsgMSIKICAtIHtpbzogIm1vc3RyYXIgaSJ9Cg) para explorarlo y modificarlo.
 
 ### break en el lazo interno y continue en el externo
 
@@ -88,9 +88,9 @@ steps:
       - "total = total + 1"
 ```
 
-[![break en el lazo interno y continue en el externo](img/ks_cs_flowchart_break_continue.svg)](https://ingcom-unrn.github.io/dibu-web/#z=ZY9BDoIwEEX3nOKnK426MO6asPAAxgS9QMVBik1LyhDF00sLEoirSee_zpvhriaJwrhXXirPCWs2fePmST1BFmRg1MdBWyZvHTrkzrK2LY0pvWOQNEx1IxNgh8J5CaED4JV90OqwFn0A3J2MNUC6iEyaYi_GJsAlWTm9AvazSbBvafo9KKp_xVIzU1VBpcUs-NcNeLx94RvHuH7M6Xy5ZscMeotKTOsIdqwMUgx1E276Ag)
+[![break en el lazo interno y continue en el externo](img/ks_cs_flowchart_break_continue.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogZmxvd2NoYXJ0CnRpdGxlOiBicmVhayBlbiBlbCBsYXpvIGludGVybm8geSBjb250aW51ZSBlbiBlbCBleHRlcm5vCnN0ZXBzOgogIC0gZm9yOiAiaSBlbiByYW5nZSgzKSIKICAgIGRvOgogICAgICAtIGlmOiAiaSA9PSAxIgogICAgICAgIHRoZW46CiAgICAgICAgICAtIGNvbnRpbnVlOiB0cnVlCiAgICAgIC0gZm9yOiAiaiBlbiByYW5nZSgzKSIKICAgICAgICBkbzoKICAgICAgICAgIC0gaWY6ICJqID09IGkiCiAgICAgICAgICAgIHRoZW46CiAgICAgICAgICAgICAgLSBicmVhazogdHJ1ZQogICAgICAgICAgLSBpbzogIk1PU1RSQVIgaSwgaiIKICAgICAgLSAidG90YWwgPSB0b3RhbCArIDEiCg)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=ZY9BDoIwEEX3nOKnK426MO6asPAAxgS9QMVBik1LyhDF00sLEoirSee_zpvhriaJwrhXXirPCWs2fePmST1BFmRg1MdBWyZvHTrkzrK2LY0pvWOQNEx1IxNgh8J5CaED4JV90OqwFn0A3J2MNUC6iEyaYi_GJsAlWTm9AvazSbBvafo9KKp_xVIzU1VBpcUs-NcNeLx94RvHuH7M6Xy5ZscMeotKTOsIdqwMUgx1E276Ag) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogZmxvd2NoYXJ0CnRpdGxlOiBicmVhayBlbiBlbCBsYXpvIGludGVybm8geSBjb250aW51ZSBlbiBlbCBleHRlcm5vCnN0ZXBzOgogIC0gZm9yOiAiaSBlbiByYW5nZSgzKSIKICAgIGRvOgogICAgICAtIGlmOiAiaSA9PSAxIgogICAgICAgIHRoZW46CiAgICAgICAgICAtIGNvbnRpbnVlOiB0cnVlCiAgICAgIC0gZm9yOiAiaiBlbiByYW5nZSgzKSIKICAgICAgICBkbzoKICAgICAgICAgIC0gaWY6ICJqID09IGkiCiAgICAgICAgICAgIHRoZW46CiAgICAgICAgICAgICAgLSBicmVhazogdHJ1ZQogICAgICAgICAgLSBpbzogIk1PU1RSQVIgaSwgaiIKICAgICAgLSAidG90YWwgPSB0b3RhbCArIDEiCg) para explorarlo y modificarlo.
 
 ### def buscar(xs, x) (para completar)
 
@@ -107,9 +107,9 @@ steps:
 inkSaver: false
 ```
 
-[![def buscar(xs, x) (para completar)](img/ks_cs_flowchart_return_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#z=ZY5BCoMwEEX3OcUnKwV7gYDbXqC9wKgTFNNEktGmlN69UUqhdDX8_96HkcfCBtaFez9SFCWTuFLogS26NfUUq5wa5BrVQpHQh9viWCjWWiXhJRkFnGBDLKMN7JGTLhUwBHPcHU_2oG2LrD8lICN780279owsa_TFvcaVdYPOkZ8NpKSX-jXO5NKfMvn5QhuXX-yO1Rs)
+[![def buscar(xs, x) (para completar)](img/ks_cs_flowchart_return_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogZmxvd2NoYXJ0CnRpdGxlOiAiZGVmIGJ1c2Nhcih4cywgeCkgKHBhcmEgY29tcGxldGFyKSIKc3RlcHM6CiAgLSBmb3I6ICJ2IGVuIHhzIgogICAgZG86CiAgICAgIC0gaWY6ICJ2ID09IHgiCiAgICAgICAgdGhlbjoKICAgICAgICAgIC0ge3JldHVybjogIlRydWUiLCBibGFuazogdHJ1ZX0KICAtIHtyZXR1cm46ICJGYWxzZSIsIGJsYW5rOiB0cnVlfQppbmtTYXZlcjogZmFsc2UK)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=ZY5BCoMwEEX3OcUnKwV7gYDbXqC9wKgTFNNEktGmlN69UUqhdDX8_96HkcfCBtaFez9SFCWTuFLogS26NfUUq5wa5BrVQpHQh9viWCjWWiXhJRkFnGBDLKMN7JGTLhUwBHPcHU_2oG2LrD8lICN780279owsa_TFvcaVdYPOkZ8NpKSX-jXO5NKfMvn5QhuXX-yO1Rs) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogZmxvd2NoYXJ0CnRpdGxlOiAiZGVmIGJ1c2Nhcih4cywgeCkgKHBhcmEgY29tcGxldGFyKSIKc3RlcHM6CiAgLSBmb3I6ICJ2IGVuIHhzIgogICAgZG86CiAgICAgIC0gaWY6ICJ2ID09IHgiCiAgICAgICAgdGhlbjoKICAgICAgICAgIC0ge3JldHVybjogIlRydWUiLCBibGFuazogdHJ1ZX0KICAtIHtyZXR1cm46ICJGYWxzZSIsIGJsYW5rOiB0cnVlfQppbmtTYXZlcjogZmFsc2UK) para explorarlo y modificarlo.
 
 ### try / except / else / finally
 
@@ -131,9 +131,9 @@ steps:
     propagate: true
 ```
 
-[![try / except / else / finally](img/ks_cs_flowchart_try.svg)](https://ingcom-unrn.github.io/dibu-web/#z=ZZDBCsIwDIbvfYqwkx6G94IHD7spwhTvZWZbobYlzXBDfHfbbjjEXBryf0n-lCePElrjnk2viAVrNrHANMEOcGzQc0pMwPi02ipjJhEYfZACoISXdhKKY1XVwDiyK965HPuTnqKEhEfIwh605U3mtkWW5w0r-lDc9Bgk3JQZsCJytGgAdye_eWLz5tP5cq0PNWBCl5nR7Drxh7Izsdzx57DGTgcmRckn2nhNJjw5rzrF-V8GFB8)
+[![try / except / else / finally](img/ks_cs_flowchart_try.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogZmxvd2NoYXJ0CnRpdGxlOiB0cnkgLyBleGNlcHQgLyBlbHNlIC8gZmluYWxseQpzdGVwczoKICAtIHtpbzogIkxFRVIgdGV4dG8ifQogIC0gdHJ5OgogICAgICAtIHN0ZXA6ICJuID0gaW50KHRleHRvKSIKICAgIGV4Y2VwdDoKICAgICAgLSBtYXRjaGVzOiBWYWx1ZUVycm9yCiAgICAgICAgZG86CiAgICAgICAgICAtIGlvOiAiTU9TVFJBUiBlcnJvciIKICAgIGVsc2U6CiAgICAgIC0gaW86ICJNT1NUUkFSIG4iCiAgICBmaW5hbGx5OgogICAgICAtIHN0ZXA6ICJSZWdpc3RyYXIgaW50ZW50byIKICAgIHByb3BhZ2F0ZTogdHJ1ZQo)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=ZZDBCsIwDIbvfYqwkx6G94IHD7spwhTvZWZbobYlzXBDfHfbbjjEXBryf0n-lCePElrjnk2viAVrNrHANMEOcGzQc0pMwPi02ipjJhEYfZACoISXdhKKY1XVwDiyK965HPuTnqKEhEfIwh605U3mtkWW5w0r-lDc9Bgk3JQZsCJytGgAdye_eWLz5tP5cq0PNWBCl5nR7Drxh7Izsdzx57DGTgcmRckn2nhNJjw5rzrF-V8GFB8) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogZmxvd2NoYXJ0CnRpdGxlOiB0cnkgLyBleGNlcHQgLyBlbHNlIC8gZmluYWxseQpzdGVwczoKICAtIHtpbzogIkxFRVIgdGV4dG8ifQogIC0gdHJ5OgogICAgICAtIHN0ZXA6ICJuID0gaW50KHRleHRvKSIKICAgIGV4Y2VwdDoKICAgICAgLSBtYXRjaGVzOiBWYWx1ZUVycm9yCiAgICAgICAgZG86CiAgICAgICAgICAtIGlvOiAiTU9TVFJBUiBlcnJvciIKICAgIGVsc2U6CiAgICAgIC0gaW86ICJNT1NUUkFSIG4iCiAgICBmaW5hbGx5OgogICAgICAtIHN0ZXA6ICJSZWdpc3RyYXIgaW50ZW50byIKICAgIHByb3BhZ2F0ZTogdHJ1ZQo) para explorarlo y modificarlo.
 
 ### try / finally (para completar)
 
@@ -150,9 +150,9 @@ steps:
     propagate: true
 ```
 
-[![try / finally (para completar)](img/ks_cs_flowchart_try_finally_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#z=ZU47DsMgDN05hZWJDGl3pF6ju4NMi-oGyxhV3L5BYmrfZL2vrQsFSFw-8YlqzrLxSZh2uELKBzJ38IKKEMtbmAx1dTvj8bojN6rD28hVI6nBAWwjO46BDQYfYElwA9w1q9dmuC6_umiJVFF9mtqc_i-6RC6V_LSdOcEHGs03vg)
+[![try / finally (para completar)](img/ks_cs_flowchart_try_finally_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogZmxvd2NoYXJ0CnRpdGxlOiB0cnkgLyBmaW5hbGx5IChwYXJhIGNvbXBsZXRhcikKYmxhbmtWYWx1ZXM6IHRydWUKc3RlcHM6CiAgLSB0cnk6CiAgICAgIC0gc3RlcDogImYgPSBhYnJpcihydXRhKSIKICAgICAgLSBzdGVwOiAicHJvY2VzYXIoZikiCiAgICBmaW5hbGx5OgogICAgICAtIHN0ZXA6ICJmLmNsb3NlKCkiCiAgICBwcm9wYWdhdGU6IHRydWUK)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=ZU47DsMgDN05hZWJDGl3pF6ju4NMi-oGyxhV3L5BYmrfZL2vrQsFSFw-8YlqzrLxSZh2uELKBzJ38IKKEMtbmAx1dTvj8bojN6rD28hVI6nBAWwjO46BDQYfYElwA9w1q9dmuC6_umiJVFF9mtqc_i-6RC6V_LSdOcEHGs03vg) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogZmxvd2NoYXJ0CnRpdGxlOiB0cnkgLyBmaW5hbGx5IChwYXJhIGNvbXBsZXRhcikKYmxhbmtWYWx1ZXM6IHRydWUKc3RlcHM6CiAgLSB0cnk6CiAgICAgIC0gc3RlcDogImYgPSBhYnJpcihydXRhKSIKICAgICAgLSBzdGVwOiAicHJvY2VzYXIoZikiCiAgICBmaW5hbGx5OgogICAgICAtIHN0ZXA6ICJmLmNsb3NlKCkiCiAgICBwcm9wYWdhdGU6IHRydWUK) para explorarlo y modificarlo.
 
 ## Notas
 

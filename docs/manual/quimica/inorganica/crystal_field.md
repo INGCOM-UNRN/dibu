@@ -51,9 +51,9 @@ ligand: NH3
 inkSaver: false
 ```
 
-[![[Co(NH3)6]^3+ (bajo espín)](img/ks_chem_crystal_field_octa.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSC6qLC5JzIlPy0zNSeEqySzJAQoqRTvna_h5GGuaxcYZaytoJCVm5SukFhccXpunqcSVmwrUYKXgnM-VX5GZkliSmZ9npWDMlZOZnpiXYqUA1MeVmZcdnFiWWmSlkJaYU5zKBQA)
+[![[Co(NH3)6]^3+ (bajo espín)](img/ks_chem_crystal_field_octa.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogY3J5c3RhbF9maWVsZAp0aXRsZTogIltDbyhOSDMpNl1eMysgKGJham8gZXNww61uKSIKbWV0YWw6IENvCm94aWRhdGlvbjogMwpsaWdhbmQ6IE5IMwppbmtTYXZlcjogZmFsc2UK)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSC6qLC5JzIlPy0zNSeEqySzJAQoqRTvna_h5GGuaxcYZaytoJCVm5SukFhccXpunqcSVmwrUYKXgnM-VX5GZkliSmZ9npWDMlZOZnpiXYqUA1MeVmZcdnFiWWmSlkJaYU5zKBQA) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogY3J5c3RhbF9maWVsZAp0aXRsZTogIltDbyhOSDMpNl1eMysgKGJham8gZXNww61uKSIKbWV0YWw6IENvCm94aWRhdGlvbjogMwpsaWdhbmQ6IE5IMwppbmtTYXZlcjogZmFsc2UK) para explorarlo y modificarlo.
 
 ### [Fe(CN)6]^4- (evaluación)
 
@@ -67,9 +67,9 @@ blankElectrons: true
 blank: true
 ```
 
-[![[Fe(CN)6]^4- (evaluación)](img/ks_chem_crystal_field_blanco.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSC6qLC5JzIlPy0zNSeEqySzJAQoqRbulajj7aZrFxpnoKmikliXmlCYmZx7enKepxJWbClRvpeCWypVfkZmSWJKZn2elYMSVk5memJdipeDsF6fLlZSTmJftmpOaXFKUn1dspVBSVJoKEYSyAQ)
+[![[Fe(CN)6]^4- (evaluación)](img/ks_chem_crystal_field_blanco.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogY3J5c3RhbF9maWVsZAp0aXRsZTogIltGZShDTik2XV40LSAoZXZhbHVhY2nDs24pIgptZXRhbDogRmUKb3hpZGF0aW9uOiAyCmxpZ2FuZDogQ05eLQpibGFua0VsZWN0cm9uczogdHJ1ZQpibGFuazogdHJ1ZQo)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSC6qLC5JzIlPy0zNSeEqySzJAQoqRbulajj7aZrFxpnoKmikliXmlCYmZx7enKepxJWbClRvpeCWypVfkZmSWJKZn2elYMSVk5memJdipeDsF6fLlZSTmJftmpOaXFKUn1dspVBSVJoKEYSyAQ) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogY3J5c3RhbF9maWVsZAp0aXRsZTogIltGZShDTik2XV40LSAoZXZhbHVhY2nDs24pIgptZXRhbDogRmUKb3hpZGF0aW9uOiAyCmxpZ2FuZDogQ05eLQpibGFua0VsZWN0cm9uczogdHJ1ZQpibGFuazogdHJ1ZQo) para explorarlo y modificarlo.
 
 ## Ver también
 

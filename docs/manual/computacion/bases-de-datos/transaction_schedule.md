@@ -38,9 +38,9 @@ title: Planificación no serializable
 schedule: [R1(A), R2(A), W1(A), R2(B), W2(A), W1(B), C1, C2]
 ```
 
-[![Planificación no serializable](img/ks_bd_no_serializable.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKClKzCtOTC7JzM-LL07OSE0pzUnlKsksyQHKBeQk5mWmZSYnJmce3pynkJevUJxalJmYk1mVmARUBVNupRAdZKjhqKmjEGQEpsLhPCcQDy4I4jkbArFRLBcA)
+[![Planificación no serializable](img/ks_bd_no_serializable.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogdHJhbnNhY3Rpb25fc2NoZWR1bGUKdGl0bGU6IFBsYW5pZmljYWNpw7NuIG5vIHNlcmlhbGl6YWJsZQpzY2hlZHVsZTogW1IxKEEpLCBSMihBKSwgVzEoQSksIFIyKEIpLCBXMihBKSwgVzEoQiksIEMxLCBDMl0K)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKClKzCtOTC7JzM-LL07OSE0pzUnlKsksyQHKBeQk5mWmZSYnJmce3pynkJevUJxalJmYk1mVmARUBVNupRAdZKjhqKmjEGQEpsLhPCcQDy4I4jkbArFRLBcA) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogdHJhbnNhY3Rpb25fc2NoZWR1bGUKdGl0bGU6IFBsYW5pZmljYWNpw7NuIG5vIHNlcmlhbGl6YWJsZQpzY2hlZHVsZTogW1IxKEEpLCBSMihBKSwgVzEoQSksIFIyKEIpLCBXMihBKSwgVzEoQiksIEMxLCBDMl0K) para explorarlo y modificarlo.
 
 ### Planificación serializable por conflictos
 
@@ -50,6 +50,6 @@ title: Planificación serializable por conflictos
 schedule: [R1(A), W1(A), R2(A), R1(B), W2(A), W1(B), R3(B), W3(B), C1, C2, C3]
 ```
 
-[![Planificación serializable por conflictos](img/ks_bd_serializable.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKClKzCtOTC7JzM-LL07OSE0pzUnlKsksyQHKBeQk5mWmZSYnJmce3pynUJxalJmYk1mVmJSTqlCQX6SQnJ-XlpOZXJJfzAXTaqUQHWSo4aipoxAOoYKMIJShhhNI0AgmB-IFGUMEIZSzIRAbAbFxLBcA)
+[![Planificación serializable por conflictos](img/ks_bd_serializable.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogdHJhbnNhY3Rpb25fc2NoZWR1bGUKdGl0bGU6IFBsYW5pZmljYWNpw7NuIHNlcmlhbGl6YWJsZSBwb3IgY29uZmxpY3RvcwpzY2hlZHVsZTogW1IxKEEpLCBXMShBKSwgUjIoQSksIFIxKEIpLCBXMihBKSwgVzEoQiksIFIzKEIpLCBXMyhCKSwgQzEsIEMyLCBDM10K)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKClKzCtOTC7JzM-LL07OSE0pzUnlKsksyQHKBeQk5mWmZSYnJmce3pynUJxalJmYk1mVmJSTqlCQX6SQnJ-XlpOZXJJfzAXTaqUQHWSo4aipoxAOoYKMIJShhhNI0AgmB-IFGUMEIZSzIRAbAbFxLBcA) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogdHJhbnNhY3Rpb25fc2NoZWR1bGUKdGl0bGU6IFBsYW5pZmljYWNpw7NuIHNlcmlhbGl6YWJsZSBwb3IgY29uZmxpY3RvcwpzY2hlZHVsZTogW1IxKEEpLCBXMShBKSwgUjIoQSksIFIxKEIpLCBXMihBKSwgVzEoQiksIFIzKEIpLCBXMyhCKSwgQzEsIEMyLCBDM10K) para explorarlo y modificarlo.

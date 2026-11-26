@@ -39,9 +39,9 @@ keys: [10, 20, 30, 40, 50, 25]
 steps: rotations
 ```
 
-[![Árbol AVL con rotaciones](img/ks_alg_avl.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSCzL4SrJLMkBMg83FiXl5yg4hvkoJOfnKRTllyQmZ-bnpRZzZadWFlspRBsa6CgYAbExEJsAsSmIbxrLVVySWgCUB2koAWoo5gIA)
+[![Árbol AVL con rotaciones](img/ks_alg_avl.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogYXZsCnRpdGxlOiDDgXJib2wgQVZMIGNvbiByb3RhY2lvbmVzCmtleXM6IFsxMCwgMjAsIDMwLCA0MCwgNTAsIDI1XQpzdGVwczogcm90YXRpb25zCg)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSCzL4SrJLMkBMg83FiXl5yg4hvkoJOfnKRTllyQmZ-bnpRZzZadWFlspRBsa6CgYAbExEJsAsSmIbxrLVVySWgCUB2koAWoo5gIA) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogYXZsCnRpdGxlOiDDgXJib2wgQVZMIGNvbiByb3RhY2lvbmVzCmtleXM6IFsxMCwgMjAsIDMwLCA0MCwgNTAsIDI1XQpzdGVwczogcm90YXRpb25zCg) para explorarlo y modificarlo.
 
 ## Ver también
 

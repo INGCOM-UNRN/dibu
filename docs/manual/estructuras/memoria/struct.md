@@ -61,9 +61,9 @@ fields:
   - {name: pos, type: struct punto, size: 8, align: 4}
 ```
 
-[![Layout LP64 con padding](img/ks_cs_struct_layout.svg)](https://ingcom-unrn.github.io/dibu-web/#z=TYxBDsIgEEX3c4p_ANw1xnCGLrzCBLBOgkBgWFTTu0vUNi7_fy9P1xIsmtbulFQ0jjXzmrtivp4nuJxQ2HtJCyV-HC6GESrdJETfLAEnvL7cGegn6u5ct39SctvZL1J60mzQ5Dm-iwFHWZLFtNEb)
+[![Layout LP64 con padding](img/ks_cs_struct_layout.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogc3RydWN0CnRpdGxlOiBMYXlvdXQgTFA2NCBjb24gcGFkZGluZwpuYW1lOiBzdHJ1Y3Qgb3V0ZXIKZmllbGRzOgogIC0ge25hbWU6IGMsIHR5cGU6IGNoYXJ9CiAgLSB7bmFtZTogcG9zLCB0eXBlOiBzdHJ1Y3QgcHVudG8sIHNpemU6IDgsIGFsaWduOiA0fQo)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=TYxBDsIgEEX3c4p_ANw1xnCGLrzCBLBOgkBgWFTTu0vUNi7_fy9P1xIsmtbulFQ0jjXzmrtivp4nuJxQ2HtJCyV-HC6GESrdJETfLAEnvL7cGegn6u5ct39SctvZL1J60mzQ5Dm-iwFHWZLFtNEb) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogc3RydWN0CnRpdGxlOiBMYXlvdXQgTFA2NCBjb24gcGFkZGluZwpuYW1lOiBzdHJ1Y3Qgb3V0ZXIKZmllbGRzOgogIC0ge25hbWU6IGMsIHR5cGU6IGNoYXJ9CiAgLSB7bmFtZTogcG9zLCB0eXBlOiBzdHJ1Y3QgcHVudG8sIHNpemU6IDgsIGFsaWduOiA0fQo) para explorarlo y modificarlo.
 
 ### TAD opaco en C
 
@@ -79,9 +79,9 @@ hidden: true
 inkSaver: false
 ```
 
-[![TAD opaco en C](img/ks_cs_struct_opaque.svg)](https://ingcom-unrn.github.io/dibu-web/#z=PY1BCkIxDET3OUXoSsUTdCd6A92JSPhNMVjT2uYX9PTWL7icmTcz9irssVmdJwMTS0OddgfMhaaMrLiHTlVIzX-958yg9PhXsEgisDESOPpFXQ1y4UomWZvHs-tZAsbVL8OydheIwiksoajhJpDl5rbomrx5MDYGBnWTEFg9jicG0fuROlePkVJj-AA)
+[![TAD opaco en C](img/ks_cs_struct_opaque.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogc3RydWN0CnRpdGxlOiBUQUQgb3BhY28gZW4gQwp2YXJpYW50OiBvcGFxdWUKbmFtZTogc3RydWN0IHBpbGEKdHlwZWRlZjogcGlsYV90Cm9wZXJhdGlvbnM6IFsidm9pZCBmKHBpbGFfdCBwKSJdCmZpZWxkczogWyJpbnQgKmRhdG9zIiwgInNpemVfdCB0b3BlIl0KaGlkZGVuOiB0cnVlCmlua1NhdmVyOiBmYWxzZQo)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=PY1BCkIxDET3OUXoSsUTdCd6A92JSPhNMVjT2uYX9PTWL7icmTcz9irssVmdJwMTS0OddgfMhaaMrLiHTlVIzX-958yg9PhXsEgisDESOPpFXQ1y4UomWZvHs-tZAsbVL8OydheIwiksoajhJpDl5rbomrx5MDYGBnWTEFg9jicG0fuROlePkVJj-AA) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogc3RydWN0CnRpdGxlOiBUQUQgb3BhY28gZW4gQwp2YXJpYW50OiBvcGFxdWUKbmFtZTogc3RydWN0IHBpbGEKdHlwZWRlZjogcGlsYV90Cm9wZXJhdGlvbnM6IFsidm9pZCBmKHBpbGFfdCBwKSJdCmZpZWxkczogWyJpbnQgKmRhdG9zIiwgInNpemVfdCB0b3BlIl0KaGlkZGVuOiB0cnVlCmlua1NhdmVyOiBmYWxzZQo) para explorarlo y modificarlo.
 
 ## Ver también
 

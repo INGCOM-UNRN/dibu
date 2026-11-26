@@ -38,9 +38,9 @@ order: 4
 keys: [5, 15, 25, 35, 45, 20, 30, 10, 40, 50, 55]
 ```
 
-[![Árbol B+ de orden 4](img/ks_alg_bplus.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSCrIKS2OLylKTeUqySzJAYocbixKys9RcNJWSElVyC9KSc1TMOEC0UVWQEZ2amWxlUK0qY6CIRAbAbExEJuA2AZANhAbArEJEJuCsGksFwA)
+[![Árbol B+ de orden 4](img/ks_alg_bplus.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogYnBsdXNfdHJlZQp0aXRsZTogw4FyYm9sIEIrIGRlIG9yZGVuIDQKb3JkZXI6IDQKa2V5czogWzUsIDE1LCAyNSwgMzUsIDQ1LCAyMCwgMzAsIDEwLCA0MCwgNTAsIDU1XQo)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSCrIKS2OLylKTeUqySzJAYocbixKys9RcNJWSElVyC9KSc1TMOEC0UVWQEZ2amWxlUK0qY6CIRAbAbExEJuA2AZANhAbArEJEJuCsGksFwA) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogYnBsdXNfdHJlZQp0aXRsZTogw4FyYm9sIEIrIGRlIG9yZGVuIDQKb3JkZXI6IDQKa2V5czogWzUsIDE1LCAyNSwgMzUsIDQ1LCAyMCwgMzAsIDEwLCA0MCwgNTAsIDU1XQo) para explorarlo y modificarlo.
 
 ## Ver también
 

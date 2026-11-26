@@ -50,9 +50,9 @@ variant: avl
 insert: [10, 20, 30, 40, 50, 25]
 ```
 
-[![Árbol AVL rebalanceado](img/ks_cs_tree_avl.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKClKTeUqySzJAbIPNxYl5ecoOIb5KBSlJiXmJOYlpyam5HOVJRZlJuaVWCkkluVwZeYVpxYB2dGGBjoKRkBsDMQmQGwK4pvGcgEA)
+[![Árbol AVL rebalanceado](img/ks_cs_tree_avl.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogdHJlZQp0aXRsZTogw4FyYm9sIEFWTCByZWJhbGFuY2VhZG8KdmFyaWFudDogYXZsCmluc2VydDogWzEwLCAyMCwgMzAsIDQwLCA1MCwgMjVdCg)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKClKTeUqySzJAbIPNxYl5ecoOIb5KBSlJiXmJOYlpyam5HOVJRZlJuaVWCkkluVwZeYVpxYB2dGGBjoKRkBsDMQmQGwK4pvGcgEA) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogdHJlZQp0aXRsZTogw4FyYm9sIEFWTCByZWJhbGFuY2VhZG8KdmFyaWFudDogYXZsCmluc2VydDogWzEwLCAyMCwgMzAsIDQwLCA1MCwgMjVdCg) para explorarlo y modificarlo.
 
 ### Max-Heap con arreglo subyacente
 
@@ -65,9 +65,9 @@ showArray: true
 inkSaver: false
 ```
 
-[![Max-Heap con arreglo subyacente](img/ks_cs_tree_heap_array.svg)](https://ingcom-unrn.github.io/dibu-web/#z=FYwxCgIxEEX7OcUcQGHBQjednY2VpViMy9cNhmSZTFZz-x2LB__B51lfENgUIIuWfF_lt79AFp5KZlHFOxWu7dllQjbQKholW-DZT26poQa-j8OOj87JOQwPqnP5nlWl_-sNFPPnJis08EtSBW0)
+[![Max-Heap con arreglo subyacente](img/ks_cs_tree_heap_array.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogdHJlZQp0aXRsZTogTWF4LUhlYXAgY29uIGFycmVnbG8gc3VieWFjZW50ZQp2YXJpYW50OiBoZWFwCnZhbHVlczogWzkwLCA3MCwgODAsIDMwXQpzaG93QXJyYXk6IHRydWUKaW5rU2F2ZXI6IGZhbHNlCg)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=FYwxCgIxEEX7OcUcQGHBQjednY2VpViMy9cNhmSZTFZz-x2LB__B51lfENgUIIuWfF_lt79AFp5KZlHFOxWu7dllQjbQKholW-DZT26poQa-j8OOj87JOQwPqnP5nlWl_-sNFPPnJis08EtSBW0) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogdHJlZQp0aXRsZTogTWF4LUhlYXAgY29uIGFycmVnbG8gc3VieWFjZW50ZQp2YXJpYW50OiBoZWFwCnZhbHVlczogWzkwLCA3MCwgODAsIDMwXQpzaG93QXJyYXk6IHRydWUKaW5rU2F2ZXI6IGZhbHNlCg) para explorarlo y modificarlo.
 
 ## Notas
 

@@ -36,18 +36,17 @@ DATOS = MANUAL / "datos"
 KITCHEN_SINK = RAIZ / "fixtures" / "kitchen_sink" / "kitchen_sink.yaml"
 CRATES = RAIZ / "crates"
 
-# El editor web: abre un diagrama desde la URL (`#z=` + deflate-raw en base64url, como su botón
-# «Compartir»), para explorar cómo está construido y modificarlo.
+# El editor web: abre un diagrama desde la URL (`#t=` + el texto en base64url, uno de los dos
+# formatos de su botón «Compartir»), para explorar cómo está construido y modificarlo. Sin
+# comprimir: deflate no da los mismos bytes con todas las bibliotecas (zlib, zlib-ng), y el
+# manual tiene que salir igual en cualquier máquina.
 EDITOR = "https://ingcom-unrn.github.io/dibu-web/"
 
 
 def enlace_editor(cuerpo: str) -> str:
-    """La URL del editor web con `cuerpo` cargado. Determinista: el manual se puede verificar."""
+    """La URL del editor web con `cuerpo` cargado."""
     import base64
-    import zlib
-    comp = zlib.compressobj(9, zlib.DEFLATED, -15)
-    datos = comp.compress(cuerpo.encode("utf-8")) + comp.flush()
-    return EDITOR + "#z=" + base64.urlsafe_b64encode(datos).decode("ascii").rstrip("=")
+    return EDITOR + "#t=" + base64.urlsafe_b64encode(cuerpo.encode("utf-8")).decode("ascii").rstrip("=")
 
 
 COMUNES = OrderedDict([

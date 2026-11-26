@@ -63,9 +63,9 @@ showAddresses: true
 showOffsets: true
 ```
 
-[![Arreglo v[0..2] con <p & q> → α·β](img/ks_cs_array_punteros_utf8.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSCwqSqzkKsksyQFylByLilLTc_IVyqIN9PSMYhWS8_MUbAoU1BQK7RQetU1SOLfx0PZzm5S4yhJzSlOLrRSijXUUDHUUTGK5CvIz80pSi4BiSgVWBjoKhVZGSlzFGfnljikpRanFxSDVJUWlqWAx_7S04tQSmAgA)
+[![Arreglo v[0..2] con <p & q> → α·β](img/ks_cs_array_punteros_utf8.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogYXJyYXkKdGl0bGU6ICJBcnJlZ2xvIHZbMC4uMl0gY29uIDxwICYgcT4g4oaSIM6xwrfOsiIKdmFsdWVzOiBbMywgMSwgNF0KcG9pbnRlcnM6ICJwOjAsIHE6MiIKc2hvd0FkZHJlc3NlczogdHJ1ZQpzaG93T2Zmc2V0czogdHJ1ZQo)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSCwqSqzkKsksyQFylByLilLTc_IVyqIN9PSMYhWS8_MUbAoU1BQK7RQetU1SOLfx0PZzm5S4yhJzSlOLrRSijXUUDHUUTGK5CvIz80pSi4BiSgVWBjoKhVZGSlzFGfnljikpRanFxSDVJUWlqWAx_7S04tQSmAgA) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogYXJyYXkKdGl0bGU6ICJBcnJlZ2xvIHZbMC4uMl0gY29uIDxwICYgcT4g4oaSIM6xwrfOsiIKdmFsdWVzOiBbMywgMSwgNF0KcG9pbnRlcnM6ICJwOjAsIHE6MiIKc2hvd0FkZHJlc3NlczogdHJ1ZQpzaG93T2Zmc2V0czogdHJ1ZQo) para explorarlo y modificarlo.
 
 ### Arreglo para completar
 
@@ -77,9 +77,9 @@ blankValues: true
 inkSaver: false
 ```
 
-[![Arreglo para completar](img/ks_cs_array_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#z=LcgxDkBAEAXQfk4xB9CQrbZzBolGFJ8M2Rh2M4bE7SmU7_lTJDLM8JAn1w-tmayaucDAc96LisPohl5yRh5CXXFoRpoUx9b_63YJpWPrcItFXqCn0As)
+[![Arreglo para completar](img/ks_cs_array_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogYXJyYXkKdGl0bGU6IEFycmVnbG8gcGFyYSBjb21wbGV0YXIKdmFsdWVzOiBbNDEsIDQyXQpibGFua1ZhbHVlczogdHJ1ZQppbmtTYXZlcjogZmFsc2UK)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=LcgxDkBAEAXQfk4xB9CQrbZzBolGFJ8M2Rh2M4bE7SmU7_lTJDLM8JAn1w-tmayaucDAc96LisPohl5yRh5CXXFoRpoUx9b_63YJpWPrcItFXqCn0As) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogYXJyYXkKdGl0bGU6IEFycmVnbG8gcGFyYSBjb21wbGV0YXIKdmFsdWVzOiBbNDEsIDQyXQpibGFua1ZhbHVlczogdHJ1ZQppbmtTYXZlcjogZmFsc2UK) para explorarlo y modificarlo.
 
 ### Corte con paso: a[-4:-1:2]
 
@@ -94,9 +94,9 @@ showBoundaries: true
 slice: {start: -4, stop: -1, step: 2}
 ```
 
-[![Corte con paso: a[-4:-1:2]](img/ks_cs_array_python_corte.svg)](https://ingcom-unrn.github.io/dibu-web/#z=RY1BCsIwEEX3OcXQdbpoKShZ6sqNFyhFQjvYYJjEZFIJ4t2dunH3_vzHH64RDdiUbFXs2EtoziExwhwIos1B2rEdTNuZfmrUZpOzxAZi5TXQLeOzIM2oHo4WA95lFscXzAbGXsOg4aCh03CcVF7D64p3y27DCy1u3iVOBX_NKRRaZP1_9GIYeGe2SR62MpU5RKFuJxTqP-oL)
+[![Corte con paso: a[-4:-1:2]](img/ks_cs_array_python_corte.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogYXJyYXkKdGl0bGU6ICJDb3J0ZSBjb24gcGFzbzogYVstNDotMToyXSIKdmFyaWFudDogcHl0aG9uX3NlcXVlbmNlCmtpbmQ6IGxpc3QKdmFsdWVzOiBbMiwgNCwgNywgMSwgOF0Kc2hvd05lZ2F0aXZlSW5kaWNlczogdHJ1ZQpzaG93Qm91bmRhcmllczogdHJ1ZQpzbGljZToge3N0YXJ0OiAtNCwgc3RvcDogLTEsIHN0ZXA6IDJ9Cg)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=RY1BCsIwEEX3OcXQdbpoKShZ6sqNFyhFQjvYYJjEZFIJ4t2dunH3_vzHH64RDdiUbFXs2EtoziExwhwIos1B2rEdTNuZfmrUZpOzxAZi5TXQLeOzIM2oHo4WA95lFscXzAbGXsOg4aCh03CcVF7D64p3y27DCy1u3iVOBX_NKRRaZP1_9GIYeGe2SR62MpU5RKFuJxTqP-oL) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogYXJyYXkKdGl0bGU6ICJDb3J0ZSBjb24gcGFzbzogYVstNDotMToyXSIKdmFyaWFudDogcHl0aG9uX3NlcXVlbmNlCmtpbmQ6IGxpc3QKdmFsdWVzOiBbMiwgNCwgNywgMSwgOF0Kc2hvd05lZ2F0aXZlSW5kaWNlczogdHJ1ZQpzaG93Qm91bmRhcmllczogdHJ1ZQpzbGljZToge3N0YXJ0OiAtNCwgc3RvcDogLTEsIHN0ZXA6IDJ9Cg) para explorarlo y modificarlo.
 
 ### Corte de una cadena (para completar)
 
@@ -111,9 +111,9 @@ slice: {step: -2, blankSelection: true}
 inkSaver: false
 ```
 
-[![Corte de una cadena (para completar)](img/ks_cs_array_python_cadena_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#z=JcqxCgIxEIThPk-xWCloY5nWysbGB5D1Mnrh4iZuNieH-O5GrIZv-G0p8MSqvDiLljoOWQ0UQE2YBg7osy6sHflREox142bWyGKeymJjlkvFs0EGuClK8FRNe5IaqqfVmBPTo0nIK1fH_DrhzhZnHCXE4VeYNriaOjy9q6F42u23dE0s0xkJg8Us_-zjYv94hnq6capwXw)
+[![Corte de una cadena (para completar)](img/ks_cs_array_python_cadena_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogYXJyYXkKdGl0bGU6IENvcnRlIGRlIHVuYSBjYWRlbmEgKHBhcmEgY29tcGxldGFyKQp2YXJpYW50OiBweXRob25fc2VxdWVuY2UKa2luZDogc3RyCnZhbHVlczogImhvbGEgbXVuZG8iCnNob3dOZWdhdGl2ZUluZGljZXM6IHRydWUKc2xpY2U6IHtzdGVwOiAtMiwgYmxhbmtTZWxlY3Rpb246IHRydWV9Cmlua1NhdmVyOiBmYWxzZQo)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=JcqxCgIxEIThPk-xWCloY5nWysbGB5D1Mnrh4iZuNieH-O5GrIZv-G0p8MSqvDiLljoOWQ0UQE2YBg7osy6sHflREox142bWyGKeymJjlkvFs0EGuClK8FRNe5IaqqfVmBPTo0nIK1fH_DrhzhZnHCXE4VeYNriaOjy9q6F42u23dE0s0xkJg8Us_-zjYv94hnq6capwXw) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogYXJyYXkKdGl0bGU6IENvcnRlIGRlIHVuYSBjYWRlbmEgKHBhcmEgY29tcGxldGFyKQp2YXJpYW50OiBweXRob25fc2VxdWVuY2UKa2luZDogc3RyCnZhbHVlczogImhvbGEgbXVuZG8iCnNob3dOZWdhdGl2ZUluZGljZXM6IHRydWUKc2xpY2U6IHtzdGVwOiAtMiwgYmxhbmtTZWxlY3Rpb246IHRydWV9Cmlua1NhdmVyOiBmYWxzZQo) para explorarlo y modificarlo.
 
 ## Notas
 

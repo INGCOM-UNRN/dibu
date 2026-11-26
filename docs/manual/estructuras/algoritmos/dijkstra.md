@@ -39,9 +39,9 @@ source: A
 edges: ["A-B:4", "A-C:2", "C-B:1", "B-D:5", "C-D:8", "C-E:10", "D-E:2"]
 ```
 
-[![Caminos mínimos con Dijkstra](img/ks_alg_dijkstra.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSMnMyi4uKUrkKsksyQHynRNzM_PyixVyD6_Ny8wFMpLz8xRcYIqK80uLkoGqHLlSU9JTi60UopUcdZ2sTJR0FIAMZysjEMMZKGIIYjjpuliZQkRcrCwgDFcrQwMQywXIMlKK5QIA)
+[![Caminos mínimos con Dijkstra](img/ks_alg_dijkstra.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogZGlqa3N0cmEKdGl0bGU6IENhbWlub3MgbcOtbmltb3MgY29uIERpamtzdHJhCnNvdXJjZTogQQplZGdlczogWyJBLUI6NCIsICJBLUM6MiIsICJDLUI6MSIsICJCLUQ6NSIsICJDLUQ6OCIsICJDLUU6MTAiLCAiRC1FOjIiXQo)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSMnMyi4uKUrkKsksyQHynRNzM_PyixVyD6_Ny8wFMpLz8xRcYIqK80uLkoGqHLlSU9JTi60UopUcdZ2sTJR0FIAMZysjEMMZKGIIYjjpuliZQkRcrCwgDFcrQwMQywXIMlKK5QIA) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogZGlqa3N0cmEKdGl0bGU6IENhbWlub3MgbcOtbmltb3MgY29uIERpamtzdHJhCnNvdXJjZTogQQplZGdlczogWyJBLUI6NCIsICJBLUM6MiIsICJDLUI6MSIsICJCLUQ6NSIsICJDLUQ6OCIsICJDLUU6MTAiLCAiRC1FOjIiXQo) para explorarlo y modificarlo.
 
 ## Notas
 

@@ -50,9 +50,9 @@ core: true
 showUnpaired: true
 ```
 
-[![Configuración electrónica de Fe](img/ks_chem_orbitals_hierro.svg)](https://ingcom-unrn.github.io/dibu-web/#z=LYvRCYAwDAX_O0Xn8FdwAweo7VMDtSlpijiXI7iYEfy7Ozi9KgbPspCG3JySZvORy0pblxDpuYtHRlQxohh8gp_gLB0oOnwcWexR6XBt53MuNZAg_ekF)
+[![Configuración electrónica de Fe](img/ks_chem_orbitals_hierro.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogb3JiaXRhbHMKdGl0bGU6IENvbmZpZ3VyYWNpw7NuIGVsZWN0csOzbmljYSBkZSBGZQplbGVtZW50OiBGZQpjb3JlOiB0cnVlCnNob3dVbnBhaXJlZDogdHJ1ZQo)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=LYvRCYAwDAX_O0Xn8FdwAweo7VMDtSlpijiXI7iYEfy7Ozi9KgbPspCG3JySZvORy0pblxDpuYtHRlQxohh8gp_gLB0oOnwcWexR6XBt53MuNZAg_ekF) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogb3JiaXRhbHMKdGl0bGU6IENvbmZpZ3VyYWNpw7NuIGVsZWN0csOzbmljYSBkZSBGZQplbGVtZW50OiBGZQpjb3JlOiB0cnVlCnNob3dVbnBhaXJlZDogdHJ1ZQo) para explorarlo y modificarlo.
 
 ### Ion Cu²⁺ (para completar)
 
@@ -65,9 +65,9 @@ core: true
 blank: true
 ```
 
-[![Ion Cu²⁺ (para completar)](img/ks_chem_orbitals_cu2_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSyC9KyixJzCnmKsksyQHyPfPzFJxLD2161LhLQaMgsShRITk_tyAntSSxSJMrNSc1NzWvxAqogis5I7EoHajBiCs5vwhIlxSVpnIl5STmZUPZAA)
+[![Ion Cu²⁺ (para completar)](img/ks_chem_orbitals_cu2_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogb3JiaXRhbHMKdGl0bGU6IElvbiBDdcKy4oG6IChwYXJhIGNvbXBsZXRhcikKZWxlbWVudDogQ3UKY2hhcmdlOiAyCmNvcmU6IHRydWUKYmxhbms6IHRydWUK)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSyC9KyixJzCnmKsksyQHyPfPzFJxLD2161LhLQaMgsShRITk_tyAntSSxSJMrNSc1NzWvxAqogis5I7EoHajBiCs5vwhIlxSVpnIl5STmZUPZAA) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogb3JiaXRhbHMKdGl0bGU6IElvbiBDdcKy4oG6IChwYXJhIGNvbXBsZXRhcikKZWxlbWVudDogQ3UKY2hhcmdlOiAyCmNvcmU6IHRydWUKYmxhbms6IHRydWUK) para explorarlo y modificarlo.
 
 ### Diagrama OM de O2
 
@@ -79,9 +79,9 @@ atoms: [O, O]
 inkSaver: false
 ```
 
-[![Diagrama OM de O2](img/ks_chem_orbitals_molecular_o2.svg)](https://ingcom-unrn.github.io/dibu-web/#z=DcwrDoAwDABQ31P0ACjkNJZUIAmisEKa_chWSLg90y959t3isNRdjWODoNk7TCXK8USuYGqx-6R8VU6MNKMXpBHYSmoOVxqQNtAcFn6lOjz7IvAD)
+[![Diagrama OM de O2](img/ks_chem_orbitals_molecular_o2.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogb3JiaXRhbHMKa2luZDogbW9sZWN1bGFyCnRpdGxlOiBEaWFncmFtYSBPTSBkZSBPMgphdG9tczogW08sIE9dCmlua1NhdmVyOiBmYWxzZQo)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=DcwrDoAwDABQ31P0ACjkNJZUIAmisEKa_chWSLg90y959t3isNRdjWODoNk7TCXK8USuYGqx-6R8VU6MNKMXpBHYSmoOVxqQNtAcFn6lOjz7IvAD) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogb3JiaXRhbHMKa2luZDogbW9sZWN1bGFyCnRpdGxlOiBEaWFncmFtYSBPTSBkZSBPMgphdG9tczogW08sIE9dCmlua1NhdmVyOiBmYWxzZQo) para explorarlo y modificarlo.
 
 ### Diagrama OM de N2
 
@@ -93,9 +93,9 @@ atoms: [N, N]
 blankBondOrder: true
 ```
 
-[![Diagrama OM de N2](img/ks_chem_orbitals_molecular_n2_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#z=DckxDoAgDADAva_oA5wcGY2r8ADjUKUxhAKmlMHf661n78MOm57JSDrkVKPD0oSvIaRgyeT_NdGtVAjDhpHRz0DWSne4-wn9AadQzUurMWhkdWg6GD4)
+[![Diagrama OM de N2](img/ks_chem_orbitals_molecular_n2_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogb3JiaXRhbHMKa2luZDogbW9sZWN1bGFyCnRpdGxlOiBEaWFncmFtYSBPTSBkZSBOMgphdG9tczogW04sIE5dCmJsYW5rQm9uZE9yZGVyOiB0cnVlCg)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=DckxDoAgDADAva_oA5wcGY2r8ADjUKUxhAKmlMHf661n78MOm57JSDrkVKPD0oSvIaRgyeT_NdGtVAjDhpHRz0DWSne4-wn9AadQzUurMWhkdWg6GD4) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogb3JiaXRhbHMKa2luZDogbW9sZWN1bGFyCnRpdGxlOiBEaWFncmFtYSBPTSBkZSBOMgphdG9tczogW04sIE5dCmJsYW5rQm9uZE9yZGVyOiB0cnVlCg) para explorarlo y modificarlo.
 
 ## Ver también
 

@@ -38,9 +38,9 @@ sets: [A, B, C]
 shade: ["A ∩ B", "(A ∪ B) − C", "A Δ B", "C'"]
 ```
 
-[![Operaciones con conjuntos](img/ks_prob_venn_operaciones.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKEvNy-MqySzJAbL9C1KLEpMz8_NSixWS8_NAOKs0ryS_mKs4taTYSiHaUUfBSUfBOZarOCMxBaghWslR4VHHSgUnJR0FJQ0Qe5WCkyaQmqTgDBJyVDg3BSLprK4UywUA)
+[![Operaciones con conjuntos](img/ks_prob_venn_operaciones.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogdmVubgp0aXRsZTogT3BlcmFjaW9uZXMgY29uIGNvbmp1bnRvcwpzZXRzOiBbQSwgQiwgQ10Kc2hhZGU6IFsiQSDiiKkgQiIsICIoQSDiiKogQikg4oiSIEMiLCAiQSDOlCBCIiwgIkMnIl0K)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKEvNy-MqySzJAbL9C1KLEpMz8_NSixWS8_NAOKs0ryS_mKs4taTYSiHaUUfBSUfBOZarOCMxBaghWslR4VHHSgUnJR0FJQ0Qe5WCkyaQmqTgDBJyVDg3BSLprK4UywUA) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogdmVubgp0aXRsZTogT3BlcmFjaW9uZXMgY29uIGNvbmp1bnRvcwpzZXRzOiBbQSwgQiwgQ10Kc2hhZGU6IFsiQSDiiKkgQiIsICIoQSDiiKogQikg4oiSIEMiLCAiQSDOlCBCIiwgIkMnIl0K) para explorarlo y modificarlo.
 
 ### Elementos por región
 
@@ -56,9 +56,9 @@ regions:
   U: [6, 8]
 ```
 
-[![Elementos por región](img/ks_prob_venn_elementos.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKEvNy-MqySzJAbJdc1JzU_NK8osVCvKLFIpS0zMPb87jKk4tKbZSiHbUUXCK5SrOSEwBqlRyVHjUMUnBSYkLpCo_r9iKS0HBEajKUEfBWEfBNBbIVXLUcVICCpnrKFiC-E5AtpGOggmIHQpkm-koWMRyAQA)
+[![Elementos por región](img/ks_prob_venn_elementos.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogdmVubgp0aXRsZTogRWxlbWVudG9zIHBvciByZWdpw7NuCnNldHM6IFtBLCBCXQpzaGFkZTogIkEg4oiSIEIiCnJlZ2lvbnM6CiAgQTogWzEsIDMsIDVdCiAgIkEsQiI6IFs3LCA5XQogIEI6IFsyLCA0XQogIFU6IFs2LCA4XQo)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKEvNy-MqySzJAbJdc1JzU_NK8osVCvKLFIpS0zMPb87jKk4tKbZSiHbUUXCK5SrOSEwBqlRyVHjUMUnBSYkLpCo_r9iKS0HBEajKUEfBWEfBNBbIVXLUcVICCpnrKFiC-E5AtpGOggmIHQpkm-koWMRyAQA) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogdmVubgp0aXRsZTogRWxlbWVudG9zIHBvciByZWdpw7NuCnNldHM6IFtBLCBCXQpzaGFkZTogIkEg4oiSIEIiCnJlZ2lvbnM6CiAgQTogWzEsIDMsIDVdCiAgIkEsQiI6IFs3LCA5XQogIEI6IFsyLCA0XQogIFU6IFs2LCA4XQo) para explorarlo y modificarlo.
 
 ## Ver también
 

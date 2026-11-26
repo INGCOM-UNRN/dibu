@@ -12,7 +12,7 @@ values: [3, 7, 1]
 ```
 
 Para probar un bloque sin instalar nada, el [editor web](https://ingcom-unrn.github.io/dibu-web/) es un playground con vista
-previa en vivo: [este ejemplo, abierto ahí](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKC5JTM7mKsksyQFyAjJzEhVSUosLSg-vLAYyFEqKUosVEguAwkVcZYk5panFVgrRxjoK5joKhrFcAA). Cada ejemplo del manual tiene un enlace
+previa en vivo: [este ejemplo, abierto ahí](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogc3RhY2sKdGl0bGU6IFBpbGEgZGVzcHXDqXMgZGUgdHJlcyBhcGlsYXIKdmFsdWVzOiBbMywgNywgMV0K). Cada ejemplo del manual tiene un enlace
 «Abrir en el editor» para ver cómo está construido y modificarlo.
 
 ## Un archivo, muchos diagramas

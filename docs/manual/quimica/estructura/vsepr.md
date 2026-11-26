@@ -42,9 +42,9 @@ ligands: [F, F, F, F]
 lonePairs: 1
 ```
 
-[![Geometría de SF4 (balancín)](img/ks_chem_vsepr_sf4.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKCtOLSjiKsksyQFy3FPzc1NLig6vTVRISVUIdjNR0EhKzEnMSz68Nk-TKzk1r6QoMcdKIZgrJzM9MS-l2Eoh2k1HAYpiuXLy81IDEjOLgOKGXAA)
+[![Geometría de SF4 (balancín)](img/ks_chem_vsepr_sf4.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogdnNlcHIKdGl0bGU6IEdlb21ldHLDrWEgZGUgU0Y0IChiYWxhbmPDrW4pCmNlbnRyYWw6IFMKbGlnYW5kczogW0YsIEYsIEYsIEZdCmxvbmVQYWlyczogMQo)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKCtOLSjiKsksyQFy3FPzc1NLig6vTVRISVUIdjNR0EhKzEnMSz68Nk-TKzk1r6QoMcdKIZgrJzM9MS-l2Eoh2k1HAYpiuXLy81IDEjOLgOKGXAA) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogdnNlcHIKdGl0bGU6IEdlb21ldHLDrWEgZGUgU0Y0IChiYWxhbmPDrW4pCmNlbnRyYWw6IFMKbGlnYW5kczogW0YsIEYsIEYsIEZdCmxvbmVQYWlyczogMQo) para explorarlo y modificarlo.
 
 ### XeF4 (para completar)
 
@@ -58,9 +58,9 @@ blank: [name, angle, hybridization]
 inkSaver: false
 ```
 
-[![XeF4 (para completar)](img/ks_chem_vsepr_xef4_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#z=LYrBCsJADETv-YocFXoST_sBPQteBOkhbWMNTbNLNhTq17uCMDC8eRNH4YR75eIQEtrgwf0VT4WccMpbUQ7yM0xs4aQ_DSoL2VwTPvsO_xlAs_GNxNt-gVHJ1nYw2rhDskVbvY_RZZYPhWQbQGy9086e8EVaGb4)
+[![XeF4 (para completar)](img/ks_chem_vsepr_xef4_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogdnNlcHIKdGl0bGU6IFhlRjQgKHBhcmEgY29tcGxldGFyKQpjZW50cmFsOiBYZQpsaWdhbmRzOiBbRiwgRiwgRiwgRl0KbG9uZVBhaXJzOiAyCmJsYW5rOiBbbmFtZSwgYW5nbGUsIGh5YnJpZGl6YXRpb25dCmlua1NhdmVyOiBmYWxzZQo)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=LYrBCsJADETv-YocFXoST_sBPQteBOkhbWMNTbNLNhTq17uCMDC8eRNH4YR75eIQEtrgwf0VT4WccMpbUQ7yM0xs4aQ_DSoL2VwTPvsO_xlAs_GNxNt-gVHJ1nYw2rhDskVbvY_RZZYPhWQbQGy9086e8EVaGb4) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogdnNlcHIKdGl0bGU6IFhlRjQgKHBhcmEgY29tcGxldGFyKQpjZW50cmFsOiBYZQpsaWdhbmRzOiBbRiwgRiwgRiwgRl0KbG9uZVBhaXJzOiAyCmJsYW5rOiBbbmFtZSwgYW5nbGUsIGh5YnJpZGl6YXRpb25dCmlua1NhdmVyOiBmYWxzZQo) para explorarlo y modificarlo.
 
 ## Ver también
 

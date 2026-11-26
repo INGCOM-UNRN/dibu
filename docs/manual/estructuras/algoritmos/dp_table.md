@@ -47,9 +47,9 @@ a: ABCBDAB
 b: BDCABA
 ```
 
-[![Subsecuencia común más larga](img/ks_alg_lcs.svg)](https://ingcom-unrn.github.io/dibu-web/#z=Dcq5DcAgDADA3lN4DjoMG2SAyBAUIZlHPEXGyRppWSyUJ914alB41XOwkwAjDtk-puvBz5B9ZPQlrS9jWm9H4XYz1FZ2TgrFd2CFmgxZTeAUkjWaNPw)
+[![Subsecuencia común más larga](img/ks_alg_lcs.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogZHBfdGFibGUKdGl0bGU6IFN1YnNlY3VlbmNpYSBjb23Dum4gbcOhcyBsYXJnYQpwcm9ibGVtOiBsY3MKYTogQUJDQkRBQgpiOiBCRENBQkEK)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=Dcq5DcAgDADA3lN4DjoMG2SAyBAUIZlHPEXGyRppWSyUJ914alB41XOwkwAjDtk-puvBz5B9ZPQlrS9jWm9H4XYz1FZ2TgrFd2CFmgxZTeAUkjWaNPw) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogZHBfdGFibGUKdGl0bGU6IFN1YnNlY3VlbmNpYSBjb23Dum4gbcOhcyBsYXJnYQpwcm9ibGVtOiBsY3MKYTogQUJDQkRBQgpiOiBCRENBQkEK) para explorarlo y modificarlo.
 
 ### Distancia de edición (Levenshtein)
 
@@ -61,9 +61,9 @@ a: kitten
 b: sitting
 ```
 
-[![Distancia de edición (Levenshtein)](img/ks_alg_edicion.svg)](https://ingcom-unrn.github.io/dibu-web/#z=FYuxDYAwDAR7T-ESVkhNyQ7IIRZYBBORFxJzMQKLEbo7nQ530cCpTJCYlWDIzQerEJ9NOClrstnex7kb9VKvK9S8p3Ie7djD30ESeDNAnWLg2sh8oQ8)
+[![Distancia de edición (Levenshtein)](img/ks_alg_edicion.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogZHBfdGFibGUKdGl0bGU6IERpc3RhbmNpYSBkZSBlZGljacOzbiAoTGV2ZW5zaHRlaW4pCnByb2JsZW06IGVkaXQKYToga2l0dGVuCmI6IHNpdHRpbmcK)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=FYuxDYAwDAR7T-ESVkhNyQ7IIRZYBBORFxJzMQKLEbo7nQ530cCpTJCYlWDIzQerEJ9NOClrstnex7kb9VKvK9S8p3Ie7djD30ESeDNAnWLg2sh8oQ8) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogZHBfdGFibGUKdGl0bGU6IERpc3RhbmNpYSBkZSBlZGljacOzbiAoTGV2ZW5zaHRlaW4pCnByb2JsZW06IGVkaXQKYToga2l0dGVuCmI6IHNpdHRpbmcK) para explorarlo y modificarlo.
 
 ### Ejercicio: mochila 0/1
 
@@ -77,9 +77,9 @@ capacity: 7
 blank: true
 ```
 
-[![Ejercicio: mochila 0/1](img/ks_alg_mochila.svg)](https://ingcom-unrn.github.io/dibu-web/#z=LcpBCsJADEDRfU4Ruh7QolLI3lNIkTQGG2faGaap0ttbweV_fN-KEj7K3XlICm6e9m6uL61iYplwyjJaYjwe2gZKzfs2EcaZy8IS4aP2HH0hvLUBTwHPAS89vDmt-sefBOx6EC4s5hthB0PiORJ6XRW-)
+[![Ejercicio: mochila 0/1](img/ks_alg_mochila.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogZHBfdGFibGUKdGl0bGU6ICJFamVyY2ljaW86IG1vY2hpbGEgMC8xIgpwcm9ibGVtOiBrbmFwc2Fjawp3ZWlnaHRzOiBbMSwgMywgNCwgNV0KdmFsdWVzOiBbMSwgNCwgNSwgN10KY2FwYWNpdHk6IDcKYmxhbms6IHRydWUK)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=LcpBCsJADEDRfU4Ruh7QolLI3lNIkTQGG2faGaap0ttbweV_fN-KEj7K3XlICm6e9m6uL61iYplwyjJaYjwe2gZKzfs2EcaZy8IS4aP2HH0hvLUBTwHPAS89vDmt-sefBOx6EC4s5hthB0PiORJ6XRW-) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogZHBfdGFibGUKdGl0bGU6ICJFamVyY2ljaW86IG1vY2hpbGEgMC8xIgpwcm9ibGVtOiBrbmFwc2Fjawp3ZWlnaHRzOiBbMSwgMywgNCwgNV0KdmFsdWVzOiBbMSwgNCwgNSwgN10KY2FwYWNpdHk6IDcKYmxhbms6IHRydWUK) para explorarlo y modificarlo.
 
 ## Ver también
 

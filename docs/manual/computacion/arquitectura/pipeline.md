@@ -46,9 +46,9 @@ instructions:
   - "and $t5, $t6, $t7"
 ```
 
-[![Pipeline MIPS de 5 etapas con forwarding](img/ks_arq_pipeline_fwd.svg)](https://ingcom-unrn.github.io/dibu-web/#z=VYxBCsMgFET3nuIjLlqwYNukgdygi0KgJ7DRlg-ioj9Ib9-IyaKbgfdmGPpGO0LEaB16ywjJrTxtDI_79ARjoQdLOuoMc_DwDqnoZNB_GPpMaZkJg88jAzgBdwUEKQnqILI68ia1Mas9y1YJumw-L6-VrnIvu92Xpru_E19P-rq71Rg4-wE)
+[![Pipeline MIPS de 5 etapas con forwarding](img/ks_arq_pipeline_fwd.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogcGlwZWxpbmUKdGl0bGU6IFBpcGVsaW5lIE1JUFMgZGUgNSBldGFwYXMgY29uIGZvcndhcmRpbmcKaW5zdHJ1Y3Rpb25zOgogIC0gImx3ICR0MCwgMCgkczApIgogIC0gImFkZCAkdDEsICR0MCwgJHQyIgogIC0gInN1YiAkdDMsICR0MSwgJHQ0IgogIC0gInN3ICR0MywgNCgkczApIgogIC0gImFuZCAkdDUsICR0NiwgJHQ3Igo)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=VYxBCsMgFET3nuIjLlqwYNukgdygi0KgJ7DRlg-ioj9Ib9-IyaKbgfdmGPpGO0LEaB16ywjJrTxtDI_79ARjoQdLOuoMc_DwDqnoZNB_GPpMaZkJg88jAzgBdwUEKQnqILI68ia1Mas9y1YJumw-L6-VrnIvu92Xpru_E19P-rq71Rg4-wE) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogcGlwZWxpbmUKdGl0bGU6IFBpcGVsaW5lIE1JUFMgZGUgNSBldGFwYXMgY29uIGZvcndhcmRpbmcKaW5zdHJ1Y3Rpb25zOgogIC0gImx3ICR0MCwgMCgkczApIgogIC0gImFkZCAkdDEsICR0MCwgJHQyIgogIC0gInN1YiAkdDMsICR0MSwgJHQ0IgogIC0gInN3ICR0MywgNCgkczApIgogIC0gImFuZCAkdDUsICR0NiwgJHQ3Igo) para explorarlo y modificarlo.
 
 ### El mismo código sin forwarding
 
@@ -64,9 +64,9 @@ instructions:
   - "and $t5, $t6, $t7"
 ```
 
-[![El mismo código sin forwarding](img/ks_arq_pipeline_sin_fwd.svg)](https://ingcom-unrn.github.io/dibu-web/#z=VYxBCsIwFET3OcUnZKEQoWpVyN6D1CYtH9Ik5P9SPJdH8GIm1CJuhpk3w_AzOQMJk_MYnGBkX_Ldw4Q0RejfL4tjBMIAQ8xLly2GUfysgaHz5AQG4jz3jDGQEQAHkH4BxY2GZqeo2csVdtYWetRrpfj05TQ_SjrrrWw3vqy4_TsJ9eRSd9cqNyk-)
+[![El mismo código sin forwarding](img/ks_arq_pipeline_sin_fwd.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogcGlwZWxpbmUKdGl0bGU6IEVsIG1pc21vIGPDs2RpZ28gc2luIGZvcndhcmRpbmcKZm9yd2FyZGluZzogZmFsc2UKaW5zdHJ1Y3Rpb25zOgogIC0gImx3ICR0MCwgMCgkczApIgogIC0gImFkZCAkdDEsICR0MCwgJHQyIgogIC0gInN1YiAkdDMsICR0MSwgJHQ0IgogIC0gInN3ICR0MywgNCgkczApIgogIC0gImFuZCAkdDUsICR0NiwgJHQ3Igo)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=VYxBCsIwFET3OcUnZKEQoWpVyN6D1CYtH9Ik5P9SPJdH8GIm1CJuhpk3w_AzOQMJk_MYnGBkX_Ldw4Q0RejfL4tjBMIAQ8xLly2GUfysgaHz5AQG4jz3jDGQEQAHkH4BxY2GZqeo2csVdtYWetRrpfj05TQ_SjrrrWw3vqy4_TsJ9eRSd9cqNyk-) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogcGlwZWxpbmUKdGl0bGU6IEVsIG1pc21vIGPDs2RpZ28gc2luIGZvcndhcmRpbmcKZm9yd2FyZGluZzogZmFsc2UKaW5zdHJ1Y3Rpb25zOgogIC0gImx3ICR0MCwgMCgkczApIgogIC0gImFkZCAkdDEsICR0MCwgJHQyIgogIC0gInN1YiAkdDMsICR0MSwgJHQ0IgogIC0gInN3ICR0MywgNCgkczApIgogIC0gImFuZCAkdDUsICR0NiwgJHQ3Igo) para explorarlo y modificarlo.
 
 ## Notas
 

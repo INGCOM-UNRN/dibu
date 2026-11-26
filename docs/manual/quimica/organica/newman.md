@@ -38,9 +38,9 @@ back: [CH3, H, H]
 dihedral: 180
 ```
 
-[![Butano conformación anti (C2–C3)](img/ks_chem_newman_butano_anti.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSyEstz03M4yrJLMkB8pxKSxLz8hWS8_PS8otyE5MzD2_OU0jMK8lU0HA2etQw2dlYkyuxIrPYSgHK5Uorys8rsVKIdvYw1lHwAKJYrqTE5GxUkZTMjNSUosQcKwVDCwMuAA)
+[![Butano conformación anti (C2–C3)](img/ks_chem_newman_butano_anti.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogbmV3bWFuCnRpdGxlOiBCdXRhbm8gY29uZm9ybWFjacOzbiBhbnRpIChDMuKAk0MzKQpheGlzOiBDMuKAk0MzCmZyb250OiBbQ0gzLCBILCBIXQpiYWNrOiBbQ0gzLCBILCBIXQpkaWhlZHJhbDogMTgwCg)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSyEstz03M4yrJLMkB8pxKSxLz8hWS8_PS8otyE5MzD2_OU0jMK8lU0HA2etQw2dlYkyuxIrPYSgHK5Uorys8rsVKIdvYw1lHwAKJYrqTE5GxUkZTMjNSUosQcKwVDCwMuAA) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogbmV3bWFuCnRpdGxlOiBCdXRhbm8gY29uZm9ybWFjacOzbiBhbnRpIChDMuKAk0MzKQpheGlzOiBDMuKAk0MzCmZyb250OiBbQ0gzLCBILCBIXQpiYWNrOiBbQ0gzLCBILCBIXQpkaWhlZHJhbDogMTgwCg) para explorarlo y modificarlo.
 
 ### Conformación gauche (en blanco)
 
@@ -54,9 +54,9 @@ blankName: true
 inkSaver: false
 ```
 
-[![Conformación gauche (en blanco)](img/ks_chem_newman_gauche_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSyEstz03M4yrJLMkB8pzz89Lyi3ITkzMPb85TSE8sTc5IVdBIzVNIyknMS87X5Eorys8rsVKIdvYw1lHwAKJYrqTE5GxUkZTMjNSUosQcKwUzAy6Qzmy_xFyg6SVFpalcmXnZwYllqUVWCmmJOcWpXAA)
+[![Conformación gauche (en blanco)](img/ks_chem_newman_gauche_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogbmV3bWFuCnRpdGxlOiBDb25mb3JtYWNpw7NuIGdhdWNoZSAoZW4gYmxhbmNvKQpmcm9udDogW0NIMywgSCwgSF0KYmFjazogW0NIMywgSCwgSF0KZGloZWRyYWw6IDYwCmJsYW5rTmFtZTogdHJ1ZQppbmtTYXZlcjogZmFsc2UK)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSyEstz03M4yrJLMkB8pzz89Lyi3ITkzMPb85TSE8sTc5IVdBIzVNIyknMS87X5Eorys8rsVKIdvYw1lHwAKJYrqTE5GxUkZTMjNSUosQcKwUzAy6Qzmy_xFyg6SVFpalcmXnZwYllqUVWCmmJOcWpXAA) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogbmV3bWFuCnRpdGxlOiBDb25mb3JtYWNpw7NuIGdhdWNoZSAoZW4gYmxhbmNvKQpmcm9udDogW0NIMywgSCwgSF0KYmFjazogW0NIMywgSCwgSF0KZGloZWRyYWw6IDYwCmJsYW5rTmFtZTogdHJ1ZQppbmtTYXZlcjogZmFsc2UK) para explorarlo y modificarlo.
 
 ## Ver también
 

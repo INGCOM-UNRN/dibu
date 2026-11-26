@@ -60,9 +60,9 @@ header:
     - "cant = 3"
 ```
 
-[![Lista enlazada con cabecera y zonas](img/ks_cs_linked_list_cabecera_zonas.svg)](https://ingcom-unrn.github.io/dibu-web/#z=PY9PiwIxDMXv_RSPnkdYRxZkYMWjh2UvehOR2EYs0z9DWwX99Bvrupe8lx_hJan3iQd4F0e2R-9KVdVVL-hbPIGjpwdZgkkRhk5sOBPueKRIRd3IX7kM2M_7Dv1nh-VBkbWZS2lYr3_muoNI_5KFPqiYLO_aVnHpWJVkybQCZKEZB-jtSwO5qAVfmKYBG6lKrOX8nI0UJCG4djMJqH-PSCeZwNmxty0WmEFP2QXOCbMVPvQbXn11obH-nxmKFV9YaPUL)
+[![Lista enlazada con cabecera y zonas](img/ks_cs_linked_list_cabecera_zonas.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogbGlua2VkX2xpc3QKdGl0bGU6IExpc3RhIGVubGF6YWRhIGNvbiBjYWJlY2VyYSB5IHpvbmFzCnZhbHVlczogWzEyLCAyNSwgOF0KYWRkcmVzc2VzOiBbIkBOMSIsICJATjIiLCAiQE4zIl0Kbm9kZVR5cGU6IG5vZG9fdAp6b25lczoKICBzdGFjazogIlN0YWNrOiBtYWluIgogIGhlYXA6IEhlYXAKaGVhZGVyOgogIG5hbWU6IG1pX2xpc3RhCiAgdHlwZTogbGlzdGFfdAogIGZpZWxkczoKICAgIC0gInByaW1lcm8gLT4gMCIKICAgIC0gInVsdGltbyAtPiAyIgogICAgLSAiY2FudCA9IDMiCg)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=PY9PiwIxDMXv_RSPnkdYRxZkYMWjh2UvehOR2EYs0z9DWwX99Bvrupe8lx_hJan3iQd4F0e2R-9KVdVVL-hbPIGjpwdZgkkRhk5sOBPueKRIRd3IX7kM2M_7Dv1nh-VBkbWZS2lYr3_muoNI_5KFPqiYLO_aVnHpWJVkybQCZKEZB-jtSwO5qAVfmKYBG6lKrOX8nI0UJCG4djMJqH-PSCeZwNmxty0WmEFP2QXOCbMVPvQbXn11obH-nxmKFV9YaPUL) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogbGlua2VkX2xpc3QKdGl0bGU6IExpc3RhIGVubGF6YWRhIGNvbiBjYWJlY2VyYSB5IHpvbmFzCnZhbHVlczogWzEyLCAyNSwgOF0KYWRkcmVzc2VzOiBbIkBOMSIsICJATjIiLCAiQE4zIl0Kbm9kZVR5cGU6IG5vZG9fdAp6b25lczoKICBzdGFjazogIlN0YWNrOiBtYWluIgogIGhlYXA6IEhlYXAKaGVhZGVyOgogIG5hbWU6IG1pX2xpc3RhCiAgdHlwZTogbGlzdGFfdAogIGZpZWxkczoKICAgIC0gInByaW1lcm8gLT4gMCIKICAgIC0gInVsdGltbyAtPiAyIgogICAgLSAiY2FudCA9IDMiCg) para explorarlo y modificarlo.
 
 ### Lista circular doblemente enlazada
 
@@ -75,9 +75,9 @@ pointers: "actual:1"
 inkSaver: false
 ```
 
-[![Lista circular doblemente enlazada](img/ks_cs_linked_list_circular_doubly.svg)](https://ingcom-unrn.github.io/dibu-web/#z=PY0xDgIxDAT7vMJyTUObN9BRInTyJUayMMkpcU46fgX8496ERUGzWu2sdm1bOIJKuXOeVLoFE1OPTu4JkrQ0lBrkOis_uBgDF6UnZQorNaFi8d-ach2zbg50cI9wwf2FB8D9_dMPXsNSxTeaQ6RkgzQeMfj7mVZuEW6kncMX)
+[![Lista circular doblemente enlazada](img/ks_cs_linked_list_circular_doubly.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogbGlua2VkX2xpc3QKdGl0bGU6IExpc3RhIGNpcmN1bGFyIGRvYmxlbWVudGUgZW5sYXphZGEKdmFyaWFudDogY2lyY3VsYXJfZG91Ymx5CnZhbHVlczogWyLOsSIsICLOsiIsICLOsyJdCnBvaW50ZXJzOiAiYWN0dWFsOjEiCmlua1NhdmVyOiBmYWxzZQo)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=PY0xDgIxDAT7vMJyTUObN9BRInTyJUayMMkpcU46fgX8496ERUGzWu2sdm1bOIJKuXOeVLoFE1OPTu4JkrQ0lBrkOis_uBgDF6UnZQorNaFi8d-ach2zbg50cI9wwf2FB8D9_dMPXsNSxTeaQ6RkgzQeMfj7mVZuEW6kncMX) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogbGlua2VkX2xpc3QKdGl0bGU6IExpc3RhIGNpcmN1bGFyIGRvYmxlbWVudGUgZW5sYXphZGEKdmFyaWFudDogY2lyY3VsYXJfZG91Ymx5CnZhbHVlczogWyLOsSIsICLOsiIsICLOsyJdCnBvaW50ZXJzOiAiYWN0dWFsOjEiCmlua1NhdmVyOiBmYWxzZQo) para explorarlo y modificarlo.
 
 ## Ver también
 

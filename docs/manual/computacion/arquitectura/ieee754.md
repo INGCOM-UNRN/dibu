@@ -39,9 +39,9 @@ title: "−6,75 en precisión simple"
 value: -6.75
 ```
 
-[![−6,75 en precisión simple](img/ks_arq_ieee_simple.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSyExNTTU3NeEqySzJAXKVHnVMMtMxN1VIzVMoKEpNzizOPLw5T6E4M7cgJ1WJqywxpxSoStdMz9yUCwA)
+[![−6,75 en precisión simple](img/ks_arq_ieee_simple.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogaWVlZTc1NAp0aXRsZTogIuKIkjYsNzUgZW4gcHJlY2lzacOzbiBzaW1wbGUiCnZhbHVlOiAtNi43NQo)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSyExNTTU3NeEqySzJAXKVHnVMMtMxN1VIzVMoKEpNzizOPLw5T6E4M7cgJ1WJqywxpxSoStdMz9yUCwA) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogaWVlZTc1NAp0aXRsZTogIuKIkjYsNzUgZW4gcHJlY2lzacOzbiBzaW1wbGUiCnZhbHVlOiAtNi43NQo) para explorarlo y modificarlo.
 
 ### 0,1 no es representable exactamente
 
@@ -52,9 +52,9 @@ value: 0.1
 format: single
 ```
 
-[![0,1 no es representable exactamente](img/ks_arq_ieee_redondeo.svg)](https://ingcom-unrn.github.io/dibu-web/#z=DcpNCoAgEAbQvacYXEcoFIG3meIrhPEHnaJun8sHT7-KQBHAti5Go8qgdZOnXAidGmpDR1beBYSXD-U0CGselntkN3tzlpZYA_WYL4H5AQ)
+[![0,1 no es representable exactamente](img/ks_arq_ieee_redondeo.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogaWVlZTc1NAp0aXRsZTogIjAsMSBubyBlcyByZXByZXNlbnRhYmxlIGV4YWN0YW1lbnRlIgp2YWx1ZTogMC4xCmZvcm1hdDogc2luZ2xlCg)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=DcpNCoAgEAbQvacYXEcoFIG3meIrhPEHnaJun8sHT7-KQBHAti5Go8qgdZOnXAidGmpDR1beBYSXD-U0CGselntkN3tzlpZYA_WYL4H5AQ) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogaWVlZTc1NAp0aXRsZTogIjAsMSBubyBlcyByZXByZXNlbnRhYmxlIGV4YWN0YW1lbnRlIgp2YWx1ZTogMC4xCmZvcm1hdDogc2luZ2xlCg) para explorarlo y modificarlo.
 
 ### Ejercicio: decodificar
 
@@ -65,9 +65,9 @@ bits: "0x41460000"
 blank: true
 ```
 
-[![Ejercicio: decodificar](img/ks_arq_ieee_ejercicio.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSyExNTTU3NeEqySzJAXKVXLNSi5IzkzPzrRRSUpPzUzLTMpMTi5S4kjJLioHSBhUmhiZmBkAAFMpJzMu2UigpKk3lAgA)
+[![Ejercicio: decodificar](img/ks_arq_ieee_ejercicio.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogaWVlZTc1NAp0aXRsZTogIkVqZXJjaWNpbzogZGVjb2RpZmljYXIiCmJpdHM6ICIweDQxNDYwMDAwIgpibGFuazogdHJ1ZQo)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSyExNTTU3NeEqySzJAXKVXLNSi5IzkzPzrRRSUpPzUzLTMpMTi5S4kjJLioHSBhUmhiZmBkAAFMpJzMu2UigpKk3lAgA) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogaWVlZTc1NAp0aXRsZTogIkVqZXJjaWNpbzogZGVjb2RpZmljYXIiCmJpdHM6ICIweDQxNDYwMDAwIgpibGFuazogdHJ1ZQo) para explorarlo y modificarlo.
 
 ## Ver también
 

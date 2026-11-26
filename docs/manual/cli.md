@@ -41,4 +41,4 @@ circuitos).
 [dibu-web](https://ingcom-unrn.github.io/dibu-web/) tiene los mismos tipos en el navegador, con
 vista previa en vivo, autocompletado de campos y un editor visual: sirve de playground para
 probar un bloque antes de llevarlo a un apunte o a un banco. «Compartir» copia un enlace con el
-diagrama en la URL (`#z=…`), que lo abre tal cual; así enlaza el manual cada uno de sus ejemplos.
+diagrama en la URL (`#z=…` o `#t=…`), que lo abre tal cual; así enlaza el manual cada uno de sus ejemplos.

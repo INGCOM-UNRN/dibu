@@ -45,9 +45,9 @@ network:
     - "R4 = 47Ω"
 ```
 
-[![Circuito serie-paralelo](img/ks_circ_circuito_mixto.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSM4sSi7NLOEqySzJAXKdIdx8heLUosxU3YLEosSc1Jx8ruL80qJkoLxSmKGCrYKhUZgSV15qSXl-UbYVlwJEcTGIpaCgq6AUBFZjYHBupRJUCGwO0CArhWilICOgrJERSFYHqNYYyDM2BvFi4fpNgGIm5iDtAA)
+[![Circuito serie-paralelo](img/ks_circ_circuito_mixto.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogY2lyY3VpdAp0aXRsZTogQ2lyY3VpdG8gc2VyaWUtcGFyYWxlbG8Kc291cmNlOiAiVjEgPSAxMlYiCm5ldHdvcms6CiAgc2VyaWVzOgogICAgLSAiUjEgPSAxMDDOqSIKICAgIC0gcGFyYWxsZWw6IFsiUjIgPSAyMjDOqSIsICJSMyA9IDMzMM6pIl0KICAgIC0gIlI0ID0gNDfOqSIK)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSM4sSi7NLOEqySzJAXKdIdx8heLUosxU3YLEosSc1Jx8ruL80qJkoLxSmKGCrYKhUZgSV15qSXl-UbYVlwJEcTGIpaCgq6AUBFZjYHBupRJUCGwO0CArhWilICOgrJERSFYHqNYYyDM2BvFi4fpNgGIm5iDtAA) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogY2lyY3VpdAp0aXRsZTogQ2lyY3VpdG8gc2VyaWUtcGFyYWxlbG8Kc291cmNlOiAiVjEgPSAxMlYiCm5ldHdvcms6CiAgc2VyaWVzOgogICAgLSAiUjEgPSAxMDDOqSIKICAgIC0gcGFyYWxsZWw6IFsiUjIgPSAyMjDOqSIsICJSMyA9IDMzMM6pIl0KICAgIC0gIlI0ID0gNDfOqSIK) para explorarlo y modificarlo.
 
 ### RLC en alterna
 
@@ -63,9 +63,9 @@ network:
     - parallel: ["C = 100uF", "R2 = 50Ω"]
 ```
 
-[![RLC en alterna](img/ks_circ_circuito_rlc.svg)](https://ingcom-unrn.github.io/dibu-web/#z=NYsxCsJAEEX7OcUwtcIaSLNgFRCLVCnSiMWyjLC4buLsLJIjeRnP5EZJ99_7_-sys0UfxJegoEFjxaHvkBO6qCzJwU34WTj5xWJrIE9FfB3RiEdsGkOQWF-T3C0gZpbAeU2Ie6ShTg7m86ZN9D9hHufNzE5cjBwtXqj7l-VEu3ptKrXr9wpf)
+[![RLC en alterna](img/ks_circ_circuito_rlc.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogY2lyY3VpdAp0aXRsZTogUkxDIGVuIGFsdGVybmEKZnJlcXVlbmN5OiA1MApzb3VyY2U6ICJWID0gMjIwIgpuZXR3b3JrOgogIHNlcmllczoKICAgIC0gIlIgPSAxMM6pIgogICAgLSAiTCA9IDEwMG1IIgogICAgLSBwYXJhbGxlbDogWyJDID0gMTAwdUYiLCAiUjIgPSA1MM6pIl0K)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=NYsxCsJAEEX7OcUwtcIaSLNgFRCLVCnSiMWyjLC4buLsLJIjeRnP5EZJ99_7_-sys0UfxJegoEFjxaHvkBO6qCzJwU34WTj5xWJrIE9FfB3RiEdsGkOQWF-T3C0gZpbAeU2Ie6ShTg7m86ZN9D9hHufNzE5cjBwtXqj7l-VEu3ptKrXr9wpf) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogY2lyY3VpdAp0aXRsZTogUkxDIGVuIGFsdGVybmEKZnJlcXVlbmN5OiA1MApzb3VyY2U6ICJWID0gMjIwIgpuZXR3b3JrOgogIHNlcmllczoKICAgIC0gIlIgPSAxMM6pIgogICAgLSAiTCA9IDEwMG1IIgogICAgLSBwYXJhbGxlbDogWyJDID0gMTAwdUYiLCAiUjIgPSA1MM6pIl0K) para explorarlo y modificarlo.
 
 ## Notas
 

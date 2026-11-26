@@ -42,9 +42,9 @@ values: [1]
 traceLabels: ["Inicio", "push(2)", "pop()"]
 ```
 
-[![Pila con traza vertical](img/ks_cs_stack_vertical_multi.svg)](https://ingcom-unrn.github.io/dibu-web/#z=PYuxCoNADED3fEW4SaFLO94fCB26FykxBAxNvcPLCfr1Wge39x48X7NELE78BVe3Q15qhJwm9Jk2wkVmVyYDozVVj1f4_Kq5wkJWpUR833s4DpYnDWL_ELpJWVO4Yci1jM2jPTHlpg097A)
+[![Pila con traza vertical](img/ks_cs_stack_vertical_multi.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogc3RhY2sKdGl0bGU6IFBpbGEgY29uIHRyYXphIHZlcnRpY2FsCmxheW91dDogdmVydGljYWxfbXVsdGkKdmFsdWVzOiBbMV0KdHJhY2VMYWJlbHM6IFsiSW5pY2lvIiwgInB1c2goMikiLCAicG9wKCkiXQo)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=PYuxCoNADED3fEW4SaFLO94fCB26FykxBAxNvcPLCfr1Wge39x48X7NELE78BVe3Q15qhJwm9Jk2wkVmVyYDozVVj1f4_Kq5wkJWpUR833s4DpYnDWL_ELpJWVO4Yci1jM2jPTHlpg097A) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogc3RhY2sKdGl0bGU6IFBpbGEgY29uIHRyYXphIHZlcnRpY2FsCmxheW91dDogdmVydGljYWxfbXVsdGkKdmFsdWVzOiBbMV0KdHJhY2VMYWJlbHM6IFsiSW5pY2lvIiwgInB1c2goMikiLCAicG9wKCkiXQo) para explorarlo y modificarlo.
 
 ## Ver también
 

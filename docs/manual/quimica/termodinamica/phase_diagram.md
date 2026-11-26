@@ -56,9 +56,9 @@ blankRegions: true
 blankPoints: true
 ```
 
-[![CO2 en escala logarítmica](img/ks_chem_phase_diagram_co2_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#z=NcrBDYMwDEbhe6bwDBxzZQCqLoB-ghUsgoNic2CoTtHFmqrq7enT8_vkSOcG43kV5IYjuHjpOE4DsRJbQgGVmtHeLz8kIdi1mENTv1Idwvfo2ZewFOj-5CxVLZK3i3_0qKL-lw8)
+[![CO2 en escala logarítmica](img/ks_chem_phase_diagram_co2_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogcGhhc2VfZGlhZ3JhbQp0aXRsZTogQ08yIGVuIGVzY2FsYSBsb2dhcsOtdG1pY2EKc3Vic3RhbmNlOiBjbzIKc2NhbGU6IGxvZwpibGFua1JlZ2lvbnM6IHRydWUKYmxhbmtQb2ludHM6IHRydWUK)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=NcrBDYMwDEbhe6bwDBxzZQCqLoB-ghUsgoNic2CoTtHFmqrq7enT8_vkSOcG43kV5IYjuHjpOE4DsRJbQgGVmtHeLz8kIdi1mENTv1Idwvfo2ZewFOj-5CxVLZK3i3_0qKL-lw8) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogcGhhc2VfZGlhZ3JhbQp0aXRsZTogQ08yIGVuIGVzY2FsYSBsb2dhcsOtdG1pY2EKc3Vic3RhbmNlOiBjbzIKc2NhbGU6IGxvZwpibGFua1JlZ2lvbnM6IHRydWUKYmxhbmtQb2ludHM6IHRydWUK) para explorarlo y modificarlo.
 
 ### Diagrama eutéctico Pb–Sn
 
@@ -74,9 +74,9 @@ cooling: 30
 inkSaver: false
 ```
 
-[![Diagrama eutéctico Pb–Sn](img/ks_chem_phase_diagram_eutectico.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKMhILE6NT8lMTC9KzOXKzsxLsVJILS1JTS7JTOYqySzJAapxgcgmgiQOrwTJ5CsEJD1qmBycx5Wcn1uQn5eaV1JspRAdkKSjEJwXy5WbmlOSmZfuaKVgbGQO4zlZKRgZG3HBDAcqNzPUs9RRMLQwjgUak58DVAPUYMCVmZcdnFiWWmSlkJaYU5zKBQA)
+[![Diagrama eutéctico Pb–Sn](img/ks_chem_phase_diagram_eutectico.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogcGhhc2VfZGlhZ3JhbQpraW5kOiBldXRlY3RpYwp0aXRsZTogRGlhZ3JhbWEgZXV0w6ljdGljbyBQYuKAk1NuCmNvbXBvbmVudHM6IFtQYiwgU25dCm1lbHRpbmdBOiAzMjcKbWVsdGluZ0I6IDIzMgpldXRlY3RpYzogWzYxLjksIDE4M10KY29vbGluZzogMzAKaW5rU2F2ZXI6IGZhbHNlCg)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKMhILE6NT8lMTC9KzOXKzsxLsVJILS1JTS7JTOYqySzJAapxgcgmgiQOrwTJ5CsEJD1qmBycx5Wcn1uQn5eaV1JspRAdkKSjEJwXy5WbmlOSmZfuaKVgbGQO4zlZKRgZG3HBDAcqNzPUs9RRMLQwjgUak58DVAPUYMCVmZcdnFiWWmSlkJaYU5zKBQA) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogcGhhc2VfZGlhZ3JhbQpraW5kOiBldXRlY3RpYwp0aXRsZTogRGlhZ3JhbWEgZXV0w6ljdGljbyBQYuKAk1NuCmNvbXBvbmVudHM6IFtQYiwgU25dCm1lbHRpbmdBOiAzMjcKbWVsdGluZ0I6IDIzMgpldXRlY3RpYzogWzYxLjksIDE4M10KY29vbGluZzogMzAKaW5rU2F2ZXI6IGZhbHNlCg) para explorarlo y modificarlo.
 
 ## Ver también
 

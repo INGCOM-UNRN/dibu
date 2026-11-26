@@ -37,9 +37,9 @@ blankCosts: true
 blankTotal: true
 ```
 
-[![Análisis línea a línea (evaluación)](img/ks_cs_cost_table_sangria_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#z=Nc4xDsIwDEDRPaewMrUqDO2YTIgrsFUIuVGQIiwHNS6C43AAJo6QixFS8GBZ_y2Wx9UbcDHJSXAiryQIlbLj_KSQQgLKL_YI-D8af0Na0IX85lZRYJ-MAtjCqM9xhsbaVm9Au_67WR9_BmXuXWerDdVK74tLFCQDA6uJkC_78ksyIPPi13BYvYYP)
+[![Análisis línea a línea (evaluación)](img/ks_cs_cost_table_sangria_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogY29zdF90YWJsZQp0aXRsZTogQW7DoWxpc2lzIGzDrW5lYSBhIGzDrW5lYSAoZXZhbHVhY2nDs24pCmxpbmVzOgogIC0gWyJmb3IgKDs7KSIsICJjMSIsICJuIl0KICAtIFsiICAgIHgrKzsiLCAiYzIiLCAibiAtIDEiXQp0b3RhbDogMm4KYmxhbmtDb3N0czogdHJ1ZQpibGFua1RvdGFsOiB0cnVlCg)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=Nc4xDsIwDEDRPaewMrUqDO2YTIgrsFUIuVGQIiwHNS6C43AAJo6QixFS8GBZ_y2Wx9UbcDHJSXAiryQIlbLj_KSQQgLKL_YI-D8af0Na0IX85lZRYJ-MAtjCqM9xhsbaVm9Au_67WR9_BmXuXWerDdVK74tLFCQDA6uJkC_78ksyIPPi13BYvYYP) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogY29zdF90YWJsZQp0aXRsZTogQW7DoWxpc2lzIGzDrW5lYSBhIGzDrW5lYSAoZXZhbHVhY2nDs24pCmxpbmVzOgogIC0gWyJmb3IgKDs7KSIsICJjMSIsICJuIl0KICAtIFsiICAgIHgrKzsiLCAiYzIiLCAibiAtIDEiXQp0b3RhbDogMm4KYmxhbmtDb3N0czogdHJ1ZQpibGFua1RvdGFsOiB0cnVlCg) para explorarlo y modificarlo.
 
 ## Ver también
 

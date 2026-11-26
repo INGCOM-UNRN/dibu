@@ -47,9 +47,9 @@ centers:
   - {left: H, right: OH, priorities: [right, top, bottom, left]}
 ```
 
-[![D-glucosa (4 centros quirales)](img/ks_chem_fischer_glucosa.svg)](https://ingcom-unrn.github.io/dibu-web/#z=pc4xDsIwDAXQPaf4I0jpgpiywtAtB0AMpXJbS4EUxx0qxN1JioRER9i-re8n6zySQ8epHUiMsoY8Hqs-TG1MDTZ7tHRTiQn3iaUJlLZG4-hwqL25RNV4LXnna1OKJMkZoMIjUKcOtYVwP-TkcxyFo7AyJYfTsrfImMUbsihH5-cX4D_CGiiF1f3SXAF_f_AT8AI)
+[![D-glucosa (4 centros quirales)](img/ks_chem_fischer_glucosa.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogZmlzY2hlcgp0aXRsZTogRC1nbHVjb3NhICg0IGNlbnRyb3MgcXVpcmFsZXMpCnRvcDogQ0hPCmJvdHRvbTogQ0gyT0gKY2VudGVyczoKICAtIHtsZWZ0OiBILCByaWdodDogT0gsIHByaW9yaXRpZXM6IFtyaWdodCwgdG9wLCBib3R0b20sIGxlZnRdfQogIC0ge2xlZnQ6IEhPLCByaWdodDogSCwgcHJpb3JpdGllczogW2xlZnQsIHRvcCwgYm90dG9tLCByaWdodF19CiAgLSB7bGVmdDogSCwgcmlnaHQ6IE9ILCBwcmlvcml0aWVzOiBbcmlnaHQsIHRvcCwgYm90dG9tLCBsZWZ0XX0KICAtIHtsZWZ0OiBILCByaWdodDogT0gsIHByaW9yaXRpZXM6IFtyaWdodCwgdG9wLCBib3R0b20sIGxlZnRdfQo)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=pc4xDsIwDAXQPaf4I0jpgpiywtAtB0AMpXJbS4EUxx0qxN1JioRER9i-re8n6zySQ8epHUiMsoY8Hqs-TG1MDTZ7tHRTiQn3iaUJlLZG4-hwqL25RNV4LXnna1OKJMkZoMIjUKcOtYVwP-TkcxyFo7AyJYfTsrfImMUbsihH5-cX4D_CGiiF1f3SXAF_f_AT8AI) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogZmlzY2hlcgp0aXRsZTogRC1nbHVjb3NhICg0IGNlbnRyb3MgcXVpcmFsZXMpCnRvcDogQ0hPCmJvdHRvbTogQ0gyT0gKY2VudGVyczoKICAtIHtsZWZ0OiBILCByaWdodDogT0gsIHByaW9yaXRpZXM6IFtyaWdodCwgdG9wLCBib3R0b20sIGxlZnRdfQogIC0ge2xlZnQ6IEhPLCByaWdodDogSCwgcHJpb3JpdGllczogW2xlZnQsIHRvcCwgYm90dG9tLCByaWdodF19CiAgLSB7bGVmdDogSCwgcmlnaHQ6IE9ILCBwcmlvcml0aWVzOiBbcmlnaHQsIHRvcCwgYm90dG9tLCBsZWZ0XX0KICAtIHtsZWZ0OiBILCByaWdodDogT0gsIHByaW9yaXRpZXM6IFtyaWdodCwgdG9wLCBib3R0b20sIGxlZnRdfQo) para explorarlo y modificarlo.
 
 ### Alanina (configuración en blanco)
 
@@ -65,9 +65,9 @@ blankSeries: true
 inkSaver: false
 ```
 
-[![Alanina (configuración en blanco)](img/ks_chem_fischer_alanina_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#z=LY47DgIxDER7n8IlSNBAlw5tk4otOEE2cnYtgrNyvEgIcSqOwMUIn27ejPQ0dpvJYeIaJ1IwttzwkIOwBFzFIonHRUPk11OQBIc2xbIGK7PDru89DMWsXBr4PUQSI60OELd4z5TM4dHvNqg8Ti37B3wE5-7rdWi60K85kTLVf8ONw5W0HQu5ErwB)
+[![Alanina (configuración en blanco)](img/ks_chem_fischer_alanina_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogZmlzY2hlcgp0aXRsZTogQWxhbmluYSAoY29uZmlndXJhY2nDs24gZW4gYmxhbmNvKQp0b3A6IENPT0gKYm90dG9tOiBDSDMKY2VudGVyczoKICAtIHtsZWZ0OiBOSDIsIHJpZ2h0OiBIfQpibGFua0NvbmZpZzogdHJ1ZQpibGFua1NlcmllczogdHJ1ZQppbmtTYXZlcjogZmFsc2UK)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=LY47DgIxDER7n8IlSNBAlw5tk4otOEE2cnYtgrNyvEgIcSqOwMUIn27ejPQ0dpvJYeIaJ1IwttzwkIOwBFzFIonHRUPk11OQBIc2xbIGK7PDru89DMWsXBr4PUQSI60OELd4z5TM4dHvNqg8Ti37B3wE5-7rdWi60K85kTLVf8ONw5W0HQu5ErwB) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogZmlzY2hlcgp0aXRsZTogQWxhbmluYSAoY29uZmlndXJhY2nDs24gZW4gYmxhbmNvKQp0b3A6IENPT0gKYm90dG9tOiBDSDMKY2VudGVyczoKICAtIHtsZWZ0OiBOSDIsIHJpZ2h0OiBIfQpibGFua0NvbmZpZzogdHJ1ZQpibGFua1NlcmllczogdHJ1ZQppbmtTYXZlcjogZmFsc2UK) para explorarlo y modificarlo.
 
 ## Ver también
 

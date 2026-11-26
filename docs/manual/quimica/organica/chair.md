@@ -41,9 +41,9 @@ substituents:
 flip: true
 ```
 
-[![Metilciclohexano con flip](img/ks_chem_chair_metil.svg)](https://ingcom-unrn.github.io/dibu-web/#z=JYsxCsMwDEV3neIfIB1KN61duvQQrlESgbCMLUNC6N2T0u09eC_2Koy8Jm0UGnbJW0ItazZfZUvFkb1gNq3Ux6df0ZASnQm44ajeNdQL4z5haT4q4_l6TEibJmNEG_Kl3_1nOgE)
+[![Metilciclohexano con flip](img/ks_chem_chair_metil.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogY2hhaXIKdGl0bGU6IE1ldGlsY2ljbG9oZXhhbm8gY29uIGZsaXAKc3Vic3RpdHVlbnRzOgogIC0ge3Bvc2l0aW9uOiAxLCBncm91cDogQ0gzLCBheGlhbDogdHJ1ZX0KZmxpcDogdHJ1ZQo)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=JYsxCsMwDEV3neIfIB1KN61duvQQrlESgbCMLUNC6N2T0u09eC_2Koy8Jm0UGnbJW0ItazZfZUvFkb1gNq3Ux6df0ZASnQm44ajeNdQL4z5haT4q4_l6TEibJmNEG_Kl3_1nOgE) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogY2hhaXIKdGl0bGU6IE1ldGlsY2ljbG9oZXhhbm8gY29uIGZsaXAKc3Vic3RpdHVlbnRzOgogIC0ge3Bvc2l0aW9uOiAxLCBncm91cDogQ0gzLCBheGlhbDogdHJ1ZX0KZmxpcDogdHJ1ZQo) para explorarlo y modificarlo.
 
 ### Ciclohexano disustituido (blanco)
 
@@ -58,9 +58,9 @@ blank: true
 inkSaver: false
 ```
 
-[![Ciclohexano disustituido (blanco)](img/ks_chem_chair_terbutil_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#z=XY2xDsIwDET3fIVHkMqAYMpIF3a-wG1TatWKo8SuihD_Tosqhm53T093-krBQzsgZaekvJSaWpYhzBgFOipWFm7UCRwaxtjK0RVrfjBELd4BnOCdpJCSRA_nCp5ZLHnQm1WAMyF76JFL-Ozd69-t75e92zOtI9mCW4_HLVMcHziFvHnuCw)
+[![Ciclohexano disustituido (blanco)](img/ks_chem_chair_terbutil_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogY2hhaXIKdGl0bGU6IENpY2xvaGV4YW5vIGRpc3VzdGl0dWlkbyAoYmxhbmNvKQpzdWJzdGl0dWVudHM6CiAgLSB7cG9zaXRpb246IDEsIGdyb3VwOiB0QnUsIGF4aWFsOiBmYWxzZX0KICAtIHtwb3NpdGlvbjogNCwgZ3JvdXA6IENIMywgYXhpYWw6IGZhbHNlfQpmbGlwOiB0cnVlCmJsYW5rOiB0cnVlCmlua1NhdmVyOiBmYWxzZQo)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=XY2xDsIwDET3fIVHkMqAYMpIF3a-wG1TatWKo8SuihD_Tosqhm53T093-krBQzsgZaekvJSaWpYhzBgFOipWFm7UCRwaxtjK0RVrfjBELd4BnOCdpJCSRA_nCp5ZLHnQm1WAMyF76JFL-Ozd69-t75e92zOtI9mCW4_HLVMcHziFvHnuCw) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogY2hhaXIKdGl0bGU6IENpY2xvaGV4YW5vIGRpc3VzdGl0dWlkbyAoYmxhbmNvKQpzdWJzdGl0dWVudHM6CiAgLSB7cG9zaXRpb246IDEsIGdyb3VwOiB0QnUsIGF4aWFsOiBmYWxzZX0KICAtIHtwb3NpdGlvbjogNCwgZ3JvdXA6IENIMywgYXhpYWw6IGZhbHNlfQpmbGlwOiB0cnVlCmJsYW5rOiB0cnVlCmlua1NhdmVyOiBmYWxzZQo) para explorarlo y modificarlo.
 
 ## Ver también
 

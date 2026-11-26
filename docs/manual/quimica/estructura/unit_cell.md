@@ -42,9 +42,9 @@ a: 361.5
 molarMass: 63.55
 ```
 
-[![Celda unitaria Cu (fcc)](img/ks_chem_unit_cell_fcc.svg)](https://ingcom-unrn.github.io/dibu-web/#z=HcoxCsAgDEDRPafI2C5CER1cnXuGEmwKQrRF49DbVzr-x9f34YCjZj0Si4BmlQmR5aSfqWXCOHC5UlpBSDWnOcwCFi5cdd4DKKD1m3FQbqG2U-8BvTXOwQc)
+[![Celda unitaria Cu (fcc)](img/ks_chem_unit_cell_fcc.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogdW5pdF9jZWxsCnRpdGxlOiBDZWxkYSB1bml0YXJpYSBDdSAoZmNjKQpsYXR0aWNlOiBmY2MKZWxlbWVudDogQ3UKYTogMzYxLjUKbW9sYXJNYXNzOiA2My41NQo)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=HcoxCsAgDEDRPafI2C5CER1cnXuGEmwKQrRF49DbVzr-x9f34YCjZj0Si4BmlQmR5aSfqWXCOHC5UlpBSDWnOcwCFi5cdd4DKKD1m3FQbqG2U-8BvTXOwQc) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogdW5pdF9jZWxsCnRpdGxlOiBDZWxkYSB1bml0YXJpYSBDdSAoZmNjKQpsYXR0aWNlOiBmY2MKZWxlbWVudDogQ3UKYTogMzYxLjUKbW9sYXJNYXNzOiA2My41NQo) para explorarlo y modificarlo.
 
 ### Celda bcc Fe (para completar)
 
@@ -57,9 +57,9 @@ blank: true
 inkSaver: false
 ```
 
-[![Celda bcc Fe (para completar)](img/ks_chem_unit_cell_nacl_bcc_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#z=DcrBCcMwEATA_1Vxz6QFfQNpwAWE82UDwmtZyOtAuo--w-jXUfxqVa8EaarihAf4Dl8z_Qm_9RjheeydUIy7MaSas81gIHY0lTltZbStuMYFq21b4otR_BM8YX8)
+[![Celda bcc Fe (para completar)](img/ks_chem_unit_cell_nacl_bcc_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogdW5pdF9jZWxsCnRpdGxlOiBDZWxkYSBiY2MgRmUgKHBhcmEgY29tcGxldGFyKQpsYXR0aWNlOiBiY2MKZWxlbWVudDogRmUKYmxhbms6IHRydWUKaW5rU2F2ZXI6IGZhbHNlCg)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=DcrBCcMwEATA_1Vxz6QFfQNpwAWE82UDwmtZyOtAuo--w-jXUfxqVa8EaarihAf4Dl8z_Qm_9RjheeydUIy7MaSas81gIHY0lTltZbStuMYFq21b4otR_BM8YX8) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogdW5pdF9jZWxsCnRpdGxlOiBDZWxkYSBiY2MgRmUgKHBhcmEgY29tcGxldGFyKQpsYXR0aWNlOiBiY2MKZWxlbWVudDogRmUKYmxhbms6IHRydWUKaW5rU2F2ZXI6IGZhbHNlCg) para explorarlo y modificarlo.
 
 ## Ver también
 

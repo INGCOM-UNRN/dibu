@@ -47,9 +47,9 @@ halfCells:
 showDeltaG: true
 ```
 
-[![Pila de Daniell (Nernst + ΔG°)](img/ks_chem_galvanic_cell_daniell.svg)](https://ingcom-unrn.github.io/dibu-web/#z=Xcs_CsIwGIfhPaf40UnpH2MVhaytdBPnDkqIqS18pKVNFBFv4UE8gwfwTKbgouv78thrpwVOks7SNOqgNBGzjSUfdw1JHDVyf3zGZKt7M1iEeD-K13PKaklV5s8gGBDjplrXjTDI3D4NZ5kLImy4AE8WywhGII2gWqME5vc_UZpRlOYrYp6sV7-EJ9yroW4vuSYrCwHbO80-)
+[![Pila de Daniell (Nernst + ΔG°)](img/ks_chem_galvanic_cell_daniell.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogZ2FsdmFuaWNfY2VsbAp0aXRsZTogUGlsYSBkZSBEYW5pZWxsIChOZXJuc3QgKyDOlEfCsCkKaGFsZkNlbGxzOgogIC0ge2NvdXBsZTogIkN1XjIrL0N1IiwgRTA6IDAuMzQsIG46IDIsIGNvbmM6IDF9CiAgLSB7Y291cGxlOiAiWm5eMisvWm4iLCBFMDogLTAuNzYsIG46IDIsIGNvbmM6IDAuMDF9CnNob3dEZWx0YUc6IHRydWUK)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=Xcs_CsIwGIfhPaf40UnpH2MVhaytdBPnDkqIqS18pKVNFBFv4UE8gwfwTKbgouv78thrpwVOks7SNOqgNBGzjSUfdw1JHDVyf3zGZKt7M1iEeD-K13PKaklV5s8gGBDjplrXjTDI3D4NZ5kLImy4AE8WywhGII2gWqME5vc_UZpRlOYrYp6sV7-EJ9yroW4vuSYrCwHbO80-) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogZ2FsdmFuaWNfY2VsbAp0aXRsZTogUGlsYSBkZSBEYW5pZWxsIChOZXJuc3QgKyDOlEfCsCkKaGFsZkNlbGxzOgogIC0ge2NvdXBsZTogIkN1XjIrL0N1IiwgRTA6IDAuMzQsIG46IDIsIGNvbmM6IDF9CiAgLSB7Y291cGxlOiAiWm5eMisvWm4iLCBFMDogLTAuNzYsIG46IDIsIGNvbmM6IDAuMDF9CnNob3dEZWx0YUc6IHRydWUK) para explorarlo y modificarlo.
 
 ### Celda galvánica (para completar)
 
@@ -66,9 +66,9 @@ blankFlow: true
 inkSaver: false
 ```
 
-[![Celda galvánica (para completar)](img/ks_chem_galvanic_cell_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#z=XYvNDsFAFEb38xQ3VqR-qixkdtKwFvbkGldNXDPN9JaIeBjP4sVUgzSW3znnk2tOGjLkMzprNoaYlVjhCqbEO6zV81E5hHaOAcH4U84kGDrqgLyvKi60AujBzfgyfz9b02wdDaZZqwuzWEPcn8RdcBqG978uLddJNEjLXzga12FyV1tGd1x4xmDlqkFCSV8m5MQiN-GS0Ij1rmjCOfvLZ1t3XOGZgoY9ckHqBQ)
+[![Celda galvánica (para completar)](img/ks_chem_galvanic_cell_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogZ2FsdmFuaWNfY2VsbAp0aXRsZTogQ2VsZGEgZ2FsdsOhbmljYSAocGFyYSBjb21wbGV0YXIpCmhhbGZDZWxsczoKICAtIHtjb3VwbGU6ICJBZ14rL0FnIiwgRTA6IDAuODAsIG46IDF9CiAgLSB7Y291cGxlOiAiQ3VeMisvQ3UiLCBFMDogMC4zNCwgbjogMn0KYmxhbmtQb2xhcml0eTogdHJ1ZQpibGFua1BvdGVudGlhbDogdHJ1ZQpibGFua1JlYWN0aW9uczogdHJ1ZQpibGFua0Zsb3c6IHRydWUKaW5rU2F2ZXI6IGZhbHNlCg)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=XYvNDsFAFEb38xQ3VqR-qixkdtKwFvbkGldNXDPN9JaIeBjP4sVUgzSW3znnk2tOGjLkMzprNoaYlVjhCqbEO6zV81E5hHaOAcH4U84kGDrqgLyvKi60AujBzfgyfz9b02wdDaZZqwuzWEPcn8RdcBqG978uLddJNEjLXzga12FyV1tGd1x4xmDlqkFCSV8m5MQiN-GS0Ij1rmjCOfvLZ1t3XOGZgoY9ckHqBQ) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogZ2FsdmFuaWNfY2VsbAp0aXRsZTogQ2VsZGEgZ2FsdsOhbmljYSAocGFyYSBjb21wbGV0YXIpCmhhbGZDZWxsczoKICAtIHtjb3VwbGU6ICJBZ14rL0FnIiwgRTA6IDAuODAsIG46IDF9CiAgLSB7Y291cGxlOiAiQ3VeMisvQ3UiLCBFMDogMC4zNCwgbjogMn0KYmxhbmtQb2xhcml0eTogdHJ1ZQpibGFua1BvdGVudGlhbDogdHJ1ZQpibGFua1JlYWN0aW9uczogdHJ1ZQpibGFua0Zsb3c6IHRydWUKaW5rU2F2ZXI6IGZhbHNlCg) para explorarlo y modificarlo.
 
 ## Ver también
 

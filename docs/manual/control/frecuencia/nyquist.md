@@ -33,9 +33,9 @@ unitCircle: true
 inkSaver: false
 ```
 
-[![Nyquist con círculo unitario](img/ks_control_nyquist_circulo.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSyKssLM0sLuEqySzJAXL9IFyF5Pw8heTDa4uSS3PyFUrzMksSizLzuYori0tSc60UqrOtFEx1FAryc1KLrRSidQ11FHSNgNg4tpYLpNg5sygZZFpJUWkqV2ZednBiWWqRlUJaYk5xKhcA)
+[![Nyquist con círculo unitario](img/ks_control_nyquist_circulo.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogbnlxdWlzdAp0aXRsZTogTnlxdWlzdCBjb24gY8OtcmN1bG8gdW5pdGFyaW8Kc3lzdGVtOiB7azogNSwgcG9sZXM6IFstMSwgLTIsIC0zXX0KdW5pdENpcmNsZTogdHJ1ZQppbmtTYXZlcjogZmFsc2UK)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSyKssLM0sLuEqySzJAXL9IFyF5Pw8heTDa4uSS3PyFUrzMksSizLzuYori0tSc60UqrOtFEx1FAryc1KLrRSidQ11FHSNgNg4tpYLpNg5sygZZFpJUWkqV2ZednBiWWqRlUJaYk5xKhcA) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogbnlxdWlzdAp0aXRsZTogTnlxdWlzdCBjb24gY8OtcmN1bG8gdW5pdGFyaW8Kc3lzdGVtOiB7azogNSwgcG9sZXM6IFstMSwgLTIsIC0zXX0KdW5pdENpcmNsZTogdHJ1ZQppbmtTYXZlcjogZmFsc2UK) para explorarlo y modificarlo.
 
 ## Ver también
 

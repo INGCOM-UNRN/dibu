@@ -33,9 +33,9 @@ expr: "A·B + A·C + B·C"
 output: M
 ```
 
-[![Circuito de la función mayoría](img/ks_dig_circuito_mayoria.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSyMlPz0yOT84sSi7NLOEqySzJAQo6Q7j5CimpCjmJCmmlecmZhzfnKeQmVuYXHV6byJVaUVBkpaDkeGi7k4K2ApByBlJOQEqJK7-0pKC0xErBlwsA)
+[![Circuito de la función mayoría](img/ks_dig_circuito_mayoria.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogbG9naWNfY2lyY3VpdAp0aXRsZTogQ2lyY3VpdG8gZGUgbGEgZnVuY2nDs24gbWF5b3LDrWEKZXhwcjogIkHCt0IgKyBBwrdDICsgQsK3QyIKb3V0cHV0OiBNCg)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSyMlPz0yOT84sSi7NLOEqySzJAQo6Q7j5CimpCjmJCmmlecmZhzfnKeQmVuYXHV6byJVaUVBkpaDkeGi7k4K2ApByBlJOQEqJK7-0pKC0xErBlwsA) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogbG9naWNfY2lyY3VpdAp0aXRsZTogQ2lyY3VpdG8gZGUgbGEgZnVuY2nDs24gbWF5b3LDrWEKZXhwcjogIkHCt0IgKyBBwrdDICsgQsK3QyIKb3V0cHV0OiBNCg) para explorarlo y modificarlo.
 
 ### Compuertas negadas y XOR
 
@@ -46,9 +46,9 @@ expr: "!(A·B) ⊕ (C + !D)"
 output: Y
 ```
 
-[![Compuertas negadas y XOR](img/ks_dig_circuito_mixto.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSyMlPz0yOT84sSi7NLOEqySzJAQo65-cWlKYWlSQWK-SlpiemAOlKhQj_IK7UioIiKwUlRQ3HQ9udNBUedU1V0HBW0FZQdNFU4sovLSkoLbFSiOQCAA)
+[![Compuertas negadas y XOR](img/ks_dig_circuito_mixto.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogbG9naWNfY2lyY3VpdAp0aXRsZTogQ29tcHVlcnRhcyBuZWdhZGFzIHkgWE9SCmV4cHI6ICIhKEHCt0IpIOKKlSAoQyArICFEKSIKb3V0cHV0OiBZCg)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSyMlPz0yOT84sSi7NLOEqySzJAQo65-cWlKYWlSQWK-SlpiemAOlKhQj_IK7UioIiKwUlRQ3HQ9udNBUedU1V0HBW0FZQdNFU4sovLSkoLbFSiOQCAA) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogbG9naWNfY2lyY3VpdAp0aXRsZTogQ29tcHVlcnRhcyBuZWdhZGFzIHkgWE9SCmV4cHI6ICIhKEHCt0IpIOKKlSAoQyArICFEKSIKb3V0cHV0OiBZCg) para explorarlo y modificarlo.
 
 ## Ver también
 

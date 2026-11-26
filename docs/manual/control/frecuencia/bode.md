@@ -44,9 +44,9 @@ asymptotes: true
 margins: true
 ```
 
-[![Bode de L(s) = 10 / (s(s+1)(s+10))](img/ks_control_bode_margenes.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSMpPSeUqySzJAbKdgGwFIPLRKNZUsFUwNFDQV9Ao1ijWNtQEEQaamlzFlcUlqblWCtXZVkB5HYWC_JzUYiuFaCBT1xCEDWJruRKLK3MLSvJLQDIlRaWpXLmJRemZeTAeAA)
+[![Bode de L(s) = 10 / (s(s+1)(s+10))](img/ks_control_bode_margenes.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogYm9kZQp0aXRsZTogQm9kZSBkZSBMKHMpID0gMTAgLyAocyhzKzEpKHMrMTApKQpzeXN0ZW06IHtrOiAxMCwgcG9sZXM6IFswLCAtMSwgLTEwXX0KYXN5bXB0b3RlczogdHJ1ZQptYXJnaW5zOiB0cnVlCg)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSMpPSeUqySzJAbKdgGwFIPLRKNZUsFUwNFDQV9Ao1ijWNtQEEQaamlzFlcUlqblWCtXZVkB5HYWC_JzUYiuFaCBT1xCEDWJruRKLK3MLSvJLQDIlRaWpXLmJRemZeTAeAA) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogYm9kZQp0aXRsZTogQm9kZSBkZSBMKHMpID0gMTAgLyAocyhzKzEpKHMrMTApKQpzeXN0ZW06IHtrOiAxMCwgcG9sZXM6IFswLCAtMSwgLTEwXX0KYXN5bXB0b3RlczogdHJ1ZQptYXJnaW5zOiB0cnVlCg) para explorarlo y modificarlo.
 
 ## Ver también
 

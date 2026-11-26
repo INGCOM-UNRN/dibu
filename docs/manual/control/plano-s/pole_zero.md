@@ -43,9 +43,9 @@ showValues: true
 inkSaver: false
 ```
 
-[![Polos y ceros con ζ y ωn](img/ks_control_pole_zero_completo.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKMjPSY2vSi3K5yrJLMkBCgTk5-QXK1QqJAPFihWS8_MUzm0Dcs935nGB1BZbKUTrGuoACSMdBePYWC6QXrCgSSxXSmJuQWZeuk9mHlidgZ5pLFd5nnNmUTJEo3EsV3FGfnlYYk4piF9SVJrKlZmXHZxYllpkpZCWmFOcygUA)
+[![Polos y ceros con ζ y ωn](img/ks_control_pole_zero_completo.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogcG9sZV96ZXJvCnRpdGxlOiBQb2xvcyB5IGNlcm9zIGNvbiDOtiB5IM-Jbgpwb2xlczogWy0xLCBbLTIsIDNdXQp6ZXJvczogWy00XQpkYW1waW5nTGluZXM6IFswLjVdCnduQ2lyY2xlczogWzNdCnNob3dWYWx1ZXM6IHRydWUKaW5rU2F2ZXI6IGZhbHNlCg)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSKMjPSY2vSi3K5yrJLMkBCgTk5-QXK1QqJAPFihWS8_MUzm0Dcs935nGB1BZbKUTrGuoACSMdBePYWC6QXrCgSSxXSmJuQWZeuk9mHlidgZ5pLFd5nnNmUTJEo3EsV3FGfnlYYk4piF9SVJrKlZmXHZxYllpkpZCWmFOcygUA) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogcG9sZV96ZXJvCnRpdGxlOiBQb2xvcyB5IGNlcm9zIGNvbiDOtiB5IM-Jbgpwb2xlczogWy0xLCBbLTIsIDNdXQp6ZXJvczogWy00XQpkYW1waW5nTGluZXM6IFswLjVdCnduQ2lyY2xlczogWzNdCnNob3dWYWx1ZXM6IHRydWUKaW5rU2F2ZXI6IGZhbHNlCg) para explorarlo y modificarlo.
 
 ## Ver también
 

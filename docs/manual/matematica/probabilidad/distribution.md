@@ -46,9 +46,9 @@ sd: 1
 interval: [-1.96, 1.96]
 ```
 
-[![Distribución normal estándar](img/ks_prob_normal.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSMksLinKTCotyczP4yrJLMkBirlAxZIzD2_OU8jLL8pNzFFILS45vDAvJbGIC6TFCirMlZuamGelYMBVnGKlYMiVmVeSWlSWmGOlEK1rqGdppqMAImO5AA)
+[![Distribución normal estándar](img/ks_prob_normal.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogZGlzdHJpYnV0aW9uCnRpdGxlOiBEaXN0cmlidWNpw7NuIG5vcm1hbCBlc3TDoW5kYXIKZGlzdDogbm9ybWFsCm1lYW46IDAKc2Q6IDEKaW50ZXJ2YWw6IFstMS45NiwgMS45Nl0K)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSMksLinKTCotyczP4yrJLMkBirlAxZIzD2_OU8jLL8pNzFFILS45vDAvJbGIC6TFCirMlZuamGelYMBVnGKlYMiVmVeSWlSWmGOlEK1rqGdppqMAImO5AA) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogZGlzdHJpYnV0aW9uCnRpdGxlOiBEaXN0cmlidWNpw7NuIG5vcm1hbCBlc3TDoW5kYXIKZGlzdDogbm9ybWFsCm1lYW46IDAKc2Q6IDEKaW50ZXJ2YWw6IFstMS45NiwgMS45Nl0K) para explorarlo y modificarlo.
 
 ### Distribución binomial
 
@@ -61,9 +61,9 @@ p: 0.3
 interval: [2, 4]
 ```
 
-[![Distribución binomial](img/ks_prob_binomial.svg)](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSMksLinKTCotyczP4yrJLMkBirlAxZIzD2_OU0jKzMvPzUzM4QIptUJw86wUDA24CqwUDPSMuTLzSlKLyhJzrBSijXQUTGK5AA)
+[![Distribución binomial](img/ks_prob_binomial.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogZGlzdHJpYnV0aW9uCnRpdGxlOiBEaXN0cmlidWNpw7NuIGJpbm9taWFsCmRpc3Q6IGJpbm9taWFsCm46IDEwCnA6IDAuMwppbnRlcnZhbDogWzIsIDRdCg)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=K6ksSLVSSMksLinKTCotyczP4yrJLMkBirlAxZIzD2_OU0jKzMvPzUzM4QIptUJw86wUDA24CqwUDPSMuTLzSlKLyhJzrBSijXQUTGK5AA) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogZGlzdHJpYnV0aW9uCnRpdGxlOiBEaXN0cmlidWNpw7NuIGJpbm9taWFsCmRpc3Q6IGJpbm9taWFsCm46IDEwCnA6IDAuMwppbnRlcnZhbDogWzIsIDRdCg) para explorarlo y modificarlo.
 
 ### Ejercicio: cola derecha de una t
 
@@ -76,9 +76,9 @@ interval: [2.306, null]
 blank: true
 ```
 
-[![Ejercicio: cola derecha de una t](img/ks_prob_t_student.svg)](https://ingcom-unrn.github.io/dibu-web/#z=FYuxCgJBDAX7fMXjahFREEnvV4jF3m7EaMhKzB74995VA8NM_j7CaPrN0HmkdqfUtNVN15dE1aqdUbsVNAmpz40YXpATbRsjqT0YF1JPiaUY43bcnw7nHXyY3Wm24u81iyH0Bw)
+[![Ejercicio: cola derecha de una t](img/ks_prob_t_student.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogZGlzdHJpYnV0aW9uCnRpdGxlOiAiRWplcmNpY2lvOiBjb2xhIGRlcmVjaGEgZGUgdW5hIHQiCmRpc3Q6IHQKZGY6IDgKaW50ZXJ2YWw6IFsyLjMwNiwgbnVsbF0KYmxhbms6IHRydWUK)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=FYuxCgJBDAX7fMXjahFREEnvV4jF3m7EaMhKzB74995VA8NM_j7CaPrN0HmkdqfUtNVN15dE1aqdUbsVNAmpz40YXpATbRsjqT0YF1JPiaUY43bcnw7nHXyY3Wm24u81iyH0Bw) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogZGlzdHJpYnV0aW9uCnRpdGxlOiAiRWplcmNpY2lvOiBjb2xhIGRlcmVjaGEgZGUgdW5hIHQiCmRpc3Q6IHQKZGY6IDgKaW50ZXJ2YWw6IFsyLjMwNiwgbnVsbF0KYmxhbms6IHRydWUK) para explorarlo y modificarlo.
 
 ## Ver también
 

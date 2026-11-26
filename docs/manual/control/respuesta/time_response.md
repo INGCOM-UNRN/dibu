@@ -52,9 +52,9 @@ system: {gain: 1, zeta: 0.3, wn: 2}
 annotations: [final, overshoot, peak, rise, settling]
 ```
 
-[![Segundo orden subamortiguado (ζ = 0,3)](img/ks_control_time_response_subamortiguado.svg)](https://ingcom-unrn.github.io/dibu-web/#z=DcxBCgIxDADAe1-Ro0KR1b0VfIVHEYlsrMHdZGlSZRW_5TN8k73OYXyZKYHzROdCNqsYBWcfGx4oVxkUtAwkYPWCkxbnXLHh6veFPXSxXwdbzGlK8M7IkmAb4UWOCbpNH-HZZPcJKKKOzu1PcLyy4BhBH1TspuoRZsJ7hMJGEYzcR5Z8Cn8)
+[![Segundo orden subamortiguado (ζ = 0,3)](img/ks_control_time_response_subamortiguado.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogdGltZV9yZXNwb25zZQp0aXRsZTogU2VndW5kbyBvcmRlbiBzdWJhbW9ydGlndWFkbyAozrYgPSAwLDMpCnN5c3RlbToge2dhaW46IDEsIHpldGE6IDAuMywgd246IDJ9CmFubm90YXRpb25zOiBbZmluYWwsIG92ZXJzaG9vdCwgcGVhaywgcmlzZSwgc2V0dGxpbmddCg)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=DcxBCgIxDADAe1-Ro0KR1b0VfIVHEYlsrMHdZGlSZRW_5TN8k73OYXyZKYHzROdCNqsYBWcfGx4oVxkUtAwkYPWCkxbnXLHh6veFPXSxXwdbzGlK8M7IkmAb4UWOCbpNH-HZZPcJKKKOzu1PcLyy4BhBH1TspuoRZsJ7hMJGEYzcR5Z8Cn8) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogdGltZV9yZXNwb25zZQp0aXRsZTogU2VndW5kbyBvcmRlbiBzdWJhbW9ydGlndWFkbyAozrYgPSAwLDMpCnN5c3RlbToge2dhaW46IDEsIHpldGE6IDAuMywgd246IDJ9CmFubm90YXRpb25zOiBbZmluYWwsIG92ZXJzaG9vdCwgcGVhaywgcmlzZSwgc2V0dGxpbmddCg) para explorarlo y modificarlo.
 
 ### Curva FOPDT con retardo (para completar)
 
@@ -67,9 +67,9 @@ blankAnnotations: true
 inkSaver: false
 ```
 
-[![Curva FOPDT con retardo (para completar)](img/ks_control_time_response_fopdt_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#z=Tc0xC8IwEIbhPb_iRoUsFQTJJoqrgm6lyGmvJTS9hMu1UMT_bnRy_B5e-HRJ5ED9SHehnCJnMuo1FDxMMiOczpfjDZ6RQUhR2girhIJFxhS-sjZ5yUqjg1ePnh1sLPBUZr1pLLRUpK62FnYWqh8EXBxUb4PMUVF9-SxJ5xmDBUXuibUxj4A87P8TlYmM5-GKM4mDDkMm8wE)
+[![Curva FOPDT con retardo (para completar)](img/ks_control_time_response_fopdt_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogdGltZV9yZXNwb25zZQp0aXRsZTogQ3VydmEgRk9QRFQgY29uIHJldGFyZG8gKHBhcmEgY29tcGxldGFyKQpzeXN0ZW06IHtnYWluOiAyLCBudW06IFsyXSwgZGVuOiBbMTUsIDgsIDFdLCBkZWxheTogMX0KYW5ub3RhdGlvbnM6IFtmaW5hbCwgdGFuZ2VudF0KYmxhbmtBbm5vdGF0aW9uczogdHJ1ZQppbmtTYXZlcjogZmFsc2UK)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=Tc0xC8IwEIbhPb_iRoUsFQTJJoqrgm6lyGmvJTS9hMu1UMT_bnRy_B5e-HRJ5ED9SHehnCJnMuo1FDxMMiOczpfjDZ6RQUhR2girhIJFxhS-sjZ5yUqjg1ePnh1sLPBUZr1pLLRUpK62FnYWqh8EXBxUb4PMUVF9-SxJ5xmDBUXuibUxj4A87P8TlYmM5-GKM4mDDkMm8wE) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogdGltZV9yZXNwb25zZQp0aXRsZTogQ3VydmEgRk9QRFQgY29uIHJldGFyZG8gKHBhcmEgY29tcGxldGFyKQpzeXN0ZW06IHtnYWluOiAyLCBudW06IFsyXSwgZGVuOiBbMTUsIDgsIDFdLCBkZWxheTogMX0KYW5ub3RhdGlvbnM6IFtmaW5hbCwgdGFuZ2VudF0KYmxhbmtBbm5vdGF0aW9uczogdHJ1ZQppbmtTYXZlcjogZmFsc2UK) para explorarlo y modificarlo.
 
 ### Lazo cerrado con PI y perturbación
 
@@ -84,9 +84,9 @@ tEnd: 60
 annotations: [overshoot, settling]
 ```
 
-[![Lazo cerrado con PI y perturbación](img/ks_control_time_response_pi_lazo.svg)](https://ingcom-unrn.github.io/dibu-web/#z=HY4xagNBDEX7OYUOsFk2Nk6hPkXARfoQjLwjHOGxNMxoAxvjU_kIvphFqg-Px__f18oILhc-NO7VtHNy8RJwT38GM7dGOdIUPj9ghcrNl3akWR53TXOxznlvVjEB1ELqCNcTiSJsBnBaEHYDZC60IrzeQoomb1YKtzDPNegY5lkQpnGzu6Us_X9A5_hwpejbTgPQpRbxJQd7mcbQ_F0zwtuUSNWcXOI6wpf9cus_Zj5AZ_cievpOTw)
+[![Lazo cerrado con PI y perturbación](img/ks_control_time_response_pi_lazo.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogdGltZV9yZXNwb25zZQp0aXRsZTogTGF6byBjZXJyYWRvIGNvbiBQSSB5IHBlcnR1cmJhY2nDs24KY2xvc2VkTG9vcDoKICBwbGFudDoge2dhaW46IDIsIHRhdTogNSwgZGVsYXk6IDF9CiAgY29udHJvbGxlcjoge2twOiAxLjIsIGtpOiAwLjI1fQpkaXN0dXJiYW5jZToge2F0OiAzMCwgYW1wbGl0dWRlOiAtMC41fQp0RW5kOiA2MAphbm5vdGF0aW9uczogW292ZXJzaG9vdCwgc2V0dGxpbmddCg)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=HY4xagNBDEX7OYUOsFk2Nk6hPkXARfoQjLwjHOGxNMxoAxvjU_kIvphFqg-Px__f18oILhc-NO7VtHNy8RJwT38GM7dGOdIUPj9ghcrNl3akWR53TXOxznlvVjEB1ELqCNcTiSJsBnBaEHYDZC60IrzeQoomb1YKtzDPNegY5lkQpnGzu6Us_X9A5_hwpejbTgPQpRbxJQd7mcbQ_F0zwtuUSNWcXOI6wpf9cus_Zj5AZ_cievpOTw) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogdGltZV9yZXNwb25zZQp0aXRsZTogTGF6byBjZXJyYWRvIGNvbiBQSSB5IHBlcnR1cmJhY2nDs24KY2xvc2VkTG9vcDoKICBwbGFudDoge2dhaW46IDIsIHRhdTogNSwgZGVsYXk6IDF9CiAgY29udHJvbGxlcjoge2twOiAxLjIsIGtpOiAwLjI1fQpkaXN0dXJiYW5jZToge2F0OiAzMCwgYW1wbGl0dWRlOiAtMC41fQp0RW5kOiA2MAphbm5vdGF0aW9uczogW292ZXJzaG9vdCwgc2V0dGxpbmddCg) para explorarlo y modificarlo.
 
 ## Notas
 

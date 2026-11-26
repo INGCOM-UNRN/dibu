@@ -51,9 +51,9 @@ minterms: [0, 1, 2, 5, 6, 7, 8, 9, 10, 14]
 implicants: true
 ```
 
-[![Mapa de Karnaugh de 4 variables](img/ks_dig_kmap_4.svg)](https://ingcom-unrn.github.io/dibu-web/#z=LYo7DgIxDAV7n-IdwAWg5bcdLB3iBGgLAxZYJFGU9SJxexKJbt7M82_WHm8pSebni9w81H2RLHgozn_fuMNHiskt6ESVph7XA-PIGBinkaIl1xKbXjCWjBVjzdgwtowdY19lC91IFnOwuySvZy-z0g8)
+[![Mapa de Karnaugh de 4 variables](img/ks_dig_kmap_4.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZToga2FybmF1Z2gKdGl0bGU6IE1hcGEgZGUgS2FybmF1Z2ggZGUgNCB2YXJpYWJsZXMKdmFyczogW0EsIEIsIEMsIERdCm1pbnRlcm1zOiBbMCwgMSwgMiwgNSwgNiwgNywgOCwgOSwgMTAsIDE0XQppbXBsaWNhbnRzOiB0cnVlCg)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=LYo7DgIxDAV7n-IdwAWg5bcdLB3iBGgLAxZYJFGU9SJxexKJbt7M82_WHm8pSebni9w81H2RLHgozn_fuMNHiskt6ESVph7XA-PIGBinkaIl1xKbXjCWjBVjzdgwtowdY19lC91IFnOwuySvZy-z0g8) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZToga2FybmF1Z2gKdGl0bGU6IE1hcGEgZGUgS2FybmF1Z2ggZGUgNCB2YXJpYWJsZXMKdmFyczogW0EsIEIsIEMsIERdCm1pbnRlcm1zOiBbMCwgMSwgMiwgNSwgNiwgNywgOCwgOSwgMTAsIDE0XQppbXBsaWNhbnRzOiB0cnVlCg) para explorarlo y modificarlo.
 
 ### Con condiciones indiferentes (forma POS)
 
@@ -66,9 +66,9 @@ dontcares: [0, 2, 5]
 form: pos
 ```
 
-[![Con condiciones indiferentes (forma POS)](img/ks_dig_kmap_dc.svg)](https://ingcom-unrn.github.io/dibu-web/#z=FYyxCgIxEET7fMWUClsYRYR0evYKlnJFyOU0aLLHJgr-vZtu3pth2m-JDi8vxX8eT9NSeysPXBC4TCkkLrEiaZyjxNIUVjNL9rhebmvz9VId7kfCiTAQzqPJSVeSu7aEHeFAsJrsfjQTlxa8xF5uCFuCyn7nsHA1fw)
+[![Con condiciones indiferentes (forma POS)](img/ks_dig_kmap_dc.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZToga2FybmF1Z2gKdGl0bGU6IENvbiBjb25kaWNpb25lcyBpbmRpZmVyZW50ZXMgKGZvcm1hIFBPUykKdmFyczogW0EsIEIsIEMsIERdCm1pbnRlcm1zOiBbMSwgMywgNywgMTEsIDE1XQpkb250Y2FyZXM6IFswLCAyLCA1XQpmb3JtOiBwb3MK)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=FYyxCgIxEET7fMWUClsYRYR0evYKlnJFyOU0aLLHJgr-vZtu3pth2m-JDi8vxX8eT9NSeysPXBC4TCkkLrEiaZyjxNIUVjNL9rhebmvz9VId7kfCiTAQzqPJSVeSu7aEHeFAsJrsfjQTlxa8xF5uCFuCyn7nsHA1fw) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZToga2FybmF1Z2gKdGl0bGU6IENvbiBjb25kaWNpb25lcyBpbmRpZmVyZW50ZXMgKGZvcm1hIFBPUykKdmFyczogW0EsIEIsIEMsIERdCm1pbnRlcm1zOiBbMSwgMywgNywgMTEsIDE1XQpkb250Y2FyZXM6IFswLCAyLCA1XQpmb3JtOiBwb3MK) para explorarlo y modificarlo.
 
 ### Ejercicio: agrupar y simplificar
 
@@ -79,9 +79,9 @@ expr: "A'B'C + A'BC + AB'C + ABC'"
 blank: true
 ```
 
-[![Ejercicio: agrupar y simplificar](img/ks_dig_kmap_3.svg)](https://ingcom-unrn.github.io/dibu-web/#z=LcpBCoAgEEDRvacY3LjoBu5SOsgkZpNmMink7ZNo9Xnway9eQ0TO2MIuKtU0LJfDsyNHlwYM3AoydLjpLIk2cshS-KfwGGdllIUJRr_8MlZJsSbMUUPl5sUL)
+[![Ejercicio: agrupar y simplificar](img/ks_dig_kmap_3.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZToga2FybmF1Z2gKdGl0bGU6ICJFamVyY2ljaW86IGFncnVwYXIgeSBzaW1wbGlmaWNhciIKZXhwcjogIkEnQidDICsgQSdCQyArIEFCJ0MgKyBBQkMnIgpibGFuazogdHJ1ZQo)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#z=LcpBCoAgEEDRvacY3LjoBu5SOsgkZpNmMink7ZNo9Xnway9eQ0TO2MIuKtU0LJfDsyNHlwYM3AoydLjpLIk2cshS-KfwGGdllIUJRr_8MlZJsSbMUUPl5sUL) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZToga2FybmF1Z2gKdGl0bGU6ICJFamVyY2ljaW86IGFncnVwYXIgeSBzaW1wbGlmaWNhciIKZXhwcjogIkEnQidDICsgQSdCQyArIEFCJ0MgKyBBQkMnIgpibGFuazogdHJ1ZQo) para explorarlo y modificarlo.
 
 ## Ver también
 
