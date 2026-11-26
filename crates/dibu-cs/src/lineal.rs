@@ -1,14 +1,14 @@
 //! Renderizadores lineales de `dibu-cs` (`array`, `matrix`, `linked_list`, `stack`, `queue`).
 
 use crate::common::{
-    ancho_cabecera, cabecera, campos_cabecera, encabezado, entero_b, enteros_set, es_truthy,
+    ancho_cabecera, ancho_texto, cabecera, campos_cabecera, encabezado, entero_b, enteros_set, es_truthy,
     fmt_hex, fmt_num_clean, hex, hex_b, lista_o_vacia, nombres_de_zonas, punteros, str_o,
     sub_lienzo, agregar_sub_lienzo, texto, texto_opt, valores, zona, Bloque, ErrorDiagrama,
     Lienzo, Punto, ALTO_ZONA, FILA_CABECERA, MONO, SANS,
 };
 use dibu_core::Registro;
 use serde_json::Value;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::f64::consts::{FRAC_PI_2, PI};
 use std::num::IntErrorKind;
 
@@ -84,6 +84,16 @@ fn render_array(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
 }
 
 fn render_array_inner(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
+    match b.get("variant") {
+        None | Some(Value::Null) => {}
+        Some(Value::String(v)) if v == "python_sequence" => return render_secuencia_python(c, b),
+        Some(otro) => {
+            return Err(ErrorDiagrama::new(format!(
+                "variante de arreglo no soportada: {} (python_sequence)",
+                repr_val(otro)
+            )));
+        }
+    }
     let vals = valores(b)?;
     let cap = capacidad(b, vals.len(), 8, 1, 16);
     let base = hex_b(b, "baseAddr", 0x1000);
@@ -1585,6 +1595,276 @@ fn render_matrix_dinamica(
     }
 
     Ok((ancho, alto))
+}
+
+// ---------------------------------------------------------------------------
+// Secuencia de Python (`array` con `variant: python_sequence`): índices y cortes
+// ---------------------------------------------------------------------------
+
+const MAX_SECUENCIA: usize = 16;
+
+/// Un valor como lo escribe `repr()` de Python.
+fn repr_python(v: &Value) -> String {
+    match v {
+        Value::Null => "None".to_string(),
+        Value::Bool(true) => "True".to_string(),
+        Value::Bool(false) => "False".to_string(),
+        Value::String(s) => repr_cadena_python(s),
+        Value::Array(a) => format!("[{}]", a.iter().map(repr_python).collect::<Vec<_>>().join(", ")),
+        otro => texto(otro),
+    }
+}
+
+fn repr_cadena_python(s: &str) -> String {
+    if s.contains('\'') && !s.contains('"') {
+        format!("\"{}\"", s.replace('\\', "\\\\"))
+    } else {
+        format!("'{}'", s.replace('\\', "\\\\").replace('\'', "\\'"))
+    }
+}
+
+/// Un límite de un corte: entero o ausente (`null`).
+fn limite_corte(corte: &serde_json::Map<String, Value>, clave: &str) -> Result<Option<i64>, ErrorDiagrama> {
+    match corte.get(clave) {
+        None | Some(Value::Null) => Ok(None),
+        Some(Value::Number(n)) if n.as_i64().is_some() => Ok(n.as_i64()),
+        Some(Value::String(t)) if t.trim().is_empty() => Ok(None),
+        Some(Value::String(t)) => t
+            .trim()
+            .parse::<i64>()
+            .map(Some)
+            .map_err(|_| ErrorDiagrama::new(format!("'{clave}' del corte tiene que ser un entero: '{t}'"))),
+        Some(otro) => Err(ErrorDiagrama::new(format!(
+            "'{clave}' del corte tiene que ser un entero: {}",
+            repr_val(otro)
+        ))),
+    }
+}
+
+/// `slice(inicio, fin, paso).indices(n)` de Python y los índices que selecciona.
+fn indices_corte(
+    n: usize,
+    inicio: Option<i64>,
+    fin: Option<i64>,
+    paso: Option<i64>,
+) -> Result<(i64, i64, i64, Vec<usize>), ErrorDiagrama> {
+    let paso = paso.unwrap_or(1);
+    if paso == 0 {
+        return Err(ErrorDiagrama::new("el paso de un corte no puede ser 0"));
+    }
+    let n = n as i64;
+    let (inferior, superior) = if paso > 0 { (0, n) } else { (-1, n - 1) };
+    let ajustar = |v: Option<i64>, defecto: i64| match v {
+        None => defecto,
+        Some(v) if v < 0 => (v + n).max(inferior),
+        Some(v) => v.min(superior),
+    };
+    let i0 = ajustar(inicio, if paso > 0 { inferior } else { superior });
+    let i1 = ajustar(fin, if paso > 0 { superior } else { inferior });
+    let mut elegidos = Vec::new();
+    let mut i = i0;
+    while (paso > 0 && i < i1) || (paso < 0 && i > i1) {
+        elegidos.push(i as usize);
+        i += paso;
+    }
+    Ok((i0, i1, paso, elegidos))
+}
+
+fn render_secuencia_python(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
+    let tipo = str_o(b, "kind", "list");
+    let (abre, cierra, nombre_defecto) = match tipo.as_str() {
+        "list" => ("[", "]", "a"),
+        "tuple" => ("(", ")", "t"),
+        "str" => ("'", "'", "s"),
+        otro => {
+            return Err(ErrorDiagrama::new(format!(
+                "'kind' de una secuencia de Python: '{otro}' (list, tuple o str)"
+            )));
+        }
+    };
+    // Los elementos, como Value; en una cadena, cada punto de código es un elemento.
+    let elementos: Vec<Value> = match b.get("values") {
+        None | Some(Value::Null) => Vec::new(),
+        Some(Value::String(t)) if tipo == "str" => t.chars().map(|ch| Value::String(ch.to_string())).collect(),
+        Some(Value::Array(a)) => a.clone(),
+        Some(otro) => {
+            return Err(ErrorDiagrama::new(format!(
+                "'values' de una secuencia tiene que ser una lista{}: {}",
+                if tipo == "str" { " o un texto" } else { "" },
+                repr_val(otro)
+            )));
+        }
+    };
+    if elementos.len() > MAX_SECUENCIA {
+        return Err(ErrorDiagrama::new(format!(
+            "la secuencia tiene {} elementos; el máximo es {MAX_SECUENCIA}",
+            elementos.len()
+        )));
+    }
+    let n = elementos.len();
+    let nombre = str_o(b, "name", nombre_defecto);
+    let indices = flag_t(b, "showIndices");
+    let negativos = flag_f(b, "showNegativeIndices");
+    let fronteras = flag_f(b, "showBoundaries");
+    let sin_valores = flag_f(b, "blankValues");
+
+    let celdas: Vec<String> = elementos
+        .iter()
+        .map(|v| match (tipo.as_str(), v) {
+            ("str", Value::String(t)) => t.clone(),
+            ("str", otro) => texto(otro),
+            (_, v) => repr_python(v),
+        })
+        .collect();
+    let literal = |seleccion: &[usize]| -> String {
+        if tipo == "str" {
+            let t: String = seleccion.iter().map(|&i| celdas[i].as_str()).collect();
+            repr_cadena_python(&t)
+        } else {
+            let partes: Vec<&str> = seleccion.iter().map(|&i| celdas[i].as_str()).collect();
+            let coma = if tipo == "tuple" && partes.len() == 1 { "," } else { "" };
+            format!("{abre}{}{coma}{cierra}", partes.join(", "))
+        }
+    };
+    let todos: Vec<usize> = (0..n).collect();
+    let declaracion = if sin_valores { String::new() } else { format!("{nombre} = {}", literal(&todos)) };
+
+    // El corte, si hay.
+    let corte = match b.get("slice") {
+        None | Some(Value::Null) => None,
+        Some(Value::Object(obj)) => {
+            let (inicio, fin, paso) = (limite_corte(obj, "start")?, limite_corte(obj, "stop")?, limite_corte(obj, "step")?);
+            let (i0, i1, p, elegidos) = indices_corte(n, inicio, fin, paso)?;
+            let fmt = |v: Option<i64>| v.map(|v| v.to_string()).unwrap_or_default();
+            let mut expr = format!("{nombre}[{}:{}", fmt(inicio), fmt(fin));
+            if paso.is_some() {
+                expr.push_str(&format!(":{}", fmt(paso)));
+            }
+            expr.push(']');
+            Some((expr, i0, i1, p, elegidos, obj.get("blankSelection").is_some_and(es_truthy)))
+        }
+        Some(otro) => {
+            return Err(ErrorDiagrama::new(format!(
+                "'slice' tiene que ser un objeto con start, stop y step: {}",
+                repr_val(otro)
+            )));
+        }
+    };
+
+    let top = encabezado(c, b, &declaracion);
+    let cw = 46.0_f64;
+    let ch = 40.0_f64;
+    let x0 = 64.0_f64;
+    let y_c = top + if indices { 26.0 } else { 10.0 };
+    let elegidas: HashSet<usize> = match &corte {
+        Some((_, _, _, _, el, false)) => el.iter().copied().collect(),
+        _ => HashSet::new(),
+    };
+    let orden: HashMap<usize, usize> = match &corte {
+        Some((_, _, _, p, el, false)) if *p != 1 => el.iter().enumerate().map(|(k, &i)| (i, k + 1)).collect(),
+        _ => HashMap::new(),
+    };
+
+    if indices {
+        c.t(x0 - 10.0, y_c - 9.0, "índice", 9.5, 400, "textSub", "end", SANS);
+    }
+    if n == 0 {
+        c.r(x0, y_c, 16.0, ch, "fillCell", 2.0, 0.0);
+        c.t(x0 + 26.0, y_c + ch / 2.0 + 4.0, &format!("{abre}{cierra} · len 0"), 10.0, 400, "textSub", "start", MONO);
+    }
+    for (i, celda) in celdas.iter().enumerate() {
+        let x = x0 + i as f64 * cw;
+        c.r(x, y_c, cw, ch, if elegidas.contains(&i) { "fillHighlight" } else { "fillCell" }, 1.5, 0.0);
+        if indices {
+            c.t(x + cw / 2.0, y_c - 9.0, &i.to_string(), 10.5, 700, "textSub", "middle", MONO);
+        }
+        if sin_valores {
+            c.vacio(x + 8.0, x + cw - 8.0, y_c + ch - 9.0);
+        } else if tipo == "str" && celda == " " {
+            // Un espacio se ve: no se confunde con una celda para completar.
+            c.t(x + cw / 2.0, y_c + ch / 2.0 + 5.0, "␣", 14.0, 700, "textMuted", "middle", MONO);
+        } else {
+            c.t(x + cw / 2.0, y_c + ch / 2.0 + 5.0, celda, 13.0, 700, "textMain", "middle", MONO);
+        }
+        if let Some(k) = orden.get(&i) {
+            c.t(x + cw - 4.0, y_c + 11.0, &format!("{k}º"), 8.5, 700, "accentPrimary", "end", SANS);
+        }
+    }
+    if n > 0 {
+        c.add(format!(
+            r#"<rect x="{x0:.1}" y="{y_c:.1}" width="{:.1}" height="{ch:.1}" fill="none" stroke="{}" stroke-width="2"/>"#,
+            n as f64 * cw,
+            c.pal.stroke_main
+        ));
+    }
+    let mut y = y_c + ch;
+    if negativos && n > 0 {
+        c.t(x0 - 10.0, y + 14.0, "negativo", 9.5, 400, "textSub", "end", SANS);
+        for i in 0..n {
+            c.t(x0 + i as f64 * cw + cw / 2.0, y + 14.0, &format!("-{}", n - i), 10.5, 700, "textMuted", "middle", MONO);
+        }
+        y += 18.0;
+    }
+    let mut y_fronteras = None;
+    if fronteras {
+        y += 6.0;
+        c.t(x0 - 10.0, y + 18.0, "frontera", 9.5, 400, "textSub", "end", SANS);
+        c.linea(x0, y + 4.0, x0 + n as f64 * cw, y + 4.0, "strokeMuted", 1.0, None, "");
+        for k in 0..=n {
+            let x = x0 + k as f64 * cw;
+            c.linea(x, y, x, y + 8.0, "strokeMain", 1.4, None, "");
+        }
+        y_fronteras = Some(y + 20.0);
+        y += 24.0;
+    }
+    let mut ancho = x0 + n.max(1) as f64 * cw + 20.0;
+
+    if let Some((expr, i0, i1, p, elegidos, en_blanco)) = &corte {
+        // Las fronteras donde empieza y termina el recorrido: con paso negativo, a la derecha
+        // de cada índice.
+        let frontera = |i: i64| -> f64 { x0 + (if *p > 0 { i } else { i + 1 }) as f64 * cw };
+        y += 10.0;
+        if !en_blanco {
+            let (xa, xb) = (frontera(*i0), frontera(*i1));
+            // El fin es el límite excluido: una línea punteada atraviesa las celdas.
+            c.linea(xb, y_c - 4.0, xb, y + 4.0, "accentPrimary", 1.4, None, "4 3");
+            c.linea(xa, y_c + ch, xa, y + 4.0, "strokeSub", 1.0, None, "2 2");
+            if (xa - xb).abs() > 1.0 {
+                c.linea(xa, y + 4.0, xb + if *p > 0 { -3.0 } else { 3.0 }, y + 4.0, "accentPrimary", 1.6, Some("main"), "");
+            }
+            c.t(xa, y + 18.0, "inicio", 9.5, 700, "textSub", "middle", SANS);
+            c.t(xb, y + if (xa - xb).abs() > 1.0 { 18.0 } else { 30.0 }, "fin (excluido)", 9.5, 700, "accentPrimary", "middle", SANS);
+            ancho = ancho.max(xb.max(xa) + 50.0);
+            y += 30.0;
+        }
+        y += 14.0;
+        c.t(x0, y + 4.0, expr, 12.0, 700, "textMain", "start", MONO);
+        let x_res = x0 + ancho_texto(expr, 12.0) + 12.0;
+        c.t(x_res, y + 4.0, "→", 12.0, 700, "textMain", "start", MONO);
+        if *en_blanco {
+            c.vacio(x_res + 18.0, x_res + 118.0, y + 6.0);
+            ancho = ancho.max(x_res + 130.0);
+        } else {
+            let resultado = literal(elegidos);
+            c.t(x_res + 18.0, y + 4.0, &resultado, 12.0, 700, "accentPrimary", "start", MONO);
+            ancho = ancho.max(x_res + 18.0 + ancho_texto(&resultado, 12.0) + 12.0);
+        }
+        y += 12.0;
+    }
+    // Los números de las fronteras van encima de las líneas del corte, con un halo del fondo.
+    if let Some(yf) = y_fronteras {
+        let fondo = c.pal.color("background").to_string();
+        let color = c.pal.color("textSub").to_string();
+        let fuente = c.font_mono().to_string();
+        for k in 0..=n {
+            c.add(format!(
+                r#"<text x="{:.1}" y="{yf:.1}" text-anchor="middle" font-family="{fuente}" font-size="{}" font-weight="700" fill="{color}" stroke="{fondo}" stroke-width="3" paint-order="stroke">{k}</text>"#,
+                x0 + k as f64 * cw,
+                fmt_num_clean(c.font_size(10.0))
+            ));
+        }
+    }
+    Ok((ancho, y + 8.0))
 }
 
 // ---------------------------------------------------------------------------
@@ -3440,5 +3720,69 @@ mod tests {
         let textos = textos_svg(&svg);
         assert!(!textos.iter().any(|t| t == "1"));
         assert!(textos.iter().any(|t| t == "int[] · length __"));
+    }
+
+    fn corte(n: usize, i: Option<i64>, f: Option<i64>, p: Option<i64>) -> Vec<usize> {
+        indices_corte(n, i, f, p).unwrap().3
+    }
+
+    #[test]
+    fn indices_de_corte_como_python() {
+        // Comparados con `list(range(*slice(i, f, p).indices(n)))` de Python.
+        assert_eq!(corte(5, Some(1), Some(4), None), [1, 2, 3]);
+        assert_eq!(corte(5, Some(-4), Some(-1), Some(2)), [1, 3]);
+        assert_eq!(corte(5, None, None, Some(-1)), [4, 3, 2, 1, 0]);
+        assert_eq!(corte(5, Some(2), Some(2), None), Vec::<usize>::new());
+        assert_eq!(corte(5, Some(-10), Some(10), None), [0, 1, 2, 3, 4]);
+        assert_eq!(corte(5, Some(10), Some(-10), Some(-2)), [4, 2, 0]);
+        assert_eq!(corte(5, Some(3), Some(0), Some(-1)), [3, 2, 1]);
+        assert_eq!(corte(0, None, None, Some(-1)), Vec::<usize>::new());
+        assert!(indices_corte(5, None, None, Some(0)).unwrap_err().0.contains("no puede ser 0"));
+    }
+
+    #[test]
+    fn secuencia_python_dibuja_el_corte() {
+        let svg = render(
+            json!({"type": "array", "variant": "python_sequence", "values": [2, 4, 7, 1, 8],
+                   "showNegativeIndices": true, "showBoundaries": true,
+                   "slice": {"start": -4, "stop": -1, "step": 2}}),
+            true,
+        );
+        let textos = textos_svg(&svg);
+        for t in ["a = [2, 4, 7, 1, 8]", "a[-4:-1:2]", "[4, 1]", "fin (excluido)", "inicio", "-5", "1º", "2º"] {
+            assert!(textos.iter().any(|x| x == t), "falta {t:?}: {textos:?}");
+        }
+        assert!(svg.contains(r#">5</text>"#), "la frontera n queda visible");
+    }
+
+    #[test]
+    fn secuencia_python_en_blanco_no_da_pistas() {
+        let svg = render(
+            json!({"type": "array", "variant": "python_sequence", "values": [2, 4, 7, 1, 8],
+                   "showBoundaries": true, "slice": {"start": -4, "stop": -1, "step": 2, "blankSelection": true}}),
+            true,
+        );
+        let textos = textos_svg(&svg);
+        assert!(textos.iter().any(|t| t == "a[-4:-1:2]"));
+        for pista in ["[4, 1]", "fin (excluido)", "inicio", "1º"] {
+            assert!(!textos.iter().any(|t| t == pista), "pista {pista:?} en el ejercicio");
+        }
+        let resuelto = render(json!({"type": "array", "variant": "python_sequence", "values": [2, 4], "slice": {"stop": 1}}), true);
+        assert!(resuelto.matches(PALETA_TINTA.fill_highlight.as_ref()).count() > svg.matches(PALETA_TINTA.fill_highlight.as_ref()).count());
+    }
+
+    #[test]
+    fn secuencia_python_cadenas_tuplas_y_errores() {
+        let s = render(json!({"type": "array", "variant": "python_sequence", "kind": "str", "values": "a b", "slice": {"step": -1}}), true);
+        let textos = textos_svg(&s);
+        assert!(textos.iter().any(|t| t == "␣"), "el espacio se ve");
+        assert!(textos.iter().any(|t| t == "&#x27;b a&#x27;"));
+        let t = render(json!({"type": "array", "variant": "python_sequence", "kind": "tuple", "values": [3, 4], "slice": {"start": 1}}), true);
+        assert!(textos_svg(&t).iter().any(|x| x == "(4,)"));
+        let vacia = render(json!({"type": "array", "variant": "python_sequence", "values": [], "slice": {"step": -1}}), true);
+        assert!(textos_svg(&vacia).iter().any(|x| x == "[]"));
+        assert!(render_err(json!({"type": "array", "variant": "python_sequence", "values": [1], "slice": {"step": 0}})).contains("no puede ser 0"));
+        assert!(render_err(json!({"type": "array", "variant": "python_sequence", "kind": "set"})).contains("list, tuple o str"));
+        assert!(render_err(json!({"type": "array", "variant": "otra"})).contains("python_sequence"));
     }
 }
