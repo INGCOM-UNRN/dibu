@@ -87,9 +87,10 @@ fn render_array_inner(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama
     match b.get("variant") {
         None | Some(Value::Null) => {}
         Some(Value::String(v)) if v == "python_sequence" => return render_secuencia_python(c, b),
+        Some(Value::String(v)) if v == "c_string" => return render_cadena_c(c, b),
         Some(otro) => {
             return Err(ErrorDiagrama::new(format!(
-                "variante de arreglo no soportada: {} (python_sequence)",
+                "variante de arreglo no soportada: {} (python_sequence o c_string)",
                 repr_val(otro)
             )));
         }
@@ -110,7 +111,9 @@ fn render_array_inner(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama
         String::new()
     };
     let top = encabezado(c, b, &extra);
-    let ptrs = punteros(b, cap);
+    // Un puntero en `n` señala el límite excluido: el borde derecho, sin una celda `a[n]`.
+    let ptrs = punteros(b, cap + 1);
+    let rango = leer_rango(b, cap)?;
 
     let x0 = 78.0_f64;
     let celda_w = 64.0_f64;
@@ -159,28 +162,7 @@ fn render_array_inner(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama
         let cx = x0 + i as f64 * celda_w;
         let centro = cx + celda_w / 2.0;
         if let Some(etiquetas) = ptrs.get(&i) {
-            let txt = etiquetas.join(", ");
-            let ancho = 40.0_f64.max(txt.chars().count() as f64 * 7.5 + 12.0);
-            c.r(
-                centro - ancho / 2.0,
-                y - 48.0,
-                ancho,
-                18.0,
-                "fillBadge",
-                1.2,
-                3.0,
-            );
-            c.t(centro, y - 35.0, &txt, 10.0, 700, "textMain", "middle", MONO);
-            c.linea(
-                centro,
-                y - 30.0,
-                centro,
-                y - 19.0,
-                "accentPrimary",
-                1.5,
-                Some("main"),
-                "",
-            );
+            insignia_puntero(c, centro, y, &etiquetas.join(", "));
         }
         if indices {
             c.t(
@@ -242,8 +224,131 @@ fn render_array_inner(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama
         }
     }
 
-    let alto = y + celda_h + if offsets { 42.0 } else if direcciones { 26.0 } else { 12.0 };
-    Ok((x0 + cap as f64 * celda_w + 20.0, alto))
+    let mut ancho = x0 + cap as f64 * celda_w + 20.0;
+    if let Some(etiquetas) = ptrs.get(&cap) {
+        ancho = ancho.max(limite_excluido(c, x0 + cap as f64 * celda_w, y, celda_h, &etiquetas.join(", ")));
+    }
+    let mut alto = y + celda_h + if offsets { 42.0 } else if direcciones { 26.0 } else { 12.0 };
+    if let Some(r) = &rango {
+        let (a, w) = dibujar_rango(c, r, x0, celda_w, alto + 4.0);
+        alto = a;
+        ancho = ancho.max(w);
+    }
+    Ok((ancho, alto))
+}
+
+/// La insignia de un puntero sobre la celda centrada en `centro`, con su flecha.
+fn insignia_puntero(c: &mut Lienzo, centro: f64, y: f64, txt: &str) -> f64 {
+    let ancho = 40.0_f64.max(txt.chars().count() as f64 * 7.5 + 12.0);
+    c.r(centro - ancho / 2.0, y - 48.0, ancho, 18.0, "fillBadge", 1.2, 3.0);
+    c.t(centro, y - 35.0, txt, 10.0, 700, "textMain", "middle", MONO);
+    c.linea(centro, y - 30.0, centro, y - 19.0, "accentPrimary", 1.5, Some("main"), "");
+    centro + ancho / 2.0
+}
+
+/// Un puntero al límite excluido: la insignia sobre el borde derecho y una marca punteada, sin
+/// celda. Devuelve hasta dónde llega a la derecha.
+fn limite_excluido(c: &mut Lienzo, x: f64, y: f64, alto: f64, txt: &str) -> f64 {
+    c.linea(x, y - 16.0, x, y + alto + 6.0, "strokeMain", 1.6, None, "4 2");
+    insignia_puntero(c, x, y, txt) + 6.0
+}
+
+/// Un intervalo semiabierto `[start, stop)` sobre un arreglo, con un orden de visita opcional.
+struct Rango {
+    inicio: usize,
+    fin: usize,
+    rotulo: Option<String>,
+    orden: Option<bool>,
+    en_blanco: bool,
+}
+
+fn leer_rango(b: &Bloque, n: usize) -> Result<Option<Rango>, ErrorDiagrama> {
+    let Some(v) = b.get("range").filter(|v| !v.is_null()) else {
+        return Ok(None);
+    };
+    let Some(r) = v.as_object() else {
+        return Err(ErrorDiagrama::new("'range' tiene que ser {start, stop, label, order, blank}"));
+    };
+    let limite = |clave: &str, defecto: usize| -> Result<usize, ErrorDiagrama> {
+        match r.get(clave).filter(|v| !v.is_null()) {
+            None => Ok(defecto),
+            Some(v) => match v.as_i64() {
+                Some(i) if i >= 0 && i as usize <= n => Ok(i as usize),
+                _ => Err(ErrorDiagrama::new(format!(
+                    "'range.{clave}' tiene que ser un entero entre 0 y {n} (el límite excluido): {}",
+                    texto(v)
+                ))),
+            },
+        }
+    };
+    let inicio = limite("start", 0)?;
+    let fin = limite("stop", n)?;
+    if inicio > fin {
+        return Err(ErrorDiagrama::new(format!("'range': start ({inicio}) es mayor que stop ({fin})")));
+    }
+    let orden = match r.get("order").filter(|v| !v.is_null()) {
+        None => None,
+        Some(Value::Bool(false)) => None,
+        Some(Value::Bool(true)) => Some(true),
+        Some(Value::String(s)) if s == "forward" => Some(true),
+        Some(Value::String(s)) if s == "reverse" => Some(false),
+        Some(otro) => {
+            return Err(ErrorDiagrama::new(format!(
+                "'range.order' es true, forward o reverse: {}",
+                texto(otro)
+            )));
+        }
+    };
+    Ok(Some(Rango {
+        inicio,
+        fin,
+        rotulo: r.get("label").filter(|v| es_truthy(v)).map(texto),
+        orden,
+        en_blanco: r.get("blank").is_some_and(es_truthy),
+    }))
+}
+
+/// Dibuja el intervalo debajo de las celdas, desde `y`; devuelve dónde termina, abajo y a la
+/// derecha.
+fn dibujar_rango(c: &mut Lienzo, r: &Rango, x0: f64, celda_w: f64, y: f64) -> Punto {
+    let xa = x0 + r.inicio as f64 * celda_w;
+    let xb = x0 + r.fin as f64 * celda_w;
+    let mut y = y;
+    if let (Some(adelante), false) = (r.orden, r.en_blanco) {
+        let k = r.fin - r.inicio;
+        for (n, i) in (r.inicio..r.fin).enumerate() {
+            let centro = x0 + i as f64 * celda_w + celda_w / 2.0;
+            let numero = if adelante { n + 1 } else { k - n };
+            c.add(format!(
+                r#"<circle cx="{centro:.1}" cy="{:.1}" r="8" fill="none" stroke="{}" stroke-width="1.1"/>"#,
+                y + 8.0,
+                c.pal.stroke_sub
+            ));
+            c.t(centro, y + 11.5, &numero.to_string(), 9.5, 700, "textSub", "middle", MONO);
+        }
+        if k > 0 {
+            y += 20.0;
+        }
+    }
+    let ym = y + 10.0;
+    if r.en_blanco {
+        c.vacio(x0, x0 + celda_w * 2.0, ym + 4.0);
+    } else {
+        // `[` en el inicio (incluido) y `)` en el fin (excluido); vacío si coinciden.
+        c.linea(xa, ym, xb.max(xa), ym, "strokeMain", 1.4, None, "");
+        c.t(xa, ym + 5.0, "[", 15.0, 700, "textMain", "middle", MONO);
+        c.t(xb + if xa == xb { 7.0 } else { 0.0 }, ym + 5.0, ")", 15.0, 700, "textMain", "middle", MONO);
+    }
+    let rotulo = match (&r.rotulo, r.inicio == r.fin && !r.en_blanco) {
+        _ if r.en_blanco => r.rotulo.clone().unwrap_or_default(),
+        (Some(t), true) => format!("{t} (vacío)"),
+        (Some(t), false) => t.clone(),
+        (None, true) => format!("[{}, {}) vacío", r.inicio, r.fin),
+        (None, false) => format!("[{}, {})", r.inicio, r.fin),
+    };
+    let centro = if r.en_blanco { x0 + celda_w } else { (xa + xb) / 2.0 };
+    c.t(centro, ym + 22.0, &rotulo, 10.0, 600, "textSub", "middle", MONO);
+    (ym + 30.0, (centro + ancho_texto(&rotulo, 10.0) / 2.0).max(xb + 8.0) + 8.0)
 }
 
 // ---------------------------------------------------------------------------
@@ -457,7 +562,7 @@ fn render_matrix_inner(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagram
         Some(Value::String(s)) => s.as_str(),
         Some(otro) => {
             return Err(ErrorDiagrama::new(format!(
-                "variante de matriz no soportada: {} (static, dynamic, jagged, flat o java)",
+                "variante de matriz no soportada: {} (static, dynamic, jagged, flat, row_pointers o java)",
                 repr_val(otro)
             )));
         }
@@ -469,8 +574,9 @@ fn render_matrix_inner(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagram
         "flat" => render_matrix_plana(c, b),
         "static" => render_matrix_estatica(c, b),
         "java" => render_matrix_java(c, b),
+        "row_pointers" => render_matrix_punteros_bloque(c, b),
         otra => Err(ErrorDiagrama::new(format!(
-            "variante de matriz no soportada: '{otra}' (static, dynamic, jagged, flat o java)"
+            "variante de matriz no soportada: '{otra}' (static, dynamic, jagged, flat, row_pointers o java)"
         ))),
     }
 }
@@ -512,6 +618,96 @@ fn filas_matriz_java(b: &Bloque) -> Result<Vec<Option<Vec<String>>>, ErrorDiagra
             ))),
         })
         .collect()
+}
+
+/// Una matriz de C con una tabla de punteros a filas y un solo bloque de datos: `m[i]` apunta al
+/// índice `i * C` del bloque. Son dos reservas, y se liberan las dos.
+fn render_matrix_punteros_bloque(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
+    let filas = filas_matriz(b)?;
+    let nf = dimension(b, "rows", if filas.is_empty() { 2 } else { filas.len() }, MAX_FILAS)?;
+    let nc_datos = filas.iter().flatten().map(Vec::len).max().unwrap_or(0);
+    let nc = dimension(b, "cols", if nc_datos == 0 { 3 } else { nc_datos }, MAX_COLUMNAS)?;
+    if let Some((i, f)) = filas.iter().enumerate().find(|(_, f)| f.as_ref().is_some_and(|f| f.len() > nc)) {
+        return Err(ErrorDiagrama::new(format!(
+            "la fila {i} tiene {} valores y la matriz {nc} columnas",
+            f.as_ref().map_or(0, Vec::len)
+        )));
+    }
+    if nf * nc > MAX_CELDAS_PLANA {
+        return Err(ErrorDiagrama::new(format!(
+            "{nf} × {nc} = {} celdas; el bloque se dibuja con hasta {MAX_CELDAS_PLANA}",
+            nf * nc
+        )));
+    }
+    let nombre = str_o(b, "name", "m");
+    let tipo = str_o(b, "elementType", "int");
+    let sin_valores = flag_f(b, "blankValues");
+    let sin_punteros = flag_f(b, "blankPointers");
+    let resaltadas = pares_highlight(b)?;
+    let top = encabezado(c, b, &format!("{tipo} **{nombre}: {nf} punteros a filas y un bloque de {nf} × {nc}"));
+
+    let x0 = 20.0_f64;
+    let celda_w = 44.0_f64;
+    let celda_h = 36.0_f64;
+    let ptr_w = 64.0_f64;
+    // La variable, la tabla de punteros (reserva 1) y el bloque de datos (reserva 2).
+    let y_var = top + 10.0;
+    c.t(x0, y_var + 16.0, &format!("{tipo} **{nombre}"), 11.0, 700, "textMain", "start", MONO);
+    let x_var = x0 + ancho_texto(&format!("{tipo} **{nombre}"), 11.0) + 10.0;
+    c.r(x_var, y_var, 30.0, 24.0, "fillPointerBox", 1.4, 2.0);
+    let y_ptr = y_var + 62.0;
+    let x_ptr = x0 + 120.0;
+    c.punto(x_var + 15.0, y_var + 12.0, "accentPrimary", 3.2);
+    c.ruta(&[(x_var + 15.0, y_var + 12.0), (x_var + 15.0, y_ptr + celda_h / 2.0), (x_ptr - 3.0, y_ptr + celda_h / 2.0)]);
+    c.t(x_ptr, y_ptr - 22.0, &format!("reserva 1: {nf} × sizeof({tipo} *)"), 9.5, 700, "textSub", "start", SANS);
+    let y_dat = y_ptr + celda_h + 74.0;
+    let x_dat = x0;
+    for i in 0..nf {
+        let x = x_ptr + i as f64 * ptr_w;
+        c.r(x, y_ptr, ptr_w, celda_h, "fillPointerBox", 1.5, 0.0);
+        c.t(x + ptr_w / 2.0, y_ptr - 6.0, &format!("{nombre}[{i}]"), 9.5, 700, "textSub", "middle", MONO);
+        if sin_punteros {
+            c.vacio(x + 8.0, x + ptr_w - 8.0, y_ptr + celda_h - 9.0);
+            continue;
+        }
+        let desde = (x + ptr_w / 2.0, y_ptr + celda_h / 2.0);
+        c.punto(desde.0, desde.1, "accentPrimary", 3.2);
+        let hasta = x_dat + (i * nc) as f64 * celda_w + 6.0;
+        c.ruta(&[desde, (desde.0, y_ptr + celda_h + 16.0 + i as f64 * 6.0), (hasta, y_ptr + celda_h + 16.0 + i as f64 * 6.0), (hasta, y_dat - 3.0)]);
+    }
+    let rotulo_datos = format!("reserva 2: {nf} × {nc} × sizeof({tipo}), contiguos");
+    for i in 0..nf {
+        for j in 0..nc {
+            let k = i * nc + j;
+            let x = x_dat + k as f64 * celda_w;
+            let marcada = resaltadas.contains(&(i as i64, j as i64));
+            c.r(x, y_dat, celda_w, celda_h, if marcada { "fillBadge" } else { "fillCell" }, if j == 0 { 2.0 } else { 1.3 }, 0.0);
+            let valor = filas.get(i).and_then(|f| f.as_ref()).and_then(|f| f.get(j)).map(String::as_str).unwrap_or("");
+            if sin_valores || valor.is_empty() {
+                c.vacio(x + 8.0, x + celda_w - 8.0, y_dat + celda_h - 9.0);
+            } else {
+                c.t(x + celda_w / 2.0, y_dat + celda_h / 2.0 + 5.0, valor, 13.0, 700, "textMain", "middle", MONO);
+            }
+            c.t(x + celda_w / 2.0, y_dat + celda_h + 13.0, &format!("[{k}]"), 9.0, 400, "textMuted", "middle", MONO);
+        }
+        // La fila i ocupa del índice i*C al (i+1)*C - 1 del bloque.
+        let xa = x_dat + (i * nc) as f64 * celda_w + 3.0;
+        let xz = x_dat + ((i + 1) * nc) as f64 * celda_w - 3.0;
+        let yb = y_dat + celda_h + 20.0;
+        c.linea(xa, yb, xa, yb + 5.0, "strokeSub", 1.1, None, "");
+        c.linea(xz, yb, xz, yb + 5.0, "strokeSub", 1.1, None, "");
+        c.linea(xa, yb + 5.0, xz, yb + 5.0, "strokeSub", 1.1, None, "");
+        c.t((xa + xz) / 2.0, yb + 18.0, &format!("fila {i}: desde [{}]", i * nc), 9.0, 600, "textSub", "middle", SANS);
+    }
+    c.t(x_dat, y_dat + celda_h + 60.0, &rotulo_datos, 9.5, 700, "textSub", "start", SANS);
+    let y_pie = y_dat + celda_h + 84.0;
+    let pie = format!("liberar las dos reservas: free({nombre}[0]); free({nombre});");
+    c.t(x0, y_pie, &pie, 10.5, 700, "textMain", "start", MONO);
+    let ancho = (x_dat + (nf * nc) as f64 * celda_w)
+        .max(x_ptr + nf as f64 * ptr_w)
+        .max(x0 + ancho_texto(&pie, 10.5))
+        .max(x_ptr + ancho_texto(&format!("reserva 1: {nf} × sizeof({tipo} *)"), 9.5));
+    Ok((ancho + 20.0, y_pie + 10.0))
 }
 
 /// `int[][]` de Java: la variable en el stack refiere al arreglo exterior, que guarda una
@@ -1868,6 +2064,212 @@ fn render_secuencia_python(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDia
 }
 
 // ---------------------------------------------------------------------------
+// Cadena de C (`array`, `variant: c_string`)
+// ---------------------------------------------------------------------------
+
+const MAX_CADENA_C: usize = 24;
+
+/// Un byte de una cadena de C: un carácter, el terminador o una posición sin dato declarado.
+#[derive(Clone, Debug, PartialEq)]
+enum ByteC {
+    Caracter(String),
+    Nul,
+    SinDato,
+}
+
+/// `'a'`, `"\\0"` o `0` (el terminador), `"\\n"`, un número (el código) o `null` (sin dato).
+fn byte_c(v: &Value, i: usize) -> Result<ByteC, ErrorDiagrama> {
+    let caracter = |codigo: u32| -> ByteC {
+        match codigo {
+            0 => ByteC::Nul,
+            0x0a => ByteC::Caracter("\\n".to_string()),
+            0x09 => ByteC::Caracter("\\t".to_string()),
+            0x20..=0x7e => ByteC::Caracter(char::from_u32(codigo).unwrap().to_string()),
+            _ => ByteC::Caracter(format!("\\x{codigo:02X}")),
+        }
+    };
+    match v {
+        Value::Null => Ok(ByteC::SinDato),
+        Value::Number(n) => match n.as_u64() {
+            Some(k) if k <= 255 => Ok(caracter(k as u32)),
+            _ => Err(ErrorDiagrama::new(format!("'bytes[{i}]': un byte va de 0 a 255, no {n}"))),
+        },
+        Value::String(t) => {
+            let t = t.strip_prefix('\'').and_then(|r| r.strip_suffix('\'')).unwrap_or(t);
+            match t {
+                "\\0" | "\0" => Ok(ByteC::Nul),
+                "\\n" | "\n" => Ok(caracter(0x0a)),
+                "\\t" | "\t" => Ok(caracter(0x09)),
+                "\\\\" => Ok(ByteC::Caracter("\\\\".to_string())),
+                _ => {
+                    let mut letras = t.chars();
+                    match (letras.next(), letras.next()) {
+                        (Some(ch), None) if (ch as u32) < 0x80 => Ok(caracter(ch as u32)),
+                        _ => Err(ErrorDiagrama::new(format!(
+                            "'bytes[{i}]': se espera un carácter ASCII, '\\0' o un número, no {t:?}"
+                        ))),
+                    }
+                }
+            }
+        }
+        otro => Err(ErrorDiagrama::new(format!("'bytes[{i}]': se espera un carácter, no {}", texto(otro)))),
+    }
+}
+
+fn render_cadena_c(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
+    let mut bytes: Vec<ByteC> = match (b.get("text").filter(|v| !v.is_null()), b.get("bytes").filter(|v| !v.is_null())) {
+        (Some(_), Some(_)) => return Err(ErrorDiagrama::new("usar 'text' o 'bytes', no los dos")),
+        (Some(t), None) => {
+            let t = texto(t);
+            if let Some(ch) = t.chars().find(|ch| !ch.is_ascii() || ch.is_ascii_control()) {
+                return Err(ErrorDiagrama::new(format!(
+                    "'text' admite caracteres ASCII imprimibles; para {ch:?}, usar 'bytes'"
+                )));
+            }
+            let mut v: Vec<ByteC> = t.chars().map(|ch| ByteC::Caracter(ch.to_string())).collect();
+            v.push(ByteC::Nul);
+            v
+        }
+        (None, Some(Value::Array(lista))) => lista.iter().enumerate().map(|(i, v)| byte_c(v, i)).collect::<Result<_, _>>()?,
+        (None, Some(_)) => return Err(ErrorDiagrama::new("'bytes' tiene que ser una lista")),
+        (None, None) => return Err(ErrorDiagrama::new("falta 'text' (la cadena) o 'bytes' (los bytes del arreglo)")),
+    };
+    let texto_dado = b.contains_key("text");
+    let cap = match b.get("capacity").filter(|v| !v.is_null()) {
+        None => bytes.len(),
+        Some(v) => match v.as_u64() {
+            Some(k) if (1..=MAX_CADENA_C as u64).contains(&k) => k as usize,
+            _ => {
+                return Err(ErrorDiagrama::new(format!(
+                    "'capacity' tiene que ser un entero entre 1 y {MAX_CADENA_C}: {}",
+                    texto(v)
+                )));
+            }
+        },
+    };
+    if texto_dado && cap + 1 == bytes.len() {
+        // `char s[4] = "hola";` es válido en C: el terminador no entra y el arreglo no lo tiene.
+        bytes.pop();
+    }
+    if bytes.len() > cap {
+        return Err(ErrorDiagrama::new(format!(
+            "hay {} bytes y la capacidad es {cap}{}",
+            bytes.len(),
+            if texto_dado { " (el texto más su terminador no entran)" } else { "" }
+        )));
+    }
+    if cap > MAX_CADENA_C {
+        return Err(ErrorDiagrama::new(format!("hasta {MAX_CADENA_C} bytes; hay {cap}")));
+    }
+    bytes.resize(cap, ByteC::SinDato);
+    // Hasta el último byte con dato: lo que sigue es capacidad sin datos declarados.
+    let declarados = bytes.iter().rposition(|x| *x != ByteC::SinDato).map_or(0, |k| k + 1);
+    let nul = bytes.iter().position(|x| *x == ByteC::Nul);
+    let nombre = str_o(b, "name", "s");
+    let en_blanco = enteros_set(b, "blank")?;
+    let sin_valores = flag_f(b, "blankValues");
+    let sin_largo = flag_f(b, "blankLength");
+    let indices = flag_t(b, "showIndices");
+
+    let top = encabezado(c, b, &format!("char {nombre}[{cap}]"));
+    let ptrs = punteros(b, cap + 1);
+    let rango = leer_rango(b, cap)?;
+    let x0 = 20.0_f64;
+    let celda_w = 40.0_f64;
+    let celda_h = 44.0_f64;
+    let y = top + if ptrs.is_empty() { 26.0 } else { 60.0 };
+
+    for (i, byte) in bytes.iter().enumerate() {
+        let cx = x0 + i as f64 * celda_w;
+        let centro = cx + celda_w / 2.0;
+        if let Some(etiquetas) = ptrs.get(&i) {
+            insignia_puntero(c, centro, y, &etiquetas.join(", "));
+        }
+        if indices {
+            c.t(centro, y - 7.0, &format!("[{i}]"), 10.0, 700, "textSub", "middle", MONO);
+        }
+        let despues = nul.is_some_and(|k| i > k);
+        let oculto = sin_valores || en_blanco.contains(&(i as i64));
+        match byte {
+            ByteC::SinDato => {
+                c.add(format!(
+                    r#"<rect x="{cx:.1}" y="{y:.1}" width="{celda_w:.1}" height="{celda_h:.1}" fill="none" stroke="{}" stroke-width="1.2" stroke-dasharray="3 3"/>"#,
+                    c.pal.stroke_muted
+                ));
+                if oculto {
+                    c.vacio(cx + 8.0, cx + celda_w - 8.0, y + celda_h - 10.0);
+                }
+            }
+            _ => {
+                let relleno = if *byte == ByteC::Nul && !oculto { "fillBadge" } else { "fillCell" };
+                c.r(cx, y, celda_w, celda_h, relleno, if despues { 1.1 } else { 1.6 }, 0.0);
+                if oculto {
+                    c.vacio(cx + 8.0, cx + celda_w - 8.0, y + celda_h - 10.0);
+                } else {
+                    let (txt, color) = match byte {
+                        ByteC::Nul => ("'\\0'".to_string(), "textMain"),
+                        ByteC::Caracter(ch) => (format!("'{ch}'"), if despues { "textMuted" } else { "textMain" }),
+                        ByteC::SinDato => unreachable!(),
+                    };
+                    let tam = if txt.chars().count() > 4 { 10.5 } else { 13.0 };
+                    c.t(centro, y + celda_h / 2.0 + 4.5, &txt, tam, 700, color, "middle", MONO);
+                }
+            }
+        }
+    }
+    let mut ancho = x0 + cap as f64 * celda_w + 20.0;
+    if let Some(etiquetas) = ptrs.get(&cap) {
+        ancho = ancho.max(limite_excluido(c, x0 + cap as f64 * celda_w, y, celda_h, &etiquetas.join(", ")));
+    }
+
+    // Las bandas: la cadena, el terminador, lo que sigue después y la capacidad sin datos.
+    let mut bandas: Vec<(usize, usize, String)> = Vec::new();
+    let oculta_largo = sin_largo || sin_valores;
+    if let Some(k) = nul {
+        if !oculta_largo {
+            if k > 0 {
+                bandas.push((0, k, format!("strlen = {k}")));
+            }
+            bandas.push((k, k + 1, "fin".to_string()));
+            if declarados > k + 1 {
+                bandas.push((k + 1, declarados, "después del terminador".to_string()));
+            }
+        }
+    }
+    if declarados < cap {
+        bandas.push((declarados, cap, "sin datos".to_string()));
+    }
+    let yb = y + celda_h + 8.0;
+    for (a, z, rotulo) in &bandas {
+        let xa = x0 + *a as f64 * celda_w + 3.0;
+        let xz = x0 + *z as f64 * celda_w - 3.0;
+        c.linea(xa, yb, xa, yb + 5.0, "strokeSub", 1.1, None, "");
+        c.linea(xz, yb, xz, yb + 5.0, "strokeSub", 1.1, None, "");
+        c.linea(xa, yb + 5.0, xz, yb + 5.0, "strokeSub", 1.1, None, "");
+        let ancho_rotulo = ancho_texto(rotulo, 9.0);
+        // Un rótulo que no entra en su banda baja un renglón.
+        let dy = if ancho_rotulo > xz - xa + 6.0 { 30.0 } else { 18.0 };
+        c.t((xa + xz) / 2.0, yb + dy, rotulo, 9.0, 600, "textSub", "middle", SANS);
+        ancho = ancho.max((xa + xz) / 2.0 + ancho_rotulo / 2.0 + 6.0);
+    }
+    let mut y_fin = yb + if bandas.is_empty() { 4.0 } else { 36.0 };
+    if let Some(r) = &rango {
+        let (a, w) = dibujar_rango(c, r, x0, celda_w, y_fin);
+        y_fin = a;
+        ancho = ancho.max(w);
+    }
+
+    let pie = match nul {
+        _ if oculta_largo => format!("strlen({nombre}) = ______"),
+        Some(k) => format!("strlen({nombre}) = {k} · capacidad = {cap}"),
+        None => "sin terminador en la capacidad indicada: strlen no está definido".to_string(),
+    };
+    c.t(x0, y_fin + 14.0, &pie, 11.0, 700, "textMain", "start", MONO);
+    ancho = ancho.max(x0 + ancho_texto(&pie, 11.0) + 10.0);
+    Ok((ancho, y_fin + 22.0))
+}
+
+// ---------------------------------------------------------------------------
 // Lista enlazada (`linked_list`: singly, doubly, circular, circular_doubly)
 // ---------------------------------------------------------------------------
 
@@ -2592,6 +2994,12 @@ fn render_queue(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
 }
 
 fn render_queue_inner(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
+    match b.get("variant").and_then(Value::as_str) {
+        Some("ring") => return render_cola_anillo(c, b, false),
+        Some("deque") => return render_cola_anillo(c, b, true),
+        // Cualquier otra variante se dibuja como siempre: lineal (o circular).
+        _ => {}
+    }
     let vals = valores(b)?;
     let cap = capacidad(b, vals.len(), 8, 4, 12);
     let frente = b.get("frontIndex").map(valor_py).unwrap_or_default();
@@ -2947,6 +3355,180 @@ fn render_queue_inner(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama
     }
 
     Ok((fin_x + 110.0, y + celda_h + 50.0))
+}
+
+/// Las partes del panel de una cola circular que se pueden dejar en blanco.
+const BLANCOS_ANILLO: [&str; 6] = ["front", "last", "count", "next", "values", "order"];
+
+/// Una cola circular (o una deque) por su capacidad, el índice del frente y los valores en orden
+/// lógico: la cantidad es el largo de los valores; el último ocupado, `(frente + cantidad - 1) % N`
+/// y el siguiente para agregar al final, `(frente + cantidad) % N`.
+fn render_cola_anillo(c: &mut Lienzo, b: &Bloque, deque: bool) -> Result<Punto, ErrorDiagrama> {
+    let vals = valores(b)?;
+    let Some(cap) = b.get("capacity").filter(|v| !v.is_null()) else {
+        return Err(ErrorDiagrama::new("falta 'capacity' (la cantidad de celdas del arreglo)"));
+    };
+    let cap = match cap.as_u64() {
+        Some(k) if (1..=12).contains(&k) => k as usize,
+        _ => return Err(ErrorDiagrama::new(format!("'capacity' tiene que estar entre 1 y 12: {}", texto(cap)))),
+    };
+    let frente = match b.get("frontIndex").filter(|v| !v.is_null()) {
+        None => return Err(ErrorDiagrama::new("falta 'frontIndex' (el índice del primer elemento)")),
+        Some(v) => match v.as_u64() {
+            Some(k) if (k as usize) < cap => k as usize,
+            _ => {
+                return Err(ErrorDiagrama::new(format!(
+                    "'frontIndex' tiene que estar entre 0 y {}: {}",
+                    cap - 1,
+                    texto(v)
+                )));
+            }
+        },
+    };
+    let cant = vals.len();
+    if cant > cap {
+        return Err(ErrorDiagrama::new(format!(
+            "hay {cant} valores y la capacidad es {cap}: no entran"
+        )));
+    }
+    let mut blancos: HashSet<String> = HashSet::new();
+    for v in lista_o_vacia(b, "blank")? {
+        let t = texto(v);
+        if !BLANCOS_ANILLO.contains(&t.as_str()) {
+            return Err(ErrorDiagrama::new(format!(
+                "'blank' admite {}: no '{t}'",
+                BLANCOS_ANILLO.join(", ")
+            )));
+        }
+        blancos.insert(t);
+    }
+    let oculto = |k: &str| blancos.contains(k);
+    let ultimo = (cant > 0).then(|| (frente + cant - 1) % cap);
+    // Llena, el siguiente coincide con el frente: no hay dónde agregar.
+    let siguiente = (frente + cant) % cap;
+    let llena = cant == cap;
+    let mut fisico: Vec<Option<(usize, &str)>> = vec![None; cap];
+    for (k, v) in vals.iter().enumerate() {
+        fisico[(frente + k) % cap] = Some((k, v.as_str()));
+    }
+
+    let nombre = if deque { "Deque circular" } else { "Cola circular" };
+    let top = encabezado(c, b, &format!("{nombre}: N = {cap}"));
+    let x0 = 30.0_f64;
+    let celda_w = 58.0_f64;
+    let celda_h = 48.0_f64;
+    let y = top + 72.0;
+    let fin_x = x0 + cap as f64 * celda_w;
+
+    // La vuelta: del final del arreglo se sigue en la celda 0.
+    c.add(format!(
+        r#"<path d="M {:.1} {:.1} C {:.1} {:.1}, {:.1} {:.1}, {:.1} {:.1}" fill="none" stroke="{}" stroke-width="1.3" stroke-dasharray="5 3" marker-end="url(#flecha-sub-{})"/>"#,
+        fin_x - 10.0,
+        y - 22.0,
+        fin_x - 10.0,
+        y - 52.0,
+        x0 + 10.0,
+        y - 52.0,
+        x0 + 10.0,
+        y - 24.0,
+        c.pal.stroke_sub,
+        c.sufijo
+    ));
+    c.t((x0 + fin_x) / 2.0, y - 58.0, &format!("índice siguiente: (i + 1) % {cap}"), 9.5, 400, "textMuted", "middle", MONO);
+
+    for (i, celda) in fisico.iter().enumerate() {
+        let cx = x0 + i as f64 * celda_w;
+        let centro = cx + celda_w / 2.0;
+        c.t(centro, y - 8.0, &format!("[{i}]"), 10.5, 700, "textSub", "middle", MONO);
+        match celda {
+            Some((k, v)) => {
+                c.r(cx, y, celda_w, celda_h, "fillCell", 1.6, 0.0);
+                if oculto("values") || v.is_empty() {
+                    c.vacio(cx + 10.0, cx + celda_w - 10.0, y + celda_h - 12.0);
+                } else {
+                    c.t(centro, y + celda_h / 2.0 + 3.0, v, 14.0, 700, "textMain", "middle", MONO);
+                }
+                if !oculto("order") {
+                    c.t(cx + celda_w - 5.0, y + celda_h - 5.0, &format!("{}º", k + 1), 8.5, 600, "textMuted", "end", SANS);
+                }
+            }
+            None => {
+                c.add(format!(
+                    r#"<rect x="{cx:.1}" y="{y:.1}" width="{celda_w:.1}" height="{celda_h:.1}" fill="none" stroke="{}" stroke-width="1.2" stroke-dasharray="4 3"/>"#,
+                    c.pal.stroke_muted
+                ));
+                if oculto("values") || oculto("order") {
+                    c.vacio(cx + 10.0, cx + celda_w - 10.0, y + celda_h - 12.0);
+                } else {
+                    c.t(centro, y + celda_h / 2.0 + 3.0, "libre", 9.5, 400, "textMuted", "middle", SANS);
+                }
+            }
+        }
+    }
+
+    // Los índices, debajo de su celda; varios en la misma celda se apilan.
+    let mut marcas: Vec<Vec<&str>> = vec![Vec::new(); cap];
+    if !oculto("front") {
+        marcas[frente].push("frente");
+    }
+    if let (Some(u), false) = (ultimo, oculto("last")) {
+        marcas[u].push("último");
+    }
+    if !llena && !oculto("next") {
+        marcas[siguiente].push("siguiente");
+    }
+    let mut y_marcas = y + celda_h;
+    for (i, m) in marcas.iter().enumerate() {
+        if m.is_empty() {
+            continue;
+        }
+        let centro = x0 + i as f64 * celda_w + celda_w / 2.0;
+        c.linea(centro, y + celda_h + 22.0, centro, y + celda_h + 5.0, "accentPrimary", 1.6, Some("main"), "");
+        for (k, rotulo) in m.iter().enumerate() {
+            let yy = y + celda_h + 36.0 + k as f64 * 14.0;
+            c.t(centro, yy, rotulo, 10.0, 700, "textMain", "middle", MONO);
+            y_marcas = y_marcas.max(yy);
+        }
+    }
+
+    // El panel: los índices y la cantidad, con lo que hace cada operación.
+    let dato = |clave: &str, valor: Option<usize>, sin: &str| -> String {
+        if oculto(clave) {
+            "____".to_string()
+        } else {
+            valor.map(|v| v.to_string()).unwrap_or_else(|| sin.to_string())
+        }
+    };
+    let mut lineas = vec![
+        format!("capacidad N = {cap}"),
+        format!("frente = {}", dato("front", Some(frente), "")),
+        format!("cantidad = {}", dato("count", Some(cant), "")),
+        format!("último = {}", dato("last", ultimo, "— (vacía)")),
+        format!(
+            "siguiente = {}{}",
+            dato("next", Some(siguiente), ""),
+            if llena && !oculto("next") && !oculto("count") { " (= frente, pero llena: no hay lugar)" } else { "" }
+        ),
+    ];
+    lineas.push(String::new());
+    if deque {
+        lineas.push("agregar al frente: frente = (frente - 1 + N) % N; cantidad++".to_string());
+        lineas.push("agregar al final: datos[(frente + cantidad) % N] = x; cantidad++".to_string());
+        lineas.push("quitar del frente: frente = (frente + 1) % N; cantidad--".to_string());
+        lineas.push("quitar del final: cantidad--".to_string());
+    } else {
+        lineas.push("encolar: datos[(frente + cantidad) % N] = x; cantidad++".to_string());
+        lineas.push("desencolar: frente = (frente + 1) % N; cantidad--".to_string());
+    }
+    let py = y_marcas + 22.0;
+    let ancho_panel = lineas.iter().map(|l| ancho_texto(l, 10.0)).fold(0.0, f64::max) + 28.0;
+    let alto_panel = lineas.len() as f64 * 16.0 + 14.0;
+    c.r(x0, py, ancho_panel, alto_panel, "fillHeader", 1.2, 4.0);
+    for (k, l) in lineas.iter().enumerate() {
+        let color = if k >= 5 { "textMuted" } else { "textMain" };
+        c.t(x0 + 14.0, py + 20.0 + k as f64 * 16.0, l, 10.0, if k < 5 { 700 } else { 400 }, color, "start", MONO);
+    }
+    Ok(((fin_x + 20.0).max(x0 + ancho_panel + 10.0), py + alto_panel + 8.0))
 }
 
 #[cfg(test)]
@@ -3784,5 +4366,52 @@ mod tests {
         assert!(render_err(json!({"type": "array", "variant": "python_sequence", "values": [1], "slice": {"step": 0}})).contains("no puede ser 0"));
         assert!(render_err(json!({"type": "array", "variant": "python_sequence", "kind": "set"})).contains("list, tuple o str"));
         assert!(render_err(json!({"type": "array", "variant": "otra"})).contains("python_sequence"));
+    }
+
+    #[test]
+    fn array_limite_excluido_e_intervalo() {
+        let s = render(json!({"type": "array", "values": [1, 2, 3], "pointers": "p:0, fin:3", "range": {"start": 1, "stop": 3, "order": "reverse"}}), true);
+        assert!(s.contains(">fin<"), "el puntero al límite ya no se descarta");
+        assert_eq!(s.matches(">[3]<").count(), 0, "sin una celda a[3]");
+        assert!(s.contains(">[1, 3)<") && s.contains(">2<"));
+        let vacio = render(json!({"type": "array", "values": [1, 2], "range": {"start": 2, "stop": 2}}), true);
+        assert!(vacio.contains("vacío"));
+        let oculto = render(json!({"type": "array", "values": [1, 2], "range": {"start": 0, "stop": 1, "blank": true}}), true);
+        assert!(!oculto.contains(">[0, 1)<"));
+        assert!(render_err(json!({"type": "array", "values": [1], "range": {"stop": 2}})).contains("entre 0 y 1"));
+    }
+
+    #[test]
+    fn cadena_c_terminador_y_capacidad() {
+        let s = render(json!({"type": "array", "variant": "c_string", "bytes": ["a", "\\0", "b", 0], "capacity": 6}), true);
+        assert!(s.contains("strlen(s) = 1 · capacidad = 6"), "el primer NUL fija la longitud");
+        assert_eq!(s.matches("&#x27;\\0&#x27;").count(), 2, "los dos NUL se ven");
+        assert!(s.contains(">después del terminador<") && s.contains(">sin datos<"));
+        let sin = render(json!({"type": "array", "variant": "c_string", "text": "hola", "capacity": 4}), true);
+        assert!(sin.contains("sin terminador") && !sin.contains("strlen(s) ="));
+        let blanco = render(json!({"type": "array", "variant": "c_string", "text": "ab", "blankLength": true}), true);
+        assert!(blanco.contains("strlen(s) = ______") && !blanco.contains("strlen = 2"));
+        assert!(render_err(json!({"type": "array", "variant": "c_string", "text": "hola", "capacity": 3})).contains("no entran"));
+    }
+
+    #[test]
+    fn cola_circular_por_frente_y_cantidad() {
+        let s = render(json!({"type": "queue", "variant": "ring", "capacity": 5, "frontIndex": 4, "values": [7, 9]}), true);
+        // El 7 en la celda 4 y el 9 en la 0: el 9 se dibuja antes (más a la izquierda).
+        assert!(s.find(">9<").unwrap() < s.find(">7<").unwrap());
+        assert!(s.contains(">último = 0<") && s.contains(">siguiente = 1<") && s.contains(">cantidad = 2<"));
+        let llena = render(json!({"type": "queue", "variant": "deque", "capacity": 3, "frontIndex": 1, "values": [1, 2, 3], "blank": ["count", "last"]}), true);
+        assert!(llena.contains(">cantidad = ____<") && llena.contains(">último = ____<") && llena.contains("quitar del final"));
+        let vacia = render(json!({"type": "queue", "variant": "ring", "capacity": 3, "frontIndex": 2, "values": []}), true);
+        assert!(vacia.contains("— (vacía)"));
+        assert!(render_err(json!({"type": "queue", "variant": "ring", "capacity": 2, "frontIndex": 0, "values": [1, 2, 3]})).contains("no entran"));
+    }
+
+    #[test]
+    fn matriz_con_punteros_a_un_bloque() {
+        let s = render(json!({"type": "matrix", "variant": "row_pointers", "values": [[1, 2, 3], [4, 5, 6]]}), true);
+        assert!(s.contains("fila 1: desde [3]") && s.contains("free(m[0]); free(m);"));
+        let blanco = render(json!({"type": "matrix", "variant": "row_pointers", "rows": 2, "cols": 2, "blankPointers": true}), true);
+        assert_eq!(blanco.split("</defs>").nth(1).unwrap().matches("<path d=\"M ").count(), 1, "sólo m → la tabla");
     }
 }
