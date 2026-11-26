@@ -397,9 +397,10 @@ fn render_struct(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
         None => {}
         Some(Value::String(s)) if s == "layout" => {}
         Some(Value::String(s)) if s == "opaque" => return render_tipo_opaco(c, b),
+        Some(Value::String(s)) if s == "union" => return render_union(c, b),
         Some(otro) => {
             return Err(ErrorDiagrama::new(format!(
-                "variante de struct no soportada: {otro:?} (layout u opaque)"
+                "variante de struct no soportada: {otro:?} (layout, opaque o union)"
             )));
         }
     }
@@ -510,6 +511,122 @@ fn render_struct(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
     }
     c.t(0.0, y, &pie, 11.0, 700, "textMain", "start", MONO);
     Ok((ancho.max(ancho_texto(&pie, 11.0)), y + 8.0))
+}
+
+/// Una `union`: todos los miembros empiezan en el offset 0 y se superponen; el tamaño es el del
+/// mayor, redondeado a la alineación más exigente. Con `tag`, el discriminante del registro
+/// exterior que dice qué miembro está activo.
+fn render_union(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
+    let campos = parsear_campos_struct(b)?;
+    let nombre = str_o(b, "name", "union valor");
+    let alineacion = campos.iter().map(|f| f.alineacion.max(1)).max().unwrap_or(1);
+    let mayor = campos.iter().map(|f| f.tamano).max().unwrap_or(0);
+    let sizeof = mayor.div_ceil(alineacion) * alineacion;
+    if sizeof > 32 {
+        return Err(ErrorDiagrama::new(format!(
+            "la union ocupa {sizeof} bytes; se dibujan hasta 32"
+        )));
+    }
+    let sin_layout = b.get("blankLayout").is_some_and(es_truthy);
+    let sin_etiqueta = b.get("blankTag").is_some_and(es_truthy);
+    let activo = b.get("active").filter(|v| es_truthy(v)).map(texto);
+    if let Some(a) = &activo {
+        if !campos.iter().any(|f| &f.nombre == a) {
+            return Err(ErrorDiagrama::new(format!("'active': la union no tiene el miembro '{a}'")));
+        }
+    }
+    let top = encabezado(c, b, &nombre);
+    let x0 = 20.0_f64;
+    let mut y = top + 8.0;
+    let mut ancho = 0.0_f64;
+
+    // El registro exterior con su discriminante.
+    if let Some(et) = b.get("tag").filter(|v| !v.is_null()) {
+        let Some(et) = et.as_object() else {
+            return Err(ErrorDiagrama::new("'tag' es {name, type, value, outer}"));
+        };
+        let exterior = et.get("outer").filter(|v| es_truthy(v)).map(texto).unwrap_or_else(|| "struct registro".to_string());
+        let campo = et.get("name").filter(|v| es_truthy(v)).map(texto).unwrap_or_else(|| "tipo".to_string());
+        let tipo = et.get("type").filter(|v| es_truthy(v)).map(texto).unwrap_or_else(|| "int".to_string());
+        let valor = if sin_etiqueta { "______".to_string() } else { et.get("value").map(texto).unwrap_or_default() };
+        let lineas = [
+            format!("{exterior} {{"),
+            format!("{tipo} {campo} = {valor};"),
+            format!("{nombre} dato;"),
+            "};".to_string(),
+        ];
+        for (k, l) in lineas.iter().enumerate() {
+            let sangria = if k == 1 || k == 2 { 26.0 } else { 0.0 };
+            c.t(x0 + sangria, y + 12.0 + k as f64 * 15.0, l, 10.5, if k == 1 { 700 } else { 400 }, "textMain", "start", MONO);
+            ancho = ancho.max(x0 + sangria + ancho_texto(l, 10.5));
+        }
+        let seleccion = match (&activo, sin_etiqueta) {
+            (_, true) => format!("{campo} selecciona el miembro: ______"),
+            (Some(a), false) => format!("{campo} selecciona el miembro: {a}"),
+            (None, false) => format!("{campo}: el discriminante (lo lee el código, no la union)"),
+        };
+        c.t(x0, y + 12.0 + 4.0 * 15.0 + 4.0, &seleccion, 9.5, 600, "textSub", "start", SANS);
+        ancho = ancho.max(x0 + ancho_texto(&seleccion, 9.5));
+        y += 4.0 * 15.0 + 30.0;
+    }
+
+    // La regla de offsets y una barra por miembro, desde el 0.
+    let paso = 30.0_f64;
+    let x_bytes = x0 + campos.iter().map(|f| ancho_texto(&f.declaracion(), 10.5)).fold(90.0, f64::max) + 18.0;
+    for k in 0..sizeof.max(1) {
+        let x = x_bytes + k as f64 * paso;
+        let txt = if sin_layout { String::new() } else { format!("+{k}") };
+        c.t(x + paso / 2.0, y + 10.0, &txt, 8.5, 400, "textMuted", "middle", MONO);
+    }
+    y += 16.0;
+    let alto_barra = 24.0_f64;
+    for f in &campos {
+        let es_activo = activo.as_deref() == Some(f.nombre.as_str()) && !sin_etiqueta;
+        c.t(x0, y + 16.0, &f.declaracion(), 10.5, if es_activo { 700 } else { 400 }, "textMain", "start", MONO);
+        // El lugar de la union, para todos los miembros: lo que no cubre el miembro queda punteado.
+        c.add(format!(
+            r#"<rect x="{x_bytes:.1}" y="{y:.1}" width="{:.1}" height="{alto_barra:.1}" fill="none" stroke="{}" stroke-width="1" stroke-dasharray="3 3"/>"#,
+            sizeof as f64 * paso,
+            c.pal.stroke_muted
+        ));
+        if !sin_layout {
+            let w = f.tamano as f64 * paso;
+            c.r(x_bytes, y, w, alto_barra, if es_activo { "fillBadge" } else { "fillCell" }, if es_activo { 2.0 } else { 1.4 }, 2.0);
+            let detalle = if es_activo && !f.valor.is_empty() {
+                format!("{} B = {}", f.tamano, f.valor)
+            } else {
+                format!("{} B", f.tamano)
+            };
+            c.t(x_bytes + w / 2.0, y + 16.0, &detalle, 9.5, 700, "textMain", "middle", MONO);
+            if es_activo {
+                c.t(x_bytes + sizeof as f64 * paso + 8.0, y + 16.0, "activo", 9.5, 700, "textMain", "start", SANS);
+            }
+        }
+        y += alto_barra + 8.0;
+    }
+    if !sin_layout && sizeof > mayor {
+        let x = x_bytes + mayor as f64 * paso;
+        c.t(x + (sizeof - mayor) as f64 * paso / 2.0, y + 8.0, "relleno", 9.0, 700, "textMuted", "middle", SANS);
+        y += 14.0;
+    }
+    ancho = ancho.max(x_bytes + sizeof as f64 * paso + 60.0);
+
+    let pie = if sin_layout {
+        format!("sizeof({nombre}) = ______")
+    } else {
+        format!("sizeof({nombre}) = {sizeof} bytes | alineación: {alineacion}")
+    };
+    let mut lineas_pie = vec![pie];
+    if b.get("compareStruct").is_some_and(es_truthy) && !sin_layout {
+        let mut copia = campos.clone();
+        let disp = disposicion_struct(&mut copia, false);
+        lineas_pie.push(format!("una struct con los mismos campos: {} bytes (cada campo en su propio offset)", disp.sizeof));
+    }
+    for (k, l) in lineas_pie.iter().enumerate() {
+        c.t(x0, y + 16.0 + k as f64 * 16.0, l, 10.5, if k == 0 { 700 } else { 400 }, "textMain", "start", MONO);
+        ancho = ancho.max(x0 + ancho_texto(l, 10.5));
+    }
+    Ok((ancho + 10.0, y + 8.0 + lineas_pie.len() as f64 * 16.0))
 }
 
 fn render_tipo_opaco(c: &mut Lienzo, b: &Bloque) -> Result<Punto, ErrorDiagrama> {
@@ -3063,6 +3180,17 @@ mod tests {
         let mut reg = Registro::new();
         registrar(&mut reg);
         reg
+    }
+
+    #[test]
+    fn union_superpone_los_miembros() {
+        let s = render_val(json!({"type": "struct", "variant": "union", "name": "union u", "fields": ["char c", "int i = 7"], "active": "i",
+            "tag": {"name": "tipo", "value": "ENTERO"}, "compareStruct": true}), true).unwrap();
+        assert!(s.contains("sizeof(union u) = 4 bytes") && s.contains("mismos campos: 8 bytes"));
+        assert!(s.contains("selecciona el miembro: i") && s.contains(">activo<"));
+        let b = render_val(json!({"type": "struct", "variant": "union", "fields": ["char c", "int i"], "active": "i", "tag": {"value": "X"}, "blankLayout": true, "blankTag": true}), true).unwrap();
+        assert!(b.contains("______") && !b.contains(">activo<") && !b.contains(">X<") && !b.contains(">4 B<"));
+        assert!(render_val(json!({"type": "struct", "variant": "union", "fields": ["int i"], "active": "z"}), true).is_err());
     }
 
     fn render_val(val: Value, tinta: bool) -> Result<String, ErrorDiagrama> {
