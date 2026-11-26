@@ -2,6 +2,7 @@
 
 #![warn(clippy::missing_safety_doc)]
 
+pub mod alcances;
 pub mod algos;
 pub mod common;
 pub mod lineal;
@@ -16,5 +17,6 @@ pub fn registrar(reg: &mut Registro) {
     recursion::registrar(reg);
     algos::registrar(reg);
     objetos::registrar(reg);
+    alcances::registrar(reg);
     octetos::registrar(reg);
 }
