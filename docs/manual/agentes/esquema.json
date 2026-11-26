@@ -9,11 +9,11 @@
  "tipos": {
   "array": {
    "nombre": "Arreglo",
-   "para": "Arreglos en memoria, con índices, direcciones, offsets y punteros que los recorren.",
+   "para": "Arreglos en memoria, con índices, direcciones, offsets y punteros que los recorren, y secuencias de Python con sus cortes.",
    "area": "Estructuras de datos y algoritmos › Estructuras lineales",
    "campos": {
     "values": {
-     "tipo": "lista",
+     "tipo": "lista o texto",
      "valores": [],
      "defecto": null,
      "descripcion": "Los valores, en orden. Un valor vacío (`\"\"`) deja la celda sin contenido."
@@ -71,17 +71,59 @@
      "valores": [],
      "defecto": null,
      "descripcion": "Deja las direcciones en blanco, para calcularlas."
+    },
+    "variant": {
+     "tipo": "texto",
+     "valores": [
+      "python_sequence"
+     ],
+     "defecto": null,
+     "descripcion": "Variante, ver arriba."
+    },
+    "kind": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `python_sequence`: `list` (por omisión), `tuple` o `str`. En `str`, `values` es un texto y cada celda es un carácter; un espacio se ve como `␣`."
+    },
+    "name": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `python_sequence`, el nombre de la variable (por omisión `a`, `t` o `s`)."
+    },
+    "showNegativeIndices": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `python_sequence`, el índice negativo de cada elemento."
+    },
+    "showBoundaries": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `python_sequence`, las fronteras entre celdas, de `0` a `n`."
+    },
+    "slice": {
+     "tipo": "objeto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `python_sequence`, un corte `{start, stop, step, blankSelection}`; cualquiera se puede omitir, y `{step: -1}` es `[::-1]`. El paso 0 es un error. Con `blankSelection: true` no se ve ninguna pista de la solución: ni las celdas elegidas, ni el inicio y el fin, ni el resultado."
     }
    },
    "aceptados": [],
-   "variantes": {},
+   "variantes": {
+    "python_sequence": "Una secuencia de Python (`kind`): el índice positivo y, con `showNegativeIndices`, el negativo de cada elemento; con `showBoundaries`, las fronteras entre celdas (de `0` a `n`). Con `slice`, resalta las celdas elegidas, numera el orden de visita si el paso no es 1, marca el inicio y el fin (el límite excluido) y escribe el resultado."
+   },
    "ejercicio": [
     "blankValues",
     "blankAddrs"
    ],
    "ejemplos": [
     "type: array\ntitle: \"Arreglo v[0..2] con <p & q> → α·β\"\nvalues: [3, 1, 4]\npointers: \"p:0, q:2\"\nshowAddresses: true\nshowOffsets: true",
-    "type: array\ntitle: Arreglo para completar\nvalues: [41, 42]\nblankValues: true\ninkSaver: false"
+    "type: array\ntitle: Arreglo para completar\nvalues: [41, 42]\nblankValues: true\ninkSaver: false",
+    "type: array\ntitle: \"Corte con paso: a[-4:-1:2]\"\nvariant: python_sequence\nkind: list\nvalues: [2, 4, 7, 1, 8]\nshowNegativeIndices: true\nshowBoundaries: true\nslice: {start: -4, stop: -1, step: 2}",
+    "type: array\ntitle: Corte de una cadena (para completar)\nvariant: python_sequence\nkind: str\nvalues: \"hola mundo\"\nshowNegativeIndices: true\nslice: {step: -2, blankSelection: true}\ninkSaver: false"
    ]
   },
   "matrix": {
@@ -855,6 +897,12 @@
      "defecto": null,
      "descripcion": "Con `snapshots`, `column` (por omisión) los apila y `row` los pone lado a lado."
     },
+    "variant": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "`java` (por omisión) o `python`: en Python, los nombres se agrupan por ámbito (`<módulo>`, las funciones activas), una referencia nula es `None` (un valor rotulado, no una flecha sin destino) y los valores se escriben como en Python (`'texto'`, `True`)."
+    },
     "zones": {
      "tipo": "",
      "valores": [],
@@ -890,7 +938,9 @@
     "type: object_heap\ntitle: Dos variables comparten un arreglo\nframes:\n  - function: main\n    vars:\n      - {name: a, type: \"int[]\", ref: A}\n      - {name: b, type: \"int[]\", ref: A}\n      - {name: copia, type: \"int[]\", ref: B}\n      - {name: cantidad, type: int, value: 3}\nobjects:\n  - id: A\n    type: \"int[]\"\n    elements: [{value: 1}, {value: 2}, {value: 3}]\n  - id: B\n    type: \"int[]\"\n    elements: [1, 2, 3]",
     "type: object_heap\ntitle: \"Instanciación, this y String Pool\"\nframes:\n  - function: main\n    vars:\n      - {name: juan, type: Persona, ref: P1}\n      - {name: maria, type: Persona, ref: P2}\n  - function: saludar\n    params:\n      - {name: this, type: Persona, ref: P1}\nobjects:\n  - id: P1\n    type: Persona\n    fields:\n      - {name: nombre, type: String, ref: S1}\n      - {name: edad, type: int, value: 30}\n  - id: P2\n    type: Persona\n    fields:\n      - {name: nombre, type: String, ref: S1}\n      - {name: edad, type: int, value: 25}\n  - {id: S1, type: String, value: \"Hola\", group: String Pool}\ninkSaver: false",
     "type: object_heap\ntitle: Reasignación de un parámetro\nsnapshots:\n  - label: \"Al entrar a modificar(numeros)\"\n    frames:\n      - function: main\n        vars: [{name: numeros, type: \"int[]\", ref: A}]\n      - function: modificar\n        params: [{name: arr, type: \"int[]\", ref: A}]\n    objects:\n      - {id: A, type: \"int[]\", elements: [1, 2, 3]}\n  - label: \"Después de arr = new int[] {7, 8}\"\n    frames:\n      - function: main\n        vars: [{name: numeros, type: \"int[]\", ref: A}]\n      - function: modificar\n        params: [{name: arr, type: \"int[]\", ref: B}]\n    objects:\n      - {id: A, type: \"int[]\", elements: [1, 2, 3]}\n      - {id: B, type: \"int[]\", elements: [7, 8]}",
-    "type: object_heap\ntitle: \"Tras p = null (para completar las referencias)\"\nframes:\n  - function: main\n    vars: [{name: p, type: Nodo, ref: null}, {name: lista, type: \"Nodo[]\", ref: L}]\nobjects:\n  - id: L\n    type: \"Nodo[]\"\n    elements: [{ref: N2}, {ref: null}]\n  - id: N1\n    type: Nodo\n    fields: [{name: dato, type: int, value: 1}, {name: sig, type: Nodo, ref: N2}]\n  - id: N2\n    type: Nodo\n    fields: [{name: dato, type: int, value: 2}, {name: sig, type: Nodo, ref: N2}]\nblankRefs: true"
+    "type: object_heap\ntitle: \"Tras p = null (para completar las referencias)\"\nframes:\n  - function: main\n    vars: [{name: p, type: Nodo, ref: null}, {name: lista, type: \"Nodo[]\", ref: L}]\nobjects:\n  - id: L\n    type: \"Nodo[]\"\n    elements: [{ref: N2}, {ref: null}]\n  - id: N1\n    type: Nodo\n    fields: [{name: dato, type: int, value: 1}, {name: sig, type: Nodo, ref: N2}]\n  - id: N2\n    type: Nodo\n    fields: [{name: dato, type: int, value: 2}, {name: sig, type: Nodo, ref: N2}]\nblankRefs: true",
+    "type: object_heap\nvariant: python\ntitle: \"Copia superficial: copia = original.copy()\"\nframes:\n  - function: \"<módulo>\"\n    vars:\n      - {name: original, ref: A}\n      - {name: copia, ref: B}\n      - {name: resultado, value: null}\nobjects:\n  - id: A\n    type: list\n    elements: [{ref: I}, \"x\"]\n  - id: B\n    type: list\n    elements: [{ref: I}, \"x\"]\n  - id: I\n    type: list\n    elements: [{value: 4}, {value: 7}]",
+    "type: object_heap\nvariant: python\ntitle: \"def agregar(lista): lista.append(9); lista = [0] (para completar)\"\nblankRefs: true\nsnapshots:\n  - label: \"Después de lista.append(9)\"\n    frames:\n      - function: \"<módulo>\"\n        vars: [{name: lista, ref: A}]\n      - function: agregar\n        params: [{name: lista, ref: A}]\n    objects:\n      - {id: A, type: list, elements: [1, 2, 9]}\n  - label: \"Después de lista = [0]\"\n    frames:\n      - function: \"<módulo>\"\n        vars: [{name: lista, ref: A}]\n      - function: agregar\n        params: [{name: lista, ref: B}]\n    objects:\n      - {id: A, type: list, elements: [1, 2, 9]}\n      - {id: B, type: list, elements: [0]}"
    ]
   },
   "adt": {
@@ -1349,7 +1399,7 @@
      "tipo": "lista",
      "valores": [],
      "defecto": null,
-     "descripcion": "Los pasos: un texto, `{io}` (entrada o salida), `{step}`, `{if, then, else}`, `{while, do}`, `{for, do}` o `{doWhile, do}` (el cuerpo antes de la condición); cada uno con `blank`."
+     "descripcion": "Los pasos: un texto, `{io}` (entrada o salida), `{step}`, `{if, then, else}`, `{while, do}`, `{for, do}`, `{doWhile, do}` (el cuerpo antes de la condición), `{break: true}`, `{continue: true}`, `{return: expresión}` o `{try, except, else, finally, propagate}`; cada uno con `blank`."
     },
     "start": {
      "tipo": "texto",
@@ -1377,7 +1427,11 @@
    ],
    "ejemplos": [
     "type: flowchart\ntitle: \"Bucle con condición < & >\"\nsteps:\n  - {io: \"leer n\"}\n  - \"i = 0\"\n  - while: \"i < n && n > 0\"\n    do:\n      - if: \"par(i)\"\n        then: [\"s = s + i\"]\n        else: [\"s = s - i\"]\n      - \"i = i + 1\"",
-    "type: flowchart\ntitle: \"Lazo do-while: el cuerpo se ejecuta al menos una vez\"\nsteps:\n  - \"i = 0\"\n  - doWhile: \"i < 3\"\n    do:\n      - \"procesar(i)\"\n      - \"i = i + 1\"\n  - {io: \"mostrar i\"}"
+    "type: flowchart\ntitle: \"Lazo do-while: el cuerpo se ejecuta al menos una vez\"\nsteps:\n  - \"i = 0\"\n  - doWhile: \"i < 3\"\n    do:\n      - \"procesar(i)\"\n      - \"i = i + 1\"\n  - {io: \"mostrar i\"}",
+    "type: flowchart\ntitle: break en el lazo interno y continue en el externo\nsteps:\n  - for: \"i en range(3)\"\n    do:\n      - if: \"i == 1\"\n        then:\n          - continue: true\n      - for: \"j en range(3)\"\n        do:\n          - if: \"j == i\"\n            then:\n              - break: true\n          - io: \"MOSTRAR i, j\"\n      - \"total = total + 1\"",
+    "type: flowchart\ntitle: \"def buscar(xs, x) (para completar)\"\nsteps:\n  - for: \"v en xs\"\n    do:\n      - if: \"v == x\"\n        then:\n          - {return: \"True\", blank: true}\n  - {return: \"False\", blank: true}\ninkSaver: false",
+    "type: flowchart\ntitle: try / except / else / finally\nsteps:\n  - {io: \"LEER texto\"}\n  - try:\n      - step: \"n = int(texto)\"\n    except:\n      - matches: ValueError\n        do:\n          - io: \"MOSTRAR error\"\n    else:\n      - io: \"MOSTRAR n\"\n    finally:\n      - step: \"Registrar intento\"\n    propagate: true",
+    "type: flowchart\ntitle: try / finally (para completar)\nblankValues: true\nsteps:\n  - try:\n      - step: \"f = abrir(ruta)\"\n      - step: \"procesar(f)\"\n    finally:\n      - step: \"f.close()\"\n    propagate: true"
    ]
   },
   "cost_table": {
@@ -1483,7 +1537,8 @@
     "variant": {
      "tipo": "texto",
      "valores": [
-      "stack"
+      "stack",
+      "program"
      ],
      "defecto": null,
      "descripcion": "Variante, ver arriba."
@@ -1492,17 +1547,44 @@
      "tipo": "sí/no",
      "valores": [],
      "defecto": null,
-     "descripcion": "Deja los valores en blanco."
+     "descripcion": "Deja los valores en blanco (en `program`, también la condición y la salida)."
+    },
+    "condition": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `program`, el encabezado de la columna de la condición (por ejemplo `x != 0`)."
+    },
+    "stepHeader": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `program`, el encabezado de la columna de pasos (por omisión `Paso`)."
+    },
+    "inputHeader": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `program`, el encabezado de la entrada (por omisión `Entrada`)."
+    },
+    "outputHeader": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `program`, el encabezado de la salida (por omisión `Salida`)."
     }
    },
    "aceptados": [],
    "variantes": {
-    "stack": "Sólo cambia los rótulos por omisión, para trazas de una pila."
+    "stack": "Sólo cambia los rótulos por omisión, para trazas de una pila.",
+    "program": "La prueba de escritorio de un programa: cada fila es `{step, stage, input, check, values, output, blanks}` y la tabla suma las columnas de etapa, paso, entrada, condición y salida que se usen. Una cadena vacía se ve como `''`, sin entrada o sin emisión como `—`, y `null` es un casillero para completar."
    },
    "ejercicio": [
     "blankValues"
    ],
    "ejemplos": [
+    "type: trace_table\nvariant: program\ntitle: \"Suma hasta leer 0\"\ncondition: \"x != 0\"\ncolumns: [x, suma]\nrows:\n  - {stage: initial, step: \"Primera lectura\", input: 4, values: [4, 0]}\n  - {stage: iteration, step: \"Vuelta 1\", check: true, values: [4, 4]}\n  - {stage: iteration, step: \"Lectura\", input: 0, values: [0, 4]}\n  - {stage: iteration, step: \"Centinela\", check: false, values: [0, 4]}\n  - {stage: output, step: \"Mostrar\", output: 4}",
+    "type: trace_table\nvariant: program\ntitle: \"Cero vueltas (para completar)\"\ncondition: \"x != 0\"\ncolumns: [x, suma]\nrows:\n  - {step: \"Primera lectura\", input: 0, values: [0, 0]}\n  - {step: \"Condición\", check: false, values: [0, null], blanks: [check]}\n  - {step: \"Mostrar\", output: 0, blanks: [output]}\n  - {step: \"print('')\", output: \"\"}\ninkSaver: false",
     "type: trace_table\ntitle: Tabla de seguimiento de variables\ncolumns: [\"i\", \"suma\"]\nrows: [[0, 7], [1, null]]\nrowCount: 4",
     "type: trace_table\ntitle: Seguimiento de pila (statics)\nvariant: stack\ncapacity: 5\npointerLabel: \"TOPE: ___\"\noperations: [\"1. push(10)\", \"2. pop()\"]\ninkSaver: false"
    ]

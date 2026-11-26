@@ -468,6 +468,37 @@ Los `14` tipos de `dibu-cs` usando también fences `statics` (tanto con backtick
       do: ["procesar(i)", "i = i + 1"]
 ```
 
+~~~estructura
+- type: array
+  title: "Corte: a[::-1]"
+  variant: python_sequence
+  values: [2, 4, 7]
+  showBoundaries: true
+  slice: {step: -1}
+- type: object_heap
+  variant: python
+  title: "b = a"
+  frames:
+    - function: "<módulo>"
+      vars: [{name: a, ref: L}, {name: b, ref: L}]
+  objects:
+    - {id: L, type: list, elements: [1, 2]}
+- type: flowchart
+  title: continue
+  steps:
+    - for: "j en range(3)"
+      do:
+        - if: "j == 1"
+          then: [{continue: true}]
+        - io: "MOSTRAR j"
+- type: trace_table
+  variant: program
+  columns: [x]
+  rows:
+    - {step: "Leer", input: 0, values: [0]}
+    - {step: "Mostrar", output: ""}
+~~~
+
 ### Algoritmos, complejidad y seguimiento
 
 ```statics

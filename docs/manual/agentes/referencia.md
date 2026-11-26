@@ -14,17 +14,23 @@ Los 71 tipos, con todos sus campos. Los valores admitidos y por defecto salen de
 
 ## `array`: Arreglo
 
-*Estructuras de datos y algoritmos › Estructuras lineales.* Arreglos en memoria, con índices, direcciones, offsets y punteros que los recorren.
+*Estructuras de datos y algoritmos › Estructuras lineales.* Arreglos en memoria, con índices, direcciones, offsets y punteros que los recorren, y secuencias de Python con sus cortes.
 
 Dibuja un arreglo como una fila de celdas contiguas, con el índice de cada una y,
 opcionalmente, su dirección de memoria y su offset desde el comienzo. Los punteros o índices
-que lo recorren se dibujan como flechas sobre la celda a la que apuntan.
+que lo recorren se dibujan como flechas sobre la celda a la que apuntan. Con
+`variant: python_sequence`, una lista, tupla o cadena de Python, con índices negativos,
+fronteras y un corte (`slice`).
 
-**Calcula:** La dirección de cada celda a partir de `baseAddr` y del tamaño del elemento (`typeSize`).
+**Calcula:** La dirección de cada celda a partir de `baseAddr` y del tamaño del elemento (`typeSize`). En `python_sequence`, las celdas que elige un corte, con las reglas de `slice.indices(n)`: los límites fuera de rango se ajustan, y el resultado se escribe como en Python (`[4, 1]`, `(4,)`, `'aloh'`).
+
+| `variant` | Qué dibuja |
+| :--- | :--- |
+| `python_sequence` | Una secuencia de Python (`kind`): el índice positivo y, con `showNegativeIndices`, el negativo de cada elemento; con `showBoundaries`, las fronteras entre celdas (de `0` a `n`). Con `slice`, resalta las celdas elegidas, numera el orden de visita si el paso no es 1, marca el inicio y el fin (el límite excluido) y escribe el resultado. |
 
 | Campo | Tipo | Valores · por defecto | Descripción |
 | :--- | :--- | :--- | :--- |
-| `values` | lista |  | Los valores, en orden. Un valor vacío (`""`) deja la celda sin contenido. |
+| `values` | lista o texto |  | Los valores, en orden. Un valor vacío (`""`) deja la celda sin contenido. |
 | `capacity` | número |  | Cantidad total de celdas; las que sobran después de `values` se dibujan vacías (el espacio reservado sin usar). |
 | `pointers` | texto |  | Punteros o índices sobre el arreglo, como texto `"p:0, q:3"` (nombre y posición). |
 | `showIndices` | sí/no |  | Muestra el índice de cada celda (por omisión, sí). |
@@ -34,8 +40,15 @@ que lo recorren se dibujan como flechas sobre la celda a la que apuntan.
 | `typeSize` | número |  | Tamaño de cada elemento en bytes (por omisión 4, un `int`). |
 | `blankValues` | sí/no |  | Deja los valores en blanco, para completar. |
 | `blankAddrs` | sí/no |  | Deja las direcciones en blanco, para calcularlas. |
+| `variant` | texto |  | Variante, ver arriba. |
+| `kind` | texto |  | En `python_sequence`: `list` (por omisión), `tuple` o `str`. En `str`, `values` es un texto y cada celda es un carácter; un espacio se ve como `␣`. |
+| `name` | texto |  | En `python_sequence`, el nombre de la variable (por omisión `a`, `t` o `s`). |
+| `showNegativeIndices` | sí/no |  | En `python_sequence`, el índice negativo de cada elemento. |
+| `showBoundaries` | sí/no |  | En `python_sequence`, las fronteras entre celdas, de `0` a `n`. |
+| `slice` | objeto |  | En `python_sequence`, un corte `{start, stop, step, blankSelection}`; cualquiera se puede omitir, y `{step: -1}` es `[::-1]`. El paso 0 es un error. Con `blankSelection: true` no se ve ninguna pista de la solución: ni las celdas elegidas, ni el inicio y el fin, ni el resultado. |
 
-**Modo ejercicio:** Campos: `blankValues`, `blankAddrs`.
+**Modo ejercicio:** En `python_sequence`, `slice` con `blankSelection: true` deja el corte para resolver: se ve la
+expresión (`a[-4:-1:2]`) y un casillero para el resultado. Campos: `blankValues`, `blankAddrs`.
 
 Ejemplo: Arreglo v[0..2] con <p & q> → α·β
 
@@ -58,7 +71,34 @@ blankValues: true
 inkSaver: false
 ```
 
+Ejemplo: Corte con paso: a[-4:-1:2]
+
+```yaml
+type: array
+title: "Corte con paso: a[-4:-1:2]"
+variant: python_sequence
+kind: list
+values: [2, 4, 7, 1, 8]
+showNegativeIndices: true
+showBoundaries: true
+slice: {start: -4, stop: -1, step: 2}
+```
+
+Ejemplo: Corte de una cadena (para completar)
+
+```yaml
+type: array
+title: Corte de una cadena (para completar)
+variant: python_sequence
+kind: str
+values: "hola mundo"
+showNegativeIndices: true
+slice: {step: -2, blankSelection: true}
+inkSaver: false
+```
+
 - Para un arreglo de dos dimensiones, ver [`matrix`](#matrix).
+- En `python_sequence` no hay direcciones de memoria; hasta 16 elementos.
 
 <a id="matrix"></a>
 
@@ -543,7 +583,8 @@ Dibuja los marcos activos en el stack (del tope, arriba, a `main`) y los objetos
 con una flecha por cada referencia. Cada objeto tiene un ID: dos referencias al mismo ID llegan
 a la misma caja, y dos objetos con el mismo contenido son cajas distintas. Las referencias
 entre objetos (y a sí mismos) rodean el heap por la derecha. Con `snapshots`, el estado en
-varios instantes, para mostrar copia, mutación y reasignación de referencias.
+varios instantes, para mostrar copia, mutación y reasignación de referencias: un ID que sigue
+en el instante siguiente queda en el mismo lugar, así se ve cuál flecha cambió.
 
 **Calcula:** Qué objetos son alcanzables desde el stack, siguiendo las referencias; los demás se marcan como inalcanzables.
 
@@ -553,6 +594,7 @@ varios instantes, para mostrar copia, mutación y reasignación de referencias.
 | `objects` | lista |  | Los objetos del heap. Cada uno con `id`, `type` y uno de `fields` (como las variables), `elements` (las celdas de un arreglo: valores sueltos, `{value}` o `{ref}`) o `value` (el contenido, como un `String`). `group` los agrupa, como el String Pool. |
 | `snapshots` | lista |  | Varios instantes (hasta 6), cada uno con `label`, `frames` y `objects`. Un mismo ID en dos instantes es el mismo objeto. |
 | `direction` |  |  | Con `snapshots`, `column` (por omisión) los apila y `row` los pone lado a lado. |
+| `variant` | texto |  | `java` (por omisión) o `python`: en Python, los nombres se agrupan por ámbito (`<módulo>`, las funciones activas), una referencia nula es `None` (un valor rotulado, no una flecha sin destino) y los valores se escriben como en Python (`'texto'`, `True`). |
 | `zones` |  |  | Los títulos del stack y del heap (`{stack, heap}`); `false` quita los recuadros. |
 | `markUnreachable` |  |  | Marca los objetos inalcanzables desde el stack (por omisión, sí). |
 | `blankValues` | sí/no |  | Deja los valores en blanco. |
@@ -654,6 +696,57 @@ objects:
     type: Nodo
     fields: [{name: dato, type: int, value: 2}, {name: sig, type: Nodo, ref: N2}]
 blankRefs: true
+```
+
+Ejemplo: Copia superficial: copia = original.copy()
+
+```yaml
+type: object_heap
+variant: python
+title: "Copia superficial: copia = original.copy()"
+frames:
+  - function: "<módulo>"
+    vars:
+      - {name: original, ref: A}
+      - {name: copia, ref: B}
+      - {name: resultado, value: null}
+objects:
+  - id: A
+    type: list
+    elements: [{ref: I}, "x"]
+  - id: B
+    type: list
+    elements: [{ref: I}, "x"]
+  - id: I
+    type: list
+    elements: [{value: 4}, {value: 7}]
+```
+
+Ejemplo: def agregar(lista): lista.append(9); lista = [0] (para completar)
+
+```yaml
+type: object_heap
+variant: python
+title: "def agregar(lista): lista.append(9); lista = [0] (para completar)"
+blankRefs: true
+snapshots:
+  - label: "Después de lista.append(9)"
+    frames:
+      - function: "<módulo>"
+        vars: [{name: lista, ref: A}]
+      - function: agregar
+        params: [{name: lista, ref: A}]
+    objects:
+      - {id: A, type: list, elements: [1, 2, 9]}
+  - label: "Después de lista = [0]"
+    frames:
+      - function: "<módulo>"
+        vars: [{name: lista, ref: A}]
+      - function: agregar
+        params: [{name: lista, ref: B}]
+    objects:
+      - {id: A, type: list, elements: [1, 2, 9]}
+      - {id: B, type: list, elements: [0]}
 ```
 
 - Hasta 8 marcos, 16 objetos y 12 variables, campos o celdas por marco u objeto.
@@ -970,9 +1063,16 @@ inkSaver: false
 Arma el diagrama de flujo a partir de la estructura del algoritmo: pasos, entradas y salidas,
 condicionales y ciclos anidados. Cada paso con `blank: true` sale vacío para completar.
 
+Los saltos van a su destino por un carril a la derecha: `break` a la salida del lazo más
+interno, `continue` a su condición y `return` al fin; después de un salto no hay arista hacia
+el paso siguiente. Un `try` dibuja su región, los `except` a la derecha (a los que se llega con
+flechas con guiones, las excepcionales), el `else` en el camino sin excepción y el `finally`,
+al que llegan todos los caminos; con `propagate: true`, una excepción no capturada pasa por
+el `finally` y se propaga.
+
 | Campo | Tipo | Valores · por defecto | Descripción |
 | :--- | :--- | :--- | :--- |
-| `steps` | lista |  | Los pasos: un texto, `{io}` (entrada o salida), `{step}`, `{if, then, else}`, `{while, do}`, `{for, do}` o `{doWhile, do}` (el cuerpo antes de la condición); cada uno con `blank`. |
+| `steps` | lista |  | Los pasos: un texto, `{io}` (entrada o salida), `{step}`, `{if, then, else}`, `{while, do}`, `{for, do}`, `{doWhile, do}` (el cuerpo antes de la condición), `{break: true}`, `{continue: true}`, `{return: expresión}` o `{try, except, else, finally, propagate}`; cada uno con `blank`. |
 | `start` | texto |  | Rótulo del inicio (por omisión `Inicio`); `false` lo quita. |
 | `end` | texto |  | Rótulo del fin (por omisión `Fin`); `false` lo quita. |
 | `blankValues` | sí/no |  | Deja en blanco el texto de todos los pasos. |
@@ -1008,6 +1108,80 @@ steps:
       - "i = i + 1"
   - {io: "mostrar i"}
 ```
+
+Ejemplo: break en el lazo interno y continue en el externo
+
+```yaml
+type: flowchart
+title: break en el lazo interno y continue en el externo
+steps:
+  - for: "i en range(3)"
+    do:
+      - if: "i == 1"
+        then:
+          - continue: true
+      - for: "j en range(3)"
+        do:
+          - if: "j == i"
+            then:
+              - break: true
+          - io: "MOSTRAR i, j"
+      - "total = total + 1"
+```
+
+Ejemplo: def buscar(xs, x) (para completar)
+
+```yaml
+type: flowchart
+title: "def buscar(xs, x) (para completar)"
+steps:
+  - for: "v en xs"
+    do:
+      - if: "v == x"
+        then:
+          - {return: "True", blank: true}
+  - {return: "False", blank: true}
+inkSaver: false
+```
+
+Ejemplo: try / except / else / finally
+
+```yaml
+type: flowchart
+title: try / except / else / finally
+steps:
+  - {io: "LEER texto"}
+  - try:
+      - step: "n = int(texto)"
+    except:
+      - matches: ValueError
+        do:
+          - io: "MOSTRAR error"
+    else:
+      - io: "MOSTRAR n"
+    finally:
+      - step: "Registrar intento"
+    propagate: true
+```
+
+Ejemplo: try / finally (para completar)
+
+```yaml
+type: flowchart
+title: try / finally (para completar)
+blankValues: true
+steps:
+  - try:
+      - step: "f = abrir(ruta)"
+      - step: "procesar(f)"
+    finally:
+      - step: "f.close()"
+    propagate: true
+```
+
+- `break` y `continue` fuera de un lazo, y `return` sin el fin del diagrama (`end: false`), son errores.
+- `try`: `except` es una lista de `{matches, do}` (`matches` es un tipo, una lista de tipos o nada); `else` necesita algún `except`, y un `try` necesita `except` o `finally`.
+- Por ahora, un salto dentro de un `try` o un `try` dentro de otro no se dibujan.
 
 <a id="cost_table"></a>
 
@@ -1054,6 +1228,7 @@ traza de statics, con una secuencia de operaciones sobre una estructura de capac
 | `variant` | Qué dibuja |
 | :--- | :--- |
 | `stack` | Sólo cambia los rótulos por omisión, para trazas de una pila. |
+| `program` | La prueba de escritorio de un programa: cada fila es `{step, stage, input, check, values, output, blanks}` y la tabla suma las columnas de etapa, paso, entrada, condición y salida que se usen. Una cadena vacía se ve como `''`, sin entrada o sin emisión como `—`, y `null` es un casillero para completar. |
 
 | Campo | Tipo | Valores · por defecto | Descripción |
 | :--- | :--- | :--- | :--- |
@@ -1066,9 +1241,46 @@ traza de statics, con una secuencia de operaciones sobre una estructura de capac
 | `pointerHeader` | texto |  | En la traza de statics, el encabezado de la columna del puntero. |
 | `pointerLabel` | texto |  | En la traza de statics, el nombre del puntero. |
 | `variant` | texto |  | Variante, ver arriba. |
-| `blankValues` | sí/no |  | Deja los valores en blanco. |
+| `blankValues` | sí/no |  | Deja los valores en blanco (en `program`, también la condición y la salida). |
+| `condition` | texto |  | En `program`, el encabezado de la columna de la condición (por ejemplo `x != 0`). |
+| `stepHeader` | texto |  | En `program`, el encabezado de la columna de pasos (por omisión `Paso`). |
+| `inputHeader` | texto |  | En `program`, el encabezado de la entrada (por omisión `Entrada`). |
+| `outputHeader` | texto |  | En `program`, el encabezado de la salida (por omisión `Salida`). |
 
-**Modo ejercicio:** Campos: `blankValues`.
+**Modo ejercicio:** En `program`, `blanks` en una fila oculta esas celdas (`[output]`, `[check]`, o el nombre de
+una variable): la respuesta no queda en el SVG. Campos: `blankValues`.
+
+Ejemplo: Suma hasta leer 0
+
+```yaml
+type: trace_table
+variant: program
+title: "Suma hasta leer 0"
+condition: "x != 0"
+columns: [x, suma]
+rows:
+  - {stage: initial, step: "Primera lectura", input: 4, values: [4, 0]}
+  - {stage: iteration, step: "Vuelta 1", check: true, values: [4, 4]}
+  - {stage: iteration, step: "Lectura", input: 0, values: [0, 4]}
+  - {stage: iteration, step: "Centinela", check: false, values: [0, 4]}
+  - {stage: output, step: "Mostrar", output: 4}
+```
+
+Ejemplo: Cero vueltas (para completar)
+
+```yaml
+type: trace_table
+variant: program
+title: "Cero vueltas (para completar)"
+condition: "x != 0"
+columns: [x, suma]
+rows:
+  - {step: "Primera lectura", input: 0, values: [0, 0]}
+  - {step: "Condición", check: false, values: [0, null], blanks: [check]}
+  - {step: "Mostrar", output: 0, blanks: [output]}
+  - {step: "print('')", output: ""}
+inkSaver: false
+```
 
 Ejemplo: Tabla de seguimiento de variables
 
@@ -1091,6 +1303,9 @@ pointerLabel: "TOPE: ___"
 operations: ["1. push(10)", "2. pop()"]
 inkSaver: false
 ```
+
+- En `program`, `stage` puede ser `initial` (estado inicial), `iteration` (iteración), `output` (salida) u otro texto; se escribe en la primera fila de cada tramo. Una fila sin `values` no muestra las variables.
+- En `program` también valen las filas posicionales (una lista de valores).
 
 <a id="dp_table"></a>
 

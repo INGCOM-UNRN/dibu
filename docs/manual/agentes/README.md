@@ -77,7 +77,7 @@ Todos los tipos aceptan, además de los propios:
 
 **Estructuras lineales**
 
-- [`array`](referencia.md#array): Arreglo. Arreglos en memoria, con índices, direcciones, offsets y punteros que los recorren.
+- [`array`](referencia.md#array): Arreglo. Arreglos en memoria, con índices, direcciones, offsets y punteros que los recorren, y secuencias de Python con sus cortes.
 - [`matrix`](referencia.md#matrix): Matriz. Matrices estáticas, dinámicas, dentadas, planas y de Java, como están en memoria.
 - [`linked_list`](referencia.md#linked_list): Lista enlazada. Listas simples, dobles y circulares, con direcciones, cursores y estructura cabecera.
 - [`stack`](referencia.md#stack): Pila. Pilas en arreglo, con el tope, y su evolución paso a paso.

@@ -6,7 +6,8 @@ Dibuja los marcos activos en el stack (del tope, arriba, a `main`) y los objetos
 con una flecha por cada referencia. Cada objeto tiene un ID: dos referencias al mismo ID llegan
 a la misma caja, y dos objetos con el mismo contenido son cajas distintas. Las referencias
 entre objetos (y a sí mismos) rodean el heap por la derecha. Con `snapshots`, el estado en
-varios instantes, para mostrar copia, mutación y reasignación de referencias.
+varios instantes, para mostrar copia, mutación y reasignación de referencias: un ID que sigue
+en el instante siguiente queda en el mismo lugar, así se ve cuál flecha cambió.
 
 ## Qué calcula
 
@@ -21,6 +22,7 @@ varios instantes, para mostrar copia, mutación y reasignación de referencias.
 | `objects` | lista |  | Los objetos del heap. Cada uno con `id`, `type` y uno de `fields` (como las variables), `elements` (las celdas de un arreglo: valores sueltos, `{value}` o `{ref}`) o `value` (el contenido, como un `String`). `group` los agrupa, como el String Pool. |
 | `snapshots` | lista |  | Varios instantes (hasta 6), cada uno con `label`, `frames` y `objects`. Un mismo ID en dos instantes es el mismo objeto. |
 | `direction` |  |  | Con `snapshots`, `column` (por omisión) los apila y `row` los pone lado a lado. |
+| `variant` | texto |  | `java` (por omisión) o `python`: en Python, los nombres se agrupan por ámbito (`<módulo>`, las funciones activas), una referencia nula es `None` (un valor rotulado, no una flecha sin destino) y los valores se escriben como en Python (`'texto'`, `True`). |
 | `zones` |  |  | Los títulos del stack y del heap (`{stack, heap}`); `false` quita los recuadros. |
 | `markUnreachable` |  |  | Marca los objetos inalcanzables desde el stack (por omisión, sí). |
 | `blankValues` | sí/no |  | Deja los valores en blanco. |
@@ -139,6 +141,61 @@ blankRefs: true
 ```
 
 ![Tras p = null (para completar las referencias)](img/ks_cs_object_heap_alcanzable_blank.svg)
+
+### Copia superficial: copia = original.copy()
+
+```yaml
+type: object_heap
+variant: python
+title: "Copia superficial: copia = original.copy()"
+frames:
+  - function: "<módulo>"
+    vars:
+      - {name: original, ref: A}
+      - {name: copia, ref: B}
+      - {name: resultado, value: null}
+objects:
+  - id: A
+    type: list
+    elements: [{ref: I}, "x"]
+  - id: B
+    type: list
+    elements: [{ref: I}, "x"]
+  - id: I
+    type: list
+    elements: [{value: 4}, {value: 7}]
+```
+
+![Copia superficial: copia = original.copy()](img/ks_cs_object_heap_python_copia.svg)
+
+### def agregar(lista): lista.append(9); lista = [0] (para completar)
+
+```yaml
+type: object_heap
+variant: python
+title: "def agregar(lista): lista.append(9); lista = [0] (para completar)"
+blankRefs: true
+snapshots:
+  - label: "Después de lista.append(9)"
+    frames:
+      - function: "<módulo>"
+        vars: [{name: lista, ref: A}]
+      - function: agregar
+        params: [{name: lista, ref: A}]
+    objects:
+      - {id: A, type: list, elements: [1, 2, 9]}
+  - label: "Después de lista = [0]"
+    frames:
+      - function: "<módulo>"
+        vars: [{name: lista, ref: A}]
+      - function: agregar
+        params: [{name: lista, ref: B}]
+    objects:
+      - {id: A, type: list, elements: [1, 2, 9]}
+      - {id: B, type: list, elements: [0]}
+```
+
+![def agregar(lista): lista.append(9); lista = [0] (para completar)](img/ks_cs_object_heap_python_parametro_blank.svg)
 
 ## Notas
 

@@ -13,7 +13,7 @@ programación dinámica. Las direcciones, los offsets y los resultados los calcu
 
 Arreglos, matrices, listas enlazadas, pilas y colas, con sus direcciones de memoria.
 
-- [`array`](lineales/array.md): Arreglo. Arreglos en memoria, con índices, direcciones, offsets y punteros que los recorren.
+- [`array`](lineales/array.md): Arreglo. Arreglos en memoria, con índices, direcciones, offsets y punteros que los recorren, y secuencias de Python con sus cortes.
 - [`matrix`](lineales/matrix.md): Matriz. Matrices estáticas, dinámicas, dentadas, planas y de Java, como están en memoria.
 - [`linked_list`](lineales/linked_list.md): Lista enlazada. Listas simples, dobles y circulares, con direcciones, cursores y estructura cabecera.
 - [`stack`](lineales/stack.md): Pila. Pilas en arreglo, con el tope, y su evolución paso a paso.

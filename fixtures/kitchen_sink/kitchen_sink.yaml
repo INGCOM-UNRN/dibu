@@ -620,6 +620,26 @@
   blankValues: true
   inkSaver: false
 
+- id: ks_cs_array_python_corte
+  type: array
+  title: "Corte con paso: a[-4:-1:2]"
+  variant: python_sequence
+  kind: list
+  values: [2, 4, 7, 1, 8]
+  showNegativeIndices: true
+  showBoundaries: true
+  slice: {start: -4, stop: -1, step: 2}
+
+- id: ks_cs_array_python_cadena_blank
+  type: array
+  title: Corte de una cadena (para completar)
+  variant: python_sequence
+  kind: str
+  values: "hola mundo"
+  showNegativeIndices: true
+  slice: {step: -2, blankSelection: true}
+  inkSaver: false
+
 - id: ks_cs_matrix_estatica_lineal
   type: matrix
   title: Matriz estática row-major
@@ -903,6 +923,51 @@
       fields: [{name: dato, type: int, value: 2}, {name: sig, type: Nodo, ref: N2}]
   blankRefs: true
 
+- id: ks_cs_object_heap_python_copia
+  type: object_heap
+  variant: python
+  title: "Copia superficial: copia = original.copy()"
+  frames:
+    - function: "<módulo>"
+      vars:
+        - {name: original, ref: A}
+        - {name: copia, ref: B}
+        - {name: resultado, value: null}
+  objects:
+    - id: A
+      type: list
+      elements: [{ref: I}, "x"]
+    - id: B
+      type: list
+      elements: [{ref: I}, "x"]
+    - id: I
+      type: list
+      elements: [{value: 4}, {value: 7}]
+
+- id: ks_cs_object_heap_python_parametro_blank
+  type: object_heap
+  variant: python
+  title: "def agregar(lista): lista.append(9); lista = [0] (para completar)"
+  blankRefs: true
+  snapshots:
+    - label: "Después de lista.append(9)"
+      frames:
+        - function: "<módulo>"
+          vars: [{name: lista, ref: A}]
+        - function: agregar
+          params: [{name: lista, ref: A}]
+      objects:
+        - {id: A, type: list, elements: [1, 2, 9]}
+    - label: "Después de lista = [0]"
+      frames:
+        - function: "<módulo>"
+          vars: [{name: lista, ref: A}]
+        - function: agregar
+          params: [{name: lista, ref: B}]
+      objects:
+        - {id: A, type: list, elements: [1, 2, 9]}
+        - {id: B, type: list, elements: [0]}
+
 - id: ks_cs_adt_pila
   type: adt
   title: Especificación TAD Pila
@@ -958,6 +1023,90 @@
         - "procesar(i)"
         - "i = i + 1"
     - {io: "mostrar i"}
+
+- id: ks_cs_flowchart_break_continue
+  type: flowchart
+  title: break en el lazo interno y continue en el externo
+  steps:
+    - for: "i en range(3)"
+      do:
+        - if: "i == 1"
+          then:
+            - continue: true
+        - for: "j en range(3)"
+          do:
+            - if: "j == i"
+              then:
+                - break: true
+            - io: "MOSTRAR i, j"
+        - "total = total + 1"
+
+- id: ks_cs_flowchart_return_blank
+  type: flowchart
+  title: "def buscar(xs, x) (para completar)"
+  steps:
+    - for: "v en xs"
+      do:
+        - if: "v == x"
+          then:
+            - {return: "True", blank: true}
+    - {return: "False", blank: true}
+  inkSaver: false
+
+- id: ks_cs_flowchart_try
+  type: flowchart
+  title: try / except / else / finally
+  steps:
+    - {io: "LEER texto"}
+    - try:
+        - step: "n = int(texto)"
+      except:
+        - matches: ValueError
+          do:
+            - io: "MOSTRAR error"
+      else:
+        - io: "MOSTRAR n"
+      finally:
+        - step: "Registrar intento"
+      propagate: true
+
+- id: ks_cs_flowchart_try_finally_blank
+  type: flowchart
+  title: try / finally (para completar)
+  blankValues: true
+  steps:
+    - try:
+        - step: "f = abrir(ruta)"
+        - step: "procesar(f)"
+      finally:
+        - step: "f.close()"
+      propagate: true
+
+- id: ks_cs_trace_table_programa
+  type: trace_table
+  variant: program
+  title: "Suma hasta leer 0"
+  condition: "x != 0"
+  columns: [x, suma]
+  rows:
+    - {stage: initial, step: "Primera lectura", input: 4, values: [4, 0]}
+    - {stage: iteration, step: "Vuelta 1", check: true, values: [4, 4]}
+    - {stage: iteration, step: "Lectura", input: 0, values: [0, 4]}
+    - {stage: iteration, step: "Centinela", check: false, values: [0, 4]}
+    - {stage: output, step: "Mostrar", output: 4}
+
+- id: ks_cs_trace_table_programa_blank
+  type: trace_table
+  variant: program
+  title: "Cero vueltas (para completar)"
+  condition: "x != 0"
+  columns: [x, suma]
+  rows:
+    - {step: "Primera lectura", input: 0, values: [0, 0]}
+    - {step: "Condición", check: false, values: [0, null], blanks: [check]}
+    - {step: "Mostrar", output: 0, blanks: [output]}
+    - {step: "print('')", output: ""}
+  inkSaver: false
 
 - id: ks_cs_cost_table_sangria_blank
   type: cost_table

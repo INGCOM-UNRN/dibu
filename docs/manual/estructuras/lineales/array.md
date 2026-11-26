@@ -4,18 +4,27 @@
 
 Dibuja un arreglo como una fila de celdas contiguas, con el índice de cada una y,
 opcionalmente, su dirección de memoria y su offset desde el comienzo. Los punteros o índices
-que lo recorren se dibujan como flechas sobre la celda a la que apuntan.
+que lo recorren se dibujan como flechas sobre la celda a la que apuntan. Con
+`variant: python_sequence`, una lista, tupla o cadena de Python, con índices negativos,
+fronteras y un corte (`slice`).
 
 ## Qué calcula
 
 - La dirección de cada celda a partir de `baseAddr` y del tamaño del elemento (`typeSize`).
+- En `python_sequence`, las celdas que elige un corte, con las reglas de `slice.indices(n)`: los límites fuera de rango se ajustan, y el resultado se escribe como en Python (`[4, 1]`, `(4,)`, `'aloh'`).
+
+## Variantes
+
+| `variant` | Qué dibuja |
+| :--- | :--- |
+| `python_sequence` | Una secuencia de Python (`kind`): el índice positivo y, con `showNegativeIndices`, el negativo de cada elemento; con `showBoundaries`, las fronteras entre celdas (de `0` a `n`). Con `slice`, resalta las celdas elegidas, numera el orden de visita si el paso no es 1, marca el inicio y el fin (el límite excluido) y escribe el resultado. |
 
 ## Campos
 
 | Campo | Tipo | Valores y valor por defecto | Descripción |
 | :--- | :--- | :--- | :--- |
 | `type` | texto | `array` | Obligatorio. |
-| `values` | lista |  | Los valores, en orden. Un valor vacío (`""`) deja la celda sin contenido. |
+| `values` | lista o texto |  | Los valores, en orden. Un valor vacío (`""`) deja la celda sin contenido. |
 | `capacity` | número |  | Cantidad total de celdas; las que sobran después de `values` se dibujan vacías (el espacio reservado sin usar). |
 | `pointers` | texto |  | Punteros o índices sobre el arreglo, como texto `"p:0, q:3"` (nombre y posición). |
 | `showIndices` | sí/no |  | Muestra el índice de cada celda (por omisión, sí). |
@@ -25,10 +34,19 @@ que lo recorren se dibujan como flechas sobre la celda a la que apuntan.
 | `typeSize` | número |  | Tamaño de cada elemento en bytes (por omisión 4, un `int`). |
 | `blankValues` | sí/no |  | Deja los valores en blanco, para completar. |
 | `blankAddrs` | sí/no |  | Deja las direcciones en blanco, para calcularlas. |
+| `variant` | texto |  | Variante, ver arriba. |
+| `kind` | texto |  | En `python_sequence`: `list` (por omisión), `tuple` o `str`. En `str`, `values` es un texto y cada celda es un carácter; un espacio se ve como `␣`. |
+| `name` | texto |  | En `python_sequence`, el nombre de la variable (por omisión `a`, `t` o `s`). |
+| `showNegativeIndices` | sí/no |  | En `python_sequence`, el índice negativo de cada elemento. |
+| `showBoundaries` | sí/no |  | En `python_sequence`, las fronteras entre celdas, de `0` a `n`. |
+| `slice` | objeto |  | En `python_sequence`, un corte `{start, stop, step, blankSelection}`; cualquiera se puede omitir, y `{step: -1}` es `[::-1]`. El paso 0 es un error. Con `blankSelection: true` no se ve ninguna pista de la solución: ni las celdas elegidas, ni el inicio y el fin, ni el resultado. |
 
 Además, los campos comunes a todos los tipos: `title`, `subtitle`, `id`, `inkSaver` y `theme` (ver [Campos comunes](../../campos-comunes.md)).
 
 ## Modo ejercicio
+
+En `python_sequence`, `slice` con `blankSelection: true` deja el corte para resolver: se ve la
+expresión (`a[-4:-1:2]`) y un casillero para el resultado.
 
 Campos que dejan casilleros para completar: `blankValues`, `blankAddrs`.
 
@@ -59,9 +77,40 @@ inkSaver: false
 
 ![Arreglo para completar](img/ks_cs_array_blank.svg)
 
+### Corte con paso: a[-4:-1:2]
+
+```yaml
+type: array
+title: "Corte con paso: a[-4:-1:2]"
+variant: python_sequence
+kind: list
+values: [2, 4, 7, 1, 8]
+showNegativeIndices: true
+showBoundaries: true
+slice: {start: -4, stop: -1, step: 2}
+```
+
+![Corte con paso: a[-4:-1:2]](img/ks_cs_array_python_corte.svg)
+
+### Corte de una cadena (para completar)
+
+```yaml
+type: array
+title: Corte de una cadena (para completar)
+variant: python_sequence
+kind: str
+values: "hola mundo"
+showNegativeIndices: true
+slice: {step: -2, blankSelection: true}
+inkSaver: false
+```
+
+![Corte de una cadena (para completar)](img/ks_cs_array_python_cadena_blank.svg)
+
 ## Notas
 
 - Para un arreglo de dos dimensiones, ver [`matrix`](matrix.md).
+- En `python_sequence` no hay direcciones de memoria; hasta 16 elementos.
 
 ## Ver también
 
