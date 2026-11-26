@@ -4,7 +4,7 @@
 
 Esta guía es para un agente (o una persona) que redacta apuntes, guías o exámenes y necesita
 **escribir diagramas de dibu e integrarlos** en el documento. Reúne en un lugar la sintaxis, el
-catálogo de los 71 tipos, cómo se inserta un diagrama en cada destino y cómo comprobarlo
+catálogo de los 72 tipos, cómo se inserta un diagrama en cada destino y cómo comprobarlo
 antes de entregar.
 
 | Archivo | Para qué |
@@ -79,18 +79,19 @@ Todos los tipos aceptan, además de los propios:
 
 **Estructuras lineales**
 
-- [`array`](referencia.md#array): Arreglo. Arreglos en memoria, con índices, direcciones, offsets y punteros que los recorren, y secuencias de Python con sus cortes.
-- [`matrix`](referencia.md#matrix): Matriz. Matrices estáticas, dinámicas, dentadas, planas y de Java, como están en memoria.
+- [`array`](referencia.md#array): Arreglo. Arreglos en memoria, con índices, direcciones, offsets, punteros que los recorren y su límite excluido, cadenas de C y secuencias de Python con sus cortes.
+- [`matrix`](referencia.md#matrix): Matriz. Matrices estáticas, dinámicas, dentadas, planas, con punteros a filas de un solo bloque y de Java, como están en memoria.
 - [`linked_list`](referencia.md#linked_list): Lista enlazada. Listas simples, dobles y circulares, con direcciones, cursores y estructura cabecera.
 - [`stack`](referencia.md#stack): Pila. Pilas en arreglo, con el tope, y su evolución paso a paso.
-- [`queue`](referencia.md#queue): Cola. Colas lineales y circulares, con frente y final.
+- [`queue`](referencia.md#queue): Cola. Colas lineales y circulares, con frente y final o con frente y cantidad, y deques circulares.
 
 **Memoria, tipos y recursión**
 
 - [`call_stack`](referencia.md#call_stack): Pila de llamadas. Los marcos de activación de una ejecución, con parámetros, variables y punteros entre marcos.
 - [`call_tree`](referencia.md#call_tree): Árbol de llamadas. Las llamadas de una función recursiva, su orden, sus resultados y el costo por nivel.
-- [`struct`](referencia.md#struct): Struct. La disposición de un struct en memoria (offsets, relleno, sizeof) y los tipos opacos.
-- [`object_heap`](referencia.md#object_heap): Stack y heap (objetos). Variables, objetos y referencias en el stack y el heap, como en Java, también en varios instantes.
+- [`struct`](referencia.md#struct): Struct. La disposición de un struct en memoria (offsets, relleno, sizeof), las uniones con su discriminante y los tipos opacos.
+- [`byte_layout`](referencia.md#byte_layout): Disposición de octetos. Los campos de un formato binario con su ancho, offset y orden de bytes, y las filas de píxeles de un BMP con su stride y su relleno.
+- [`object_heap`](referencia.md#object_heap): Stack y heap (objetos). Variables, objetos y referencias en el stack y el heap, como en Java, Python o C, también en varios instantes.
 - [`adt`](referencia.md#adt): Tipo abstracto de datos. Un TAD con sus operaciones, precondiciones, invariante y representaciones posibles.
 
 **Árboles y tablas**

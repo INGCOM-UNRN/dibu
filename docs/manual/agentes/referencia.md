@@ -2,9 +2,9 @@
 
 # Referencia de los tipos de dibu
 
-Los 71 tipos, con todos sus campos. Los valores admitidos y por defecto salen del código; los ejemplos se dibujan sin errores y pasan `validar.py` sin avisos. Además de los campos de cada tipo, todos aceptan `title`, `subtitle`, `id`, `inkSaver` y `theme`.
+Los 72 tipos, con todos sus campos. Los valores admitidos y por defecto salen del código; los ejemplos se dibujan sin errores y pasan `validar.py` sin avisos. Además de los campos de cada tipo, todos aceptan `title`, `subtitle`, `id`, `inkSaver` y `theme`.
 
-- **Estructuras de datos y algoritmos**: [`array`](#array), [`matrix`](#matrix), [`linked_list`](#linked_list), [`stack`](#stack), [`queue`](#queue), [`call_stack`](#call_stack), [`call_tree`](#call_tree), [`struct`](#struct), [`object_heap`](#object_heap), [`adt`](#adt), [`tree`](#tree), [`heap`](#heap), [`avl`](#avl), [`bplus_tree`](#bplus_tree), [`hash_table`](#hash_table), [`complexity`](#complexity), [`flowchart`](#flowchart), [`cost_table`](#cost_table), [`trace_table`](#trace_table), [`dp_table`](#dp_table), [`dijkstra`](#dijkstra), [`turing`](#turing)
+- **Estructuras de datos y algoritmos**: [`array`](#array), [`matrix`](#matrix), [`linked_list`](#linked_list), [`stack`](#stack), [`queue`](#queue), [`call_stack`](#call_stack), [`call_tree`](#call_tree), [`struct`](#struct), [`byte_layout`](#byte_layout), [`object_heap`](#object_heap), [`adt`](#adt), [`tree`](#tree), [`heap`](#heap), [`avl`](#avl), [`bplus_tree`](#bplus_tree), [`hash_table`](#hash_table), [`complexity`](#complexity), [`flowchart`](#flowchart), [`cost_table`](#cost_table), [`trace_table`](#trace_table), [`dp_table`](#dp_table), [`dijkstra`](#dijkstra), [`turing`](#turing)
 - **Sistemas de computación**: [`truth_table`](#truth_table), [`karnaugh`](#karnaugh), [`logic_circuit`](#logic_circuit), [`pipeline`](#pipeline), [`ieee754`](#ieee754), [`cache`](#cache), [`cpu_scheduling`](#cpu_scheduling), [`page_table`](#page_table), [`page_replacement`](#page_replacement), [`subnetting`](#subnetting), [`transaction_schedule`](#transaction_schedule)
 - **Control de procesos**: [`block_diagram`](#block_diagram), [`time_response`](#time_response), [`bode`](#bode), [`nyquist`](#nyquist), [`pole_zero`](#pole_zero), [`root_locus`](#root_locus), [`instrumentation`](#instrumentation), [`ladder`](#ladder), [`grafcet`](#grafcet)
 - **Química**: [`molecule`](#molecule), [`vsepr`](#vsepr), [`orbitals`](#orbitals), [`unit_cell`](#unit_cell), [`reaction`](#reaction), [`energy_profile`](#energy_profile), [`kinetics`](#kinetics), [`phase_diagram`](#phase_diagram), [`heating_curve`](#heating_curve), [`titration`](#titration), [`speciation`](#speciation), [`spectrum`](#spectrum), [`galvanic_cell`](#galvanic_cell), [`latimer`](#latimer), [`frost`](#frost), [`newman`](#newman), [`chair`](#chair), [`fischer`](#fischer), [`crystal_field`](#crystal_field), [`complex`](#complex), [`born_haber`](#born_haber)
@@ -14,25 +14,29 @@ Los 71 tipos, con todos sus campos. Los valores admitidos y por defecto salen de
 
 ## `array`: Arreglo
 
-*Estructuras de datos y algoritmos › Estructuras lineales.* Arreglos en memoria, con índices, direcciones, offsets y punteros que los recorren, y secuencias de Python con sus cortes.
+*Estructuras de datos y algoritmos › Estructuras lineales.* Arreglos en memoria, con índices, direcciones, offsets, punteros que los recorren y su límite excluido, cadenas de C y secuencias de Python con sus cortes.
 
 Dibuja un arreglo como una fila de celdas contiguas, con el índice de cada una y,
 opcionalmente, su dirección de memoria y su offset desde el comienzo. Los punteros o índices
-que lo recorren se dibujan como flechas sobre la celda a la que apuntan. Con
-`variant: python_sequence`, una lista, tupla o cadena de Python, con índices negativos,
-fronteras y un corte (`slice`).
+que lo recorren se dibujan como flechas sobre la celda a la que apuntan; uno en la posición
+`n` señala el límite excluido (`a + n`), en el borde derecho y sin una celda `a[n]`. `range`
+marca un intervalo semiabierto `[start, stop)`. Con `variant: c_string`, un arreglo de `char`
+con su terminador; con `variant: python_sequence`, una lista, tupla o cadena de Python, con
+índices negativos, fronteras y un corte (`slice`).
 
 **Calcula:** La dirección de cada celda a partir de `baseAddr` y del tamaño del elemento (`typeSize`). En `python_sequence`, las celdas que elige un corte, con las reglas de `slice.indices(n)`: los límites fuera de rango se ajustan, y el resultado se escribe como en Python (`[4, 1]`, `(4,)`, `'aloh'`).
 
 | `variant` | Qué dibuja |
 | :--- | :--- |
+| `c_string` | Una cadena de C en un arreglo de `capacity` bytes: el primer `'\0'` fija la longitud (`strlen`), los bytes declarados después del terminador se ven atenuados y la capacidad sin datos declarados, punteada. Sin terminador dentro de la capacidad, lo dice y no muestra un `strlen`. `char s[4] = "hola"` (con `text` y `capacity: 4`) no lleva terminador, como en C. |
 | `python_sequence` | Una secuencia de Python (`kind`): el índice positivo y, con `showNegativeIndices`, el negativo de cada elemento; con `showBoundaries`, las fronteras entre celdas (de `0` a `n`). Con `slice`, resalta las celdas elegidas, numera el orden de visita si el paso no es 1, marca el inicio y el fin (el límite excluido) y escribe el resultado. |
 
 | Campo | Tipo | Valores · por defecto | Descripción |
 | :--- | :--- | :--- | :--- |
 | `values` | lista o texto |  | Los valores, en orden. Un valor vacío (`""`) deja la celda sin contenido. |
 | `capacity` | número |  | Cantidad total de celdas; las que sobran después de `values` se dibujan vacías (el espacio reservado sin usar). |
-| `pointers` | texto |  | Punteros o índices sobre el arreglo, como texto `"p:0, q:3"` (nombre y posición). |
+| `pointers` | texto |  | Punteros o índices sobre el arreglo, como texto `"p:0, q:3"` (nombre y posición). La posición `n` (una más que la última celda) es el límite excluido: se marca en el borde, sin una celda. |
+| `range` | objeto |  | Un intervalo semiabierto `{start, stop, label, order, blank}` debajo de las celdas: `[` en el inicio (incluido) y `)` en el fin (excluido), de `0` a `n`; `start` igual a `stop` es el intervalo vacío. `order: true` (o `reverse`) numera el orden de visita; `blank: true` lo deja para dibujar. |
 | `showIndices` | sí/no |  | Muestra el índice de cada celda (por omisión, sí). |
 | `showAddresses` | sí/no |  | Muestra la dirección de cada celda. |
 | `showOffsets` | sí/no |  | Muestra el desplazamiento en bytes de cada celda respecto del comienzo. |
@@ -41,14 +45,18 @@ fronteras y un corte (`slice`).
 | `blankValues` | sí/no |  | Deja los valores en blanco, para completar. |
 | `blankAddrs` | sí/no |  | Deja las direcciones en blanco, para calcularlas. |
 | `variant` | texto |  | Variante, ver arriba. |
+| `text` |  |  | En `c_string`, la cadena (ASCII); se le agrega el terminador si entra en `capacity`. |
+| `bytes` | lista |  | En `c_string`, los bytes uno por uno: un carácter (`'a'`), `'\0'` o `0` (el terminador), `'\n'`, un número de 0 a 255, o `null` (una posición sin dato declarado). |
+| `blank` | lista |  | En `c_string`, los índices de las celdas que se dejan en blanco, para completar. |
+| `blankLength` | sí/no |  | En `c_string`, deja en blanco la longitud (`strlen`) y las bandas que la delatan. |
 | `kind` | texto |  | En `python_sequence`: `list` (por omisión), `tuple` o `str`. En `str`, `values` es un texto y cada celda es un carácter; un espacio se ve como `␣`. |
-| `name` | texto |  | En `python_sequence`, el nombre de la variable (por omisión `a`, `t` o `s`). |
+| `name` | texto |  | En `python_sequence` y `c_string`, el nombre de la variable (por omisión `a`, `t` o `s`). |
 | `showNegativeIndices` | sí/no |  | En `python_sequence`, el índice negativo de cada elemento. |
 | `showBoundaries` | sí/no |  | En `python_sequence`, las fronteras entre celdas, de `0` a `n`. |
 | `slice` | objeto |  | En `python_sequence`, un corte `{start, stop, step, blankSelection}`; cualquiera se puede omitir, y `{step: -1}` es `[::-1]`. El paso 0 es un error. Con `blankSelection: true` no se ve ninguna pista de la solución: ni las celdas elegidas, ni el inicio y el fin, ni el resultado. |
 
 **Modo ejercicio:** En `python_sequence`, `slice` con `blankSelection: true` deja el corte para resolver: se ve la
-expresión (`a[-4:-1:2]`) y un casillero para el resultado. Campos: `blankValues`, `blankAddrs`.
+expresión (`a[-4:-1:2]`) y un casillero para el resultado. Campos: `blankValues`, `blankAddrs`, `blank`, `blankLength`.
 
 Ejemplo: Arreglo v[0..2] con <p & q> → α·β
 
@@ -97,14 +105,47 @@ slice: {step: -2, blankSelection: true}
 inkSaver: false
 ```
 
+Ejemplo: Recorrido de [a+1, a+n): fin señala el límite excluido
+
+```yaml
+type: array
+title: "Recorrido de [a+1, a+n): fin señala el límite excluido"
+values: [3, 1, 4, 1, 5]
+pointers: "p:1, fin:5"
+range: {start: 1, stop: 5, label: "[a+1, a+n)", order: true}
+```
+
+Ejemplo: Cadena terminada con espacio sobrante y cursores
+
+```yaml
+type: array
+variant: c_string
+title: "Cadena terminada con espacio sobrante y cursores"
+name: s
+bytes: ['h', 'o', 'l', 'a', '\0', 'x', null, null]
+pointers: "w:1, r:2"
+```
+
+Ejemplo: a, \0, b, \0 (para completar)
+
+```yaml
+type: array
+variant: c_string
+title: "a, \\0, b, \\0 (para completar)"
+bytes: ['a', 0, 'b', 0]
+blank: [1]
+blankLength: true
+inkSaver: false
+```
+
 - Para un arreglo de dos dimensiones, ver [`matrix`](#matrix).
-- En `python_sequence` no hay direcciones de memoria; hasta 16 elementos.
+- En `python_sequence` no hay direcciones de memoria; hasta 16 elementos. En `c_string`, hasta 24 bytes.
 
 <a id="matrix"></a>
 
 ## `matrix`: Matriz
 
-*Estructuras de datos y algoritmos › Estructuras lineales.* Matrices estáticas, dinámicas, dentadas, planas y de Java, como están en memoria.
+*Estructuras de datos y algoritmos › Estructuras lineales.* Matrices estáticas, dinámicas, dentadas, planas, con punteros a filas de un solo bloque y de Java, como están en memoria.
 
 Dibuja una matriz y cómo está guardada en memoria. La estática muestra la declaración
 (`int m[3][4]`) y, con `showAddresses`, la dirección de cada celda en orden de filas; la
@@ -120,6 +161,7 @@ largo con el arreglo de largos o un centinela; la plana, un único bloque contig
 | `dynamic` | Un `int **`: el puntero, el arreglo de punteros a filas y cada fila por separado; `null` es un puntero a NULL. |
 | `jagged` | Dinámica con filas de distinto largo, con el arreglo de largos (`showLengths`) o un `sentinel` al final de cada fila. |
 | `flat` | Un `int *` con `F * C` elementos contiguos: cada celda con su índice `[k]` y su `(i, j)`. |
+| `row_pointers` | Un `int **` con una tabla de punteros a filas y un solo bloque de `F * C` datos: `m[i]` apunta al índice `i * C` del bloque (para 2×3, la fila 1 empieza en el 3). Son dos reservas y se liberan las dos (`free(m[0]); free(m);`). Para comparar con `dynamic`, que reserva cada fila por separado. |
 | `java` | Un `int[][]` de Java: la variable refiere al arreglo exterior, que guarda una referencia por fila; cada fila es un objeto con su `length`. `null` es una referencia nula y `[]`, una fila de largo cero; `values: []` es un arreglo exterior vacío. |
 
 | Campo | Tipo | Valores · por defecto | Descripción |
@@ -141,6 +183,7 @@ largo con el arreglo de largos o un centinela; la plana, un único bloque contig
 | `highlightCols` | lista |  | Columnas resaltadas. |
 | `blankValues` | sí/no |  | Deja los valores en blanco. |
 | `blankAddrs` | sí/no |  | Deja las direcciones en blanco. |
+| `blankPointers` | sí/no |  | En `row_pointers`, deja la tabla de punteros sin flechas, para deducir a qué índice apunta cada fila. |
 | `showLinear` | sí/no |  | En la estática, dibuja además la matriz como está en memoria, una fila detrás de la otra. |
 | `showLengths` | sí/no |  | En la dentada, el arreglo de largos (por omisión, sí). |
 | `lengths` | lista |  | En la dentada, los largos, si no salen de las filas. |
@@ -155,7 +198,7 @@ largo con el arreglo de largos o un centinela; la plana, un único bloque contig
 | `zones` | sí/no |  | Enmarca el stack y el heap; `true` usa esos títulos, o `{stack, heap}` con títulos propios. |
 | `owner` | objeto |  | Una estructura dueña de la matriz en lugar del puntero: `name`, `type` y `fields` (`"filas -> rows"`, `"largos -> lengths"`). |
 
-**Modo ejercicio:** Campos: `blankValues`, `blankAddrs`, `blankLengths`.
+**Modo ejercicio:** Campos: `blankValues`, `blankAddrs`, `blankPointers`, `blankLengths`.
 
 Ejemplo: Matriz estática row-major
 
@@ -168,6 +211,28 @@ typeSize: 4
 showAddresses: true
 showLinear: true
 highlight: [[0, 0], [1, 2]]
+```
+
+Ejemplo: Punteros a filas de un solo bloque (2×3)
+
+```yaml
+type: matrix
+variant: row_pointers
+title: "Punteros a filas de un solo bloque (2×3)"
+values: [[1, 2, 3], [4, 5, 6]]
+```
+
+Ejemplo: ¿A qué índice apunta cada fila? (para completar)
+
+```yaml
+type: matrix
+variant: row_pointers
+title: "¿A qué índice apunta cada fila? (para completar)"
+rows: 3
+cols: 2
+blankPointers: true
+blankValues: true
+inkSaver: false
 ```
 
 Ejemplo: Matriz dentada con dueña y zonas
@@ -232,7 +297,8 @@ blankLengths: true
 inkSaver: false
 ```
 
-- El máximo es 10 filas por 10 columnas; en la plana, 24 celdas.
+- El máximo es 10 filas por 10 columnas; en la plana y en `row_pointers`, 24 celdas.
+- Para una reserva parcial de filas (un `malloc` que falla a mitad de camino), ver [`object_heap`](#object_heap) con `variant: c` y un instante por paso.
 - Las direcciones simbólicas (`"@F"`) van entre comillas en YAML.
 
 <a id="linked_list"></a>
@@ -340,19 +406,25 @@ traceLabels: ["Inicio", "push(2)", "pop()"]
 
 ## `queue`: Cola
 
-*Estructuras de datos y algoritmos › Estructuras lineales.* Colas lineales y circulares, con frente y final.
+*Estructuras de datos y algoritmos › Estructuras lineales.* Colas lineales y circulares, con frente y final o con frente y cantidad, y deques circulares.
 
 Dibuja una cola en arreglo con los índices de frente y final. La circular se dibuja como un
-anillo y, con `showPanel`, con un panel que resume frente, final y cantidad.
+anillo y, con `showPanel`, con un panel que resume frente, final y cantidad. Las variantes
+`ring` y `deque` usan otra convención: la capacidad, el índice del frente y los valores en
+orden lógico; dibu ubica cada valor en su celda física, con la vuelta del índice.
+
+**Calcula:** En `ring` y `deque`: la celda de cada valor, `(frente + k) % N`; la cantidad (el largo de `values`); el último ocupado, `(frente + cantidad - 1) % N`, y el siguiente para agregar al final, `(frente + cantidad) % N`, que en una cola llena coincide con el frente.
 
 | `variant` | Qué dibuja |
 | :--- | :--- |
 | `linear` | Por omisión. Un arreglo con frente y final. |
-| `circular` | Un anillo de `capacity` lugares. |
+| `circular` | Un anillo de `capacity` lugares, con `values` en orden físico (`values[i]` en la celda `i`) y `FINAL` como el último insertado. |
+| `ring` | Una cola circular por frente y cantidad, con `values` en orden lógico, el orden de cada valor y un panel con frente, cantidad, último y siguiente, y encolar y desencolar. |
+| `deque` | Como `ring`, con las operaciones de una deque (agregar y quitar en los dos extremos). |
 
 | Campo | Tipo | Valores · por defecto | Descripción |
 | :--- | :--- | :--- | :--- |
-| `values` | lista |  | Los valores en la cola, del frente al final. |
+| `values` | lista |  | Los valores en la cola, del frente al final. En `circular`, en orden físico; en `ring` y `deque`, en orden lógico (el primero va en `frontIndex`). |
 | `variant` | texto |  | Variante, ver arriba. |
 | `capacity` | número |  | Cantidad de lugares. |
 | `frontIndex` | número |  | Índice del frente. |
@@ -360,8 +432,9 @@ anillo y, con `showPanel`, con un panel que resume frente, final y cantidad.
 | `showPanel` | sí/no |  | En la circular, un panel con frente, final y cantidad. |
 | `blankValues` | sí/no |  | Deja los valores en blanco. |
 | `blankPointers` | sí/no |  | Deja frente y final en blanco. |
+| `blank` | lista |  | En `ring` y `deque`, lo que se deja en blanco, por separado: `front`, `last`, `count`, `next`, `values` y `order`. |
 
-**Modo ejercicio:** Campos: `blankValues`, `blankPointers`.
+**Modo ejercicio:** Campos: `blankValues`, `blankPointers`, `blank`.
 
 Ejemplo: Cola circular en arreglo de capacidad 8
 
@@ -372,6 +445,30 @@ variant: circular
 capacity: 8
 frontIndex: 5
 rearIndex: 1
+inkSaver: false
+```
+
+Ejemplo: Cola envuelta: capacidad 5, frente 4
+
+```yaml
+type: queue
+variant: ring
+title: "Cola envuelta: capacidad 5, frente 4"
+capacity: 5
+frontIndex: 4
+values: [7, 9]
+```
+
+Ejemplo: Deque llena (para completar último y cantidad)
+
+```yaml
+type: queue
+variant: deque
+title: "Deque llena (para completar último y cantidad)"
+capacity: 4
+frontIndex: 2
+values: [1, 2, 3, 4]
+blank: [last, count, order]
 inkSaver: false
 ```
 
@@ -511,12 +608,12 @@ inkSaver: false
 
 ## `struct`: Struct
 
-*Estructuras de datos y algoritmos › Memoria, tipos y recursión.* La disposición de un struct en memoria (offsets, relleno, sizeof) y los tipos opacos.
+*Estructuras de datos y algoritmos › Memoria, tipos y recursión.* La disposición de un struct en memoria (offsets, relleno, sizeof), las uniones con su discriminante y los tipos opacos.
 
 Con la variante `layout` (por omisión) dibuja los campos de un struct como los ubica gcc en 64
 bits: offset, tamaño y relleno de cada uno, y el `sizeof` total. Con `opaque` muestra qué ve
 cada archivo de un tipo opaco: el `.h` con el `typedef` y las operaciones, el cliente con un
-puntero y el `.c` con los campos.
+puntero y el `.c` con los campos. Con `union`, los miembros superpuestos desde el offset 0.
 
 **Calcula:** El offset, el relleno y el `sizeof` con los tamaños y alineaciones de gcc en 64 bits (`char` 1, `short` 2, `int` y `float` 4, `long`, `double`, `size_t` y punteros 8, y los `intN_t`).
 
@@ -524,6 +621,7 @@ puntero y el `.c` con los campos.
 | :--- | :--- |
 | `layout` | Por omisión. La disposición en memoria. |
 | `opaque` | Lo que ve cada archivo de un tipo opaco. |
+| `union` | Una `union`: cada miembro como una barra desde el offset 0, sobre el lugar que ocupa la union (el mayor de los miembros, redondeado a la alineación más exigente, con el relleno final). Con `tag`, el registro exterior con el discriminante; con `active`, el miembro que elige el ejemplo, con su valor. |
 
 | Campo | Tipo | Valores · por defecto | Descripción |
 | :--- | :--- | :--- | :--- |
@@ -545,8 +643,13 @@ puntero y el `.c` con los campos.
 | `source` | texto |  | En `opaque`, el nombre del `.c`. |
 | `client` | texto |  | En `opaque`, el código del cliente. |
 | `hidden` | sí/no |  | En `opaque`, oculta los campos (lo que ve el cliente); no hace falta `fields`. |
+| `active` | texto |  | En `union`, el miembro activo. |
+| `tag` | objeto |  | En `union`, el discriminante del registro exterior: `{outer, name, type, value}`. |
+| `compareStruct` | sí/no |  | En `union`, compara con el `sizeof` de una struct con los mismos campos. |
+| `blankLayout` | sí/no |  | En `union`, deja en blanco los tamaños, los offsets y el `sizeof`. |
+| `blankTag` | sí/no |  | En `union`, deja en blanco el valor del discriminante y qué miembro está activo. |
 
-**Modo ejercicio:** Campos: `blankValues`, `blankOffsets`, `blankSizes`, `blankPadding`, `blankSizeof`.
+**Modo ejercicio:** Campos: `blankValues`, `blankOffsets`, `blankSizes`, `blankPadding`, `blankSizeof`, `blankLayout`, `blankTag`.
 
 Ejemplo: Layout LP64 con padding
 
@@ -573,20 +676,133 @@ hidden: true
 inkSaver: false
 ```
 
+Ejemplo: Unión con discriminante
+
+```yaml
+type: struct
+variant: union
+title: Unión con discriminante
+name: union dato
+fields: ["char c = 'A'", "int i = 65", "double d"]
+active: i
+tag: {outer: struct valor, name: tipo, type: enum tipo, value: ENTERO}
+compareStruct: true
+```
+
+Ejemplo: union con char e int (para completar)
+
+```yaml
+type: struct
+variant: union
+title: "union con char e int (para completar)"
+name: union u
+fields: ["char c", "int i"]
+active: c
+tag: {outer: struct marcado, name: marca, value: CARACTER}
+blankLayout: true
+blankTag: true
+inkSaver: false
+```
+
+<a id="byte_layout"></a>
+
+## `byte_layout`: Disposición de octetos
+
+*Estructuras de datos y algoritmos › Memoria, tipos y recursión.* Los campos de un formato binario con su ancho, offset y orden de bytes, y las filas de píxeles de un BMP con su stride y su relleno.
+
+Dibuja un búfer octeto por octeto. Con la variante `fields` (por omisión), los campos de una
+cabecera o una trama: cada uno con su offset, su ancho y sus bytes, que dibu calcula a partir
+del valor y del orden de bytes, el relleno entre campos y, con `length`, lo que falta de una
+entrada corta. Con `bmp_rows`, las filas de píxeles de un BMP: el stride, los bytes de datos y
+de relleno de cada fila, el offset en el archivo y a qué fila visual corresponde.
+
+**Calcula:** Los bytes de cada campo a partir de `value` y `endian`: `0x1234` es `12 34` en orden de red y `34 12` en little-endian. Un valor que no entra en `size` bytes es un error, sin dibujar un rango imposible. El offset de cada campo y el relleno que deja un `offset` explícito. En `bmp_rows`, el stride (`((ancho × bpp + 31) / 32) × 4`), el relleno de cada fila y el offset de cada una según el orden de filas; los píxeles de 24 bits se escriben en el orden del archivo (B G R: un rojo es `00 00 FF`).
+
+| `variant` | Qué dibuja |
+| :--- | :--- |
+| `fields` | Por omisión. Los campos de un formato binario, con una tabla de offset, campo, tamaño y valor. |
+| `bmp_rows` | Las filas de píxeles de un BMP de 24 u 8 bits. |
+
+| Campo | Tipo | Valores · por defecto | Descripción |
+| :--- | :--- | :--- | :--- |
+| `fields` | lista |  | Los campos, en orden: `{name, size, value, endian}` (de 1 a 8 bytes; `value` en decimal o `"0x1234"`, negativo en complemento a dos), `{name, bytes}` (los octetos tal cual) o `{padding: n}`. `offset` ubica un campo más adelante, con relleno en el medio; `blank: true` deja sus bytes en blanco. Hasta 12 campos y 32 bytes. |
+| `endian` |  |  | `little` (por omisión) o `big` (orden de red), para todos los campos; cada campo puede llevar el suyo. |
+| `length` | número |  | Los bytes que llegaron, si son menos que los de los campos; el resto se dibuja como truncado. |
+| `variant` | texto |  | Variante, ver arriba. |
+| `width` | número |  | En `bmp_rows`, el ancho en píxeles (de 1 a 8). |
+| `height` | número |  | En `bmp_rows`, el alto en píxeles (de 1 a 6). |
+| `bitsPerPixel` | número |  | En `bmp_rows`, 24 (por omisión) u 8 (indexado, con paleta). |
+| `offset` | número |  | En `bmp_rows`, el offset de los píxeles en el archivo (por omisión 54). |
+| `order` | texto |  | En `bmp_rows`, `bottom_up` (por omisión: la primera fila del archivo es la de abajo) o `top_down`. |
+| `pixels` | lista |  | En `bmp_rows`, las filas visuales, la de arriba primero: en 24 bits, colores `"RRGGBB"` o `[r, g, b]`; en 8 bits, índices de la paleta. Sin `pixels`, los datos quedan para completar. |
+| `paletteSize` | número |  | En `bmp_rows` de 8 bits, la cantidad de colores; un índice fuera de la paleta se tacha (el relleno no se valida). |
+| `available` | número |  | En `bmp_rows`, los bytes de filas que hay; el resto se dibuja como truncado. |
+| `blank` | lista |  | Lo que se deja en blanco: en `fields`, `fields` (los nombres), `offsets`, `bytes` y `values`; en `bmp_rows`, `stride`, `offsets`, `bytes` y `padding`. |
+
+**Modo ejercicio:** Campos: `blank`.
+
+Ejemplo: Cabecera de una trama, con una entrada corta
+
+```yaml
+type: byte_layout
+title: "Cabecera de una trama, con una entrada corta"
+fields:
+  - {name: tipo, size: 1, value: 2}
+  - {padding: 1}
+  - {name: longitud, size: 2, value: "0x1234", endian: big}
+  - {name: id, size: 4, value: "0x0A0B0C0D"}
+  - {name: datos, bytes: [0x41, 0x42]}
+length: 9
+```
+
+Ejemplo: BMP de 24 bits de ancho 3: stride 12
+
+```yaml
+type: byte_layout
+variant: bmp_rows
+title: "BMP de 24 bits de ancho 3: stride 12"
+width: 3
+height: 2
+pixels: [["FF0000", "00FF00", "0000FF"], ["FFFFFF", "000000", "808080"]]
+```
+
+Ejemplo: BMP indexado de ancho 2, de arriba hacia abajo (para completar)
+
+```yaml
+type: byte_layout
+variant: bmp_rows
+title: "BMP indexado de ancho 2, de arriba hacia abajo (para completar)"
+bitsPerPixel: 8
+width: 2
+height: 3
+offset: 54
+order: top_down
+paletteSize: 4
+pixels: [[0, 1], [2, 7], [3, 3]]
+available: 10
+blank: [stride, offsets, padding]
+inkSaver: false
+```
+
+- Las clases de octeto se distinguen también en monocromo: el dato con borde lleno, el relleno rayado y el truncado punteado, cada uno con su rótulo.
+- El tamaño de un archivo y el layout en memoria de un `struct` son cosas distintas: para el segundo, ver [`struct`](#struct).
+
 <a id="object_heap"></a>
 
 ## `object_heap`: Stack y heap (objetos)
 
-*Estructuras de datos y algoritmos › Memoria, tipos y recursión.* Variables, objetos y referencias en el stack y el heap, como en Java, también en varios instantes.
+*Estructuras de datos y algoritmos › Memoria, tipos y recursión.* Variables, objetos y referencias en el stack y el heap, como en Java, Python o C, también en varios instantes.
 
 Dibuja los marcos activos en el stack (del tope, arriba, a `main`) y los objetos en el heap,
 con una flecha por cada referencia. Cada objeto tiene un ID: dos referencias al mismo ID llegan
 a la misma caja, y dos objetos con el mismo contenido son cajas distintas. Las referencias
 entre objetos (y a sí mismos) rodean el heap por la derecha. Con `snapshots`, el estado en
 varios instantes, para mostrar copia, mutación y reasignación de referencias: un ID que sigue
-en el instante siguiente queda en el mismo lugar, así se ve cuál flecha cambió.
+en el instante siguiente queda en el mismo lugar, así se ve cuál flecha cambió. En C, los
+punteros llegan también a variables, campos y celdas, y un bloque liberado queda visible con
+la vida terminada.
 
-**Calcula:** Qué objetos son alcanzables desde el stack, siguiendo las referencias; los demás se marcan como inalcanzables.
+**Calcula:** Qué objetos son alcanzables desde el stack, siguiendo las referencias; los demás se marcan como inalcanzables (en C, como fugas). En C, qué punteros quedan colgantes: los que apuntan a un objeto con la vida terminada.
 
 | Campo | Tipo | Valores · por defecto | Descripción |
 | :--- | :--- | :--- | :--- |
@@ -594,14 +810,17 @@ en el instante siguiente queda en el mismo lugar, así se ve cuál flecha cambi�
 | `objects` | lista |  | Los objetos del heap. Cada uno con `id`, `type` y uno de `fields` (como las variables), `elements` (las celdas de un arreglo: valores sueltos, `{value}` o `{ref}`) o `value` (el contenido, como un `String`). `group` los agrupa, como el String Pool. |
 | `snapshots` | lista |  | Varios instantes (hasta 6), cada uno con `label`, `frames` y `objects`. Un mismo ID en dos instantes es el mismo objeto. |
 | `direction` |  |  | Con `snapshots`, `column` (por omisión) los apila y `row` los pone lado a lado. |
-| `variant` | texto |  | `java` (por omisión) o `python`: en Python, los nombres se agrupan por ámbito (`<módulo>`, las funciones activas), una referencia nula es `None` (un valor rotulado, no una flecha sin destino) y los valores se escriben como en Python (`'texto'`, `True`). |
+| `variant` | texto |  | `java` (por omisión), `python` o `c`. En Python, los nombres se agrupan por ámbito (`<módulo>`, las funciones activas), una referencia nula es `None` (un valor rotulado, no una flecha sin destino) y los valores se escriben como en Python (`'texto'`, `True`). En C, ver abajo. |
 | `zones` |  |  | Los títulos del stack y del heap (`{stack, heap}`); `false` quita los recuadros. |
 | `markUnreachable` |  |  | Marca los objetos inalcanzables desde el stack (por omisión, sí). |
 | `blankValues` | sí/no |  | Deja los valores en blanco. |
 | `blankRefs` | sí/no |  | Deja las referencias en blanco, sin flechas, para dibujarlas. |
+| `blankStates` | sí/no |  | En C, oculta los estados: sin «vida terminada», «fuga» ni «colgante», y sin guiones en las flechas; cada objeto fuera del stack lleva un renglón «estado:» para completar. Un bloque terminado igual se dibuja sin valores; para que eso no lo delate, combinar con `blankValues`. |
 
 **Modo ejercicio:** Con `blankRefs`, las cajas de las referencias quedan vacías y sin flechas, para que se dibujen;
-con `blankValues`, los valores. Cada variable, campo o celda acepta además `blank: true`. Campos: `blankValues`, `blankRefs`.
+con `blankValues`, los valores. Cada variable, campo o celda acepta además `blank: true`. En
+C, `blankStates` oculta por separado los estados (vida terminada, fuga, colgante), con la misma
+geometría que la versión resuelta. Campos: `blankValues`, `blankRefs`, `blankStates`.
 
 Ejemplo: Dos variables comparten un arreglo
 
@@ -698,6 +917,95 @@ objects:
 blankRefs: true
 ```
 
+Ejemplo: reservar(&q): un int ** cambia el puntero del llamador
+
+```yaml
+type: object_heap
+variant: c
+title: "reservar(&q): un int ** cambia el puntero del llamador"
+frames:
+  - function: main
+    vars:
+      - {name: q, type: "int *", id: q, ref: B1}
+      - {name: n, type: int, value: 4}
+  - function: reservar
+    params:
+      - {name: pp, type: "int **", ref: q}
+      - {name: i, type: int, indeterminate: true}
+objects:
+  - {id: B1, type: "int[4]", address: "0x5000", elements: [0, 0, 0, 0]}
+```
+
+Ejemplo: Copia superficial: struct vec b = a;
+
+```yaml
+type: object_heap
+variant: c
+title: "Copia superficial: struct vec b = a;"
+frames:
+  - function: main
+    vars: [{name: fin, type: "int *", ref: "D[3]"}]
+objects:
+  - id: a
+    type: struct vec
+    storage: auto
+    frame: main
+    fields: [{name: datos, type: "int *", ref: D}, {name: largo, type: size_t, value: 3}]
+  - id: b
+    type: struct vec
+    storage: auto
+    frame: main
+    fields: [{name: datos, type: "int *", ref: D}, {name: largo, type: size_t, value: 3}]
+  - {id: D, type: "int[3]", elements: [7, 9, 2]}
+  - {id: llamadas, type: int, storage: static, value: 1}
+```
+
+Ejemplo: free(p) con dos alias, y la dirección reutilizada
+
+```yaml
+type: object_heap
+variant: c
+title: "free(p) con dos alias, y la dirección reutilizada"
+snapshots:
+  - label: "Antes de free(p)"
+    frames:
+      - function: main
+        vars: [{name: p, type: "int *", ref: B}, {name: q, type: "int *", ref: "B[1]"}]
+    objects:
+      - {id: B, type: "int[3]", address: "0x5010", elements: [1, 2, 3]}
+  - label: "Después de free(p); r = malloc(...)"
+    frames:
+      - function: main
+        vars: [{name: p, type: "int *", ref: B}, {name: q, type: "int *", ref: "B[1]"}, {name: r, type: "int *", ref: N}]
+    objects:
+      - {id: B, type: "int[3]", address: "0x5010", ended: true, elements: [1, 2, 3]}
+      - {id: N, type: "int[2]", address: "0x5010", elements: [8, 8]}
+```
+
+Ejemplo: realloc con éxito y con fallo (para completar los estados)
+
+```yaml
+type: object_heap
+variant: c
+title: "realloc con éxito y con fallo (para completar los estados)"
+blankStates: true
+blankValues: true
+snapshots:
+  - label: "Éxito: q = realloc(p, 16)"
+    frames:
+      - function: main
+        vars: [{name: p, type: "int *", ref: A}, {name: q, type: "int *", ref: A2}]
+    objects:
+      - {id: A, type: "int[2]", ended: true, elements: [1, 2]}
+      - {id: A2, type: "int[4]", elements: [1, 2, {indeterminate: true}, {indeterminate: true}]}
+  - label: "Fallo: q = realloc(p, 1 << 40)"
+    frames:
+      - function: main
+        vars: [{name: p, type: "int *", ref: A}, {name: q, type: "int *", ref: null}]
+    objects:
+      - {id: A, type: "int[2]", elements: [1, 2]}
+```
+
 Ejemplo: Copia superficial: copia = original.copy()
 
 ```yaml
@@ -749,6 +1057,12 @@ snapshots:
       - {id: B, type: list, elements: [0]}
 ```
 
+- En C: Una variable con `id` es un destino: `{name: pp, type: "int **", ref: q}` apunta a la variable `q` del llamador, para un parámetro `T **`.
+- En C: Un destino puede ser un objeto (`B`), un campo (`B.sig`) o una celda (`A[2]`); `A[n]`, con `n` celdas, es el límite excluido, que se marca en el borde sin una celda.
+- En C: `storage` dice dónde vive un objeto: `heap` (por omisión), `static` (en un recuadro «estático») o `auto`, con `frame` (la función o su índice, 0 es `main`): un local agregado, como un `struct` o un arreglo, dentro de su marco.
+- En C: `ended: true` es un objeto con la vida terminada (un bloque liberado, un local de una función que retornó): queda visible, con el rótulo «vida terminada» y sin valores legibles. Los punteros que llegan a él son colgantes: con guiones y rotulados. Un `auto` de un marco que no está en `frames` va en un marco «(terminó)» y tiene que llevar `ended`.
+- En C: `indeterminate: true` en una variable es un valor indeterminado (sin inicializar); `ref: null` es `NULL`.
+- En C: `address` es una dirección simbólica. Dos objetos vivos no comparten una dirección, pero uno terminado y el que reutiliza su dirección sí: siguen siendo dos objetos, cada uno con su ID.
 - Hasta 8 marcos, 16 objetos y 12 variables, campos o celdas por marco u objeto.
 - Una referencia a un ID que no está en `objects`, un ID repetido o `value` junto con `ref` son errores.
 - Para la pila de llamadas de C, con direcciones, ver [`call_stack`](#call_stack); para la matriz de Java, [`matrix`](#matrix) con `variant: java`.

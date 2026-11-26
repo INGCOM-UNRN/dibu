@@ -5,7 +5,7 @@
 Con la variante `layout` (por omisión) dibuja los campos de un struct como los ubica gcc en 64
 bits: offset, tamaño y relleno de cada uno, y el `sizeof` total. Con `opaque` muestra qué ve
 cada archivo de un tipo opaco: el `.h` con el `typedef` y las operaciones, el cliente con un
-puntero y el `.c` con los campos.
+puntero y el `.c` con los campos. Con `union`, los miembros superpuestos desde el offset 0.
 
 ## Qué calcula
 
@@ -17,6 +17,7 @@ puntero y el `.c` con los campos.
 | :--- | :--- |
 | `layout` | Por omisión. La disposición en memoria. |
 | `opaque` | Lo que ve cada archivo de un tipo opaco. |
+| `union` | Una `union`: cada miembro como una barra desde el offset 0, sobre el lugar que ocupa la union (el mayor de los miembros, redondeado a la alineación más exigente, con el relleno final). Con `tag`, el registro exterior con el discriminante; con `active`, el miembro que elige el ejemplo, con su valor. |
 
 ## Campos
 
@@ -41,12 +42,17 @@ puntero y el `.c` con los campos.
 | `source` | texto |  | En `opaque`, el nombre del `.c`. |
 | `client` | texto |  | En `opaque`, el código del cliente. |
 | `hidden` | sí/no |  | En `opaque`, oculta los campos (lo que ve el cliente); no hace falta `fields`. |
+| `active` | texto |  | En `union`, el miembro activo. |
+| `tag` | objeto |  | En `union`, el discriminante del registro exterior: `{outer, name, type, value}`. |
+| `compareStruct` | sí/no |  | En `union`, compara con el `sizeof` de una struct con los mismos campos. |
+| `blankLayout` | sí/no |  | En `union`, deja en blanco los tamaños, los offsets y el `sizeof`. |
+| `blankTag` | sí/no |  | En `union`, deja en blanco el valor del discriminante y qué miembro está activo. |
 
 Además, los campos comunes a todos los tipos: `title`, `subtitle`, `id`, `inkSaver` y `theme` (ver [Campos comunes](../../campos-comunes.md)).
 
 ## Modo ejercicio
 
-Campos que dejan casilleros para completar: `blankValues`, `blankOffsets`, `blankSizes`, `blankPadding`, `blankSizeof`.
+Campos que dejan casilleros para completar: `blankValues`, `blankOffsets`, `blankSizes`, `blankPadding`, `blankSizeof`, `blankLayout`, `blankTag`.
 
 ## Ejemplos
 
@@ -83,6 +89,42 @@ inkSaver: false
 
 [Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogc3RydWN0CnRpdGxlOiBUQUQgb3BhY28gZW4gQwp2YXJpYW50OiBvcGFxdWUKbmFtZTogc3RydWN0IHBpbGEKdHlwZWRlZjogcGlsYV90Cm9wZXJhdGlvbnM6IFsidm9pZCBmKHBpbGFfdCBwKSJdCmZpZWxkczogWyJpbnQgKmRhdG9zIiwgInNpemVfdCB0b3BlIl0KaGlkZGVuOiB0cnVlCmlua1NhdmVyOiBmYWxzZQo) para explorarlo y modificarlo.
 
+### Unión con discriminante
+
+```yaml
+type: struct
+variant: union
+title: Unión con discriminante
+name: union dato
+fields: ["char c = 'A'", "int i = 65", "double d"]
+active: i
+tag: {outer: struct valor, name: tipo, type: enum tipo, value: ENTERO}
+compareStruct: true
+```
+
+[![Unión con discriminante](img/ks_cs_struct_union.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogc3RydWN0CnZhcmlhbnQ6IHVuaW9uCnRpdGxlOiBVbmnDs24gY29uIGRpc2NyaW1pbmFudGUKbmFtZTogdW5pb24gZGF0bwpmaWVsZHM6IFsiY2hhciBjID0gJ0EnIiwgImludCBpID0gNjUiLCAiZG91YmxlIGQiXQphY3RpdmU6IGkKdGFnOiB7b3V0ZXI6IHN0cnVjdCB2YWxvciwgbmFtZTogdGlwbywgdHlwZTogZW51bSB0aXBvLCB2YWx1ZTogRU5URVJPfQpjb21wYXJlU3RydWN0OiB0cnVlCg)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogc3RydWN0CnZhcmlhbnQ6IHVuaW9uCnRpdGxlOiBVbmnDs24gY29uIGRpc2NyaW1pbmFudGUKbmFtZTogdW5pb24gZGF0bwpmaWVsZHM6IFsiY2hhciBjID0gJ0EnIiwgImludCBpID0gNjUiLCAiZG91YmxlIGQiXQphY3RpdmU6IGkKdGFnOiB7b3V0ZXI6IHN0cnVjdCB2YWxvciwgbmFtZTogdGlwbywgdHlwZTogZW51bSB0aXBvLCB2YWx1ZTogRU5URVJPfQpjb21wYXJlU3RydWN0OiB0cnVlCg) para explorarlo y modificarlo.
+
+### union con char e int (para completar)
+
+```yaml
+type: struct
+variant: union
+title: "union con char e int (para completar)"
+name: union u
+fields: ["char c", "int i"]
+active: c
+tag: {outer: struct marcado, name: marca, value: CARACTER}
+blankLayout: true
+blankTag: true
+inkSaver: false
+```
+
+[![union con char e int (para completar)](img/ks_cs_struct_union_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogc3RydWN0CnZhcmlhbnQ6IHVuaW9uCnRpdGxlOiAidW5pb24gY29uIGNoYXIgZSBpbnQgKHBhcmEgY29tcGxldGFyKSIKbmFtZTogdW5pb24gdQpmaWVsZHM6IFsiY2hhciBjIiwgImludCBpIl0KYWN0aXZlOiBjCnRhZzoge291dGVyOiBzdHJ1Y3QgbWFyY2FkbywgbmFtZTogbWFyY2EsIHZhbHVlOiBDQVJBQ1RFUn0KYmxhbmtMYXlvdXQ6IHRydWUKYmxhbmtUYWc6IHRydWUKaW5rU2F2ZXI6IGZhbHNlCg)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogc3RydWN0CnZhcmlhbnQ6IHVuaW9uCnRpdGxlOiAidW5pb24gY29uIGNoYXIgZSBpbnQgKHBhcmEgY29tcGxldGFyKSIKbmFtZTogdW5pb24gdQpmaWVsZHM6IFsiY2hhciBjIiwgImludCBpIl0KYWN0aXZlOiBjCnRhZzoge291dGVyOiBzdHJ1Y3QgbWFyY2FkbywgbmFtZTogbWFyY2EsIHZhbHVlOiBDQVJBQ1RFUn0KYmxhbmtMYXlvdXQ6IHRydWUKYmxhbmtUYWc6IHRydWUKaW5rU2F2ZXI6IGZhbHNlCg) para explorarlo y modificarlo.
+
 ## Ver también
 
-[`call_stack`](call_stack.md), [`call_tree`](call_tree.md), [`object_heap`](object_heap.md), [`adt`](adt.md)
+[`call_stack`](call_stack.md), [`call_tree`](call_tree.md), [`byte_layout`](byte_layout.md), [`object_heap`](object_heap.md), [`adt`](adt.md)

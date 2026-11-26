@@ -9,7 +9,7 @@
  "tipos": {
   "array": {
    "nombre": "Arreglo",
-   "para": "Arreglos en memoria, con índices, direcciones, offsets y punteros que los recorren, y secuencias de Python con sus cortes.",
+   "para": "Arreglos en memoria, con índices, direcciones, offsets, punteros que los recorren y su límite excluido, cadenas de C y secuencias de Python con sus cortes.",
    "area": "Estructuras de datos y algoritmos › Estructuras lineales",
    "campos": {
     "values": {
@@ -28,7 +28,13 @@
      "tipo": "texto",
      "valores": [],
      "defecto": null,
-     "descripcion": "Punteros o índices sobre el arreglo, como texto `\"p:0, q:3\"` (nombre y posición)."
+     "descripcion": "Punteros o índices sobre el arreglo, como texto `\"p:0, q:3\"` (nombre y posición). La posición `n` (una más que la última celda) es el límite excluido: se marca en el borde, sin una celda."
+    },
+    "range": {
+     "tipo": "objeto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Un intervalo semiabierto `{start, stop, label, order, blank}` debajo de las celdas: `[` en el inicio (incluido) y `)` en el fin (excluido), de `0` a `n`; `start` igual a `stop` es el intervalo vacío. `order: true` (o `reverse`) numera el orden de visita; `blank: true` lo deja para dibujar."
     },
     "showIndices": {
      "tipo": "sí/no",
@@ -75,10 +81,35 @@
     "variant": {
      "tipo": "texto",
      "valores": [
+      "c_string",
       "python_sequence"
      ],
      "defecto": null,
      "descripcion": "Variante, ver arriba."
+    },
+    "text": {
+     "tipo": "",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `c_string`, la cadena (ASCII); se le agrega el terminador si entra en `capacity`."
+    },
+    "bytes": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `c_string`, los bytes uno por uno: un carácter (`'a'`), `'\\0'` o `0` (el terminador), `'\\n'`, un número de 0 a 255, o `null` (una posición sin dato declarado)."
+    },
+    "blank": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `c_string`, los índices de las celdas que se dejan en blanco, para completar."
+    },
+    "blankLength": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `c_string`, deja en blanco la longitud (`strlen`) y las bandas que la delatan."
     },
     "kind": {
      "tipo": "texto",
@@ -90,7 +121,7 @@
      "tipo": "texto",
      "valores": [],
      "defecto": null,
-     "descripcion": "En `python_sequence`, el nombre de la variable (por omisión `a`, `t` o `s`)."
+     "descripcion": "En `python_sequence` y `c_string`, el nombre de la variable (por omisión `a`, `t` o `s`)."
     },
     "showNegativeIndices": {
      "tipo": "sí/no",
@@ -113,22 +144,28 @@
    },
    "aceptados": [],
    "variantes": {
+    "c_string": "Una cadena de C en un arreglo de `capacity` bytes: el primer `'\\0'` fija la longitud (`strlen`), los bytes declarados después del terminador se ven atenuados y la capacidad sin datos declarados, punteada. Sin terminador dentro de la capacidad, lo dice y no muestra un `strlen`. `char s[4] = \"hola\"` (con `text` y `capacity: 4`) no lleva terminador, como en C.",
     "python_sequence": "Una secuencia de Python (`kind`): el índice positivo y, con `showNegativeIndices`, el negativo de cada elemento; con `showBoundaries`, las fronteras entre celdas (de `0` a `n`). Con `slice`, resalta las celdas elegidas, numera el orden de visita si el paso no es 1, marca el inicio y el fin (el límite excluido) y escribe el resultado."
    },
    "ejercicio": [
     "blankValues",
-    "blankAddrs"
+    "blankAddrs",
+    "blank",
+    "blankLength"
    ],
    "ejemplos": [
     "type: array\ntitle: \"Arreglo v[0..2] con <p & q> → α·β\"\nvalues: [3, 1, 4]\npointers: \"p:0, q:2\"\nshowAddresses: true\nshowOffsets: true",
     "type: array\ntitle: Arreglo para completar\nvalues: [41, 42]\nblankValues: true\ninkSaver: false",
     "type: array\ntitle: \"Corte con paso: a[-4:-1:2]\"\nvariant: python_sequence\nkind: list\nvalues: [2, 4, 7, 1, 8]\nshowNegativeIndices: true\nshowBoundaries: true\nslice: {start: -4, stop: -1, step: 2}",
-    "type: array\ntitle: Corte de una cadena (para completar)\nvariant: python_sequence\nkind: str\nvalues: \"hola mundo\"\nshowNegativeIndices: true\nslice: {step: -2, blankSelection: true}\ninkSaver: false"
+    "type: array\ntitle: Corte de una cadena (para completar)\nvariant: python_sequence\nkind: str\nvalues: \"hola mundo\"\nshowNegativeIndices: true\nslice: {step: -2, blankSelection: true}\ninkSaver: false",
+    "type: array\ntitle: \"Recorrido de [a+1, a+n): fin señala el límite excluido\"\nvalues: [3, 1, 4, 1, 5]\npointers: \"p:1, fin:5\"\nrange: {start: 1, stop: 5, label: \"[a+1, a+n)\", order: true}",
+    "type: array\nvariant: c_string\ntitle: \"Cadena terminada con espacio sobrante y cursores\"\nname: s\nbytes: ['h', 'o', 'l', 'a', '\\0', 'x', null, null]\npointers: \"w:1, r:2\"",
+    "type: array\nvariant: c_string\ntitle: \"a, \\\\0, b, \\\\0 (para completar)\"\nbytes: ['a', 0, 'b', 0]\nblank: [1]\nblankLength: true\ninkSaver: false"
    ]
   },
   "matrix": {
    "nombre": "Matriz",
-   "para": "Matrices estáticas, dinámicas, dentadas, planas y de Java, como están en memoria.",
+   "para": "Matrices estáticas, dinámicas, dentadas, planas, con punteros a filas de un solo bloque y de Java, como están en memoria.",
    "area": "Estructuras de datos y algoritmos › Estructuras lineales",
    "campos": {
     "values": {
@@ -156,6 +193,7 @@
       "dynamic",
       "jagged",
       "flat",
+      "row_pointers",
       "java"
      ],
      "defecto": null,
@@ -238,6 +276,12 @@
      "valores": [],
      "defecto": null,
      "descripcion": "Deja las direcciones en blanco."
+    },
+    "blankPointers": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `row_pointers`, deja la tabla de punteros sin flechas, para deducir a qué índice apunta cada fila."
     },
     "showLinear": {
      "tipo": "sí/no",
@@ -324,15 +368,19 @@
     "dynamic": "Un `int **`: el puntero, el arreglo de punteros a filas y cada fila por separado; `null` es un puntero a NULL.",
     "jagged": "Dinámica con filas de distinto largo, con el arreglo de largos (`showLengths`) o un `sentinel` al final de cada fila.",
     "flat": "Un `int *` con `F * C` elementos contiguos: cada celda con su índice `[k]` y su `(i, j)`.",
+    "row_pointers": "Un `int **` con una tabla de punteros a filas y un solo bloque de `F * C` datos: `m[i]` apunta al índice `i * C` del bloque (para 2×3, la fila 1 empieza en el 3). Son dos reservas y se liberan las dos (`free(m[0]); free(m);`). Para comparar con `dynamic`, que reserva cada fila por separado.",
     "java": "Un `int[][]` de Java: la variable refiere al arreglo exterior, que guarda una referencia por fila; cada fila es un objeto con su `length`. `null` es una referencia nula y `[]`, una fila de largo cero; `values: []` es un arreglo exterior vacío."
    },
    "ejercicio": [
     "blankValues",
     "blankAddrs",
+    "blankPointers",
     "blankLengths"
    ],
    "ejemplos": [
     "type: matrix\ntitle: Matriz estática row-major\nvalues: [[1, 2, 3], [4, 5, 6]]\nbaseAddr: \"0x1000\"\ntypeSize: 4\nshowAddresses: true\nshowLinear: true\nhighlight: [[0, 0], [1, 2]]",
+    "type: matrix\nvariant: row_pointers\ntitle: \"Punteros a filas de un solo bloque (2×3)\"\nvalues: [[1, 2, 3], [4, 5, 6]]",
+    "type: matrix\nvariant: row_pointers\ntitle: \"¿A qué índice apunta cada fila? (para completar)\"\nrows: 3\ncols: 2\nblankPointers: true\nblankValues: true\ninkSaver: false",
     "type: matrix\ntitle: Matriz dentada con dueña y zonas\nvariant: jagged\nname: filas\nvalues: [[4, 8], [9]]\nshowAddresses: true\nbaseAddr: \"@F\"\nrowAddresses: [\"@R0\", \"@R1\"]\nlengthsType: int\nlengthsAddr: \"@L\"\nzones: true\nowner:\n  name: d\n  type: dentada_t\n  fields:\n    - \"n = 2\"\n    - \"largos -> lengths\"\n    - \"filas -> rows\"",
     "type: matrix\ntitle: Matriz plana con vista lógica\nvariant: flat\nvalues: [[1, 2], [3, 4]]\nshowLogical: true\nshowAddresses: true\ninkSaver: false",
     "type: matrix\ntitle: \"Arreglo de arreglos en Java\"\nvariant: java\nname: matriz\nvalues:\n  - [1, 2, 3]\n  - [4]\n  - null\n  - []\nzones: true",
@@ -522,20 +570,22 @@
   },
   "queue": {
    "nombre": "Cola",
-   "para": "Colas lineales y circulares, con frente y final.",
+   "para": "Colas lineales y circulares, con frente y final o con frente y cantidad, y deques circulares.",
    "area": "Estructuras de datos y algoritmos › Estructuras lineales",
    "campos": {
     "values": {
      "tipo": "lista",
      "valores": [],
      "defecto": null,
-     "descripcion": "Los valores en la cola, del frente al final."
+     "descripcion": "Los valores en la cola, del frente al final. En `circular`, en orden físico; en `ring` y `deque`, en orden lógico (el primero va en `frontIndex`)."
     },
     "variant": {
      "tipo": "texto",
      "valores": [
       "linear",
-      "circular"
+      "circular",
+      "ring",
+      "deque"
      ],
      "defecto": null,
      "descripcion": "Variante, ver arriba."
@@ -575,19 +625,30 @@
      "valores": [],
      "defecto": null,
      "descripcion": "Deja frente y final en blanco."
+    },
+    "blank": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `ring` y `deque`, lo que se deja en blanco, por separado: `front`, `last`, `count`, `next`, `values` y `order`."
     }
    },
    "aceptados": [],
    "variantes": {
     "linear": "Por omisión. Un arreglo con frente y final.",
-    "circular": "Un anillo de `capacity` lugares."
+    "circular": "Un anillo de `capacity` lugares, con `values` en orden físico (`values[i]` en la celda `i`) y `FINAL` como el último insertado.",
+    "ring": "Una cola circular por frente y cantidad, con `values` en orden lógico, el orden de cada valor y un panel con frente, cantidad, último y siguiente, y encolar y desencolar.",
+    "deque": "Como `ring`, con las operaciones de una deque (agregar y quitar en los dos extremos)."
    },
    "ejercicio": [
     "blankValues",
-    "blankPointers"
+    "blankPointers",
+    "blank"
    ],
    "ejemplos": [
-    "type: queue\ntitle: Cola circular en arreglo de capacidad 8\nvariant: circular\ncapacity: 8\nfrontIndex: 5\nrearIndex: 1\ninkSaver: false"
+    "type: queue\ntitle: Cola circular en arreglo de capacidad 8\nvariant: circular\ncapacity: 8\nfrontIndex: 5\nrearIndex: 1\ninkSaver: false",
+    "type: queue\nvariant: ring\ntitle: \"Cola envuelta: capacidad 5, frente 4\"\ncapacity: 5\nfrontIndex: 4\nvalues: [7, 9]",
+    "type: queue\nvariant: deque\ntitle: \"Deque llena (para completar último y cantidad)\"\ncapacity: 4\nfrontIndex: 2\nvalues: [1, 2, 3, 4]\nblank: [last, count, order]\ninkSaver: false"
    ]
   },
   "call_stack": {
@@ -736,7 +797,7 @@
   },
   "struct": {
    "nombre": "Struct",
-   "para": "La disposición de un struct en memoria (offsets, relleno, sizeof) y los tipos opacos.",
+   "para": "La disposición de un struct en memoria (offsets, relleno, sizeof), las uniones con su discriminante y los tipos opacos.",
    "area": "Estructuras de datos y algoritmos › Memoria, tipos y recursión",
    "campos": {
     "fields": {
@@ -761,7 +822,8 @@
      "tipo": "texto",
      "valores": [
       "layout",
-      "opaque"
+      "opaque",
+      "union"
      ],
      "defecto": null,
      "descripcion": "Variante, ver arriba."
@@ -849,28 +911,164 @@
      "valores": [],
      "defecto": null,
      "descripcion": "En `opaque`, oculta los campos (lo que ve el cliente); no hace falta `fields`."
+    },
+    "active": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `union`, el miembro activo."
+    },
+    "tag": {
+     "tipo": "objeto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `union`, el discriminante del registro exterior: `{outer, name, type, value}`."
+    },
+    "compareStruct": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `union`, compara con el `sizeof` de una struct con los mismos campos."
+    },
+    "blankLayout": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `union`, deja en blanco los tamaños, los offsets y el `sizeof`."
+    },
+    "blankTag": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `union`, deja en blanco el valor del discriminante y qué miembro está activo."
     }
    },
    "aceptados": [],
    "variantes": {
     "layout": "Por omisión. La disposición en memoria.",
-    "opaque": "Lo que ve cada archivo de un tipo opaco."
+    "opaque": "Lo que ve cada archivo de un tipo opaco.",
+    "union": "Una `union`: cada miembro como una barra desde el offset 0, sobre el lugar que ocupa la union (el mayor de los miembros, redondeado a la alineación más exigente, con el relleno final). Con `tag`, el registro exterior con el discriminante; con `active`, el miembro que elige el ejemplo, con su valor."
    },
    "ejercicio": [
     "blankValues",
     "blankOffsets",
     "blankSizes",
     "blankPadding",
-    "blankSizeof"
+    "blankSizeof",
+    "blankLayout",
+    "blankTag"
    ],
    "ejemplos": [
     "type: struct\ntitle: Layout LP64 con padding\nname: struct outer\nfields:\n  - {name: c, type: char}\n  - {name: pos, type: struct punto, size: 8, align: 4}",
-    "type: struct\ntitle: TAD opaco en C\nvariant: opaque\nname: struct pila\ntypedef: pila_t\noperations: [\"void f(pila_t p)\"]\nfields: [\"int *datos\", \"size_t tope\"]\nhidden: true\ninkSaver: false"
+    "type: struct\ntitle: TAD opaco en C\nvariant: opaque\nname: struct pila\ntypedef: pila_t\noperations: [\"void f(pila_t p)\"]\nfields: [\"int *datos\", \"size_t tope\"]\nhidden: true\ninkSaver: false",
+    "type: struct\nvariant: union\ntitle: Unión con discriminante\nname: union dato\nfields: [\"char c = 'A'\", \"int i = 65\", \"double d\"]\nactive: i\ntag: {outer: struct valor, name: tipo, type: enum tipo, value: ENTERO}\ncompareStruct: true",
+    "type: struct\nvariant: union\ntitle: \"union con char e int (para completar)\"\nname: union u\nfields: [\"char c\", \"int i\"]\nactive: c\ntag: {outer: struct marcado, name: marca, value: CARACTER}\nblankLayout: true\nblankTag: true\ninkSaver: false"
+   ]
+  },
+  "byte_layout": {
+   "nombre": "Disposición de octetos",
+   "para": "Los campos de un formato binario con su ancho, offset y orden de bytes, y las filas de píxeles de un BMP con su stride y su relleno.",
+   "area": "Estructuras de datos y algoritmos › Memoria, tipos y recursión",
+   "campos": {
+    "fields": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los campos, en orden: `{name, size, value, endian}` (de 1 a 8 bytes; `value` en decimal o `\"0x1234\"`, negativo en complemento a dos), `{name, bytes}` (los octetos tal cual) o `{padding: n}`. `offset` ubica un campo más adelante, con relleno en el medio; `blank: true` deja sus bytes en blanco. Hasta 12 campos y 32 bytes."
+    },
+    "endian": {
+     "tipo": "",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "`little` (por omisión) o `big` (orden de red), para todos los campos; cada campo puede llevar el suyo."
+    },
+    "length": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los bytes que llegaron, si son menos que los de los campos; el resto se dibuja como truncado."
+    },
+    "variant": {
+     "tipo": "texto",
+     "valores": [
+      "fields",
+      "bmp_rows"
+     ],
+     "defecto": null,
+     "descripcion": "Variante, ver arriba."
+    },
+    "width": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `bmp_rows`, el ancho en píxeles (de 1 a 8)."
+    },
+    "height": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `bmp_rows`, el alto en píxeles (de 1 a 6)."
+    },
+    "bitsPerPixel": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `bmp_rows`, 24 (por omisión) u 8 (indexado, con paleta)."
+    },
+    "offset": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `bmp_rows`, el offset de los píxeles en el archivo (por omisión 54)."
+    },
+    "order": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `bmp_rows`, `bottom_up` (por omisión: la primera fila del archivo es la de abajo) o `top_down`."
+    },
+    "pixels": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `bmp_rows`, las filas visuales, la de arriba primero: en 24 bits, colores `\"RRGGBB\"` o `[r, g, b]`; en 8 bits, índices de la paleta. Sin `pixels`, los datos quedan para completar."
+    },
+    "paletteSize": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `bmp_rows` de 8 bits, la cantidad de colores; un índice fuera de la paleta se tacha (el relleno no se valida)."
+    },
+    "available": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En `bmp_rows`, los bytes de filas que hay; el resto se dibuja como truncado."
+    },
+    "blank": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Lo que se deja en blanco: en `fields`, `fields` (los nombres), `offsets`, `bytes` y `values`; en `bmp_rows`, `stride`, `offsets`, `bytes` y `padding`."
+    }
+   },
+   "aceptados": [],
+   "variantes": {
+    "fields": "Por omisión. Los campos de un formato binario, con una tabla de offset, campo, tamaño y valor.",
+    "bmp_rows": "Las filas de píxeles de un BMP de 24 u 8 bits."
+   },
+   "ejercicio": [
+    "blank"
+   ],
+   "ejemplos": [
+    "type: byte_layout\ntitle: \"Cabecera de una trama, con una entrada corta\"\nfields:\n  - {name: tipo, size: 1, value: 2}\n  - {padding: 1}\n  - {name: longitud, size: 2, value: \"0x1234\", endian: big}\n  - {name: id, size: 4, value: \"0x0A0B0C0D\"}\n  - {name: datos, bytes: [0x41, 0x42]}\nlength: 9",
+    "type: byte_layout\nvariant: bmp_rows\ntitle: \"BMP de 24 bits de ancho 3: stride 12\"\nwidth: 3\nheight: 2\npixels: [[\"FF0000\", \"00FF00\", \"0000FF\"], [\"FFFFFF\", \"000000\", \"808080\"]]",
+    "type: byte_layout\nvariant: bmp_rows\ntitle: \"BMP indexado de ancho 2, de arriba hacia abajo (para completar)\"\nbitsPerPixel: 8\nwidth: 2\nheight: 3\noffset: 54\norder: top_down\npaletteSize: 4\npixels: [[0, 1], [2, 7], [3, 3]]\navailable: 10\nblank: [stride, offsets, padding]\ninkSaver: false"
    ]
   },
   "object_heap": {
    "nombre": "Stack y heap (objetos)",
-   "para": "Variables, objetos y referencias en el stack y el heap, como en Java, también en varios instantes.",
+   "para": "Variables, objetos y referencias en el stack y el heap, como en Java, Python o C, también en varios instantes.",
    "area": "Estructuras de datos y algoritmos › Memoria, tipos y recursión",
    "campos": {
     "frames": {
@@ -901,7 +1099,7 @@
      "tipo": "texto",
      "valores": [],
      "defecto": null,
-     "descripcion": "`java` (por omisión) o `python`: en Python, los nombres se agrupan por ámbito (`<módulo>`, las funciones activas), una referencia nula es `None` (un valor rotulado, no una flecha sin destino) y los valores se escriben como en Python (`'texto'`, `True`)."
+     "descripcion": "`java` (por omisión), `python` o `c`. En Python, los nombres se agrupan por ámbito (`<módulo>`, las funciones activas), una referencia nula es `None` (un valor rotulado, no una flecha sin destino) y los valores se escriben como en Python (`'texto'`, `True`). En C, ver abajo."
     },
     "zones": {
      "tipo": "",
@@ -926,19 +1124,30 @@
      "valores": [],
      "defecto": null,
      "descripcion": "Deja las referencias en blanco, sin flechas, para dibujarlas."
+    },
+    "blankStates": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "En C, oculta los estados: sin «vida terminada», «fuga» ni «colgante», y sin guiones en las flechas; cada objeto fuera del stack lleva un renglón «estado:» para completar. Un bloque terminado igual se dibuja sin valores; para que eso no lo delate, combinar con `blankValues`."
     }
    },
    "aceptados": [],
    "variantes": {},
    "ejercicio": [
     "blankValues",
-    "blankRefs"
+    "blankRefs",
+    "blankStates"
    ],
    "ejemplos": [
     "type: object_heap\ntitle: Dos variables comparten un arreglo\nframes:\n  - function: main\n    vars:\n      - {name: a, type: \"int[]\", ref: A}\n      - {name: b, type: \"int[]\", ref: A}\n      - {name: copia, type: \"int[]\", ref: B}\n      - {name: cantidad, type: int, value: 3}\nobjects:\n  - id: A\n    type: \"int[]\"\n    elements: [{value: 1}, {value: 2}, {value: 3}]\n  - id: B\n    type: \"int[]\"\n    elements: [1, 2, 3]",
     "type: object_heap\ntitle: \"Instanciación, this y String Pool\"\nframes:\n  - function: main\n    vars:\n      - {name: juan, type: Persona, ref: P1}\n      - {name: maria, type: Persona, ref: P2}\n  - function: saludar\n    params:\n      - {name: this, type: Persona, ref: P1}\nobjects:\n  - id: P1\n    type: Persona\n    fields:\n      - {name: nombre, type: String, ref: S1}\n      - {name: edad, type: int, value: 30}\n  - id: P2\n    type: Persona\n    fields:\n      - {name: nombre, type: String, ref: S1}\n      - {name: edad, type: int, value: 25}\n  - {id: S1, type: String, value: \"Hola\", group: String Pool}\ninkSaver: false",
     "type: object_heap\ntitle: Reasignación de un parámetro\nsnapshots:\n  - label: \"Al entrar a modificar(numeros)\"\n    frames:\n      - function: main\n        vars: [{name: numeros, type: \"int[]\", ref: A}]\n      - function: modificar\n        params: [{name: arr, type: \"int[]\", ref: A}]\n    objects:\n      - {id: A, type: \"int[]\", elements: [1, 2, 3]}\n  - label: \"Después de arr = new int[] {7, 8}\"\n    frames:\n      - function: main\n        vars: [{name: numeros, type: \"int[]\", ref: A}]\n      - function: modificar\n        params: [{name: arr, type: \"int[]\", ref: B}]\n    objects:\n      - {id: A, type: \"int[]\", elements: [1, 2, 3]}\n      - {id: B, type: \"int[]\", elements: [7, 8]}",
     "type: object_heap\ntitle: \"Tras p = null (para completar las referencias)\"\nframes:\n  - function: main\n    vars: [{name: p, type: Nodo, ref: null}, {name: lista, type: \"Nodo[]\", ref: L}]\nobjects:\n  - id: L\n    type: \"Nodo[]\"\n    elements: [{ref: N2}, {ref: null}]\n  - id: N1\n    type: Nodo\n    fields: [{name: dato, type: int, value: 1}, {name: sig, type: Nodo, ref: N2}]\n  - id: N2\n    type: Nodo\n    fields: [{name: dato, type: int, value: 2}, {name: sig, type: Nodo, ref: N2}]\nblankRefs: true",
+    "type: object_heap\nvariant: c\ntitle: \"reservar(&q): un int ** cambia el puntero del llamador\"\nframes:\n  - function: main\n    vars:\n      - {name: q, type: \"int *\", id: q, ref: B1}\n      - {name: n, type: int, value: 4}\n  - function: reservar\n    params:\n      - {name: pp, type: \"int **\", ref: q}\n      - {name: i, type: int, indeterminate: true}\nobjects:\n  - {id: B1, type: \"int[4]\", address: \"0x5000\", elements: [0, 0, 0, 0]}",
+    "type: object_heap\nvariant: c\ntitle: \"Copia superficial: struct vec b = a;\"\nframes:\n  - function: main\n    vars: [{name: fin, type: \"int *\", ref: \"D[3]\"}]\nobjects:\n  - id: a\n    type: struct vec\n    storage: auto\n    frame: main\n    fields: [{name: datos, type: \"int *\", ref: D}, {name: largo, type: size_t, value: 3}]\n  - id: b\n    type: struct vec\n    storage: auto\n    frame: main\n    fields: [{name: datos, type: \"int *\", ref: D}, {name: largo, type: size_t, value: 3}]\n  - {id: D, type: \"int[3]\", elements: [7, 9, 2]}\n  - {id: llamadas, type: int, storage: static, value: 1}",
+    "type: object_heap\nvariant: c\ntitle: \"free(p) con dos alias, y la dirección reutilizada\"\nsnapshots:\n  - label: \"Antes de free(p)\"\n    frames:\n      - function: main\n        vars: [{name: p, type: \"int *\", ref: B}, {name: q, type: \"int *\", ref: \"B[1]\"}]\n    objects:\n      - {id: B, type: \"int[3]\", address: \"0x5010\", elements: [1, 2, 3]}\n  - label: \"Después de free(p); r = malloc(...)\"\n    frames:\n      - function: main\n        vars: [{name: p, type: \"int *\", ref: B}, {name: q, type: \"int *\", ref: \"B[1]\"}, {name: r, type: \"int *\", ref: N}]\n    objects:\n      - {id: B, type: \"int[3]\", address: \"0x5010\", ended: true, elements: [1, 2, 3]}\n      - {id: N, type: \"int[2]\", address: \"0x5010\", elements: [8, 8]}",
+    "type: object_heap\nvariant: c\ntitle: \"realloc con éxito y con fallo (para completar los estados)\"\nblankStates: true\nblankValues: true\nsnapshots:\n  - label: \"Éxito: q = realloc(p, 16)\"\n    frames:\n      - function: main\n        vars: [{name: p, type: \"int *\", ref: A}, {name: q, type: \"int *\", ref: A2}]\n    objects:\n      - {id: A, type: \"int[2]\", ended: true, elements: [1, 2]}\n      - {id: A2, type: \"int[4]\", elements: [1, 2, {indeterminate: true}, {indeterminate: true}]}\n  - label: \"Fallo: q = realloc(p, 1 << 40)\"\n    frames:\n      - function: main\n        vars: [{name: p, type: \"int *\", ref: A}, {name: q, type: \"int *\", ref: null}]\n    objects:\n      - {id: A, type: \"int[2]\", elements: [1, 2]}",
     "type: object_heap\nvariant: python\ntitle: \"Copia superficial: copia = original.copy()\"\nframes:\n  - function: \"<módulo>\"\n    vars:\n      - {name: original, ref: A}\n      - {name: copia, ref: B}\n      - {name: resultado, value: null}\nobjects:\n  - id: A\n    type: list\n    elements: [{ref: I}, \"x\"]\n  - id: B\n    type: list\n    elements: [{ref: I}, \"x\"]\n  - id: I\n    type: list\n    elements: [{value: 4}, {value: 7}]",
     "type: object_heap\nvariant: python\ntitle: \"def agregar(lista): lista.append(9); lista = [0] (para completar)\"\nblankRefs: true\nsnapshots:\n  - label: \"Después de lista.append(9)\"\n    frames:\n      - function: \"<módulo>\"\n        vars: [{name: lista, ref: A}]\n      - function: agregar\n        params: [{name: lista, ref: A}]\n    objects:\n      - {id: A, type: list, elements: [1, 2, 9]}\n  - label: \"Después de lista = [0]\"\n    frames:\n      - function: \"<módulo>\"\n        vars: [{name: lista, ref: A}]\n      - function: agregar\n        params: [{name: lista, ref: B}]\n    objects:\n      - {id: A, type: list, elements: [1, 2, 9]}\n      - {id: B, type: list, elements: [0]}"
    ]

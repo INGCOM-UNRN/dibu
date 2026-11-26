@@ -22,6 +22,7 @@ largo con el arreglo de largos o un centinela; la plana, un único bloque contig
 | `dynamic` | Un `int **`: el puntero, el arreglo de punteros a filas y cada fila por separado; `null` es un puntero a NULL. |
 | `jagged` | Dinámica con filas de distinto largo, con el arreglo de largos (`showLengths`) o un `sentinel` al final de cada fila. |
 | `flat` | Un `int *` con `F * C` elementos contiguos: cada celda con su índice `[k]` y su `(i, j)`. |
+| `row_pointers` | Un `int **` con una tabla de punteros a filas y un solo bloque de `F * C` datos: `m[i]` apunta al índice `i * C` del bloque (para 2×3, la fila 1 empieza en el 3). Son dos reservas y se liberan las dos (`free(m[0]); free(m);`). Para comparar con `dynamic`, que reserva cada fila por separado. |
 | `java` | Un `int[][]` de Java: la variable refiere al arreglo exterior, que guarda una referencia por fila; cada fila es un objeto con su `length`. `null` es una referencia nula y `[]`, una fila de largo cero; `values: []` es un arreglo exterior vacío. |
 
 ## Campos
@@ -46,6 +47,7 @@ largo con el arreglo de largos o un centinela; la plana, un único bloque contig
 | `highlightCols` | lista |  | Columnas resaltadas. |
 | `blankValues` | sí/no |  | Deja los valores en blanco. |
 | `blankAddrs` | sí/no |  | Deja las direcciones en blanco. |
+| `blankPointers` | sí/no |  | En `row_pointers`, deja la tabla de punteros sin flechas, para deducir a qué índice apunta cada fila. |
 | `showLinear` | sí/no |  | En la estática, dibuja además la matriz como está en memoria, una fila detrás de la otra. |
 | `showLengths` | sí/no |  | En la dentada, el arreglo de largos (por omisión, sí). |
 | `lengths` | lista |  | En la dentada, los largos, si no salen de las filas. |
@@ -64,7 +66,7 @@ Además, los campos comunes a todos los tipos: `title`, `subtitle`, `id`, `inkSa
 
 ## Modo ejercicio
 
-Campos que dejan casilleros para completar: `blankValues`, `blankAddrs`, `blankLengths`.
+Campos que dejan casilleros para completar: `blankValues`, `blankAddrs`, `blankPointers`, `blankLengths`.
 
 ## Ejemplos
 
@@ -84,6 +86,36 @@ highlight: [[0, 0], [1, 2]]
 [![Matriz estática row-major](img/ks_cs_matrix_estatica_lineal.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogbWF0cml4CnRpdGxlOiBNYXRyaXogZXN0w6F0aWNhIHJvdy1tYWpvcgp2YWx1ZXM6IFtbMSwgMiwgM10sIFs0LCA1LCA2XV0KYmFzZUFkZHI6ICIweDEwMDAiCnR5cGVTaXplOiA0CnNob3dBZGRyZXNzZXM6IHRydWUKc2hvd0xpbmVhcjogdHJ1ZQpoaWdobGlnaHQ6IFtbMCwgMF0sIFsxLCAyXV0K)
 
 [Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogbWF0cml4CnRpdGxlOiBNYXRyaXogZXN0w6F0aWNhIHJvdy1tYWpvcgp2YWx1ZXM6IFtbMSwgMiwgM10sIFs0LCA1LCA2XV0KYmFzZUFkZHI6ICIweDEwMDAiCnR5cGVTaXplOiA0CnNob3dBZGRyZXNzZXM6IHRydWUKc2hvd0xpbmVhcjogdHJ1ZQpoaWdobGlnaHQ6IFtbMCwgMF0sIFsxLCAyXV0K) para explorarlo y modificarlo.
+
+### Punteros a filas de un solo bloque (2×3)
+
+```yaml
+type: matrix
+variant: row_pointers
+title: "Punteros a filas de un solo bloque (2×3)"
+values: [[1, 2, 3], [4, 5, 6]]
+```
+
+[![Punteros a filas de un solo bloque (2×3)](img/ks_cs_matrix_punteros_bloque.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogbWF0cml4CnZhcmlhbnQ6IHJvd19wb2ludGVycwp0aXRsZTogIlB1bnRlcm9zIGEgZmlsYXMgZGUgdW4gc29sbyBibG9xdWUgKDLDlzMpIgp2YWx1ZXM6IFtbMSwgMiwgM10sIFs0LCA1LCA2XV0K)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogbWF0cml4CnZhcmlhbnQ6IHJvd19wb2ludGVycwp0aXRsZTogIlB1bnRlcm9zIGEgZmlsYXMgZGUgdW4gc29sbyBibG9xdWUgKDLDlzMpIgp2YWx1ZXM6IFtbMSwgMiwgM10sIFs0LCA1LCA2XV0K) para explorarlo y modificarlo.
+
+### ¿A qué índice apunta cada fila? (para completar)
+
+```yaml
+type: matrix
+variant: row_pointers
+title: "¿A qué índice apunta cada fila? (para completar)"
+rows: 3
+cols: 2
+blankPointers: true
+blankValues: true
+inkSaver: false
+```
+
+[![¿A qué índice apunta cada fila? (para completar)](img/ks_cs_matrix_punteros_bloque_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogbWF0cml4CnZhcmlhbnQ6IHJvd19wb2ludGVycwp0aXRsZTogIsK_QSBxdcOpIMOtbmRpY2UgYXB1bnRhIGNhZGEgZmlsYT8gKHBhcmEgY29tcGxldGFyKSIKcm93czogMwpjb2xzOiAyCmJsYW5rUG9pbnRlcnM6IHRydWUKYmxhbmtWYWx1ZXM6IHRydWUKaW5rU2F2ZXI6IGZhbHNlCg)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogbWF0cml4CnZhcmlhbnQ6IHJvd19wb2ludGVycwp0aXRsZTogIsK_QSBxdcOpIMOtbmRpY2UgYXB1bnRhIGNhZGEgZmlsYT8gKHBhcmEgY29tcGxldGFyKSIKcm93czogMwpjb2xzOiAyCmJsYW5rUG9pbnRlcnM6IHRydWUKYmxhbmtWYWx1ZXM6IHRydWUKaW5rU2F2ZXI6IGZhbHNlCg) para explorarlo y modificarlo.
 
 ### Matriz dentada con dueña y zonas
 
@@ -165,7 +197,8 @@ inkSaver: false
 
 ## Notas
 
-- El máximo es 10 filas por 10 columnas; en la plana, 24 celdas.
+- El máximo es 10 filas por 10 columnas; en la plana y en `row_pointers`, 24 celdas.
+- Para una reserva parcial de filas (un `malloc` que falla a mitad de camino), ver [`object_heap`](../memoria/object_heap.md) con `variant: c` y un instante por paso.
 - Las direcciones simbólicas (`"@F"`) van entre comillas en YAML.
 
 ## Ver también

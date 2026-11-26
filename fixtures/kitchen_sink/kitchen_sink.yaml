@@ -603,7 +603,7 @@
   blankLattice: true
   inkSaver: false
 
-# === C. CIENCIAS DE LA COMPUTACIÓN (15 tipos) ===
+# === C. CIENCIAS DE LA COMPUTACIÓN (16 tipos) ===
 
 - id: ks_cs_array_punteros_utf8
   type: array
@@ -640,6 +640,30 @@
   slice: {step: -2, blankSelection: true}
   inkSaver: false
 
+- id: ks_cs_array_limite_c
+  type: array
+  title: "Recorrido de [a+1, a+n): fin señala el límite excluido"
+  values: [3, 1, 4, 1, 5]
+  pointers: "p:1, fin:5"
+  range: {start: 1, stop: 5, label: "[a+1, a+n)", order: true}
+
+- id: ks_cs_array_cadena_c
+  type: array
+  variant: c_string
+  title: "Cadena terminada con espacio sobrante y cursores"
+  name: s
+  bytes: ['h', 'o', 'l', 'a', '\0', 'x', null, null]
+  pointers: "w:1, r:2"
+
+- id: ks_cs_array_cadena_c_blank
+  type: array
+  variant: c_string
+  title: "a, \\0, b, \\0 (para completar)"
+  bytes: ['a', 0, 'b', 0]
+  blank: [1]
+  blankLength: true
+  inkSaver: false
+
 - id: ks_cs_matrix_estatica_lineal
   type: matrix
   title: Matriz estática row-major
@@ -649,6 +673,22 @@
   showAddresses: true
   showLinear: true
   highlight: [[0, 0], [1, 2]]
+
+- id: ks_cs_matrix_punteros_bloque
+  type: matrix
+  variant: row_pointers
+  title: "Punteros a filas de un solo bloque (2×3)"
+  values: [[1, 2, 3], [4, 5, 6]]
+
+- id: ks_cs_matrix_punteros_bloque_blank
+  type: matrix
+  variant: row_pointers
+  title: "¿A qué índice apunta cada fila? (para completar)"
+  rows: 3
+  cols: 2
+  blankPointers: true
+  blankValues: true
+  inkSaver: false
 
 - id: ks_cs_matrix_jagged_duena
   type: matrix
@@ -807,6 +847,24 @@
   rearIndex: 1
   inkSaver: false
 
+- id: ks_cs_queue_anillo
+  type: queue
+  variant: ring
+  title: "Cola envuelta: capacidad 5, frente 4"
+  capacity: 5
+  frontIndex: 4
+  values: [7, 9]
+
+- id: ks_cs_queue_deque_blank
+  type: queue
+  variant: deque
+  title: "Deque llena (para completar último y cantidad)"
+  capacity: 4
+  frontIndex: 2
+  values: [1, 2, 3, 4]
+  blank: [last, count, order]
+  inkSaver: false
+
 - id: ks_cs_tree_avl
   type: tree
   title: Árbol AVL rebalanceado
@@ -838,6 +896,62 @@
   operations: ["void f(pila_t p)"]
   fields: ["int *datos", "size_t tope"]
   hidden: true
+  inkSaver: false
+
+- id: ks_cs_struct_union
+  type: struct
+  variant: union
+  title: Unión con discriminante
+  name: union dato
+  fields: ["char c = 'A'", "int i = 65", "double d"]
+  active: i
+  tag: {outer: struct valor, name: tipo, type: enum tipo, value: ENTERO}
+  compareStruct: true
+
+- id: ks_cs_struct_union_blank
+  type: struct
+  variant: union
+  title: "union con char e int (para completar)"
+  name: union u
+  fields: ["char c", "int i"]
+  active: c
+  tag: {outer: struct marcado, name: marca, value: CARACTER}
+  blankLayout: true
+  blankTag: true
+  inkSaver: false
+
+- id: ks_cs_byte_layout_trama
+  type: byte_layout
+  title: "Cabecera de una trama, con una entrada corta"
+  fields:
+    - {name: tipo, size: 1, value: 2}
+    - {padding: 1}
+    - {name: longitud, size: 2, value: "0x1234", endian: big}
+    - {name: id, size: 4, value: "0x0A0B0C0D"}
+    - {name: datos, bytes: [0x41, 0x42]}
+  length: 9
+
+- id: ks_cs_byte_layout_bmp_24
+  type: byte_layout
+  variant: bmp_rows
+  title: "BMP de 24 bits de ancho 3: stride 12"
+  width: 3
+  height: 2
+  pixels: [["FF0000", "00FF00", "0000FF"], ["FFFFFF", "000000", "808080"]]
+
+- id: ks_cs_byte_layout_bmp_blank
+  type: byte_layout
+  variant: bmp_rows
+  title: "BMP indexado de ancho 2, de arriba hacia abajo (para completar)"
+  bitsPerPixel: 8
+  width: 2
+  height: 3
+  offset: 54
+  order: top_down
+  paletteSize: 4
+  pixels: [[0, 1], [2, 7], [3, 3]]
+  available: 10
+  blank: [stride, offsets, padding]
   inkSaver: false
 
 - id: ks_cs_object_heap_alias
@@ -922,6 +1036,83 @@
       type: Nodo
       fields: [{name: dato, type: int, value: 2}, {name: sig, type: Nodo, ref: N2}]
   blankRefs: true
+
+- id: ks_cs_object_heap_c_doble_puntero
+  type: object_heap
+  variant: c
+  title: "reservar(&q): un int ** cambia el puntero del llamador"
+  frames:
+    - function: main
+      vars:
+        - {name: q, type: "int *", id: q, ref: B1}
+        - {name: n, type: int, value: 4}
+    - function: reservar
+      params:
+        - {name: pp, type: "int **", ref: q}
+        - {name: i, type: int, indeterminate: true}
+  objects:
+    - {id: B1, type: "int[4]", address: "0x5000", elements: [0, 0, 0, 0]}
+
+- id: ks_cs_object_heap_c_registro
+  type: object_heap
+  variant: c
+  title: "Copia superficial: struct vec b = a;"
+  frames:
+    - function: main
+      vars: [{name: fin, type: "int *", ref: "D[3]"}]
+  objects:
+    - id: a
+      type: struct vec
+      storage: auto
+      frame: main
+      fields: [{name: datos, type: "int *", ref: D}, {name: largo, type: size_t, value: 3}]
+    - id: b
+      type: struct vec
+      storage: auto
+      frame: main
+      fields: [{name: datos, type: "int *", ref: D}, {name: largo, type: size_t, value: 3}]
+    - {id: D, type: "int[3]", elements: [7, 9, 2]}
+    - {id: llamadas, type: int, storage: static, value: 1}
+
+- id: ks_cs_object_heap_c_free
+  type: object_heap
+  variant: c
+  title: "free(p) con dos alias, y la dirección reutilizada"
+  snapshots:
+    - label: "Antes de free(p)"
+      frames:
+        - function: main
+          vars: [{name: p, type: "int *", ref: B}, {name: q, type: "int *", ref: "B[1]"}]
+      objects:
+        - {id: B, type: "int[3]", address: "0x5010", elements: [1, 2, 3]}
+    - label: "Después de free(p); r = malloc(...)"
+      frames:
+        - function: main
+          vars: [{name: p, type: "int *", ref: B}, {name: q, type: "int *", ref: "B[1]"}, {name: r, type: "int *", ref: N}]
+      objects:
+        - {id: B, type: "int[3]", address: "0x5010", ended: true, elements: [1, 2, 3]}
+        - {id: N, type: "int[2]", address: "0x5010", elements: [8, 8]}
+
+- id: ks_cs_object_heap_c_realloc_blank
+  type: object_heap
+  variant: c
+  title: "realloc con éxito y con fallo (para completar los estados)"
+  blankStates: true
+  blankValues: true
+  snapshots:
+    - label: "Éxito: q = realloc(p, 16)"
+      frames:
+        - function: main
+          vars: [{name: p, type: "int *", ref: A}, {name: q, type: "int *", ref: A2}]
+      objects:
+        - {id: A, type: "int[2]", ended: true, elements: [1, 2]}
+        - {id: A2, type: "int[4]", elements: [1, 2, {indeterminate: true}, {indeterminate: true}]}
+    - label: "Fallo: q = realloc(p, 1 << 40)"
+      frames:
+        - function: main
+          vars: [{name: p, type: "int *", ref: A}, {name: q, type: "int *", ref: null}]
+      objects:
+        - {id: A, type: "int[2]", elements: [1, 2]}
 
 - id: ks_cs_object_heap_python_copia
   type: object_heap

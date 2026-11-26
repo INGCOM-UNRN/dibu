@@ -89,4 +89,4 @@ inkSaver: false
 
 ## Ver también
 
-[`call_tree`](call_tree.md), [`struct`](struct.md), [`object_heap`](object_heap.md), [`adt`](adt.md)
+[`call_tree`](call_tree.md), [`struct`](struct.md), [`byte_layout`](byte_layout.md), [`object_heap`](object_heap.md), [`adt`](adt.md)

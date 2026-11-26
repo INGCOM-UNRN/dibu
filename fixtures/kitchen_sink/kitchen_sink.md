@@ -1,6 +1,6 @@
 # Catálogo Kitchen Sink de `dibu`
 
-En este documento reunimos ejemplos válidos de los **71 tipos** de diagramas soportados por `dibu` (`9` de control de procesos, `21` de química, `15` de ciencias de la computación, `18` de ingeniería en computación y `8` de señales, probabilidad y circuitos). Vas a encontrar bloques simples y apilados, ambas paletas (`inkSaver: true` e `inkSaver: false`), variantes `blank*`, caracteres UTF-8 con subíndices/superíndices, escape XML (`&`, `<`, `>`) y todas las variantes de fences (` ```estructura `, ` ```statics `, `~~~estructura`, `~~~statics` y ```` ````estructura ````).
+En este documento reunimos ejemplos válidos de los **72 tipos** de diagramas soportados por `dibu` (`9` de control de procesos, `21` de química, `16` de ciencias de la computación, `18` de ingeniería en computación y `8` de señales, probabilidad y circuitos). Vas a encontrar bloques simples y apilados, ambas paletas (`inkSaver: true` e `inkSaver: false`), variantes `blank*`, caracteres UTF-8 con subíndices/superíndices, escape XML (`&`, `<`, `>`) y todas las variantes de fences (` ```estructura `, ` ```statics `, `~~~estructura`, `~~~statics` y ```` ````estructura ````).
 
 ---
 
@@ -498,6 +498,32 @@ Los `14` tipos de `dibu-cs` usando también fences `statics` (tanto con backtick
     - {step: "Leer", input: 0, values: [0]}
     - {step: "Mostrar", output: ""}
 ~~~
+
+```estructura
+- type: object_heap
+  variant: c
+  title: "free(p) deja a q colgante"
+  frames:
+    - function: main
+      vars: [{name: p, type: "int *", ref: B}, {name: q, type: "int *", ref: "B[1]"}]
+  objects:
+    - {id: B, type: "int[2]", ended: true, elements: [1, 2]}
+- type: array
+  variant: c_string
+  title: "char s[6] = \"ab\""
+  text: ab
+  capacity: 6
+- type: queue
+  variant: ring
+  title: Cola envuelta
+  capacity: 4
+  frontIndex: 3
+  values: [5, 6]
+- type: byte_layout
+  title: Dos bytes en orden de red
+  fields:
+    - {name: largo, size: 2, value: "0x1234", endian: big}
+```
 
 ### Algoritmos, complejidad y seguimiento
 

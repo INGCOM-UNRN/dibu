@@ -77,4 +77,4 @@ inkSaver: false
 
 ## Ver también
 
-[`call_stack`](call_stack.md), [`struct`](struct.md), [`object_heap`](object_heap.md), [`adt`](adt.md)
+[`call_stack`](call_stack.md), [`struct`](struct.md), [`byte_layout`](byte_layout.md), [`object_heap`](object_heap.md), [`adt`](adt.md)

@@ -50,4 +50,4 @@ representations:
 
 ## Ver también
 
-[`call_stack`](call_stack.md), [`call_tree`](call_tree.md), [`struct`](struct.md), [`object_heap`](object_heap.md)
+[`call_stack`](call_stack.md), [`call_tree`](call_tree.md), [`struct`](struct.md), [`byte_layout`](byte_layout.md), [`object_heap`](object_heap.md)
