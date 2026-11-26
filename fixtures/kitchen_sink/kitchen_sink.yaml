@@ -44,6 +44,7 @@
     - {at: 3, label: "D2(s)", from: bottom, block: "Gd(s)"}
     - {path: feedback, label: "N(s)"}
   feedback: ["H(s)"]
+  sign: "-"
   measured: "B(s)"
 
 - id: ks_control_block_diagram_entradas

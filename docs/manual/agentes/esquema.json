@@ -2816,7 +2816,7 @@
      "tipo": "texto",
      "valores": [],
      "defecto": null,
-     "descripcion": "El signo de la realimentación en el sumador, `-` (por omisión) o `+`."
+     "descripcion": "El signo de la realimentación en el comparador: `-` (por omisión) o `+`. En una perturbación o una entrada, el signo con el que entra en su sumador: `+` (por omisión) o `-`."
     },
     "input": {
      "tipo": "texto",
@@ -2871,7 +2871,7 @@
    "ejemplos": [
     "type: block_diagram\ntitle: \"Lazo con perturbación <D(s) & H(s)>\"\ninput: \"R(s)\"\noutput: \"Y(s)\"\nerror: \"E(s)\"\nforward:\n  - {label: \"Gc(s)\", out: \"U(s)\"}\n  - {label: \"Gv(s)\", out: \"M(s)\"}\n  - \"Gp(s)\"\ndisturbance: {at: 2, label: \"D(s)\", block: \"Gd(s)\"}\nfeedback: [\"H(s)\"]\nmeasured: \"B(s)\"\ninkSaver: true",
     "type: block_diagram\ntitle: Control en cascada (evaluación)\nforward:\n  - \"Gc1(s)\"\n  - loop:\n      forward: [\"Gc2(s)\", \"Gp2(s)\"]\n      feedback: [\"H2(s)\"]\n  - \"Gp1(s)\"\nfeedback: [\"H1(s)\"]\nblankSigns: true\ninkSaver: false",
-    "type: block_diagram\ntitle: Perturbaciones a la entrada de la válvula, a la salida y en el sensor\ninput: \"R(s)\"\nerror: \"E(s)\"\nforward:\n  - {label: \"Gc(s)\", out: \"U(s)\"}\n  - {label: \"Gv(s)\", out: \"M(s)\"}\n  - \"Gp(s)\"\ndisturbance:\n  - {at: 1, label: \"D1(s)\"}\n  - {at: 3, label: \"D2(s)\", from: bottom, block: \"Gd(s)\"}\n  - {path: feedback, label: \"N(s)\"}\nfeedback: [\"H(s)\"]\nmeasured: \"B(s)\"",
+    "type: block_diagram\ntitle: Perturbaciones a la entrada de la válvula, a la salida y en el sensor\ninput: \"R(s)\"\nerror: \"E(s)\"\nforward:\n  - {label: \"Gc(s)\", out: \"U(s)\"}\n  - {label: \"Gv(s)\", out: \"M(s)\"}\n  - \"Gp(s)\"\ndisturbance:\n  - {at: 1, label: \"D1(s)\"}\n  - {at: 3, label: \"D2(s)\", from: bottom, block: \"Gd(s)\"}\n  - {path: feedback, label: \"N(s)\"}\nfeedback: [\"H(s)\"]\nsign: \"-\"\nmeasured: \"B(s)\"",
     "type: block_diagram\ntitle: Dos referencias y una prealimentación antes del comparador\ninput: \"R1(s)\"\ninputs:\n  - {label: \"R2(s)\", sign: \"-\"}\n  - {label: \"V(s)\", block: \"Gff(s)\", from: bottom}\nforward: [\"Gc(s)\", \"Gp(s)\"]\nfeedback: []",
     "type: block_diagram\ntitle: Cascada con perturbaciones en los dos lazos (signos para completar)\nforward:\n  - \"Gc1(s)\"\n  - loop:\n      forward: [\"Gc2(s)\", \"Gp2(s)\"]\n      feedback: [\"H2(s)\"]\n      disturbance: [{at: 1}, {at: 1, from: bottom, sign: \"-\"}]\n      blankSigns: true\n  - \"Gp1(s)\"\ndisturbance: [{at: 3, label: \"D(s)\"}, {path: feedback, sign: \"-\"}]\nfeedback: [\"H1(s)\"]\nblankSigns: true\ninkSaver: false"
    ]

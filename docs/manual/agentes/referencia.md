@@ -2495,7 +2495,7 @@ para los esquemas en cascada.
 | :--- | :--- | :--- | :--- |
 | `forward` | lista |  | Los bloques del camino directo: un texto, `{label, out, blank}` (`out` es el nombre de la señal de salida) o `{loop: {forward, feedback}}` para un lazo interno. |
 | `feedback` | lista |  | Los bloques de la realimentación; `[]` es realimentación unitaria. Sin la clave, el lazo queda abierto. |
-| `sign` | texto |  | El signo de la realimentación en el sumador, `-` (por omisión) o `+`. |
+| `sign` | texto |  | El signo de la realimentación en el comparador: `-` (por omisión) o `+`. En una perturbación o una entrada, el signo con el que entra en su sumador: `+` (por omisión) o `-`. |
 | `input` | texto | por defecto `R(s)` | El nombre de la entrada, como `R(s)`. |
 | `output` | texto | por defecto `Y(s)` | El nombre de la salida, como `Y(s)`. |
 | `error` | texto |  | El nombre de la señal de error. |
@@ -2556,6 +2556,7 @@ disturbance:
   - {at: 3, label: "D2(s)", from: bottom, block: "Gd(s)"}
   - {path: feedback, label: "N(s)"}
 feedback: ["H(s)"]
+sign: "-"
 measured: "B(s)"
 ```
 

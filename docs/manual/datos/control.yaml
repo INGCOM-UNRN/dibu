@@ -14,7 +14,7 @@ block_diagram:
   campos:
     forward: 'Los bloques del camino directo: un texto, `{label, out, blank}` (`out` es el nombre de la señal de salida) o `{loop: {forward, feedback}}` para un lazo interno.'
     feedback: 'Los bloques de la realimentación; `[]` es realimentación unitaria. Sin la clave, el lazo queda abierto.'
-    sign: El signo de la realimentación en el sumador, `-` (por omisión) o `+`.
+    sign: 'El signo de la realimentación en el comparador: `-` (por omisión) o `+`. En una perturbación o una entrada, el signo con el que entra en su sumador: `+` (por omisión) o `-`.'
     input: El nombre de la entrada, como `R(s)`.
     output: El nombre de la salida, como `Y(s)`.
     error: El nombre de la señal de error.
@@ -23,7 +23,7 @@ block_diagram:
     inputs: 'Entradas que se suman a la referencia antes del comparador (hasta 6): un rótulo o `{label, sign, block, from}`, con rótulos por omisión `R2(s)`, `R3(s)`…'
     blankSigns: Deja en blanco los signos de los sumadores.
   ignorar: [block_diagram]
-  sin_ejemplo: [sign, measured, error]
+  sin_ejemplo: [measured, error]
   notas:
     - Los bloques son rótulos; para calcular la respuesta del lazo se usa `closedLoop` en [`time_response`](../respuesta/time_response.md).
     - 'Una entrada extra que no va al comparador sino a otro punto del lazo (una prealimentación, por ejemplo) es una perturbación con su `label` y su `block`.'

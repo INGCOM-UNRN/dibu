@@ -16,7 +16,7 @@ para los esquemas en cascada.
 | `type` | texto | `block_diagram` | Obligatorio. |
 | `forward` | lista |  | Los bloques del camino directo: un texto, `{label, out, blank}` (`out` es el nombre de la señal de salida) o `{loop: {forward, feedback}}` para un lazo interno. |
 | `feedback` | lista |  | Los bloques de la realimentación; `[]` es realimentación unitaria. Sin la clave, el lazo queda abierto. |
-| `sign` | texto |  | El signo de la realimentación en el sumador, `-` (por omisión) o `+`. |
+| `sign` | texto |  | El signo de la realimentación en el comparador: `-` (por omisión) o `+`. En una perturbación o una entrada, el signo con el que entra en su sumador: `+` (por omisión) o `-`. |
 | `input` | texto | por defecto `R(s)` | El nombre de la entrada, como `R(s)`. |
 | `output` | texto | por defecto `Y(s)` | El nombre de la salida, como `Y(s)`. |
 | `error` | texto |  | El nombre de la señal de error. |
@@ -91,12 +91,13 @@ disturbance:
   - {at: 3, label: "D2(s)", from: bottom, block: "Gd(s)"}
   - {path: feedback, label: "N(s)"}
 feedback: ["H(s)"]
+sign: "-"
 measured: "B(s)"
 ```
 
-[![Perturbaciones a la entrada de la válvula, a la salida y en el sensor](img/ks_control_block_diagram_perturbaciones.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogYmxvY2tfZGlhZ3JhbQp0aXRsZTogUGVydHVyYmFjaW9uZXMgYSBsYSBlbnRyYWRhIGRlIGxhIHbDoWx2dWxhLCBhIGxhIHNhbGlkYSB5IGVuIGVsIHNlbnNvcgppbnB1dDogIlIocykiCmVycm9yOiAiRShzKSIKZm9yd2FyZDoKICAtIHtsYWJlbDogIkdjKHMpIiwgb3V0OiAiVShzKSJ9CiAgLSB7bGFiZWw6ICJHdihzKSIsIG91dDogIk0ocykifQogIC0gIkdwKHMpIgpkaXN0dXJiYW5jZToKICAtIHthdDogMSwgbGFiZWw6ICJEMShzKSJ9CiAgLSB7YXQ6IDMsIGxhYmVsOiAiRDIocykiLCBmcm9tOiBib3R0b20sIGJsb2NrOiAiR2QocykifQogIC0ge3BhdGg6IGZlZWRiYWNrLCBsYWJlbDogIk4ocykifQpmZWVkYmFjazogWyJIKHMpIl0KbWVhc3VyZWQ6ICJCKHMpIgo)
+[![Perturbaciones a la entrada de la válvula, a la salida y en el sensor](img/ks_control_block_diagram_perturbaciones.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogYmxvY2tfZGlhZ3JhbQp0aXRsZTogUGVydHVyYmFjaW9uZXMgYSBsYSBlbnRyYWRhIGRlIGxhIHbDoWx2dWxhLCBhIGxhIHNhbGlkYSB5IGVuIGVsIHNlbnNvcgppbnB1dDogIlIocykiCmVycm9yOiAiRShzKSIKZm9yd2FyZDoKICAtIHtsYWJlbDogIkdjKHMpIiwgb3V0OiAiVShzKSJ9CiAgLSB7bGFiZWw6ICJHdihzKSIsIG91dDogIk0ocykifQogIC0gIkdwKHMpIgpkaXN0dXJiYW5jZToKICAtIHthdDogMSwgbGFiZWw6ICJEMShzKSJ9CiAgLSB7YXQ6IDMsIGxhYmVsOiAiRDIocykiLCBmcm9tOiBib3R0b20sIGJsb2NrOiAiR2QocykifQogIC0ge3BhdGg6IGZlZWRiYWNrLCBsYWJlbDogIk4ocykifQpmZWVkYmFjazogWyJIKHMpIl0Kc2lnbjogIi0iCm1lYXN1cmVkOiAiQihzKSIK)
 
-[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogYmxvY2tfZGlhZ3JhbQp0aXRsZTogUGVydHVyYmFjaW9uZXMgYSBsYSBlbnRyYWRhIGRlIGxhIHbDoWx2dWxhLCBhIGxhIHNhbGlkYSB5IGVuIGVsIHNlbnNvcgppbnB1dDogIlIocykiCmVycm9yOiAiRShzKSIKZm9yd2FyZDoKICAtIHtsYWJlbDogIkdjKHMpIiwgb3V0OiAiVShzKSJ9CiAgLSB7bGFiZWw6ICJHdihzKSIsIG91dDogIk0ocykifQogIC0gIkdwKHMpIgpkaXN0dXJiYW5jZToKICAtIHthdDogMSwgbGFiZWw6ICJEMShzKSJ9CiAgLSB7YXQ6IDMsIGxhYmVsOiAiRDIocykiLCBmcm9tOiBib3R0b20sIGJsb2NrOiAiR2QocykifQogIC0ge3BhdGg6IGZlZWRiYWNrLCBsYWJlbDogIk4ocykifQpmZWVkYmFjazogWyJIKHMpIl0KbWVhc3VyZWQ6ICJCKHMpIgo) para explorarlo y modificarlo.
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogYmxvY2tfZGlhZ3JhbQp0aXRsZTogUGVydHVyYmFjaW9uZXMgYSBsYSBlbnRyYWRhIGRlIGxhIHbDoWx2dWxhLCBhIGxhIHNhbGlkYSB5IGVuIGVsIHNlbnNvcgppbnB1dDogIlIocykiCmVycm9yOiAiRShzKSIKZm9yd2FyZDoKICAtIHtsYWJlbDogIkdjKHMpIiwgb3V0OiAiVShzKSJ9CiAgLSB7bGFiZWw6ICJHdihzKSIsIG91dDogIk0ocykifQogIC0gIkdwKHMpIgpkaXN0dXJiYW5jZToKICAtIHthdDogMSwgbGFiZWw6ICJEMShzKSJ9CiAgLSB7YXQ6IDMsIGxhYmVsOiAiRDIocykiLCBmcm9tOiBib3R0b20sIGJsb2NrOiAiR2QocykifQogIC0ge3BhdGg6IGZlZWRiYWNrLCBsYWJlbDogIk4ocykifQpmZWVkYmFjazogWyJIKHMpIl0Kc2lnbjogIi0iCm1lYXN1cmVkOiAiQihzKSIK) para explorarlo y modificarlo.
 
 ### Dos referencias y una prealimentación antes del comparador
 

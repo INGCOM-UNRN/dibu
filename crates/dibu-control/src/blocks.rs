@@ -11,12 +11,14 @@ const CARRIL: f64 = 30.0;
 const MAX_PERTURBACIONES: usize = 8;
 const MAX_ENTRADAS: usize = 6;
 
-/// El signo de un sumador: `+` o `-`.
-fn signo_de(v: Option<&Value>, donde: &str) -> Result<String, ErrorDiagrama> {
-    match v.filter(|v| !v.is_null()) {
-        None => Ok("+".to_string()),
-        Some(Value::String(s)) if s == "+" || s == "-" => Ok(s.clone()),
-        Some(_) => Err(ErrorDiagrama::new(format!("{donde}.sign: es '+' o '-'"))),
+/// El signo con el que entra una señal en un sumador (`sign`): `+` o `-`, y `defecto` si no está.
+/// El editor web lee los valores admitidos de este `match`.
+fn signo_de(obj: &serde_json::Map<String, Value>, defecto: &str, donde: &str) -> Result<String, ErrorDiagrama> {
+    match obj.get("sign").filter(|v| !v.is_null()).map(valor_str).as_deref() {
+        None => Ok(defecto.to_string()),
+        Some("+") => Ok("+".to_string()),
+        Some("-") => Ok("-".to_string()),
+        Some(_) => Err(ErrorDiagrama::new(format!("{donde}.sign: es '-' o '+'"))),
     }
 }
 
@@ -183,7 +185,7 @@ impl PerturbacionNodo {
             .map(valor_str)
             .filter(|s| !s.is_empty())
             .unwrap_or_else(|| rotulo.to_string());
-        let signo = signo_de(obj.get("sign"), donde)?;
+        let signo = signo_de(obj, "+", donde)?;
         let bloque = match obj.get("block") {
             Some(v) if !v.is_null() => Some(BloqueNodo::parse(v, &format!("{donde}.block"))?),
             _ => None,
@@ -338,10 +340,7 @@ struct LazoNodo {
 
 impl LazoNodo {
     fn parse(dato: &Bloque, donde: &str, cerrado: bool) -> Result<Self, ErrorDiagrama> {
-        let signo = str_opt(dato, "sign").unwrap_or("-").to_string();
-        if signo != "-" && signo != "+" {
-            return Err(ErrorDiagrama::new(format!("{donde}.sign: es '-' o '+'")));
-        }
+        let signo = signo_de(dato, "-", donde)?;
         let error = str_opt(dato, "error").unwrap_or("").to_string();
         let medida = str_opt(dato, "measured").unwrap_or("").to_string();
         let Some(directa) = dato.get("forward").and_then(Value::as_array) else {
@@ -668,7 +667,7 @@ mod tests {
             (json!({"type": "block_diagram", "forward": ["G"], "disturbance": {"at": 2}}), "va de 0 a 1"),
             (json!({"type": "block_diagram", "forward": ["G"], "disturbance": {"label": "D"}}), "necesita at"),
             (json!({"type": "block_diagram", "forward": ["G"], "disturbance": {"at": -1}}), "no -1"),
-            (json!({"type": "block_diagram", "forward": ["G"], "disturbance": {"at": 0, "sign": "x"}}), "es '+' o '-'"),
+            (json!({"type": "block_diagram", "forward": ["G"], "disturbance": {"at": 0, "sign": "x"}}), "es '-' o '+'"),
             (json!({"type": "block_diagram", "forward": ["G"], "disturbance": {"at": 0, "from": "left"}}), "top o bottom"),
             (json!({"type": "block_diagram", "forward": ["G"], "disturbance": {"path": "feedback"}}), "lazo abierto"),
             (json!({"type": "block_diagram", "forward": ["G"], "feedback": ["H"], "disturbance": {"path": "feedback", "at": 2}}), "de 0 a 1"),
