@@ -879,6 +879,130 @@
   showArray: true
   inkSaver: false
 
+- id: ks_cs_scopes_python_legb
+  type: scopes
+  variant: python
+  title: "LEGB: el x de f oculta al global"
+  code: |
+    x = 10
+    def externa():
+        y = 1
+        def f(z):
+            x = y + z
+            return x
+        return f(2)
+    print(externa())
+  line: 6
+  prev: 5
+  scopes:
+    - {name: builtins, kind: builtins, parent: false, vars: {print: "función", len: "función"}}
+    - {name: global, kind: global, parent: builtins, lines: [1, 8], vars: {x: 10, externa: "función"}}
+    - {name: externa, kind: function, lines: [2, 7], vars: {y: 1, f: "función"}}
+    - {name: f, kind: function, lines: [4, 6], vars: {z: 2, x: 3}}
+  lookup: [x, y, len, w]
+
+- id: ks_cs_scopes_python_global_nonlocal
+  type: scopes
+  variant: python
+  title: "global, nonlocal y UnboundLocalError"
+  code: |
+    n = 0
+    def contador():
+        total = 0
+        def sumar():
+            nonlocal total
+            global n
+            total += 1
+            n += 1
+            print(k)
+            k = total
+        sumar()
+    contador()
+  line: 9
+  prev: 8
+  scopes:
+    - {name: global, kind: global, lines: [1, 12], vars: {n: 1, contador: "función"}}
+    - {name: contador, kind: function, lines: [2, 11], vars: {total: 1, sumar: "función"}}
+    - name: sumar
+      kind: function
+      lines: [4, 10]
+      vars:
+        - {name: total, declare: nonlocal}
+        - {name: n, declare: global}
+        - {name: k, unbound: true}
+  lookup: [total, n, k]
+
+- id: ks_cs_scopes_c_bloques
+  type: scopes
+  variant: c
+  title: "C: bloques, ocultamiento y marcos activos que no se ven"
+  code: |
+    int g = 1;
+    void f(int a) {
+      int g;
+      g = a * 2;
+    }
+    int main(void) {
+      int x = 2;
+      {
+        int x = 3;
+        f(x);
+      }
+      return 0;
+    }
+  line: 4
+  scopes:
+    - {name: archivo, kind: file, lines: [1, 13], vars: [{name: g, type: int, value: 1}, {name: f, value: "función"}, {name: main, value: "función"}]}
+    - {name: main, kind: function, parent: archivo, lines: [6, 13], vars: [{name: x, type: int, value: 2}]}
+    - {name: "bloque 8–11", kind: block, parent: main, lines: [8, 11], vars: [{name: x, type: int, value: 3}]}
+    - {name: f, kind: function, parent: archivo, lines: [2, 5], vars: [{name: a, type: int, value: 3}, {name: g, type: int, indeterminate: true}]}
+  lookup: [g, a, x]
+
+- id: ks_cs_scopes_java_this
+  type: scopes
+  variant: java
+  title: "Java: el parámetro oculta al campo; this.x llega al campo"
+  code: |
+    class Punto {
+      int x = 1;
+      int y = 2;
+      void mover(int x) {
+        for (int i = 0; i < 1; i++) {
+          this.x = x + i;
+        }
+      }
+    }
+  line: 6
+  scopes:
+    - {name: Punto, kind: class, lines: [1, 9], vars: [{name: x, type: int, value: 1}, {name: y, type: int, value: 2}]}
+    - {name: mover, kind: method, lines: [4, 8], vars: [{name: x, type: int, value: 5}]}
+    - {name: for, kind: block, lines: [5, 7], vars: [{name: i, type: int, value: 0}]}
+  lookup: [x, this.x, y, i, j]
+
+- id: ks_cs_scopes_blank
+  type: scopes
+  variant: python
+  title: "¿Qué ámbitos se ven y a qué se refiere cada nombre? (para completar)"
+  code: |
+    x = 10
+    def externa():
+        y = 1
+        def f(z):
+            x = y + z
+            return x
+        return f(2)
+    print(externa())
+  line: 6
+  scopes:
+    - {name: builtins, kind: builtins, parent: false, vars: {print: "función"}}
+    - {name: global, kind: global, parent: builtins, lines: [1, 8], vars: {x: 10, externa: "función"}}
+    - {name: externa, kind: function, lines: [2, 7], vars: {y: 1, f: "función"}}
+    - {name: f, kind: function, lines: [4, 6], vars: {z: 2, x: 3}}
+  lookup: [x, y, print]
+  blankLookup: true
+  blankVisibility: true
+  inkSaver: false
+
 - id: ks_cs_struct_layout
   type: struct
   title: Layout LP64 con padding

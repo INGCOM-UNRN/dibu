@@ -4,7 +4,7 @@
 
 Esta guía es para un agente (o una persona) que redacta apuntes, guías o exámenes y necesita
 **escribir diagramas de dibu e integrarlos** en el documento. Reúne en un lugar la sintaxis, el
-catálogo de los 72 tipos, cómo se inserta un diagrama en cada destino y cómo comprobarlo
+catálogo de los 73 tipos, cómo se inserta un diagrama en cada destino y cómo comprobarlo
 antes de entregar.
 
 | Archivo | Para qué |
@@ -89,6 +89,7 @@ Todos los tipos aceptan, además de los propios:
 
 - [`call_stack`](referencia.md#call_stack): Pila de llamadas. Los marcos de activación de una ejecución, con parámetros, variables y punteros entre marcos.
 - [`call_tree`](referencia.md#call_tree): Árbol de llamadas. Las llamadas de una función recursiva, su orden, sus resultados y el costo por nivel.
+- [`scopes`](referencia.md#scopes): Ámbitos y visibilidad. Qué nombres se ven desde una línea del programa y a qué variable se refiere cada uno, como en Python Tutor, con las reglas de C, Python o Java.
 - [`struct`](referencia.md#struct): Struct. La disposición de un struct en memoria (offsets, relleno, sizeof), las uniones con su discriminante y los tipos opacos.
 - [`byte_layout`](referencia.md#byte_layout): Disposición de octetos. Los campos de un formato binario con su ancho, offset y orden de bytes, y las filas de píxeles de un BMP con su stride y su relleno.
 - [`object_heap`](referencia.md#object_heap): Stack y heap (objetos). Variables, objetos y referencias en el stack y el heap, como en Java, Python o C, también en varios instantes.

@@ -795,6 +795,101 @@
     "type: call_tree\ntitle: Árbol de llamadas (retornos en blanco)\nblankReturns: true\nblankLevelCosts: true\nlevelCosts: [\"n\", \"2n\"]\ntotal: \"n^2\"\nroot:\n  call: \"f(2)\"\n  returns: 2\n  children:\n    - {call: \"f(1)\", returns: 1}\n    - {call: \"f(0)\", returns: 0}\ninkSaver: false"
    ]
   },
+  "scopes": {
+   "nombre": "Ámbitos y visibilidad",
+   "para": "Qué nombres se ven desde una línea del programa y a qué variable se refiere cada uno, como en Python Tutor, con las reglas de C, Python o Java.",
+   "area": "Estructuras de datos y algoritmos › Memoria, tipos y recursión",
+   "campos": {
+    "code": {
+     "tipo": "texto",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El código, hasta 40 líneas. La sangría se conserva."
+    },
+    "line": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La próxima línea a ejecutar (desde 1); tiene que estar dentro del ámbito actual."
+    },
+    "prev": {
+     "tipo": "número",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "La línea recién ejecutada."
+    },
+    "scopes": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los ámbitos, del más externo al actual (hasta 10). Cada uno con `name` (único: `f#1`, `f#2` para dos llamadas), `kind` (`builtins`, `global`/`module`/`file`, `function`/`method`, `class` o `block`; por omisión el primero es global y los demás funciones), `parent` (el nombre de un ámbito anterior; por omisión el anterior de la lista, `false` para ninguno), `lines` (`[desde, hasta]`) y `vars`."
+    },
+    "vars": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los nombres de un ámbito (hasta 12): un mapa `{x: 1}` (se ordena alfabéticamente), o una lista de nombres sueltos o de `{name, type, value}`, en el orden dado. Además: `unbound: true` (o `indeterminate: true`) para uno declarado y todavía sin valor, `declare: global` o `declare: nonlocal` en Python (sin valor propio: el valor está en el otro ámbito) y `blank: true`."
+    },
+    "current": {
+     "tipo": "",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "El ámbito actual, por su nombre (por omisión el último de la lista)."
+    },
+    "lookup": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Los nombres a resolver desde el ámbito actual (hasta 12), como lista o separados por comas."
+    },
+    "variant": {
+     "tipo": "texto",
+     "valores": [
+      "python",
+      "c",
+      "java"
+     ],
+     "defecto": null,
+     "descripcion": "Variante, ver arriba."
+    },
+    "blankValues": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja los valores en blanco."
+    },
+    "blankVisibility": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Oculta la visibilidad: sin cadena de búsqueda, sin «oculta por», sin rótulos local o envolvente, y los ámbitos van del último de la lista al primero."
+    },
+    "blankLookup": {
+     "tipo": "sí/no",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Deja en blanco dónde se resuelve cada nombre de `lookup` y su valor."
+    }
+   },
+   "aceptados": [],
+   "variantes": {
+    "python": "Por omisión. Ámbitos integrados (B), global (G), envolventes (E) y local (L), con `global` y `nonlocal`.",
+    "c": "Archivo (global), funciones y bloques; una variable sin inicializar tiene un valor indeterminado.",
+    "java": "Clase (los campos), métodos y bloques, con `this.x`."
+   },
+   "ejercicio": [
+    "blankValues",
+    "blankVisibility",
+    "blankLookup"
+   ],
+   "ejemplos": [
+    "type: scopes\nvariant: python\ntitle: \"LEGB: el x de f oculta al global\"\ncode: |\n  x = 10\n  def externa():\n      y = 1\n      def f(z):\n          x = y + z\n          return x\n      return f(2)\n  print(externa())\nline: 6\nprev: 5\nscopes:\n  - {name: builtins, kind: builtins, parent: false, vars: {print: \"función\", len: \"función\"}}\n  - {name: global, kind: global, parent: builtins, lines: [1, 8], vars: {x: 10, externa: \"función\"}}\n  - {name: externa, kind: function, lines: [2, 7], vars: {y: 1, f: \"función\"}}\n  - {name: f, kind: function, lines: [4, 6], vars: {z: 2, x: 3}}\nlookup: [x, y, len, w]",
+    "type: scopes\nvariant: python\ntitle: \"global, nonlocal y UnboundLocalError\"\ncode: |\n  n = 0\n  def contador():\n      total = 0\n      def sumar():\n          nonlocal total\n          global n\n          total += 1\n          n += 1\n          print(k)\n          k = total\n      sumar()\n  contador()\nline: 9\nprev: 8\nscopes:\n  - {name: global, kind: global, lines: [1, 12], vars: {n: 1, contador: \"función\"}}\n  - {name: contador, kind: function, lines: [2, 11], vars: {total: 1, sumar: \"función\"}}\n  - name: sumar\n    kind: function\n    lines: [4, 10]\n    vars:\n      - {name: total, declare: nonlocal}\n      - {name: n, declare: global}\n      - {name: k, unbound: true}\nlookup: [total, n, k]",
+    "type: scopes\nvariant: c\ntitle: \"C: bloques, ocultamiento y marcos activos que no se ven\"\ncode: |\n  int g = 1;\n  void f(int a) {\n    int g;\n    g = a * 2;\n  }\n  int main(void) {\n    int x = 2;\n    {\n      int x = 3;\n      f(x);\n    }\n    return 0;\n  }\nline: 4\nscopes:\n  - {name: archivo, kind: file, lines: [1, 13], vars: [{name: g, type: int, value: 1}, {name: f, value: \"función\"}, {name: main, value: \"función\"}]}\n  - {name: main, kind: function, parent: archivo, lines: [6, 13], vars: [{name: x, type: int, value: 2}]}\n  - {name: \"bloque 8–11\", kind: block, parent: main, lines: [8, 11], vars: [{name: x, type: int, value: 3}]}\n  - {name: f, kind: function, parent: archivo, lines: [2, 5], vars: [{name: a, type: int, value: 3}, {name: g, type: int, indeterminate: true}]}\nlookup: [g, a, x]",
+    "type: scopes\nvariant: java\ntitle: \"Java: el parámetro oculta al campo; this.x llega al campo\"\ncode: |\n  class Punto {\n    int x = 1;\n    int y = 2;\n    void mover(int x) {\n      for (int i = 0; i < 1; i++) {\n        this.x = x + i;\n      }\n    }\n  }\nline: 6\nscopes:\n  - {name: Punto, kind: class, lines: [1, 9], vars: [{name: x, type: int, value: 1}, {name: y, type: int, value: 2}]}\n  - {name: mover, kind: method, lines: [4, 8], vars: [{name: x, type: int, value: 5}]}\n  - {name: for, kind: block, lines: [5, 7], vars: [{name: i, type: int, value: 0}]}\nlookup: [x, this.x, y, i, j]",
+    "type: scopes\nvariant: python\ntitle: \"¿Qué ámbitos se ven y a qué se refiere cada nombre? (para completar)\"\ncode: |\n  x = 10\n  def externa():\n      y = 1\n      def f(z):\n          x = y + z\n          return x\n      return f(2)\n  print(externa())\nline: 6\nscopes:\n  - {name: builtins, kind: builtins, parent: false, vars: {print: \"función\"}}\n  - {name: global, kind: global, parent: builtins, lines: [1, 8], vars: {x: 10, externa: \"función\"}}\n  - {name: externa, kind: function, lines: [2, 7], vars: {y: 1, f: \"función\"}}\n  - {name: f, kind: function, lines: [4, 6], vars: {z: 2, x: 3}}\nlookup: [x, y, print]\nblankLookup: true\nblankVisibility: true\ninkSaver: false"
+   ]
+  },
   "struct": {
    "nombre": "Struct",
    "para": "La disposición de un struct en memoria (offsets, relleno, sizeof), las uniones con su discriminante y los tipos opacos.",

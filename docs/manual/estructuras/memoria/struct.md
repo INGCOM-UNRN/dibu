@@ -127,4 +127,4 @@ inkSaver: false
 
 ## Ver también
 
-[`call_stack`](call_stack.md), [`call_tree`](call_tree.md), [`byte_layout`](byte_layout.md), [`object_heap`](object_heap.md), [`adt`](adt.md)
+[`call_stack`](call_stack.md), [`call_tree`](call_tree.md), [`scopes`](scopes.md), [`byte_layout`](byte_layout.md), [`object_heap`](object_heap.md), [`adt`](adt.md)

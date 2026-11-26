@@ -219,6 +219,46 @@ call_tree:
     blankLevelCosts: Deja en blanco los costos por nivel.
     blankTotal: Deja en blanco el total.
 
+scopes:
+  nombre: Ámbitos y visibilidad
+  anidados: [vars]
+  para: 'Qué nombres se ven desde una línea del programa y a qué variable se refiere cada uno, como en Python Tutor, con las reglas de C, Python o Java.'
+  resumen: |
+    Dibuja el código con la próxima línea a ejecutar (flecha llena) y la recién ejecutada
+    (punteada), una barra por cada ámbito sobre las líneas que abarca y, al lado, cada ámbito con
+    sus nombres y valores. Arriba va la cadena de búsqueda desde el ámbito actual, del más cercano
+    al más lejano; debajo, los ámbitos activos que no se ven desde ahí, como el marco de quien
+    llamó. Con `lookup`, una tabla dice a qué ámbito se refiere cada nombre y con qué valor, o el
+    error que daría el compilador o el intérprete.
+  calcula:
+    - 'La cadena de búsqueda desde el ámbito actual (`current`, por omisión el último): el ámbito y sus padres. En Python, el cuerpo de una clase no es envolvente para los métodos y se saltea (en Java, los campos sí se ven).'
+    - 'Qué nombres quedan ocultos por otro del mismo nombre en un ámbito más cercano (tachados, con «oculta por [n]»), y qué ámbitos activos quedan fuera de la cadena (punteados).'
+    - 'Dónde se resuelve cada nombre de `lookup`: en Python, con LEGB, `global` y `nonlocal`; en Java, `this.x` llega al campo aunque un parámetro lo oculte.'
+    - 'Los errores: `NameError` y `UnboundLocalError` en Python, `undeclared` y el valor indeterminado de una variable sin inicializar en C, `cannot find symbol` y `might not have been initialized` en Java, y `no binding for nonlocal`.'
+  variantes:
+    python: Por omisión. Ámbitos integrados (B), global (G), envolventes (E) y local (L), con `global` y `nonlocal`.
+    c: Archivo (global), funciones y bloques; una variable sin inicializar tiene un valor indeterminado.
+    java: Clase (los campos), métodos y bloques, con `this.x`.
+  campos:
+    code: 'El código, hasta 40 líneas. La sangría se conserva.'
+    line: La próxima línea a ejecutar (desde 1); tiene que estar dentro del ámbito actual.
+    prev: La línea recién ejecutada.
+    scopes: 'Los ámbitos, del más externo al actual (hasta 10). Cada uno con `name` (único: `f#1`, `f#2` para dos llamadas), `kind` (`builtins`, `global`/`module`/`file`, `function`/`method`, `class` o `block`; por omisión el primero es global y los demás funciones), `parent` (el nombre de un ámbito anterior; por omisión el anterior de la lista, `false` para ninguno), `lines` (`[desde, hasta]`) y `vars`.'
+    vars: 'Los nombres de un ámbito (hasta 12): un mapa `{x: 1}` (se ordena alfabéticamente), o una lista de nombres sueltos o de `{name, type, value}`, en el orden dado. Además: `unbound: true` (o `indeterminate: true`) para uno declarado y todavía sin valor, `declare: global` o `declare: nonlocal` en Python (sin valor propio: el valor está en el otro ámbito) y `blank: true`.'
+    current: El ámbito actual, por su nombre (por omisión el último de la lista).
+    lookup: 'Los nombres a resolver desde el ámbito actual (hasta 12), como lista o separados por comas.'
+    variant: Variante, ver arriba.
+    blankValues: Deja los valores en blanco.
+    blankVisibility: 'Oculta la visibilidad: sin cadena de búsqueda, sin «oculta por», sin rótulos local o envolvente, y los ámbitos van del último de la lista al primero.'
+    blankLookup: Deja en blanco dónde se resuelve cada nombre de `lookup` y su valor.
+  ejercicio: |
+    Con `blankVisibility` y `blankLookup`, quedan el código, la línea y los ámbitos con sus
+    nombres: el ejercicio es armar la cadena de búsqueda, marcar qué nombres quedan ocultos y
+    completar la tabla. Con `blankValues`, además, los valores.
+  notas:
+    - 'Dos llamadas activas de la misma función son dos ámbitos con nombres distintos (`f#1`, `f#2`), cada uno con su `parent`: en C y Java, el archivo o la clase, no quien llamó.'
+    - 'Para las referencias y los objetos del heap, ver [`object_heap`](object_heap.md); para los marcos con sus direcciones, [`call_stack`](call_stack.md).'
+
 struct:
   nombre: Struct
   para: La disposición de un struct en memoria (offsets, relleno, sizeof), las uniones con su discriminante y los tipos opacos.

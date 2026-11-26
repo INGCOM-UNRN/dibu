@@ -402,6 +402,19 @@ Los `14` tipos de `dibu-cs` usando también fences `statics` (tanto con backtick
         - {name: y, value: "&b", type: "int *"}
       vars: ["aux = 3"]
   pointers: "1.x -> 0.a; intercambiar.y -> main.b"
+- type: scopes
+  variant: python
+  title: "Ámbitos: el x local oculta al global"
+  code: |
+    x = 1
+    def f():
+        x = 2
+        return x
+  line: 4
+  scopes:
+    - {name: global, lines: [1, 4], vars: {x: 1, f: "función"}}
+    - {name: f, lines: [2, 4], vars: {x: 2}}
+  lookup: [x]
 - type: call_tree
   title: Árbol de llamadas fib(3)
   showOrder: true

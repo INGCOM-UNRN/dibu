@@ -8,7 +8,7 @@ Motor en Rust para generar diagramas educativos SVG a partir de bloques YAML/JSO
 - `dibu-plot`: ejes cartesianos (lineal/log), grillas, curvas, guiones y leyendas.
 - `dibu-control`: motor matemático de control de procesos y 9 tipos de diagramas (`block_diagram`, `time_response`, `bode`, `nyquist`, `pole_zero`, `root_locus`, `instrumentation`, `ladder`, `grafcet`).
 - `dibu-chem`: motor de cálculos químicos y 21 tipos (química general, orgánica e inorgánica).
-- `dibu-cs`: 14 tipos de estructuras de datos y algoritmos.
+- `dibu-cs`: 17 tipos de estructuras de datos y algoritmos.
 - `dibu-comp`: 18 tipos de ingeniería en computación: sistemas digitales, arquitectura, sistemas operativos, redes, bases de datos y estructuras de datos y algoritmos.
 - `dibu-math`: 8 tipos de señales y sistemas, probabilidad y circuitos eléctricos.
 - `dibu-cli`: binario unificado `dibu` (`render`, `batch`, `sync-md`, `list-types`) con `--features` por familia (`cs`, `control`, `chem`).

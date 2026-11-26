@@ -334,4 +334,4 @@ snapshots:
 
 ## Ver también
 
-[`call_stack`](call_stack.md), [`call_tree`](call_tree.md), [`struct`](struct.md), [`byte_layout`](byte_layout.md), [`adt`](adt.md)
+[`call_stack`](call_stack.md), [`call_tree`](call_tree.md), [`scopes`](scopes.md), [`struct`](struct.md), [`byte_layout`](byte_layout.md), [`adt`](adt.md)
