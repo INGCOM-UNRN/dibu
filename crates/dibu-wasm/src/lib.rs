@@ -12,6 +12,8 @@
 //! Se compila con `cargo build --profile wasm -p dibu-wasm --target wasm32-unknown-unknown`;
 //! el módulo resultante no tiene imports.
 
+#![warn(clippy::missing_safety_doc)]
+
 pub use dibu_core::Theme;
 use dibu_core::{apilar_svgs, leer_bloques, nombre_svg, Registro};
 use serde_json::{json, Value};

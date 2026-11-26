@@ -1,6 +1,8 @@
 //! Diagramas de ingeniería en computación: sistemas digitales, arquitectura de computadoras,
 //! sistemas operativos, redes y bases de datos.
 
+#![warn(clippy::missing_safety_doc)]
+
 pub mod algoritmos;
 pub mod arquitectura;
 pub mod bd;

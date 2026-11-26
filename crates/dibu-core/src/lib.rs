@@ -1,5 +1,7 @@
 //! Núcleo de dibujo SVG y utilidades compartidas para todas las familias de diagramas de `dibu`.
 
+#![warn(clippy::missing_safety_doc)]
+
 use serde_json::Value;
 use sha1::{Digest, Sha1};
 use std::collections::BTreeMap;

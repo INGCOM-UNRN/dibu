@@ -1,5 +1,7 @@
 //! Diagramas de control de procesos (9 tipos).
 
+#![warn(clippy::missing_safety_doc)]
+
 pub mod blocks;
 pub mod industrial;
 pub mod math;

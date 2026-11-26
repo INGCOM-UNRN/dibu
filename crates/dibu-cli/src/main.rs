@@ -1,3 +1,5 @@
+#![warn(clippy::missing_safety_doc)]
+
 use clap::{Parser, Subcommand};
 use dibu_core::{leer_bloques, nombre_svg, Bloque, ErrorDiagrama, Registro, Theme, PRESETS};
 use regex::Regex;

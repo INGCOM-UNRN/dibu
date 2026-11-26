@@ -1,6 +1,8 @@
 //! Primitivas de gráficos cartesianos x-y (lineales y logarítmicos), marcas, grillas y leyendas.
 //! Compartido entre `dibu-control` y `dibu-chem`.
 
+#![warn(clippy::missing_safety_doc)]
+
 use dibu_core::{ancho_texto, esc, Lienzo, Punto, MONO, SANS};
 
 pub const GUIONES: &[&str] = &["", "7 3", "2 3", "9 3 2 3", "4 2"];

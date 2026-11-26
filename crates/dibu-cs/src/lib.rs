@@ -1,5 +1,7 @@
 //! Diagramas de estructuras de datos y algoritmos (Fase 3).
 
+#![warn(clippy::missing_safety_doc)]
+
 pub mod algos;
 pub mod common;
 pub mod lineal;

@@ -1,5 +1,7 @@
 //! Diagramas de matemática aplicada: señales y sistemas, probabilidad y circuitos eléctricos.
 
+#![warn(clippy::missing_safety_doc)]
+
 pub mod circuitos;
 pub mod expr;
 pub mod probabilidad;
