@@ -6,6 +6,7 @@ pub mod algos;
 pub mod common;
 pub mod lineal;
 pub mod objetos;
+pub mod octetos;
 pub mod recursion;
 
 use dibu_core::Registro;
@@ -15,4 +16,5 @@ pub fn registrar(reg: &mut Registro) {
     recursion::registrar(reg);
     algos::registrar(reg);
     objetos::registrar(reg);
+    octetos::registrar(reg);
 }

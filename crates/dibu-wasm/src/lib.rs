@@ -317,6 +317,6 @@ mod tests {
         assert_eq!(t, "type: stack");
         assert!(leer_sobre(r#"{"text":"","theme":"inexistente"}"#).is_err());
         assert_eq!(parse("b: 1\na: 2"), r#"{"root":{"b":1,"a":2}}"#);
-        assert!(tipos().as_array().unwrap().len() >= 71);
+        assert!(tipos().as_array().unwrap().len() >= 72);
     }
 }

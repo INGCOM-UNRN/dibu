@@ -106,7 +106,7 @@ jobs:
             const n = ex.dibu_types();
             const tipos = JSON.parse(new TextDecoder().decode(new Uint8Array(ex.memory.buffer, ex.dibu_out_ptr(), n)));
             console.log(`${tipos.length} tipos`);
-            if (tipos.length < 71) process.exit(1);'
+            if (tipos.length < 72) process.exit(1);'
           echo "- dibu.wasm: $(du -h target/wasm32-unknown-unknown/wasm/dibu_wasm.wasm | cut -f1)" >> "$GITHUB_STEP_SUMMARY"
 
   # Estilo y lints: por ahora sólo informan (el código todavía no pasa `cargo fmt --check`
