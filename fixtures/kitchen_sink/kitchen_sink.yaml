@@ -1706,6 +1706,12 @@
   ops: ["extract", "insert 12"]
   steps: true
 
+- id: ks_alg_heap_valor_blank
+  type: heap
+  title: "¿Dónde queda el 40 y cuál es el arreglo? (el 40, para completar)"
+  values: [50, 30, 20, !blank 40, 10]
+  inkSaver: false
+
 - id: ks_alg_heapify
   type: heap
   title: "Ejercicio: heapify de un max-heap"

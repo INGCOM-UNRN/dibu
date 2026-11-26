@@ -1129,7 +1129,12 @@ fn buscar_crecimiento(val: &Value) -> Result<CrecimientoDef, ErrorDiagrama> {
         })
 }
 
+/// Un número en blanco del bloque sale en blanco.
 fn fmt_g_py(x: f64) -> String {
+    dibu_core::numero_mostrado(x, fmt_g_py_crudo(x))
+}
+
+fn fmt_g_py_crudo(x: f64) -> String {
     if x == 0.0 {
         return "0".to_string();
     }
@@ -1176,7 +1181,7 @@ fn fmt_g_py(x: f64) -> String {
 }
 
 fn parsear_num_finito(v: &Value) -> Option<f64> {
-    match v {
+    match &*dibu_core::plano_numerico(v) {
         Value::Number(n) => n.as_f64().filter(|x| x.is_finite()),
         Value::String(s) => s.trim().parse::<f64>().ok().filter(|x| x.is_finite()),
         _ => None,

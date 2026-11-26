@@ -1377,6 +1377,15 @@ ops: ["extract", "insert 12"]
 steps: true
 ```
 
+Ejemplo: ¿Dónde queda el 40 y cuál es el arreglo? (el 40, para completar)
+
+```yaml
+type: heap
+title: "¿Dónde queda el 40 y cuál es el arreglo? (el 40, para completar)"
+values: [50, 30, 20, !blank 40, 10]
+inkSaver: false
+```
+
 Ejemplo: Ejercicio: heapify de un max-heap
 
 ```yaml

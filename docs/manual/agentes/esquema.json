@@ -1454,6 +1454,7 @@
    ],
    "ejemplos": [
     "type: heap\ntitle: Min-heap construido por inserciones\nvalues: [15, 10, 20, 8, 25, 3]\nops: [\"extract\", \"insert 12\"]\nsteps: true",
+    "type: heap\ntitle: \"¿Dónde queda el 40 y cuál es el arreglo? (el 40, para completar)\"\nvalues: [50, 30, 20, !blank 40, 10]\ninkSaver: false",
     "type: heap\ntitle: \"Ejercicio: heapify de un max-heap\"\nkind: max\nbuild: heapify\nvalues: [4, 10, 3, 5, 1, 8, 9]\nblank: true"
    ]
   },

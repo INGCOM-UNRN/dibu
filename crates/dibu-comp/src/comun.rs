@@ -30,7 +30,7 @@ pub fn envolver(tipo: &str, res: Result<Punto, ErrorDiagrama>) -> Result<Punto, 
 }
 
 pub fn num(v: &Value) -> Option<f64> {
-    match v {
+    match &*dibu_core::plano_numerico(v) {
         Value::Number(n) => n.as_f64().filter(|x| x.is_finite()),
         Value::String(s) => s
             .trim()
@@ -144,8 +144,13 @@ pub fn opcion(
     }
 }
 
-/// Formato numérico corto con coma decimal.
+/// Formato numérico corto con coma decimal. Un número en blanco del bloque sale en blanco.
 pub fn fmt(x: f64, decimales: usize) -> String {
+    dibu_core::numero_mostrado(x, fmt_sin_blanco(x, decimales))
+}
+
+/// `fmt`, sin dejar en blanco los números en blanco (para cálculos con el texto).
+pub fn fmt_sin_blanco(x: f64, decimales: usize) -> String {
     if !x.is_finite() {
         return "—".into();
     }

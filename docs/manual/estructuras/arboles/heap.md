@@ -46,6 +46,19 @@ steps: true
 
 [Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogaGVhcAp0aXRsZTogTWluLWhlYXAgY29uc3RydWlkbyBwb3IgaW5zZXJjaW9uZXMKdmFsdWVzOiBbMTUsIDEwLCAyMCwgOCwgMjUsIDNdCm9wczogWyJleHRyYWN0IiwgImluc2VydCAxMiJdCnN0ZXBzOiB0cnVlCg) para explorarlo y modificarlo.
 
+### ¿Dónde queda el 40 y cuál es el arreglo? (el 40, para completar)
+
+```yaml
+type: heap
+title: "¿Dónde queda el 40 y cuál es el arreglo? (el 40, para completar)"
+values: [50, 30, 20, !blank 40, 10]
+inkSaver: false
+```
+
+[![¿Dónde queda el 40 y cuál es el arreglo? (el 40, para completar)](img/ks_alg_heap_valor_blank.svg)](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogaGVhcAp0aXRsZTogIsK_RMOzbmRlIHF1ZWRhIGVsIDQwIHkgY3XDoWwgZXMgZWwgYXJyZWdsbz8gKGVsIDQwLCBwYXJhIGNvbXBsZXRhcikiCnZhbHVlczogWzUwLCAzMCwgMjAsICFibGFuayA0MCwgMTBdCmlua1NhdmVyOiBmYWxzZQo)
+
+[Abrir en el editor](https://ingcom-unrn.github.io/dibu-web/#t=dHlwZTogaGVhcAp0aXRsZTogIsK_RMOzbmRlIHF1ZWRhIGVsIDQwIHkgY3XDoWwgZXMgZWwgYXJyZWdsbz8gKGVsIDQwLCBwYXJhIGNvbXBsZXRhcikiCnZhbHVlczogWzUwLCAzMCwgMjAsICFibGFuayA0MCwgMTBdCmlua1NhdmVyOiBmYWxzZQo) para explorarlo y modificarlo.
+
 ### Ejercicio: heapify de un max-heap
 
 ```yaml

@@ -589,6 +589,7 @@ pub fn carga_sup(carga: i64) -> String {
 // --- Extractores seguros YAML/JSON y envoltorio de errores -----------------------------------------------
 
 pub fn num(val: &Value, donde: &str) -> Result<f64, ErrorDiagrama> {
+    let val = &*dibu_core::plano_numerico(val);
     let x = match val {
         Value::Number(n) => n
             .as_f64()
@@ -619,6 +620,7 @@ pub fn opt_num(b: &Bloque, clave: &str, donde: &str) -> Result<Option<f64>, Erro
 }
 
 pub fn entero(val: &Value, donde: &str) -> Result<i64, ErrorDiagrama> {
+    let val = &*dibu_core::plano_numerico(val);
     match val {
         Value::Number(n) => {
             if let Some(i) = n.as_i64() {

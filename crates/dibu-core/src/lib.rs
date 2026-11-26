@@ -23,6 +23,194 @@ pub type Punto = (f64, f64);
 pub type Bloque = serde_json::Map<String, Value>;
 pub type RenderFn = fn(&mut Lienzo, &Bloque) -> Result<Punto, ErrorDiagrama>;
 
+// ---------------------------------------------------------------- valores en blanco
+//
+// `!blank 34` (o `34.blank`) es un valor que se usa para calcular el diagrama pero se dibuja como
+// un renglón para completar. Viaja como un texto entre marcas invisibles del área de uso privado:
+// `BLANCO_TEXTO` o `BLANCO_ESCALAR` al principio (el valor era un texto, o un número o un booleano)
+// y `BLANCO_FIN` al final. Los lectores de números lo leen con `plano`; `Lienzo::t` dibuja la parte
+// marcada como un renglón del mismo ancho, así el dibujo no delata la respuesta.
+
+/// Comienzo de un valor en blanco que era un texto.
+pub const BLANCO_TEXTO: char = '\u{E000}';
+/// Fin de un valor en blanco.
+pub const BLANCO_FIN: char = '\u{E001}';
+/// Comienzo de un valor en blanco que era un número o un booleano.
+pub const BLANCO_ESCALAR: char = '\u{E002}';
+
+const SUFIJO_BLANCO: &str = ".blank";
+
+fn es_marca(c: char) -> bool {
+    matches!(c, BLANCO_TEXTO | BLANCO_FIN | BLANCO_ESCALAR)
+}
+
+/// Si `v` es un valor en blanco (o un texto que contiene uno).
+pub fn es_blanco(v: &Value) -> bool {
+    matches!(v, Value::String(s) if s.chars().any(es_marca))
+}
+
+/// Un texto sin las marcas de blanco, con su contenido.
+pub fn sin_marcas(s: &str) -> String {
+    s.chars().filter(|c| !es_marca(*c)).collect()
+}
+
+/// El valor con el que se calcula: un valor en blanco sin sus marcas, con su tipo original
+/// (`!blank 34` es el número 34); cualquier otro, tal cual.
+pub fn plano(v: &Value) -> std::borrow::Cow<'_, Value> {
+    let Value::String(s) = v else {
+        return std::borrow::Cow::Borrowed(v);
+    };
+    let mut cs = s.chars();
+    match (cs.next(), s.chars().last()) {
+        (Some(BLANCO_ESCALAR), Some(BLANCO_FIN)) => {
+            let adentro = sin_marcas(s);
+            let val = serde_yaml::from_str::<serde_yaml::Value>(&adentro)
+                .ok()
+                .and_then(|y| serde_json::to_value(y).ok())
+                .filter(|j| j.is_number() || j.is_boolean())
+                .unwrap_or(Value::String(adentro));
+            std::borrow::Cow::Owned(val)
+        }
+        (Some(BLANCO_TEXTO), Some(BLANCO_FIN)) => std::borrow::Cow::Owned(Value::String(sin_marcas(s))),
+        _ => std::borrow::Cow::Borrowed(v),
+    }
+}
+
+thread_local! {
+    /// Los números en blanco que leyó el render en curso (se vacía al empezar cada render).
+    static NUMEROS_EN_BLANCO: std::cell::RefCell<Vec<f64>> = const { std::cell::RefCell::new(Vec::new()) };
+}
+
+/// Para los lectores de números: si `v` es un número en blanco, lo anota para el render en curso
+/// (así `numero_en_blanco` lo reconoce al escribirlo) y devuelve el valor sin marcas.
+pub fn plano_numerico(v: &Value) -> std::borrow::Cow<'_, Value> {
+    let p = plano(v);
+    if let (true, Some(x)) = (es_blanco(v), p.as_f64()) {
+        NUMEROS_EN_BLANCO.with(|n| n.borrow_mut().push(x));
+    }
+    p
+}
+
+/// Si `x` es uno de los números en blanco del render en curso. Lo usan las funciones que
+/// escriben valores de datos (no las coordenadas): un número igual que aparezca en otro lugar
+/// también sale en blanco, así nunca se ve la respuesta.
+pub fn numero_en_blanco(x: f64) -> bool {
+    x.is_finite()
+        && NUMEROS_EN_BLANCO.with(|n| n.borrow().iter().any(|y| (x - y).abs() <= 1e-9 * x.abs().max(1.0)))
+}
+
+/// `texto` como un valor en blanco (para escribirlo con `Lienzo::t`).
+pub fn marcar_texto(texto: &str) -> String {
+    format!("{BLANCO_TEXTO}{texto}{BLANCO_FIN}")
+}
+
+/// `texto` en blanco si `x` es un número en blanco del render en curso.
+pub fn numero_mostrado(x: f64, texto: String) -> String {
+    if numero_en_blanco(x) {
+        marcar_texto(&texto)
+    } else {
+        texto
+    }
+}
+
+fn marcar_json(v: &Value) -> Value {
+    match v {
+        Value::String(s) => Value::String(format!("{BLANCO_TEXTO}{}{BLANCO_FIN}", sin_marcas(s))),
+        Value::Number(n) => Value::String(format!("{BLANCO_ESCALAR}{n}{BLANCO_FIN}")),
+        Value::Bool(b) => Value::String(format!("{BLANCO_ESCALAR}{b}{BLANCO_FIN}")),
+        Value::Null => Value::String(format!("{BLANCO_TEXTO}{BLANCO_FIN}")),
+        Value::Array(l) => Value::Array(l.iter().map(marcar_json).collect()),
+        Value::Object(m) => Value::Object(m.iter().map(|(k, x)| (k.clone(), marcar_json(x))).collect()),
+    }
+}
+
+/// `X.blank` → el valor `X` en blanco, con el tipo que tendría `X` en YAML (`34.blank` es el
+/// número 34). Recorre listas y objetos. Las claves no se tocan.
+pub fn normalizar_blancos(v: Value) -> Value {
+    match v {
+        Value::String(s) if s.len() > SUFIJO_BLANCO.len() && s.ends_with(SUFIJO_BLANCO) && !s.chars().any(es_marca) => {
+            let adentro = &s[..s.len() - SUFIJO_BLANCO.len()];
+            let val = serde_yaml::from_str::<serde_yaml::Value>(adentro)
+                .ok()
+                .and_then(|y| serde_json::to_value(y).ok())
+                .filter(|j| j.is_number() || j.is_boolean())
+                .unwrap_or_else(|| Value::String(adentro.to_string()));
+            marcar_json(&val)
+        }
+        Value::Array(l) => Value::Array(l.into_iter().map(normalizar_blancos).collect()),
+        Value::Object(m) => Value::Object(m.into_iter().map(|(k, x)| (k, normalizar_blancos(x))).collect()),
+        otro => otro,
+    }
+}
+
+fn contiene_sufijo_blanco(v: &Value) -> bool {
+    match v {
+        Value::String(s) => s.ends_with(SUFIJO_BLANCO),
+        Value::Array(l) => l.iter().any(contiene_sufijo_blanco),
+        Value::Object(m) => m.values().any(contiene_sufijo_blanco),
+        _ => false,
+    }
+}
+
+/// Las rutas (punteros JSON) de los valores en blanco de `v`.
+fn rutas_en_blanco(v: &Value, base: &str, salida: &mut Vec<String>) {
+    match v {
+        Value::Object(m) => {
+            for (k, x) in m {
+                rutas_en_blanco(x, &format!("{base}/{}", k.replace('~', "~0").replace('/', "~1")), salida);
+            }
+        }
+        Value::Array(l) => {
+            for (i, x) in l.iter().enumerate() {
+                rutas_en_blanco(x, &format!("{base}/{i}"), salida);
+            }
+        }
+        otro if es_blanco(otro) => salida.push(base.to_string()),
+        _ => {}
+    }
+}
+
+/// `/frames/0/vars/1/value` → `frames[0].vars[1].value`.
+fn ruta_legible(puntero: &str) -> String {
+    let mut salida = String::new();
+    for parte in puntero.split('/').skip(1) {
+        let parte = parte.replace("~1", "/").replace("~0", "~");
+        if parte.chars().all(|c| c.is_ascii_digit()) && !parte.is_empty() {
+            salida.push_str(&format!("[{parte}]"));
+        } else {
+            if !salida.is_empty() {
+                salida.push('.');
+            }
+            salida.push_str(&parte);
+        }
+    }
+    salida
+}
+
+/// YAML → JSON, con `!blank X` como un valor en blanco. Otras etiquetas quedan como antes.
+fn yaml_a_json(y: serde_yaml::Value) -> Result<Value, ErrorDiagrama> {
+    use serde_yaml::Value as Y;
+    Ok(match y {
+        Y::Tagged(t) if t.tag == "blank" => marcar_json(&yaml_a_json(t.value)?),
+        Y::Sequence(l) => Value::Array(l.into_iter().map(yaml_a_json).collect::<Result<_, _>>()?),
+        Y::Mapping(m) => {
+            let mut salida = serde_json::Map::new();
+            for (k, x) in m {
+                let k = match serde_json::to_value(k)
+                    .map_err(|e| ErrorDiagrama::new(format!("el bloque no se pudo normalizar a JSON: {e}")))?
+                {
+                    Value::String(s) => s,
+                    otra => otra.to_string(),
+                };
+                salida.insert(k, yaml_a_json(x)?);
+            }
+            Value::Object(salida)
+        }
+        otro => serde_json::to_value(otro)
+            .map_err(|e| ErrorDiagrama::new(format!("el bloque no se pudo normalizar a JSON: {e}")))?,
+    })
+}
+
 #[derive(Debug, Error)]
 #[error("{0}")]
 pub struct ErrorDiagrama(pub String);
@@ -35,14 +223,26 @@ impl ErrorDiagrama {
 
 pub fn esc(texto: &str) -> String {
     let mut out = String::with_capacity(texto.len());
+    // Un valor en blanco que llega acá (un texto que no pasa por `Lienzo::t`, o un atributo como
+    // `aria-label`) se escribe como `____`: nunca se ve su contenido.
+    let mut en_blanco = false;
     for ch in texto.chars() {
+        if en_blanco {
+            en_blanco = ch != BLANCO_FIN;
+            continue;
+        }
         match ch {
+            BLANCO_TEXTO | BLANCO_ESCALAR => {
+                out.push_str("____");
+                en_blanco = true;
+            }
             '&' => out.push_str("&amp;"),
             '<' => out.push_str("&lt;"),
             '>' => out.push_str("&gt;"),
             '"' => out.push_str("&quot;"),
             '\'' => out.push_str("&#x27;"),
             '\x00'..='\x08' | '\x0b' | '\x0c' | '\x0e'..='\x1f' => {}
+            BLANCO_FIN => {}
             _ if (ch as u32 & 0xFFFE) == 0xFFFE => {}
             _ => out.push(ch),
         }
@@ -81,7 +281,7 @@ impl Drop for GuardiaTipografia {
 /// así los renderizadores dimensionan celdas y cajas acordes al tamaño real de la letra.
 pub fn ancho_texto(texto: &str, size: f64) -> f64 {
     let (escala, factor) = tipografia_activa();
-    texto.chars().count() as f64 * size * escala * factor
+    texto.chars().filter(|c| !es_marca(*c)).count() as f64 * size * escala * factor
 }
 
 /// Avance de `n` caracteres en la fuente monoespaciada (DejaVu Sans Mono ≈ 0,602 em), para
@@ -220,11 +420,60 @@ impl Lienzo {
         let fam = self.resolver_fuente(fuente).to_string();
         let sz = self.font_size(size);
         let fill = self.pal.color(color).to_string();
-        self.add(format!(
-            r#"<text x="{x:.1}" y="{y:.1}" text-anchor="{ancla}" font-family="{fam}" font-size="{}" font-weight="{peso}" fill="{fill}">{}</text>"#,
-            fmt_num_clean(sz),
-            esc(texto)
-        ));
+        if !texto.chars().any(es_marca) {
+            self.add(format!(
+                r#"<text x="{x:.1}" y="{y:.1}" text-anchor="{ancla}" font-family="{fam}" font-size="{}" font-weight="{peso}" fill="{fill}">{}</text>"#,
+                fmt_num_clean(sz),
+                esc(texto)
+            ));
+            return;
+        }
+        // Con valores en blanco: el texto en tramos; cada valor en blanco es un renglón para
+        // completar del ancho que tendría (al menos dos caracteres), y el resto se escribe igual.
+        let mut tramos: Vec<(String, bool)> = Vec::new();
+        let mut actual = String::new();
+        let mut en_blanco = false;
+        for ch in texto.chars() {
+            match ch {
+                BLANCO_TEXTO | BLANCO_ESCALAR => {
+                    if !actual.is_empty() {
+                        tramos.push((std::mem::take(&mut actual), en_blanco));
+                    }
+                    en_blanco = true;
+                }
+                BLANCO_FIN => {
+                    tramos.push((std::mem::take(&mut actual), true));
+                    en_blanco = false;
+                }
+                _ => actual.push(ch),
+            }
+        }
+        if !actual.is_empty() {
+            tramos.push((actual, en_blanco));
+        }
+        let minimo = ancho_texto("000", size);
+        let anchos: Vec<f64> = tramos
+            .iter()
+            .map(|(t, b)| if *b { ancho_texto(t, size).max(minimo) } else { ancho_texto(t, size) })
+            .collect();
+        let total: f64 = anchos.iter().sum();
+        let mut xi = match ancla {
+            "middle" => x - total / 2.0,
+            "end" => x - total,
+            _ => x,
+        };
+        for ((t, blanco), w) in tramos.iter().zip(anchos) {
+            if *blanco {
+                self.vacio(xi + 1.0, xi + w - 1.0, y + 1.0);
+            } else {
+                self.add(format!(
+                    r#"<text x="{xi:.1}" y="{y:.1}" text-anchor="start" font-family="{fam}" font-size="{}" font-weight="{peso}" fill="{fill}" xml:space="preserve">{}</text>"#,
+                    fmt_num_clean(sz),
+                    esc(t)
+                ));
+            }
+            xi += w;
+        }
     }
 
     #[allow(clippy::too_many_arguments)]
@@ -341,8 +590,7 @@ pub fn leer_bloques(texto: &str) -> Result<Vec<Bloque>, ErrorDiagrama> {
     let texto = texto.strip_prefix('\u{feff}').unwrap_or(texto);
     let yaml_val: serde_yaml::Value = serde_yaml::from_str(texto)
         .map_err(|e| ErrorDiagrama::new(format!("el bloque no es YAML/JSON válido: {e}")))?;
-    let json_val: Value = serde_json::to_value(yaml_val)
-        .map_err(|e| ErrorDiagrama::new(format!("el bloque no se pudo normalizar a JSON: {e}")))?;
+    let json_val = normalizar_blancos(yaml_a_json(yaml_val)?);
     let raiz = match json_val {
         Value::Object(mut obj) if obj.contains_key("blocks") => obj.remove("blocks").unwrap(),
         otro => otro,
@@ -397,6 +645,81 @@ impl Registro {
         bloque: &Bloque,
         tema_base: &Theme,
     ) -> Result<String, ErrorDiagrama> {
+        // Un bloque que no pasó por `leer_bloques` (JSON de la API) también admite `X.blank`.
+        let normalizado;
+        let bloque = if bloque.values().any(contiene_sufijo_blanco) {
+            normalizado = match normalizar_blancos(Value::Object(bloque.clone())) {
+                Value::Object(m) => m,
+                _ => unreachable!("normalizar un objeto da un objeto"),
+            };
+            &normalizado
+        } else {
+            bloque
+        };
+        let raiz = Value::Object(bloque.clone());
+        let mut blancos = Vec::new();
+        rutas_en_blanco(&raiz, "", &mut blancos);
+        if blancos.is_empty() {
+            return self.renderizar_interno(bloque, tema_base, None).map(|(svg, _)| svg);
+        }
+        // Con valores en blanco, cada uno tiene que cambiar el dibujo: si sin su marca sale igual,
+        // el diagrama no lo dibuja en blanco (lo calcula y lo muestra con otro formato, o no lo
+        // muestra), y se avisa en lugar de dejar la respuesta a la vista.
+        let sin_marca = |ruta: &str| -> Bloque {
+            let mut v = raiz.clone();
+            if let Some(x) = v.pointer_mut(ruta) {
+                *x = plano(x).into_owned();
+            }
+            match v {
+                Value::Object(m) => m,
+                _ => unreachable!(),
+            }
+        };
+        let (svg, sufijo) = match self.renderizar_interno(bloque, tema_base, None) {
+            Ok(r) => r,
+            Err(e) => {
+                for ruta in &blancos {
+                    if self.renderizar_interno(&sin_marca(ruta), tema_base, None).is_ok() {
+                        return Err(ErrorDiagrama::new(format!(
+                            "{}: este diagrama no admite un valor en blanco ahí ({})",
+                            ruta_legible(ruta),
+                            sin_marcas(&e.0)
+                        )));
+                    }
+                }
+                return Err(ErrorDiagrama::new(sin_marcas(&e.0)));
+            }
+        };
+        // Lo que deja un valor en blanco en el SVG: un renglón para completar o `____`.
+        let huellas = |svg: &str| svg.matches(r#"stroke-dasharray="3 2""#).count() + svg.matches("____").count();
+        for ruta in &blancos {
+            if let Ok((otro, _)) = self.renderizar_interno(&sin_marca(ruta), tema_base, Some(&sufijo)) {
+                if otro == svg {
+                    return Err(ErrorDiagrama::new(format!(
+                        "{}: este diagrama no dibuja ese valor como texto, así que no se puede dejar en blanco",
+                        ruta_legible(ruta)
+                    )));
+                }
+                // Cambió el dibujo sin dejar un renglón: el campo leyó otro valor.
+                if huellas(&svg) <= huellas(&otro) {
+                    return Err(ErrorDiagrama::new(format!(
+                        "{}: este diagrama no admite un valor en blanco ahí",
+                        ruta_legible(ruta)
+                    )));
+                }
+            }
+        }
+        Ok(svg)
+    }
+
+    /// El render, sin verificar los valores en blanco; devuelve también el sufijo de los `id`.
+    fn renderizar_interno(
+        &self,
+        bloque: &Bloque,
+        tema_base: &Theme,
+        sufijo_fijo: Option<&str>,
+    ) -> Result<(String, String), ErrorDiagrama> {
+        NUMEROS_EN_BLANCO.with(|n| n.borrow_mut().clear());
         let tipo = bloque
             .get("type")
             .and_then(Value::as_str)
@@ -417,7 +740,9 @@ impl Registro {
             tema_base.clone()
         };
         let canon = serde_json::to_string(bloque).unwrap_or_default();
-        let sufijo = if tema.es_default_clasico() {
+        let sufijo = if let Some(s) = sufijo_fijo {
+            s.to_string()
+        } else if tema.es_default_clasico() {
             sha1_hex(canon.as_bytes())[..8].to_string()
         } else {
             let mut entrada = canon;
@@ -479,7 +804,7 @@ impl Registro {
             svg.push_str(p);
         }
         svg.push_str("</svg>");
-        Ok(svg)
+        Ok((svg, sufijo))
     }
 
     pub fn renderizar_bloque_markdown(&self, cuerpo: &str, tinta: bool) -> Result<String, ErrorDiagrama> {

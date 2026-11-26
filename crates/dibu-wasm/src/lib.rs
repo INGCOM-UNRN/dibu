@@ -174,7 +174,54 @@ fn yaml_a_json(v: &serde_yaml::Value, out: &mut String) {
             }
             out.push('}');
         }
+        // `!blank X` llega al editor como el texto `"X.blank"`, que dibu lee igual y el editor
+        // puede volver a escribir sin perder el blanco.
+        Y::Tagged(t) if t.tag == "blank" => en_blanco_como_sufijo(&t.value, out),
         Y::Tagged(t) => yaml_a_json(&t.value, out),
+    }
+}
+
+fn en_blanco_como_sufijo(v: &serde_yaml::Value, out: &mut String) {
+    use serde_yaml::Value as Y;
+    match v {
+        Y::Sequence(seq) => {
+            out.push('[');
+            for (i, x) in seq.iter().enumerate() {
+                if i > 0 {
+                    out.push(',');
+                }
+                en_blanco_como_sufijo(x, out);
+            }
+            out.push(']');
+        }
+        Y::Mapping(_) | Y::Tagged(_) => {
+            // Un objeto en blanco: cada valor de adentro, con el sufijo.
+            let mut tmp = String::new();
+            yaml_a_json(v, &mut tmp);
+            let val: Value = serde_json::from_str(&tmp).unwrap_or(Value::Null);
+            out.push_str(&serde_json::to_string(&sufijar(val)).unwrap_or_default());
+        }
+        Y::Null => out.push_str("null"),
+        escalar => {
+            let mut tmp = String::new();
+            yaml_a_json(escalar, &mut tmp);
+            let texto = match serde_json::from_str::<Value>(&tmp) {
+                Ok(Value::String(s)) => s,
+                Ok(otro) => otro.to_string(),
+                Err(_) => tmp,
+            };
+            out.push_str(&serde_json::to_string(&format!("{texto}.blank")).unwrap_or_default());
+        }
+    }
+}
+
+fn sufijar(v: Value) -> Value {
+    match v {
+        Value::Object(m) => Value::Object(m.into_iter().map(|(k, x)| (k, sufijar(x))).collect()),
+        Value::Array(l) => Value::Array(l.into_iter().map(sufijar).collect()),
+        Value::Null => Value::Null,
+        Value::String(s) => Value::String(format!("{s}.blank")),
+        otro => Value::String(format!("{otro}.blank")),
     }
 }
 
@@ -317,6 +364,11 @@ mod tests {
         assert_eq!(t, "type: stack");
         assert!(leer_sobre(r#"{"text":"","theme":"inexistente"}"#).is_err());
         assert_eq!(parse("b: 1\na: 2"), r#"{"root":{"b":1,"a":2}}"#);
+        // `!blank` llega al editor como el sufijo `.blank`, que dibu lee igual.
+        assert_eq!(
+            parse("v: [1, !blank 40, !blank [2, ddf], x.blank]"),
+            r#"{"root":{"v":[1,"40.blank",["2.blank","ddf.blank"],"x.blank"]}}"#
+        );
         assert!(tipos().as_array().unwrap().len() >= 73);
     }
 }

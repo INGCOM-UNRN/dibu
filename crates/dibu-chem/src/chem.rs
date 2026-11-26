@@ -32,7 +32,12 @@ impl From<ErrorQuimica> for ErrorDiagrama {
 
 /// Formatea un `f64` al estilo `{x:g}` de Python (6 cifras significativas, sin ceros finales
 /// innecesarios y con punto decimal).
+/// Un número en blanco del bloque sale en blanco.
 pub fn fmt_g_py(x: f64) -> String {
+    dibu_core::numero_mostrado(x, fmt_g_py_crudo(x))
+}
+
+fn fmt_g_py_crudo(x: f64) -> String {
     if !x.is_finite() {
         return x.to_string();
     }
@@ -82,6 +87,7 @@ pub fn num(
     positivo: bool,
     minimo: Option<f64>,
 ) -> Result<f64, ErrorQuimica> {
+    let valor = &*dibu_core::plano_numerico(valor);
     let x = match valor {
         Value::Number(n) => n
             .as_f64()
@@ -115,6 +121,7 @@ pub fn num(
 
 /// Extrae un entero exacto de un `Value` JSON/YAML (rechaza booleanos, NaN, infinitos y decimales no enteros).
 pub fn entero_val(valor: &Value, donde: &str) -> Result<i32, ErrorQuimica> {
+    let valor = &*dibu_core::plano_numerico(valor);
     match valor {
         Value::Number(n) => {
             if let Some(i) = n.as_i64() {

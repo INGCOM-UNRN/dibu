@@ -30,6 +30,23 @@ from pathlib import Path
 
 import yaml
 
+
+class CargadorDibu(yaml.SafeLoader):
+    """`yaml.SafeLoader` que entiende `!blank X` (un valor en blanco de dibu) como `X`."""
+
+
+def _blank(cargador: yaml.SafeLoader, nodo: yaml.Node):
+    if isinstance(nodo, yaml.SequenceNode):
+        return cargador.construct_sequence(nodo, deep=True)
+    if isinstance(nodo, yaml.MappingNode):
+        return cargador.construct_mapping(nodo, deep=True)
+    if nodo.style in ("'", '"'):
+        return nodo.value
+    return cargador.construct_object(yaml.ScalarNode(cargador.resolve(yaml.ScalarNode, nodo.value, (True, False)), nodo.value))
+
+
+CargadorDibu.add_constructor("!blank", _blank)
+
 RAIZ = Path(__file__).resolve().parents[2]
 MANUAL = RAIZ / "docs" / "manual"
 DATOS = MANUAL / "datos"
@@ -197,7 +214,7 @@ def ejemplos_kitchen_sink() -> dict[str, list[tuple[str, str, dict]]]:
         while t and not t[-1].strip():
             t.pop()
         crudo = "\n".join(t)
-        bloque = yaml.safe_load(crudo)[0]
+        bloque = yaml.load(crudo, Loader=CargadorDibu)[0]
         ident = bloque.get("id", "")
         # Sin la línea del id; el primer renglón conserva el guion.
         lineas = [l for l in t if not re.match(r"^(- |  )id:\s", l)]

@@ -56,7 +56,9 @@ coincide con la versión de dibu del repositorio.
   necesita otro.
 - **Modo ejercicio:** el mismo bloque con `blank: true` (o los campos `blank*` del tipo) deja en
   blanco lo que se pregunta. El bloque sin `blank` es la clave. Para un examen, escribir el
-  bloque completo y agregarle `blank`.
+  bloque completo y agregarle `blank`. Para un valor concreto, en cualquier tipo: `!blank 40` (o
+  `40.blank`) lo usa para calcular y lo dibuja en blanco; si ese lugar no lo admite, dibu da un
+  error que dice cuál es, nunca lo muestra.
 - **Tamaños:** cada tipo tiene cotas (filas, nodos, muestras). Un diagrama para un apunte entra
   en una página: preferir pocos elementos representativos.
 
