@@ -148,7 +148,7 @@ Todos los tipos aceptan, además de los propios:
 
 **Modelado**
 
-- [`block_diagram`](referencia.md#block_diagram): Diagrama de bloques. Lazos de control con realimentación, perturbaciones y lazos en cascada.
+- [`block_diagram`](referencia.md#block_diagram): Diagrama de bloques. Lazos de control con realimentación, varias entradas y perturbaciones, y lazos en cascada.
 
 **Respuesta temporal**
 

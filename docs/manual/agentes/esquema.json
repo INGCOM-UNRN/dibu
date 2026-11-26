@@ -2797,7 +2797,7 @@
   },
   "block_diagram": {
    "nombre": "Diagrama de bloques",
-   "para": "Lazos de control con realimentación, perturbaciones y lazos en cascada.",
+   "para": "Lazos de control con realimentación, varias entradas y perturbaciones, y lazos en cascada.",
    "area": "Control de procesos › Modelado",
    "campos": {
     "forward": {
@@ -2843,10 +2843,16 @@
      "descripcion": "El nombre de la señal medida (la salida de la realimentación)."
     },
     "disturbance": {
-     "tipo": "objeto",
+     "tipo": "objeto o lista",
      "valores": [],
      "defecto": null,
-     "descripcion": "Una perturbación: `at` (antes de qué bloque entra, desde 0), `label`, `block` (un bloque propio) y `sign`."
+     "descripcion": "Una perturbación o una lista (hasta 8): `at` (antes de qué bloque entra, desde 0; el último más uno es a la salida), `label` (por omisión `D(s)`, o `D1(s)`, `D2(s)`… si hay varias), `sign` (`+` o `-`), `block` (un bloque propio por el que pasa), `from` (`top`, por omisión, o `bottom`) y `path` (`forward`, por omisión, o `feedback`: entra en la realimentación, desde abajo, con rótulo `N(s)`; ahí `at` cuenta los bloques de `feedback` desde la toma de la salida y por omisión es 0). Varias en el mismo `at` van en el orden de la lista."
+    },
+    "inputs": {
+     "tipo": "lista",
+     "valores": [],
+     "defecto": null,
+     "descripcion": "Entradas que se suman a la referencia antes del comparador (hasta 6): un rótulo o `{label, sign, block, from}`, con rótulos por omisión `R2(s)`, `R3(s)`…"
     },
     "blankSigns": {
      "tipo": "sí/no",
@@ -2864,7 +2870,10 @@
    ],
    "ejemplos": [
     "type: block_diagram\ntitle: \"Lazo con perturbación <D(s) & H(s)>\"\ninput: \"R(s)\"\noutput: \"Y(s)\"\nerror: \"E(s)\"\nforward:\n  - {label: \"Gc(s)\", out: \"U(s)\"}\n  - {label: \"Gv(s)\", out: \"M(s)\"}\n  - \"Gp(s)\"\ndisturbance: {at: 2, label: \"D(s)\", block: \"Gd(s)\"}\nfeedback: [\"H(s)\"]\nmeasured: \"B(s)\"\ninkSaver: true",
-    "type: block_diagram\ntitle: Control en cascada (evaluación)\nforward:\n  - \"Gc1(s)\"\n  - loop:\n      forward: [\"Gc2(s)\", \"Gp2(s)\"]\n      feedback: [\"H2(s)\"]\n  - \"Gp1(s)\"\nfeedback: [\"H1(s)\"]\nblankSigns: true\ninkSaver: false"
+    "type: block_diagram\ntitle: Control en cascada (evaluación)\nforward:\n  - \"Gc1(s)\"\n  - loop:\n      forward: [\"Gc2(s)\", \"Gp2(s)\"]\n      feedback: [\"H2(s)\"]\n  - \"Gp1(s)\"\nfeedback: [\"H1(s)\"]\nblankSigns: true\ninkSaver: false",
+    "type: block_diagram\ntitle: Perturbaciones a la entrada de la válvula, a la salida y en el sensor\ninput: \"R(s)\"\nerror: \"E(s)\"\nforward:\n  - {label: \"Gc(s)\", out: \"U(s)\"}\n  - {label: \"Gv(s)\", out: \"M(s)\"}\n  - \"Gp(s)\"\ndisturbance:\n  - {at: 1, label: \"D1(s)\"}\n  - {at: 3, label: \"D2(s)\", from: bottom, block: \"Gd(s)\"}\n  - {path: feedback, label: \"N(s)\"}\nfeedback: [\"H(s)\"]\nmeasured: \"B(s)\"",
+    "type: block_diagram\ntitle: Dos referencias y una prealimentación antes del comparador\ninput: \"R1(s)\"\ninputs:\n  - {label: \"R2(s)\", sign: \"-\"}\n  - {label: \"V(s)\", block: \"Gff(s)\", from: bottom}\nforward: [\"Gc(s)\", \"Gp(s)\"]\nfeedback: []",
+    "type: block_diagram\ntitle: Cascada con perturbaciones en los dos lazos (signos para completar)\nforward:\n  - \"Gc1(s)\"\n  - loop:\n      forward: [\"Gc2(s)\", \"Gp2(s)\"]\n      feedback: [\"H2(s)\"]\n      disturbance: [{at: 1}, {at: 1, from: bottom, sign: \"-\"}]\n      blankSigns: true\n  - \"Gp1(s)\"\ndisturbance: [{at: 3, label: \"D(s)\"}, {path: feedback, sign: \"-\"}]\nfeedback: [\"H1(s)\"]\nblankSigns: true\ninkSaver: false"
    ]
   },
   "time_response": {

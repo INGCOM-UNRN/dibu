@@ -30,6 +30,48 @@
   blankSigns: true
   inkSaver: false
 
+- id: ks_control_block_diagram_perturbaciones
+  type: block_diagram
+  title: Perturbaciones a la entrada de la válvula, a la salida y en el sensor
+  input: "R(s)"
+  error: "E(s)"
+  forward:
+    - {label: "Gc(s)", out: "U(s)"}
+    - {label: "Gv(s)", out: "M(s)"}
+    - "Gp(s)"
+  disturbance:
+    - {at: 1, label: "D1(s)"}
+    - {at: 3, label: "D2(s)", from: bottom, block: "Gd(s)"}
+    - {path: feedback, label: "N(s)"}
+  feedback: ["H(s)"]
+  measured: "B(s)"
+
+- id: ks_control_block_diagram_entradas
+  type: block_diagram
+  title: Dos referencias y una prealimentación antes del comparador
+  input: "R1(s)"
+  inputs:
+    - {label: "R2(s)", sign: "-"}
+    - {label: "V(s)", block: "Gff(s)", from: bottom}
+  forward: ["Gc(s)", "Gp(s)"]
+  feedback: []
+
+- id: ks_control_block_diagram_cascada_perturbaciones_blank
+  type: block_diagram
+  title: Cascada con perturbaciones en los dos lazos (signos para completar)
+  forward:
+    - "Gc1(s)"
+    - loop:
+        forward: ["Gc2(s)", "Gp2(s)"]
+        feedback: ["H2(s)"]
+        disturbance: [{at: 1}, {at: 1, from: bottom, sign: "-"}]
+        blankSigns: true
+    - "Gp1(s)"
+  disturbance: [{at: 3, label: "D(s)"}, {path: feedback, sign: "-"}]
+  feedback: ["H1(s)"]
+  blankSigns: true
+  inkSaver: false
+
 - id: ks_control_time_response_subamortiguado
   type: time_response
   title: Segundo orden subamortiguado (ζ = 0,3)
