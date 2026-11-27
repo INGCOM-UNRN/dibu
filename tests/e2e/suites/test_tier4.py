@@ -18,7 +18,7 @@ from e2e import harness, oracle
 from e2e.harness import ContextoE2E, ResultadoCaso
 
 _FENCE_RE = re.compile(
-    r"^(?P<fence>`{3,}|~{3,})\s*(?P<lang>estructura|statics)\s*\r?\n(?P<body>.*?)\r?\n(?P=fence)\s*$",
+    r"^(?P<fence>`{3,}|~{3,})\s*(?P<lang>dibu|estructura|statics)\s*\r?\n(?P<body>.*?)\r?\n(?P=fence)\s*$",
     re.MULTILINE | re.DOTALL,
 )
 

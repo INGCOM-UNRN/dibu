@@ -105,13 +105,15 @@ fn sync_md_verificar_modificado_no_escribe_cambios() {
 }
 
 #[test]
-fn sync_md_fences_estructura_statics_tilde_cuatro_backticks_y_sin_cerrar() {
+fn sync_md_fences_dibu_estructura_statics_tilde_cuatro_backticks_y_sin_cerrar() {
     let tmp = TempDir::new("fences");
     let c1 = "type: block_diagram\nforward: [\"F1\"]\n";
     let c2 = "type: block_diagram\nforward: [\"F2\"]\n";
     let c3 = "type: block_diagram\nforward: [\"F3\"]\n";
     let c4 = "type: block_diagram\nforward: [\"F4\"]\n";
     let c5 = "type: block_diagram\n# ``` ejemplo interno\nforward: [\"F5\"]\n";
+    let c6 = "type: block_diagram\nforward: [\"F6\"]\n";
+    let c7 = "type: block_diagram\nforward: [\"F7\"]\n";
     let c_sin_cerrar = "type: block_diagram\nforward: [\"SIN_CERRAR\"]\n";
 
     let contenido = format!(
@@ -120,6 +122,8 @@ fn sync_md_fences_estructura_statics_tilde_cuatro_backticks_y_sin_cerrar() {
          ~~~estructura\n{c3}~~~\n\n\
          ~~~statics\n{c4}~~~\n\n\
          ````estructura\n{c5}````\n\n\
+         ```dibu\n{c6}```\n\n\
+         ~~~dibu\n{c7}~~~\n\n\
          ```estructura\n{c_sin_cerrar}~~~\n"
     );
     fs::write(tmp.path().join("fences.md"), contenido).unwrap();
@@ -140,6 +144,8 @@ fn sync_md_fences_estructura_statics_tilde_cuatro_backticks_y_sin_cerrar() {
         nombre_svg(c3),
         nombre_svg(c4),
         nombre_svg(c5),
+        nombre_svg(c6),
+        nombre_svg(c7),
     ];
     esperados.sort();
 

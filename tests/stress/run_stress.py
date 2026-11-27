@@ -42,7 +42,7 @@ KITCHEN_SINK_MD = KITCHEN_SINK_DIR / "kitchen_sink.md"
 DEFAULT_REPORT_MD = KITCHEN_SINK_DIR / "STRESS_REPORT.md"
 
 FENCE_PATRON_MD = (
-    r"(?m)^([`~]{3,})(?:estructura|statics)[ \t]*\r?\n(.*?)\r?\n\1[ \t]*$"
+    r"(?m)^([`~]{3,})(?:dibu|estructura|statics)[ \t]*\r?\n(.*?)\r?\n\1[ \t]*$"
 )
 
 
