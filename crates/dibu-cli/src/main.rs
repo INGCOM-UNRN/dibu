@@ -126,7 +126,9 @@ fn extraer_cuerpos_markdown(texto: &str) -> Vec<String> {
     let mut cuerpos = Vec::new();
     let lineas: Vec<&str> = texto.lines().collect();
     let mut i = 0;
-    let re_abre = Regex::new(r"^(?P<valla>`{3,}|~{3,})[ \t]*(?:estructura|statics)[ \t]*$").unwrap();
+    // ```dibu y los nombres heredados de statics y alucarD (```estructura, ```statics).
+    let re_abre =
+        Regex::new(r"^(?P<valla>`{3,}|~{3,})[ \t]*(?:dibu|estructura|statics)[ \t]*$").unwrap();
     while i < lineas.len() {
         if let Some(cap) = re_abre.captures(lineas[i]) {
             let valla = &cap["valla"];
