@@ -276,8 +276,8 @@ Como muestra la [](#fig-pila), el tope es el último elemento apilado.
 - Para **mostrar la sintaxis** sin dibujarla (en una guía de dibu), usar ```` ```{code} estructura ````
   o ```` ```{code-block} estructura ````: quedan como código.
 
-En **Markdown sin MyST**, `dibu sync-md <carpeta>` dibuja cada bloque ```` ```estructura ```` o
-```` ```statics ```` en `<carpeta>/diagramas/estructura-<hash>.svg` (los 12 primeros dígitos del
+En **Markdown sin MyST**, `dibu sync-md <carpeta>` dibuja cada bloque ```` ```dibu ````,
+```` ```estructura ```` o ```` ```statics ```` en `<carpeta>/diagramas/estructura-<hash>.svg` (los 12 primeros dígitos del
 SHA-1 del cuerpo); la herramienta del sitio enlaza esa imagen. `dibu sync-md --verificar` falla
 si algún SVG falta o está desactualizado.
 

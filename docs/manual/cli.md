@@ -8,7 +8,7 @@ dibu list-themes                        # los presets de theme
 dibu render examen.yaml -o salida/      # un SVG por bloque: <id>.svg o <archivo>_<n>.svg
 dibu render examen.yaml --color         # theme color
 dibu render examen.yaml --theme dark    # o --theme mi-tema.yaml
-dibu sync-md apuntes/                   # los bloques ```estructura de los .md como SVG versionados
+dibu sync-md apuntes/                   # los bloques ```dibu/```estructura de los .md como SVG versionados
 dibu sync-md --verificar apuntes/       # falla si hay SVG faltantes, desactualizados o sobrantes
 dibu batch < pedidos.jsonl              # un proceso para muchos diagramas
 ```

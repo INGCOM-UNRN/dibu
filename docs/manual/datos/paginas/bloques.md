@@ -36,8 +36,8 @@ previa en vivo: [este ejemplo, abierto ahí](https://ingcom-unrn.github.io/dibu-
 
 ## En Markdown
 
-En un apunte, cada bloque de código con la etiqueta `estructura` (o `statics`) es un diagrama. Si
-tiene una lista de bloques, se dibujan uno debajo del otro en un solo SVG.
+En un apunte, cada bloque de código con la etiqueta `dibu` (o `estructura` o `statics`, los nombres
+heredados) es un diagrama. Si tiene una lista de bloques, se dibujan uno debajo del otro en un solo SVG.
 
 ````markdown
 La pila queda así:
